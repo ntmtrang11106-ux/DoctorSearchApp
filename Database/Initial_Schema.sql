@@ -17,3 +17,62 @@ CREATE TABLE Patients (
     bhyt VARCHAR(15),
     address NVARCHAR(255)
 );
+
+//Định nghĩa các bảng bổ trợ
+-- 1. Đặc tả cho Reviews (Đánh giá)
+CREATE TABLE Reviews (
+    ReviewID INT PRIMARY KEY IDENTITY(1,1),
+    AppID INT NOT NULL UNIQUE,                   -- Liên kết 1-1 tới lần khám
+    Rating INT CHECK (Rating >= 1 AND Rating <= 5), -- Số sao (1-5)
+    Comment NVARCHAR(MAX),                       -- Nhận xét của bệnh nhân
+    CreatedAt DATETIME DEFAULT GETDATE(),        -- Ngày tạo đánh giá
+    CONSTRAINT FK_Reviews_App FOREIGN KEY (AppID) REFERENCES Appointments(AppID)
+);
+
+-- 2. Đặc tả cho Conversations (Hội thoại)
+CREATE TABLE Conversations (
+    ConvID INT PRIMARY KEY IDENTITY(1,1),
+    PatientID INT NOT NULL,                      -- FK trỏ về Patients
+    DoctorID INT NOT NULL,                       -- FK trỏ về Doctors
+    LastActive DATETIME DEFAULT GETDATE(),       -- Thời điểm tương tác cuối
+    CONSTRAINT FK_Conv_Patient FOREIGN KEY (PatientID) REFERENCES Patients(PatientID),
+    CONSTRAINT FK_Conv_Doctor FOREIGN KEY (DoctorID) REFERENCES Doctors(DoctorID)
+);
+
+-- 3. Đặc tả cho Messages (Tin nhắn)
+CREATE TABLE Messages (
+    MsgID INT PRIMARY KEY IDENTITY(1,1),
+    ConvID INT NOT NULL,                         -- Thuộc đoạn chat nào
+    SenderID INT NOT NULL,                       -- ID của người gửi (Trỏ về Users)
+    Content NVARCHAR(MAX) NOT NULL,               -- Nội dung tin nhắn
+    SentAt DATETIME DEFAULT GETDATE(),           -- Thời điểm gửi tin
+    IsRead BIT DEFAULT 0,                        -- 0: chưa đọc, 1: đã xem
+    CONSTRAINT FK_Msg_Conv FOREIGN KEY (ConvID) REFERENCES Conversations(ConvID),
+    CONSTRAINT FK_Msg_Sender FOREIGN KEY (SenderID) REFERENCES Users(UserID)
+);
+
+-- 4. Đặc tả cho CallLogs (Nhật ký cuộc gọi)
+CREATE TABLE CallLogs (
+    CallID INT PRIMARY KEY IDENTITY(1,1),
+    CallerID INT NOT NULL,                       -- ID người gọi
+    ReceiverID INT NOT NULL,                     -- ID người nhận
+    StartTime DATETIME NOT NULL,                 -- Thời điểm bắt đầu
+    EndTime DATETIME NOT NULL,                   -- Thời điểm kết thúc
+    Duration INT DEFAULT 0,                      -- Thời lượng (giây)
+    Status NVARCHAR(50) NOT NULL,                -- Missed, Completed, Declined
+    CONSTRAINT FK_Call_Caller FOREIGN KEY (CallerID) REFERENCES Users(UserID),
+    CONSTRAINT FK_Call_Receiver FOREIGN KEY (ReceiverID) REFERENCES Users(UserID)
+);
+
+-- 5. Đặc tả cho Articles (Bài viết y khoa)
+-- Lưu ý: AdminID trỏ về Users.UserID
+CREATE TABLE Articles (
+    ArticleID INT PRIMARY KEY IDENTITY(1,1),
+    AdminID INT NOT NULL,                        -- FK trỏ về Users.UserID
+    Title NVARCHAR(255) NOT NULL,                -- Tiêu đề bài viết
+    Content NVARCHAR(MAX) NOT NULL,               -- Nội dung chi tiết
+    Thumbnail VARCHAR(255),                      -- Ảnh đại diện (đường dẫn file)
+    Views INT DEFAULT 0,                         -- Tổng lượt xem
+    CreatedAt DATETIME DEFAULT GETDATE(),        -- Ngày xuất bản
+    CONSTRAINT FK_Articles_Admin FOREIGN KEY (AdminID) REFERENCES Users(UserID)
+);
