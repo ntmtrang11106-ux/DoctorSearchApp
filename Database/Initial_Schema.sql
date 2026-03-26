@@ -18,7 +18,7 @@ CREATE TABLE Patients (
     address NVARCHAR(255)
 );
 
-//Định nghĩa các bảng bổ trợ
+//ĐỊNH NGHĨA CÁC BẢNG BỔ TRỢ
 -- 1. Đặc tả cho Reviews (Đánh giá)
 CREATE TABLE Reviews (
     ReviewID INT PRIMARY KEY IDENTITY(1,1),
