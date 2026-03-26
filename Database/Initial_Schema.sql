@@ -1,21 +1,44 @@
--- Create Table Users
+//ĐỊNH NGHĨA CÁC BẢNG CỐT LỖI
+-- 1. Bảng Users (Gốc của mọi tài khoản)
 CREATE TABLE Users (
-    id INT IDENTITY(1,1) PRIMARY KEY,
+    Id INT IDENTITY(1,1) PRIMARY KEY,
     phone_number VARCHAR(10) NOT NULL UNIQUE,
     password VARCHAR(MAX) NOT NULL,
-    role NVARCHAR(20) NOT NULL, -- Admin, Doctor, Patient
-    is_active BIT DEFAULT 1
+    role NVARCHAR(20) NOT NULL, -- 'Admin', 'Doctor', 'Patient'
+    created_at DATETIME DEFAULT GETDATE()
 );
 
--- Create Table Patients
+-- 2. Bảng Patients (Thông tin chi tiết Bệnh nhân)
 CREATE TABLE Patients (
-    id INT IDENTITY(1,1) PRIMARY KEY,
-    user_id INT FOREIGN KEY REFERENCES Users(id),
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    user_Id INT NOT NULL, -- Nối với Users
     full_name NVARCHAR(100) NOT NULL,
     dob DATE,
-    cccd VARCHAR(12) UNIQUE,
-    bhyt VARCHAR(15),
-    address NVARCHAR(255)
+    address NVARCHAR(255),
+    CONSTRAINT FK_Patients_Users FOREIGN KEY (user_id) REFERENCES Users(id)
+);
+
+-- 3. Bảng Doctors (Thông tin chi tiết Bác sĩ)
+CREATE TABLE Doctors (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    user_Id INT NOT NULL, -- Nối với Users
+    full_name NVARCHAR(100) NOT NULL,
+    specialty NVARCHAR(100), -- Chuyên khoa
+    experience_years INT,
+    bio NVARCHAR(MAX),
+    CONSTRAINT FK_Doctors_Users FOREIGN KEY (user_id) REFERENCES Users(id)
+);
+
+-- 4. Bảng MedicalRecords (Hồ sơ bệnh án - Nối Bệnh nhân và Bác sĩ)
+CREATE TABLE MedicalRecords (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    patient_Id INT NOT NULL,
+    doctor_Id INT NOT NULL,
+    visit_date DATETIME DEFAULT GETDATE(),
+    diagnosis NVARCHAR(MAX), -- Chẩn đoán
+    treatment NVARCHAR(MAX), -- Hướng điều trị
+    CONSTRAINT FK_Records_Patients FOREIGN KEY (patient_id) REFERENCES Patients(id),
+    CONSTRAINT FK_Records_Doctors FOREIGN KEY (doctor_id) REFERENCES Doctors(id)
 );
 
 //ĐỊNH NGHĨA CÁC BẢNG BỔ TRỢ
@@ -76,3 +99,5 @@ CREATE TABLE Articles (
     CreatedAt DATETIME DEFAULT GETDATE(),        -- Ngày xuất bản
     CONSTRAINT FK_Articles_Admin FOREIGN KEY (AdminID) REFERENCES Users(UserID)
 );
+
+
