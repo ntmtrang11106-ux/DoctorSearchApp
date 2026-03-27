@@ -1,10 +1,28 @@
-IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'CNPM')
-BEGIN
-    CREATE DATABASE CNPM;
-END
+--IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'CNPM')
+--BEGIN
+    --CREATE DATABASE CNPM;
+--END
+--GO
+
+USE DoctorSearchDB;
 GO
 
-USE CNPM;
+-- XÓA BẢNG CON TRƯỚC (Thứ tự cực kỳ quan trọng)
+DROP TABLE IF EXISTS Messages;      -- Trỏ đến Conversations & Users
+DROP TABLE IF EXISTS CallLogs;      -- Trỏ đến Users
+DROP TABLE IF EXISTS Articles;      -- Trỏ đến Users
+DROP TABLE IF EXISTS Conversations; -- Trỏ đến Patients & Doctors
+DROP TABLE IF EXISTS Reviews;       -- Trỏ đến Appointments
+DROP TABLE IF EXISTS MedicalRecords;-- Trỏ đến Patients & Doctors
+DROP TABLE IF EXISTS Appointments;  -- Trỏ đến Patients & TimeSlots
+DROP TABLE IF EXISTS TimeSlots;     -- Trỏ đến Doctors
+DROP TABLE IF EXISTS Patients;      -- Trỏ đến Users
+DROP TABLE IF EXISTS Doctors;       -- Trỏ đến Users, Specialties, Locations
+
+-- XÓA BẢNG CHA SAU CÙNG
+DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS Specialties;
+DROP TABLE IF EXISTS Locations;
 GO
 
 --ĐỊNH NGHĨA CÁC BẢNG CỐT LỖI
@@ -17,53 +35,63 @@ CREATE TABLE Users (
     created_at DATETIME DEFAULT GETDATE()
 );
 
--- 2. Bảng Patients (Thông tin chi tiết Bệnh nhân)
-CREATE TABLE Patients (
-    Id INT IDENTITY(1,1) PRIMARY KEY,
-    UserId INT NOT NULL, -- Nối với Users
-    full_name NVARCHAR(100) NOT NULL,
-    dob DATE,
-    address NVARCHAR(255),
-    CONSTRAINT FK_Patients_Users FOREIGN KEY (UserId) REFERENCES Users(id)
-);
-
--- 3. Bảng Doctors (Thông tin chi tiết Bác sĩ)
-CREATE TABLE Doctors (
-    Id INT IDENTITY(1,1) PRIMARY KEY,
-    UserId INT NOT NULL, -- Nối với Users
-    full_name NVARCHAR(100) NOT NULL,
-    specialty NVARCHAR(100), -- Chuyên khoa
-    experience_years INT,
-    bio NVARCHAR(MAX),
-    CONSTRAINT FK_Doctors_Users FOREIGN KEY (UserId) REFERENCES Users(id)
-);
-
--- 4. Bảng MedicalRecords (Hồ sơ bệnh án - Nối Bệnh nhân và Bác sĩ)
-CREATE TABLE MedicalRecords (
-    Id INT IDENTITY(1,1) PRIMARY KEY,
-    PatientId INT NOT NULL,
-    DoctorId INT NOT NULL,
-    visit_date DATETIME DEFAULT GETDATE(),
-    diagnosis NVARCHAR(MAX), -- Chẩn đoán
-    treatment NVARCHAR(MAX), -- Hướng điều trị
-    CONSTRAINT FK_Records_Patients FOREIGN KEY (PatientId) REFERENCES Patients(id),
-    CONSTRAINT FK_Records_Doctors FOREIGN KEY (DoctorId) REFERENCES Doctors(id)
-);
 
 --ĐỊNH NGHĨA CÁC BẢNG NGHIỆP VỤ
     -- 1. Bảng Chuyên khoa
 CREATE TABLE Specialties (
-    Id INT IDENTITY(1,1) PRIMARY KEY, -- Chuẩn hóa Id 
-    Name NVARCHAR(100) NOT NULL,
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL, -- Ví dụ: Tim mạch, Nhi khoa [cite: 717]
     Description NVARCHAR(MAX)
 );
 
 -- 2. Bảng Khu vực
 CREATE TABLE Locations (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    Name NVARCHAR(100) NOT NULL
+    Name NVARCHAR(100) NOT NULL -- Ví dụ: Liên Chiểu, Hải Châu [cite: 565]
+);
+-- 3. Bảng Doctors (Thông tin chi tiết Bác sĩ)
+CREATE TABLE Doctors (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL,
+    SpecialtyId INT, -- Mối quan hệ với Chuyên khoa [MỚI]
+    LocationId INT,  -- Mối quan hệ với Khu vực [MỚI]
+    full_name NVARCHAR(100) NOT NULL,
+    cchn VARCHAR(50) UNIQUE, -- Số Chứng chỉ hành nghề [cite: 549]
+    workplace NVARCHAR(255), -- Nơi công tác [cite: 549]
+    experience_years INT,
+    bio NVARCHAR(MAX),
+    status NVARCHAR(20) DEFAULT N'Pending', -- Chờ duyệt bởi Admin [cite: 546]
+    CONSTRAINT FK_Doctors_Users FOREIGN KEY (UserId) REFERENCES Users(Id),
+    CONSTRAINT FK_Doctors_Spec FOREIGN KEY (SpecialtyId) REFERENCES Specialties(Id),
+    CONSTRAINT FK_Doctors_Loc FOREIGN KEY (LocationId) REFERENCES Locations(Id)
 );
 
+-- 2. Bảng Patients (Thông tin chi tiết Bệnh nhân)
+CREATE TABLE Patients (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL,
+    full_name NVARCHAR(100) NOT NULL,
+    dob DATE,
+    gender NVARCHAR(10), -- [cite: 542]
+    cccd VARCHAR(12) UNIQUE, -- [cite: 542]
+    bhyt VARCHAR(15), -- [cite: 542]
+    address NVARCHAR(255),
+    blood_type VARCHAR(5), -- [cite: 582]
+    medical_history NVARCHAR(MAX), -- [cite: 582]
+    CONSTRAINT FK_Patients_Users FOREIGN KEY (UserId) REFERENCES Users(Id)
+);
+
+-- 3. NHÓM BẢNG NGHIỆP VỤ (Phụ thuộc vào Patients và Doctors)
+CREATE TABLE MedicalRecords (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    PatientId INT NOT NULL,
+    DoctorId INT NOT NULL,
+    visit_date DATETIME DEFAULT GETDATE(),
+    diagnosis NVARCHAR(MAX),
+    treatment NVARCHAR(MAX),
+    CONSTRAINT FK_Records_Patients FOREIGN KEY (PatientId) REFERENCES Patients(Id),
+    CONSTRAINT FK_Records_Doctors FOREIGN KEY (DoctorId) REFERENCES Doctors(Id)
+);
 -- 3. Bảng Khung giờ (Bác sĩ tạo lịch)
 CREATE TABLE TimeSlots (
     Id INT IDENTITY(1,1) PRIMARY KEY,
