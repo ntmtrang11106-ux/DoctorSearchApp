@@ -2,11 +2,4 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/PBL3/Connector_Tier/DbConnector.cs
-/PBL3/Connector_Tier/DoctorDAL.cs
-/PBL3/Model/DoctorDTO.cs
-/PBL3/UI_Tier/Form2.cs
-/PBL3/UI_Tier/UCCardDoctor.cs
-/PBL3/UI_Tier/UCCardDoctor.Designer.cs
-/PBL3/UI_Tier/UCCardDoctor.resx
 /PBL3/Model/DTO_Tier.csproj
