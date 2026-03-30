@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+  </Folder>
   <Project Path="Bus_Tier/Bus_Tier.csproj" />
   <Project Path="Connector_Tier/Connector_Tier.csproj" />
   <Project Path="Model/Model.csproj" />
