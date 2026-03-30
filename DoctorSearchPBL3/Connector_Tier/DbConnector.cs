@@ -12,4 +12,4 @@ namespace DAL_Tier
             return new SqlConnection(connString);
         }
     }
-}
+} 

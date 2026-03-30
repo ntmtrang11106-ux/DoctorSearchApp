@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+  </Folder>
+  <Project Path="Bus_Tier/Bus_Tier.csproj" />
+  <Project Path="Connector_Tier/DAL_Tier.csproj" Id="e6670019-35a7-41a3-9c9d-958fc1117aeb" />
+  <Project Path="Model/DTO_Tier.csproj" />
+  <Project Path="UI_Tier/UI_Tier.csproj" />
+</Solution>
