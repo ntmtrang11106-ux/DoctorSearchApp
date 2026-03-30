@@ -28,12 +28,42 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            flpDoctors = new FlowLayoutPanel();
+            flowLayoutPanel1 = new FlowLayoutPanel();
+            flpDoctors.SuspendLayout();
+            SuspendLayout();
+            // 
+            // flpDoctors
+            // 
+            flpDoctors.AutoScroll = true;
+            flpDoctors.Controls.Add(flowLayoutPanel1);
+            flpDoctors.Location = new Point(30, 30);
+            flpDoctors.Name = "flpDoctors";
+            flpDoctors.Size = new Size(1911, 814);
+            flpDoctors.TabIndex = 0;
+            // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.Location = new Point(3, 3);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(12, 8);
+            flowLayoutPanel1.TabIndex = 0;
+            // 
+            // Form1
+            // 
+            AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1969, 912);
+            Controls.Add(flpDoctors);
+            Name = "Form1";
             Text = "Form1";
+            flpDoctors.ResumeLayout(false);
+            ResumeLayout(false);
         }
 
         #endregion
+
+        private FlowLayoutPanel flpDoctors;
+        private FlowLayoutPanel flowLayoutPanel1;
     }
 }

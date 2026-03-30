@@ -17,4 +17,10 @@
     <ProjectReference Include="..\Model\DTO_Tier.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Resources_Images\bs_nguyen_van_an.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

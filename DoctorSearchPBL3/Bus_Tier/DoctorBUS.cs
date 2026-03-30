@@ -13,4 +13,14 @@ namespace BUS_Tier
             return doctorDAL.GetAllDoctors();
         }
     }
+
+    //public class DoctorBUS
+    //{
+    //    private DoctorDAL _dal = new DoctorDAL();
+
+    //    public List<DoctorDTO> GetListDoctor()
+    //    {
+    //        return _dal.GetAllDoctors();
+    //    }
+    //}
 } 

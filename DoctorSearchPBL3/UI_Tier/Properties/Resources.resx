@@ -133,4 +133,7 @@
   <data name="Screenshot 2026-03-29 230644" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Screenshot 2026-03-29 230644.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="bs_nguyen_van_an.jpg" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bs_nguyen_van_an.jpg.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
