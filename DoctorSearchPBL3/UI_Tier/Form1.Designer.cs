@@ -57,7 +57,7 @@
             flpDoctors.Controls.Add(flowLayoutPanel1);
             flpDoctors.Location = new Point(0, 562);
             flpDoctors.Name = "flpDoctors";
-            flpDoctors.Size = new Size(1020, 776);
+            flpDoctors.Size = new Size(1866, 776);
             flpDoctors.TabIndex = 0;
             // 
             // flowLayoutPanel1
@@ -76,7 +76,7 @@
             pnlHeader.Dock = DockStyle.Top;
             pnlHeader.Location = new Point(0, 0);
             pnlHeader.Name = "pnlHeader";
-            pnlHeader.Size = new Size(1020, 149);
+            pnlHeader.Size = new Size(1866, 149);
             pnlHeader.TabIndex = 1;
             // 
             // btnLogin
@@ -86,7 +86,7 @@
             btnLogin.FlatAppearance.BorderSize = 0;
             btnLogin.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnLogin.ForeColor = Color.White;
-            btnLogin.Location = new Point(748, 32);
+            btnLogin.Location = new Point(1594, 32);
             btnLogin.Name = "btnLogin";
             btnLogin.Padding = new Padding(10);
             btnLogin.Size = new Size(226, 90);
@@ -123,7 +123,7 @@
             panel2.Location = new Point(0, 149);
             panel2.Name = "panel2";
             panel2.Padding = new Padding(10);
-            panel2.Size = new Size(1020, 289);
+            panel2.Size = new Size(1866, 289);
             panel2.TabIndex = 2;
             // 
             // label2
@@ -185,7 +185,7 @@
             pnlAlert.Location = new Point(3, 459);
             pnlAlert.Name = "pnlAlert";
             pnlAlert.Padding = new Padding(10);
-            pnlAlert.Size = new Size(1017, 81);
+            pnlAlert.Size = new Size(1863, 81);
             pnlAlert.TabIndex = 3;
             // 
             // label3
@@ -212,12 +212,13 @@
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1020, 1338);
+            ClientSize = new Size(1866, 1338);
             Controls.Add(pnlAlert);
             Controls.Add(panel2);
             Controls.Add(pnlHeader);
             Controls.Add(flpDoctors);
             Name = "Form1";
+            WindowState = FormWindowState.Maximized;
             flpDoctors.ResumeLayout(false);
             pnlHeader.ResumeLayout(false);
             pnlHeader.PerformLayout();

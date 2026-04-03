@@ -92,19 +92,21 @@
             // 
             // pictureBox1
             // 
-            pictureBox1.Image = Properties.Resources.Screenshot_2026_03_29_225149;
-            pictureBox1.Location = new Point(25, 460);
+            pictureBox1.Image = Properties.Resources.location;
+            pictureBox1.Location = new Point(24, 458);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(35, 36);
+            pictureBox1.Size = new Size(40, 40);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 6;
             pictureBox1.TabStop = false;
             // 
             // pictureBox2
             // 
-            pictureBox2.Image = Properties.Resources.Screenshot_2026_03_29_225603;
+            pictureBox2.Image = Properties.Resources.clock;
             pictureBox2.Location = new Point(25, 502);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(33, 30);
+            pictureBox2.Size = new Size(35, 35);
+            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox2.TabIndex = 7;
             pictureBox2.TabStop = false;
             // 
@@ -120,19 +122,21 @@
             // 
             // pictureBox3
             // 
-            pictureBox3.Image = Properties.Resources.Screenshot_2026_03_29_230634;
-            pictureBox3.Location = new Point(24, 612);
+            pictureBox3.Image = Properties.Resources.star;
+            pictureBox3.Location = new Point(26, 615);
             pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(33, 32);
+            pictureBox3.Size = new Size(36, 36);
+            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox3.TabIndex = 11;
             pictureBox3.TabStop = false;
             // 
             // pictureBox4
             // 
-            pictureBox4.Image = Properties.Resources.Screenshot_2026_03_29_230644;
-            pictureBox4.Location = new Point(25, 659);
+            pictureBox4.Image = Properties.Resources.sun;
+            pictureBox4.Location = new Point(24, 669);
             pictureBox4.Name = "pictureBox4";
-            pictureBox4.Size = new Size(33, 32);
+            pictureBox4.Size = new Size(39, 42);
+            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox4.TabIndex = 12;
             pictureBox4.TabStop = false;
             // 
@@ -144,7 +148,7 @@
             btnLogin.FlatStyle = FlatStyle.Flat;
             btnLogin.Font = new Font("Segoe UI", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnLogin.ForeColor = Color.White;
-            btnLogin.Location = new Point(10, 733);
+            btnLogin.Location = new Point(10, 744);
             btnLogin.Name = "btnLogin";
             btnLogin.Padding = new Padding(5, 3, 5, 3);
             btnLogin.Size = new Size(678, 60);
@@ -164,7 +168,7 @@
             // lblTotalReviews
             // 
             lblTotalReviews.AutoSize = true;
-            lblTotalReviews.Location = new Point(150, 612);
+            lblTotalReviews.Location = new Point(158, 616);
             lblTotalReviews.Name = "lblTotalReviews";
             lblTotalReviews.Size = new Size(78, 32);
             lblTotalReviews.TabIndex = 17;
@@ -191,15 +195,16 @@
             pnlContainer.Location = new Point(10, 10);
             pnlContainer.Name = "pnlContainer";
             pnlContainer.Padding = new Padding(10);
-            pnlContainer.Size = new Size(678, 783);
+            pnlContainer.Size = new Size(678, 794);
             pnlContainer.TabIndex = 19;
             // 
             // pictureBox5
             // 
-            pictureBox5.Image = Properties.Resources.Screenshot_2026_03_29_225839;
-            pictureBox5.Location = new Point(29, 545);
+            pictureBox5.Image = Properties.Resources.coin;
+            pictureBox5.Location = new Point(25, 545);
             pictureBox5.Name = "pictureBox5";
-            pictureBox5.Size = new Size(30, 33);
+            pictureBox5.Size = new Size(36, 36);
+            pictureBox5.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox5.TabIndex = 18;
             pictureBox5.TabStop = false;
             // 
@@ -253,7 +258,7 @@
             lblWorkPlace.AutoSize = true;
             lblWorkPlace.Font = new Font("Segoe UI", 10.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblWorkPlace.ForeColor = Color.FromArgb(37, 99, 235);
-            lblWorkPlace.Location = new Point(25, 415);
+            lblWorkPlace.Location = new Point(25, 408);
             lblWorkPlace.Margin = new Padding(0, 5, 0, 5);
             lblWorkPlace.Name = "lblWorkPlace";
             lblWorkPlace.Size = new Size(90, 37);
@@ -270,7 +275,7 @@
             Controls.Add(pnlContainer);
             Name = "UCCardDoctor";
             Padding = new Padding(10);
-            Size = new Size(698, 803);
+            Size = new Size(698, 814);
             Load += UCCardDoctor_Load;
             Paint += UCCardDoctor_Paint;
             ((System.ComponentModel.ISupportInitialize)picDoctor).EndInit();
