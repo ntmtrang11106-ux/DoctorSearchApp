@@ -15,18 +15,18 @@ namespace UI_Tier
         private void UCCardDoctor_Load(object sender, EventArgs e)
         {
             // Bo góc cho toàn bộ Card (nếu muốn)
-            ApplyRoundedRegion(this, 15);
+            UIHelper.ApplyRoundedRegion(this, 15);
 
             // Bo góc cho Label chuyên khoa ở góc phải
-            ApplyRoundedRegion(lblSpecialtyTag, 8);
+            UIHelper.ApplyRoundedRegion(lblSpecialtyTag, 8);
 
             // Bo góc cho Button Đăng nhập
-            ApplyRoundedRegion(btnLogin, 10);
+            UIHelper.ApplyRoundedRegion(btnLogin, 10);
 
             // Bo góc cho PictureBox (nếu bạn muốn bo nhẹ 4 góc)
-            ApplyRoundedRegion(picDoctor, 15);
+            UIHelper.ApplyRoundedRegion(picDoctor, 15);
 
-            ApplyRoundedRegion(pnlContainer, 20);
+            UIHelper.ApplyRoundedRegion(pnlContainer, 20);
         }
 
         // Hàm này dùng để "đổ" dữ liệu từ đối tượng Doctor vào các Label
@@ -88,26 +88,6 @@ namespace UI_Tier
             }
         }
 
-        // Hàm tạo đường dẫn hình chữ nhật bo tròn
-        private GraphicsPath GetRoundedPath(Rectangle rect, int radius)
-        {
-            GraphicsPath path = new GraphicsPath();
-            float curveSize = radius * 2F;
-            path.StartFigure();
-            path.AddArc(rect.X, rect.Y, curveSize, curveSize, 180, 90);
-            path.AddArc(rect.Right - curveSize, rect.Y, curveSize, curveSize, 270, 90);
-            path.AddArc(rect.Right - curveSize, rect.Bottom - curveSize, curveSize, curveSize, 0, 90);
-            path.AddArc(rect.X, rect.Bottom - curveSize, curveSize, curveSize, 90, 90);
-            path.CloseFigure();
-            return path;
-        }
-
-        // Hàm áp dụng bo góc cho một Control bất kỳ
-        private void ApplyRoundedRegion(Control control, int radius)
-        {
-            control.Region = new Region(GetRoundedPath(control.ClientRectangle, radius));
-        }
-
         private void UCCardDoctor_Paint(object sender, PaintEventArgs e)
         {
             Control paintControl = (Control)sender;
@@ -121,7 +101,7 @@ namespace UI_Tier
             using (Pen pen = new Pen(borderColor, borderWidth))
             {
                 // Vẽ đường viền theo khung đã bo góc
-                using (var path = GetRoundedPath(paintControl.ClientRectangle, borderRadius))
+                using (var path = UIHelper.GetRoundedPath(paintControl.ClientRectangle, borderRadius))
                 {
                     e.Graphics.DrawPath(pen, path);
                 }

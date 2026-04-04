@@ -84,7 +84,7 @@
             button1.Text = "Đăng nhập";
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
-            button1.Paint += btn_Paint;
+            button1.Paint += UIHelper.btn_Paint;
             // 
             // txtSearchBar
             // 
