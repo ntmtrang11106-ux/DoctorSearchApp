@@ -31,11 +31,13 @@
             panel1 = new Panel();
             panel2 = new Panel();
             panel3 = new Panel();
+            panel5 = new Panel();
+            txtPassword = new TextBox();
+            panel4 = new Panel();
+            txtUsername = new TextBox();
             label5 = new Label();
             label4 = new Label();
             button1 = new Button();
-            txtPassword = new TextBox();
-            txtUsername = new TextBox();
             label3 = new Label();
             label2 = new Label();
             label1 = new Label();
@@ -45,6 +47,8 @@
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             panel3.SuspendLayout();
+            panel5.SuspendLayout();
+            panel4.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -59,7 +63,7 @@
             // panel2
             // 
             panel2.Anchor = AnchorStyles.Top;
-            panel2.BackColor = Color.FromArgb(88, 135, 255);
+            panel2.BackColor = Color.FromArgb(24, 112, 255);
             panel2.Controls.Add(panel3);
             panel2.Controls.Add(label1);
             panel2.Controls.Add(btnPatient);
@@ -73,17 +77,57 @@
             // panel3
             // 
             panel3.BackColor = Color.White;
+            panel3.Controls.Add(panel5);
+            panel3.Controls.Add(panel4);
             panel3.Controls.Add(label5);
             panel3.Controls.Add(label4);
             panel3.Controls.Add(button1);
-            panel3.Controls.Add(txtPassword);
-            panel3.Controls.Add(txtUsername);
             panel3.Controls.Add(label3);
             panel3.Controls.Add(label2);
             panel3.Location = new Point(900, 16);
             panel3.Name = "panel3";
             panel3.Size = new Size(926, 977);
             panel3.TabIndex = 3;
+            // 
+            // panel5
+            // 
+            panel5.BorderStyle = BorderStyle.FixedSingle;
+            panel5.Controls.Add(txtPassword);
+            panel5.Location = new Point(93, 480);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(732, 75);
+            panel5.TabIndex = 8;
+            // 
+            // txtPassword
+            // 
+            txtPassword.BorderStyle = BorderStyle.None;
+            txtPassword.CausesValidation = false;
+            txtPassword.Font = new Font("Segoe UI", 12F);
+            txtPassword.Location = new Point(15, 15);
+            txtPassword.Name = "txtPassword";
+            txtPassword.Size = new Size(704, 43);
+            txtPassword.TabIndex = 3;
+            txtPassword.UseSystemPasswordChar = true;
+            // 
+            // panel4
+            // 
+            panel4.BorderStyle = BorderStyle.FixedSingle;
+            panel4.Controls.Add(txtUsername);
+            panel4.Location = new Point(93, 288);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(732, 75);
+            panel4.TabIndex = 7;
+            // 
+            // txtUsername
+            // 
+            txtUsername.BackColor = SystemColors.Window;
+            txtUsername.BorderStyle = BorderStyle.None;
+            txtUsername.CausesValidation = false;
+            txtUsername.Font = new Font("Segoe UI", 12F);
+            txtUsername.Location = new Point(15, 13);
+            txtUsername.Name = "txtUsername";
+            txtUsername.Size = new Size(704, 43);
+            txtUsername.TabIndex = 2;
             // 
             // label5
             // 
@@ -110,7 +154,7 @@
             // button1
             // 
             button1.Anchor = AnchorStyles.Top;
-            button1.BackColor = Color.FromArgb(88, 135, 255);
+            button1.BackColor = Color.FromArgb(24, 112, 255);
             button1.FlatStyle = FlatStyle.Flat;
             button1.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
             button1.ForeColor = Color.White;
@@ -122,28 +166,6 @@
             button1.UseCompatibleTextRendering = true;
             button1.UseVisualStyleBackColor = false;
             button1.Paint += btn_Paint;
-            // 
-            // txtPassword
-            // 
-            txtPassword.BorderStyle = BorderStyle.FixedSingle;
-            txtPassword.CausesValidation = false;
-            txtPassword.Font = new Font("Segoe UI", 12F);
-            txtPassword.Location = new Point(93, 480);
-            txtPassword.Multiline = true;
-            txtPassword.Name = "txtPassword";
-            txtPassword.Size = new Size(732, 85);
-            txtPassword.TabIndex = 3;
-            // 
-            // txtUsername
-            // 
-            txtUsername.BorderStyle = BorderStyle.FixedSingle;
-            txtUsername.CausesValidation = false;
-            txtUsername.Font = new Font("Segoe UI", 12F);
-            txtUsername.Location = new Point(93, 278);
-            txtUsername.Multiline = true;
-            txtUsername.Name = "txtUsername";
-            txtUsername.Size = new Size(732, 85);
-            txtUsername.TabIndex = 2;
             // 
             // label3
             // 
@@ -231,6 +253,10 @@
             panel2.PerformLayout();
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
+            panel5.ResumeLayout(false);
+            panel5.PerformLayout();
+            panel4.ResumeLayout(false);
+            panel4.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -250,5 +276,7 @@
         private Label label5;
         private Label label4;
         private Button button1;
+        private Panel panel4;
+        private Panel panel5;
     }
 }

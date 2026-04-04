@@ -81,7 +81,7 @@
             // 
             lblSpecialtyTag.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblSpecialtyTag.AutoSize = true;
-            lblSpecialtyTag.BackColor = Color.FromArgb(13, 110, 253);
+            lblSpecialtyTag.BackColor = Color.FromArgb(24, 112, 255);
             lblSpecialtyTag.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblSpecialtyTag.ForeColor = SystemColors.ControlLightLight;
             lblSpecialtyTag.Location = new Point(541, 26);
@@ -133,7 +133,7 @@
             // 
             // btnLogin
             // 
-            btnLogin.BackColor = Color.FromArgb(7, 102, 255);
+            btnLogin.BackColor = Color.FromArgb(24, 112, 255);
             btnLogin.Dock = DockStyle.Bottom;
             btnLogin.FlatAppearance.BorderSize = 0;
             btnLogin.FlatStyle = FlatStyle.Flat;
