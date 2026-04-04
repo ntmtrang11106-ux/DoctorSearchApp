@@ -88,5 +88,26 @@ namespace UI_Tier
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
         }
 
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            // Nếu đang che mật khẩu (dấu chấm)
+            if (txtPassword.UseSystemPasswordChar)
+            {
+                // 1. Hiện mật khẩu
+                txtPassword.UseSystemPasswordChar = false;
+
+                // 2. Đổi sang hình con mắt đóng
+                picShowPass.Image = Properties.Resources.hide;
+                // (Lưu ý: Thay bằng cách gọi Resource của mày, ví dụ: myImages.eye_close)
+            }
+            else
+            {
+                // 1. Che mật khẩu lại
+                txtPassword.UseSystemPasswordChar = true;
+
+                // 2. Đổi về hình con mắt mở
+                picShowPass.Image = Properties.Resources.visible;
+            }
+        }
     }
 }

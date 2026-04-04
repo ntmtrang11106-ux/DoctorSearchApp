@@ -32,6 +32,7 @@
             panel2 = new Panel();
             panel3 = new Panel();
             panel5 = new Panel();
+            picShowPass = new PictureBox();
             txtPassword = new TextBox();
             panel4 = new Panel();
             txtUsername = new TextBox();
@@ -41,13 +42,11 @@
             label3 = new Label();
             label2 = new Label();
             label1 = new Label();
-            btnPatient = new Button();
-            btnAdmin = new Button();
-            btnDoctor = new Button();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             panel3.SuspendLayout();
             panel5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picShowPass).BeginInit();
             panel4.SuspendLayout();
             SuspendLayout();
             // 
@@ -66,9 +65,6 @@
             panel2.BackColor = Color.FromArgb(24, 112, 255);
             panel2.Controls.Add(panel3);
             panel2.Controls.Add(label1);
-            panel2.Controls.Add(btnPatient);
-            panel2.Controls.Add(btnAdmin);
-            panel2.Controls.Add(btnDoctor);
             panel2.Location = new Point(92, 349);
             panel2.Name = "panel2";
             panel2.Size = new Size(1844, 1011);
@@ -92,11 +88,23 @@
             // panel5
             // 
             panel5.BorderStyle = BorderStyle.FixedSingle;
+            panel5.Controls.Add(picShowPass);
             panel5.Controls.Add(txtPassword);
             panel5.Location = new Point(93, 480);
             panel5.Name = "panel5";
             panel5.Size = new Size(732, 75);
             panel5.TabIndex = 8;
+            // 
+            // picShowPass
+            // 
+            picShowPass.Image = Properties.Resources.visible;
+            picShowPass.Location = new Point(653, 10);
+            picShowPass.Name = "picShowPass";
+            picShowPass.Size = new Size(67, 55);
+            picShowPass.SizeMode = PictureBoxSizeMode.Zoom;
+            picShowPass.TabIndex = 4;
+            picShowPass.TabStop = false;
+            picShowPass.Click += pictureBox1_Click;
             // 
             // txtPassword
             // 
@@ -201,43 +209,6 @@
             label1.Text = "Chào mừng";
             label1.TextAlign = ContentAlignment.TopCenter;
             // 
-            // btnPatient
-            // 
-            btnPatient.Anchor = AnchorStyles.Top;
-            btnPatient.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnPatient.Location = new Point(182, 381);
-            btnPatient.Name = "btnPatient";
-            btnPatient.Size = new Size(620, 85);
-            btnPatient.TabIndex = 0;
-            btnPatient.Text = "Đăng nhập với vai trò Bệnh nhân";
-            btnPatient.UseVisualStyleBackColor = true;
-            btnPatient.Paint += btn_Outline_Paint;
-            // 
-            // btnAdmin
-            // 
-            btnAdmin.Anchor = AnchorStyles.Top;
-            btnAdmin.BackColor = Color.White;
-            btnAdmin.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnAdmin.Location = new Point(182, 673);
-            btnAdmin.Name = "btnAdmin";
-            btnAdmin.Size = new Size(620, 85);
-            btnAdmin.TabIndex = 2;
-            btnAdmin.Text = "Đăng nhập với vai trò Quản trị viên";
-            btnAdmin.UseVisualStyleBackColor = false;
-            btnAdmin.Paint += btn_Outline_Paint;
-            // 
-            // btnDoctor
-            // 
-            btnDoctor.Anchor = AnchorStyles.Top;
-            btnDoctor.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnDoctor.Location = new Point(182, 521);
-            btnDoctor.Name = "btnDoctor";
-            btnDoctor.Size = new Size(620, 85);
-            btnDoctor.TabIndex = 1;
-            btnDoctor.Text = "Đăng nhập với vai trò Bác sĩ";
-            btnDoctor.UseVisualStyleBackColor = true;
-            btnDoctor.Paint += btn_Outline_Paint;
-            // 
             // frmLogin
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
@@ -255,6 +226,7 @@
             panel3.PerformLayout();
             panel5.ResumeLayout(false);
             panel5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)picShowPass).EndInit();
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
             ResumeLayout(false);
@@ -264,9 +236,6 @@
 
         private Panel panel1;
         private Label label1;
-        private Button btnPatient;
-        private Button btnDoctor;
-        private Button btnAdmin;
         private Panel panel2;
         private Panel panel3;
         private Label label3;
@@ -278,5 +247,6 @@
         private Button button1;
         private Panel panel4;
         private Panel panel5;
+        private PictureBox picShowPass;
     }
 }
