@@ -38,7 +38,7 @@
             txtUsername = new TextBox();
             label5 = new Label();
             label4 = new Label();
-            button1 = new Button();
+            btnLogin = new Button();
             label3 = new Label();
             label2 = new Label();
             label1 = new Label();
@@ -77,7 +77,7 @@
             panel3.Controls.Add(panel4);
             panel3.Controls.Add(label5);
             panel3.Controls.Add(label4);
-            panel3.Controls.Add(button1);
+            panel3.Controls.Add(btnLogin);
             panel3.Controls.Add(label3);
             panel3.Controls.Add(label2);
             panel3.Location = new Point(900, 16);
@@ -145,9 +145,10 @@
             label5.ForeColor = Color.Blue;
             label5.Location = new Point(323, 775);
             label5.Name = "label5";
-            label5.Size = new Size(173, 37);
+            label5.Size = new Size(179, 37);
             label5.TabIndex = 6;
-            label5.Text = "Đăng kí ngay";
+            label5.Text = "Đăng ký ngay";
+            label5.Click += label5_Click;
             // 
             // label4
             // 
@@ -159,21 +160,20 @@
             label4.TabIndex = 5;
             label4.Text = "Chưa có tài khoản?";
             // 
-            // button1
+            // btnLogin
             // 
-            button1.Anchor = AnchorStyles.Top;
-            button1.BackColor = Color.FromArgb(24, 112, 255);
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
-            button1.ForeColor = Color.White;
-            button1.Location = new Point(93, 643);
-            button1.Name = "button1";
-            button1.Size = new Size(732, 85);
-            button1.TabIndex = 4;
-            button1.Text = "Đăng nhập";
-            button1.UseCompatibleTextRendering = true;
-            button1.UseVisualStyleBackColor = false;
-            button1.Paint += btn_Paint;
+            btnLogin.Anchor = AnchorStyles.Top;
+            btnLogin.BackColor = Color.FromArgb(24, 112, 255);
+            btnLogin.FlatStyle = FlatStyle.Flat;
+            btnLogin.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
+            btnLogin.ForeColor = Color.White;
+            btnLogin.Location = new Point(93, 643);
+            btnLogin.Name = "btnLogin";
+            btnLogin.Size = new Size(732, 85);
+            btnLogin.TabIndex = 4;
+            btnLogin.Text = "Đăng nhập";
+            btnLogin.UseCompatibleTextRendering = true;
+            btnLogin.UseVisualStyleBackColor = false;
             // 
             // label3
             // 
@@ -217,7 +217,7 @@
             ClientSize = new Size(2008, 1372);
             Controls.Add(panel1);
             Name = "frmLogin";
-            Text = "Login";
+            Text = "DoctorSearch";
             WindowState = FormWindowState.Maximized;
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
@@ -244,7 +244,7 @@
         private TextBox txtPassword;
         private Label label5;
         private Label label4;
-        private Button button1;
+        private Button btnLogin;
         private Panel panel4;
         private Panel panel5;
         private PictureBox picShowPass;
