@@ -31,7 +31,7 @@ namespace UI_Tier
 
         // Hàm này dùng để "đổ" dữ liệu từ đối tượng Doctor vào các Label
         // Trong UCCardDoctor.cs
-        
+
         public void SetDoctorData(DoctorDTO doctor)
 
         {
@@ -127,5 +127,6 @@ namespace UI_Tier
                 }
             }
         }
+
     }
 }

@@ -11,7 +11,10 @@ namespace UI_Tier
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new frmHome());
+
+
+            Application.Run(new frmGuest());
+            //Application.Run(new frmLogin());
         }
     }
 }

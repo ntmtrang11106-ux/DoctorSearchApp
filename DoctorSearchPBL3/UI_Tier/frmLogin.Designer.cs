@@ -1,0 +1,254 @@
+﻿namespace UI_Tier
+{
+    partial class frmLogin
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            panel1 = new Panel();
+            panel2 = new Panel();
+            panel3 = new Panel();
+            label5 = new Label();
+            label4 = new Label();
+            button1 = new Button();
+            txtPassword = new TextBox();
+            txtUsername = new TextBox();
+            label3 = new Label();
+            label2 = new Label();
+            label1 = new Label();
+            btnPatient = new Button();
+            btnAdmin = new Button();
+            btnDoctor = new Button();
+            panel1.SuspendLayout();
+            panel2.SuspendLayout();
+            panel3.SuspendLayout();
+            SuspendLayout();
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(panel2);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(2008, 1372);
+            panel1.TabIndex = 0;
+            // 
+            // panel2
+            // 
+            panel2.Anchor = AnchorStyles.Top;
+            panel2.BackColor = Color.FromArgb(88, 135, 255);
+            panel2.Controls.Add(panel3);
+            panel2.Controls.Add(label1);
+            panel2.Controls.Add(btnPatient);
+            panel2.Controls.Add(btnAdmin);
+            panel2.Controls.Add(btnDoctor);
+            panel2.Location = new Point(92, 349);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(1844, 1011);
+            panel2.TabIndex = 3;
+            // 
+            // panel3
+            // 
+            panel3.BackColor = Color.White;
+            panel3.Controls.Add(label5);
+            panel3.Controls.Add(label4);
+            panel3.Controls.Add(button1);
+            panel3.Controls.Add(txtPassword);
+            panel3.Controls.Add(txtUsername);
+            panel3.Controls.Add(label3);
+            panel3.Controls.Add(label2);
+            panel3.Location = new Point(900, 16);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(926, 977);
+            panel3.TabIndex = 3;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.BackColor = Color.Transparent;
+            label5.Font = new Font("Segoe UI", 10.125F, FontStyle.Underline, GraphicsUnit.Point, 0);
+            label5.ForeColor = Color.Blue;
+            label5.Location = new Point(323, 775);
+            label5.Name = "label5";
+            label5.Size = new Size(173, 37);
+            label5.TabIndex = 6;
+            label5.Text = "Đăng kí ngay";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI", 10F);
+            label4.Location = new Point(83, 775);
+            label4.Name = "label4";
+            label4.Size = new Size(243, 37);
+            label4.TabIndex = 5;
+            label4.Text = "Chưa có tài khoản?";
+            // 
+            // button1
+            // 
+            button1.Anchor = AnchorStyles.Top;
+            button1.BackColor = Color.FromArgb(88, 135, 255);
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
+            button1.ForeColor = Color.White;
+            button1.Location = new Point(93, 643);
+            button1.Name = "button1";
+            button1.Size = new Size(732, 85);
+            button1.TabIndex = 4;
+            button1.Text = "Đăng nhập";
+            button1.UseCompatibleTextRendering = true;
+            button1.UseVisualStyleBackColor = false;
+            button1.Paint += btn_Paint;
+            // 
+            // txtPassword
+            // 
+            txtPassword.BorderStyle = BorderStyle.FixedSingle;
+            txtPassword.CausesValidation = false;
+            txtPassword.Font = new Font("Segoe UI", 12F);
+            txtPassword.Location = new Point(93, 480);
+            txtPassword.Multiline = true;
+            txtPassword.Name = "txtPassword";
+            txtPassword.Size = new Size(732, 85);
+            txtPassword.TabIndex = 3;
+            // 
+            // txtUsername
+            // 
+            txtUsername.BorderStyle = BorderStyle.FixedSingle;
+            txtUsername.CausesValidation = false;
+            txtUsername.Font = new Font("Segoe UI", 12F);
+            txtUsername.Location = new Point(93, 278);
+            txtUsername.Multiline = true;
+            txtUsername.Name = "txtUsername";
+            txtUsername.Size = new Size(732, 85);
+            txtUsername.TabIndex = 2;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 12F);
+            label3.Location = new Point(93, 412);
+            label3.Name = "label3";
+            label3.Size = new Size(153, 45);
+            label3.TabIndex = 1;
+            label3.Text = "Mật khẩu";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 12F);
+            label2.Location = new Point(93, 217);
+            label2.Name = "label2";
+            label2.Size = new Size(371, 45);
+            label2.TabIndex = 0;
+            label2.Text = "Tài khoản / Số điện thoại";
+            // 
+            // label1
+            // 
+            label1.Anchor = AnchorStyles.Top;
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 22F, FontStyle.Bold | FontStyle.Italic);
+            label1.ForeColor = Color.White;
+            label1.Location = new Point(182, 147);
+            label1.Name = "label1";
+            label1.RightToLeft = RightToLeft.No;
+            label1.Size = new Size(351, 78);
+            label1.TabIndex = 0;
+            label1.Text = "Chào mừng";
+            label1.TextAlign = ContentAlignment.TopCenter;
+            // 
+            // btnPatient
+            // 
+            btnPatient.Anchor = AnchorStyles.Top;
+            btnPatient.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnPatient.Location = new Point(182, 381);
+            btnPatient.Name = "btnPatient";
+            btnPatient.Size = new Size(620, 85);
+            btnPatient.TabIndex = 0;
+            btnPatient.Text = "Đăng nhập với vai trò Bệnh nhân";
+            btnPatient.UseVisualStyleBackColor = true;
+            btnPatient.Paint += btn_Outline_Paint;
+            // 
+            // btnAdmin
+            // 
+            btnAdmin.Anchor = AnchorStyles.Top;
+            btnAdmin.BackColor = Color.White;
+            btnAdmin.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnAdmin.Location = new Point(182, 673);
+            btnAdmin.Name = "btnAdmin";
+            btnAdmin.Size = new Size(620, 85);
+            btnAdmin.TabIndex = 2;
+            btnAdmin.Text = "Đăng nhập với vai trò Quản trị viên";
+            btnAdmin.UseVisualStyleBackColor = false;
+            btnAdmin.Paint += btn_Outline_Paint;
+            // 
+            // btnDoctor
+            // 
+            btnDoctor.Anchor = AnchorStyles.Top;
+            btnDoctor.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnDoctor.Location = new Point(182, 521);
+            btnDoctor.Name = "btnDoctor";
+            btnDoctor.Size = new Size(620, 85);
+            btnDoctor.TabIndex = 1;
+            btnDoctor.Text = "Đăng nhập với vai trò Bác sĩ";
+            btnDoctor.UseVisualStyleBackColor = true;
+            btnDoctor.Paint += btn_Outline_Paint;
+            // 
+            // frmLogin
+            // 
+            AutoScaleDimensions = new SizeF(13F, 32F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.White;
+            ClientSize = new Size(2008, 1372);
+            Controls.Add(panel1);
+            Name = "frmLogin";
+            Text = "Login";
+            WindowState = FormWindowState.Maximized;
+            panel1.ResumeLayout(false);
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
+            panel3.ResumeLayout(false);
+            panel3.PerformLayout();
+            ResumeLayout(false);
+        }
+
+        #endregion
+
+        private Panel panel1;
+        private Label label1;
+        private Button btnPatient;
+        private Button btnDoctor;
+        private Button btnAdmin;
+        private Panel panel2;
+        private Panel panel3;
+        private Label label3;
+        private Label label2;
+        private TextBox txtUsername;
+        private TextBox txtPassword;
+        private Label label5;
+        private Label label4;
+        private Button button1;
+    }
+}
