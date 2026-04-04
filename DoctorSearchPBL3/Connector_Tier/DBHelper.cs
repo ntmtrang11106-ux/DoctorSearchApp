@@ -5,7 +5,7 @@ namespace DAL_Tier
 {
     public class DBHelper
     {
-        private static string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=DoctorSearchDB;Integrated Security=True;TrustServerCertificate=True";
+        private static string connectionString = @"Data Source=localhost;Initial Catalog=DoctorSearchDB;Integrated Security=True;TrustServerCertificate=True";
 
         // Hàm lấy dữ liệu (Dùng cho SELECT)
         public static DataTable GetDataTable(string query, SqlParameter[] parameters = null)

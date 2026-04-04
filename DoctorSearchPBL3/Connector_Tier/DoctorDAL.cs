@@ -147,6 +147,32 @@ namespace DAL_Tier
             };
             return DBHelper.ExecuteNonQuery(query, parameters);
         }
+
+        // Thêm hàm này vào class DoctorDAL của bạn
+        public List<DoctorDTO> SearchDoctors(string keyword, string specialty = "", string location = "")
+        {
+            List<DoctorDTO> list = new List<DoctorDTO>();
+            string query = @"
+        SELECT d.*, s.Name AS SpecialtyName, l.Name AS LocationName
+        FROM Doctors d
+        JOIN Specialties s ON d.SpecialtyId = s.Id
+        JOIN Locations l ON d.LocationId = l.Id
+        WHERE (d.full_name LIKE @key OR s.Name LIKE @key) ";
+
+            // Thêm điều kiện lọc nếu người dùng có chọn bộ lọc
+            if (!string.IsNullOrEmpty(specialty)) query += " AND s.Name = @spec ";
+            if (!string.IsNullOrEmpty(location)) query += " AND l.Name = @loc ";
+
+            SqlParameter[] parameters = {
+        new SqlParameter("@key", "%" + keyword + "%"),
+        new SqlParameter("@spec", specialty),
+        new SqlParameter("@loc", location)
+    };
+
+            DataTable dt = DBHelper.GetDataTable(query, parameters);
+            // (Đoạn này bạn copy logic foreach gán dữ liệu từ hàm GetAllDoctors của mình sang là xong)
+            return list;
+        }
     }
 }
 ///
