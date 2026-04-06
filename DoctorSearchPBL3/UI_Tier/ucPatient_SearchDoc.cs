@@ -5,32 +5,25 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Text;
 using System.Windows.Forms;
 
 namespace UI_Tier
 {
-    public partial class frmGuest : Form
+    public partial class ucPatient_SearchDoc : UserControl
     {
         // Khai báo một lần ở cấp độ class để tái sử dụng
         private DoctorBUS _bus = new DoctorBUS();
 
-        public frmGuest()
+        public ucPatient_SearchDoc()
         {
             InitializeComponent();
-            // Đăng ký sự kiện Load của Form
-            this.Load += frmHome_Load;
-        }
-
-        private void flowLayoutPanel2_Paint(object sender, PaintEventArgs e)
-        {
-
         }
 
         public void LoadDoctorData()
         {
             // 1. Xóa sạch các control cũ để tránh trùng lặp khi load lại
+            UIHelper.SetDoubleBuffered(flpDoctors); // Tăng hiệu suất khi có nhiều control
             flpDoctors.Controls.Clear();
 
             try
@@ -63,33 +56,9 @@ namespace UI_Tier
             }
         }
 
-        private void frmHome_Load(object sender, EventArgs e)
+        private void ucPatient_SearchDoc_Load(object sender, EventArgs e)
         {
-            // Chỉ gọi load dữ liệu một lần duy nhất khi Form vừa mở lên
             LoadDoctorData();
-        }
-
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            // 1. Khởi tạo Form Login
-            frmLogin loginForm = new frmLogin();
-
-            // 2. Ẩn Form hiện tại (frmGuest)
-            this.Hide();
-
-            // 3. Hiển thị Form Login
-            loginForm.ShowDialog();
-            // Dùng ShowDialog để nó chặn không cho tương tác với Form cũ 
-            // hoặc dùng loginForm.Show() nếu muốn mở tự do.
-
-            // 4. (Tùy chọn) Sau khi đóng Login thì hiện lại Guest
-            this.Show();
-        }
-
-        private void flpDoctors_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }

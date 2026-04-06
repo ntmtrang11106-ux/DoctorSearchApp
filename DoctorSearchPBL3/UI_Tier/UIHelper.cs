@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
+using System.Reflection;
 using System.Text;
 
 namespace UI_Tier
@@ -45,5 +46,12 @@ namespace UI_Tier
             }
         }
 
+        // Hàm này dùng Reflection để bật Double Buffering cho Control, giúp giảm nhấp nháy khi vẽ lại
+        public static void SetDoubleBuffered(Control control)
+        {
+            typeof(Control).InvokeMember("DoubleBuffered",
+                BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
+                null, control, new object[] { true });
+        }
     }
 }
