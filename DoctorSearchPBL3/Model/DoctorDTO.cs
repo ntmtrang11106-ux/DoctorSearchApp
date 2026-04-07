@@ -17,14 +17,49 @@ namespace DTO_Tier
 {
     public class DoctorDTO
     {
-        // Khớp với cột Id trong bảng Doctors
+        // --- THÔNG TIN ĐỊNH DANH ---
+
+        // Khớp với cột Id (Primary Key) trong bảng Doctors
         public int Id { get; set; }
 
-        // Khớp với cột full_name trong bảng Doctors
+        // Khớp với cột UserId (Foreign Key) để liên kết với bảng Users
+        public int UserId { get; set; }
+
+
+        // --- THÔNG TIN LẤY TỪ BẢNG USERS (JOIN) ---
+
+        // Lấy từ cột FullName trong bảng Users
         public string FullName { get; set; } = string.Empty;
 
-        // Khớp với cột workplace trong bảng Doctors
+        // Lấy từ cột Status trong bảng Users (Dùng string để dễ hiển thị lên UI)
+        public string Status { get; set; } = string.Empty;
+
+
+        // --- THÔNG TIN CHUYÊN MÔN (BẢNG DOCTORS) ---
+
+        // Khớp với cột cchn (Chứng chỉ hành nghề) - NOT NULL
+        public string Cchn { get; set; } = string.Empty;
+
+        // Khớp với cột workplace
         public string Workplace { get; set; } = string.Empty;
+
+        // Khớp với cột SpecificAddress
+        public string SpecificAddress { get; set; } = string.Empty;
+
+        // Khớp với cột experience_years
+        public int ExperienceYears { get; set; }
+
+        // Khớp với cột bio (Tiểu sử)
+        public string Bio { get; set; } = string.Empty;
+
+        // Khớp với cột Picture (Đường dẫn ảnh)
+        public string Picture { get; set; } = "default.png";
+
+        // Khớp với cột Price (Kiểu Decimal cho tiền tệ) - NOT NULL
+        public decimal Price { get; set; }
+
+
+        // --- THÔNG TIN LIÊN KẾT BẢNG KHÁC (JOIN) ---
 
         // Lấy từ bảng Locations (thông qua LocationId)
         public string LocationName { get; set; } = string.Empty;
@@ -32,22 +67,13 @@ namespace DTO_Tier
         // Lấy từ bảng Specialties (thông qua SpecialtyId)
         public string SpecialtyName { get; set; } = string.Empty;
 
-        // Khớp với cột experience_years trong bảng Doctors
-        public int ExperienceYears { get; set; }
 
-        // Các trường tính toán (thường lấy từ bảng Reviews hoặc Appointments)
+        // --- THÔNG TIN TÍNH TOÁN (SUBQUERY) ---
+
+        // Trung bình cộng Rating từ bảng Reviews
         public double AverageRating { get; set; }
+
+        // Tổng số lượt đánh giá từ bảng Reviews
         public int TotalReviews { get; set; }
-
-        // Bạn có thể thêm trường này nếu cần hiển thị tiểu sử tóm tắt
-        public string Bio { get; set; } = string.Empty;
-
-        public string SpecificAddress {  get; set; } = string.Empty;
-
-        public decimal Price { get; set; }
-
-        public string Status {  get; set; } = string.Empty;
-
-        public string Picture { get; set; } 
     }
 }

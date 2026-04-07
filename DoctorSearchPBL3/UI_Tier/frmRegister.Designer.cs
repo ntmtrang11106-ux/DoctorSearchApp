@@ -416,6 +416,7 @@
             btnLogin.Text = "Đăng ký";
             btnLogin.UseCompatibleTextRendering = true;
             btnLogin.UseVisualStyleBackColor = false;
+            btnLogin.Click += btnLogin_Click;
             // 
             // label1
             // 
