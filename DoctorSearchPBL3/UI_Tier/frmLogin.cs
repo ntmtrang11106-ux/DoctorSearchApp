@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bus_Tier;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,6 +12,10 @@ namespace UI_Tier
 {
     public partial class frmLogin : Form
     {
+
+        // === BƯỚC 1: KHAI BÁO BIẾN Ở ĐÂY ĐỂ HẾT LỖI ===
+        private LoginBUS _loginBUS = new LoginBUS();
+
         public frmLogin()
         {
             InitializeComponent();
@@ -53,6 +58,26 @@ namespace UI_Tier
 
             // 4. (Tùy chọn) Sau khi đóng Login thì hiện lại Guest
             this.Show();
+        }
+
+        private void btnLogin_Click(object sender, EventArgs e)
+        {
+            string phone = txtUsername.Text.Trim();
+            string pass = txtPassword.Text.Trim();
+            string role = "Doctor"; // Tạm thời để test, sau này lấy từ RadioButton
+
+            string result = _loginBUS.Login(phone, pass, role);
+
+            if (result == "Success")
+            {
+                MessageBox.Show("Đăng nhập thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.DialogResult = DialogResult.OK; // Báo cho Form Guest biết
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show(result, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
