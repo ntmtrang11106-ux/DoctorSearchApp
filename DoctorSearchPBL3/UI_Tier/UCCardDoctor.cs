@@ -21,7 +21,7 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(lblSpecialtyTag, 8);
 
             // Bo góc cho Button Đăng nhập
-            UIHelper.ApplyRoundedRegion(btnLogin, 10);
+            UIHelper.ApplyRoundedRegion(btnBook, 10);
 
             // Bo góc cho PictureBox (nếu bạn muốn bo nhẹ 4 góc)
             UIHelper.ApplyRoundedRegion(picDoctor, 15);
@@ -32,7 +32,7 @@ namespace UI_Tier
         // Hàm này dùng để "đổ" dữ liệu từ đối tượng Doctor vào các Label
         // Trong UCCardDoctor.cs
 
-        public void SetDoctorData(DoctorDTO doctor)
+        public void SetDoctorData(DoctorDTO doctor, bool isGuess)
 
         {
             lblFullName.Text = doctor.FullName;
@@ -86,6 +86,12 @@ namespace UI_Tier
                 picDoctor.Image = null;
                 System.Diagnostics.Debug.WriteLine("KHÔNG TÌM THẤY FILE ẢNH!");
             }
+
+            // 10. Button
+            if(isGuess)
+                btnBook.Text = "Đăng nhập để đặt lịch";
+            else
+                btnBook.Text = "Đặt lịch";
         }
 
         private void UCCardDoctor_Paint(object sender, PaintEventArgs e)
