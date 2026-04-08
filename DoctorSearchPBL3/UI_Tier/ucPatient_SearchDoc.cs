@@ -5,13 +5,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Text;
 using System.Windows.Forms;
 
 namespace UI_Tier
 {
-    public partial class frmGuest : Form
+    public partial class ucPatient_SearchDoc : UserControl
     {
         // Khai báo một lần ở cấp độ class để tái sử dụng
         private DoctorBUS _bus = new DoctorBUS();
@@ -20,33 +19,11 @@ namespace UI_Tier
         private int _pageSize = 8;     // Số lượng 1 trang
         private int _currentPage = 1;  // Trang hiện tại
 
-        public frmGuest()
+        public ucPatient_SearchDoc()
         {
             InitializeComponent();
-
-            // Bo góc cho Button Đăng nhập
-            UIHelper.ApplyRoundedRegion(btnLogin, 15);
-
         }
 
-
-        // Override CreateParams để bật WS_EX_COMPOSITED, giúp giảm nhấp nháy khi vẽ lại Form
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams cp = base.CreateParams;
-                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
-                return cp;
-            }
-        }
-
-        private void flowLayoutPanel2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        // Hàm này gọi 1 lần lúc Load Form để lấy hết data từ DB về máy
         public void InitData()
         {
             try
@@ -106,7 +83,7 @@ namespace UI_Tier
             this.Show();
         }
 
-        private void frmGuest_Load(object sender, EventArgs e)
+        private void ucPatient_SearchDoc_Load(object sender, EventArgs e)
         {
             InitData();
         }
