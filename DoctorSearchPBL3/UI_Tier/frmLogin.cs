@@ -64,15 +64,26 @@ namespace UI_Tier
         {
             string phone = txtUsername.Text.Trim();
             string pass = txtPassword.Text.Trim();
-            string role = "Doctor"; // Tạm thời để test, sau này lấy từ RadioButton
 
-            string result = _loginBUS.Login(phone, pass, role);
+            // 1. Gọi hàm Login. 
+            // Giả sử hàm này bây giờ trả về Role (Patient/Doctor/Admin) nếu đúng, 
+            // hoặc trả về thông báo lỗi nếu sai.
+            string result = _loginBUS.Login(phone, pass);
 
-            if (result == "Success")
-            {
-                MessageBox.Show("Đăng nhập thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.DialogResult = DialogResult.OK; // Báo cho Form Guest biết
+            if (result == "Patient")
+            {              
+                this.Hide();
+                frmPatient f = new frmPatient();
+                f.ShowDialog();
                 this.Close();
+            }
+            else if (result == "Doctor")
+            {
+                MessageBox.Show("Tài khoản Bác sĩ: Hiện tại chưa có Form giao diện.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else if (result == "Admin")
+            {
+                MessageBox.Show("Tài khoản Admin: Hiện tại chưa có Form giao diện.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             else
             {

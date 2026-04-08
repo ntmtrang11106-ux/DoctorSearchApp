@@ -7,21 +7,23 @@ using System.Text;
 
 namespace DAL_Tier
 {
-    public class LoginDAL // 3. Tên class phải khớp hoàn toàn (không viết sai chính tả)
+    public class LoginDAL 
     {
-        // Kiểm tra đăng nhập
-        public DataTable CheckLogin(string phone, string password, string role)
+        public DataTable CheckLogin(string phone, string password)
         {
-            string query = "SELECT * FROM Users WHERE phone_number = @phone AND password = @pass AND role = @role AND status = 1";
+            // Bỏ điều kiện AND role = @role để SQL tự tìm xem tài khoản này thuộc quyền gì
+            string query = "SELECT * FROM Users WHERE phone_number = @phone AND password = @pass AND status = 1";
+
             SqlParameter[] parameters = {
-                new SqlParameter("@phone", phone),
-                new SqlParameter("@pass", password),
-                new SqlParameter("@role", role)
+            new SqlParameter("@phone", phone),
+            new SqlParameter("@pass", password)
             };
+
             return DBHelper.GetDataTable(query, parameters);
         }
 
-        // 1. Kiểm tra SĐT đã tồn tại chưa
+        //ĐĂNG KÝ 
+        // 2. Kiểm tra SĐT đã tồn tại chưa
         public bool IsPhoneExists(string phone)
         {
             string query = "SELECT COUNT(*) FROM Users WHERE phone_number = @phone";
@@ -30,48 +32,226 @@ namespace DAL_Tier
             return Convert.ToInt32(dt.Rows[0][0]) > 0;
         }
 
-        // 2. Đăng ký tài khoản cơ bản vào bảng Users
-        public int RegisterUser(UserDTO user)
+        //    // 2. Đăng ký tài khoản cơ bản vào bảng Users
+        //    public int RegisterUser(UserDTO user)
+        //    {
+        //        // Lệnh SELECT SCOPE_IDENTITY() dùng để lấy ID tự tăng vừa được tạo ra
+        //        string query = @"INSERT INTO Users (phone_number, password, role, Status, FullName) 
+        //                 VALUES (@phone, @pass, @role, 1, @name);
+        //                 SELECT SCOPE_IDENTITY();";
+
+        //        SqlParameter[] parameters = {
+        //        new SqlParameter("@phone", user.PhoneNumber),
+        //        new SqlParameter("@pass", user.Password),
+        //        new SqlParameter("@role", user.Role),
+        //        new SqlParameter("@name", user.FullName)
+        //        };
+
+        //        try
+        //        {
+        //            // Dùng ExecuteScalar để lấy giá trị ID (kiểu object) rồi ép sang int
+        //            object result = DBHelper.ExecuteNonQuery(query, parameters);
+        //            return (result != null) ? Convert.ToInt32(result) : 0;
+        //        }
+        //        catch { return 0; }
+        //    }
+        //    // Hàm lưu vào bảng Patients (Bệnh nhân)
+        //    public bool InsertPatient(int userId, DateTime dob, string gender)
+        //    {
+        //        string query = "INSERT INTO Patients (UserId, dob, gender) VALUES (@uid, @dob, @gen)";
+        //        SqlParameter[] parameters = {
+        //        new SqlParameter("@uid", userId),
+        //        new SqlParameter("@dob", dob),
+        //        new SqlParameter("@gen", gender)
+        //};
+        //        return DBHelper.ExecuteNonQuery(query, parameters);
+        //    }
+
+        //    // Hàm lưu vào bảng Doctors (Bác sĩ - Chỉ lưu ID trước, các thông tin khác cập nhật sau)
+        //    public bool InsertDoctor(int userId)
+        //    {
+        //        string query = "INSERT INTO Doctors (UserId) VALUES (@uid)";
+        //        SqlParameter[] parameters = { new SqlParameter("@uid", userId) };
+        //        return DBHelper.ExecuteNonQuery(query, parameters);
+        //    }
+
+
+        // 2. Đăng ký vào bảng Users và lấy UserId vừa tạo
+        // Hàm này sử dụng ExecuteScalar để hứng giá trị ID từ SCOPE_IDENTITY()
+        //public int RegisterUser(UserDTO user)
+        //{
+        //    // CAST sang INT để đảm bảo không bị lỗi kiểu dữ liệu khi nhận kết quả
+        //    string query = @"INSERT INTO Users (phone_number, password, role, Status, FullName) 
+        //                     VALUES (@phone, @pass, @role, 1, @name);
+        //                     SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
+        //    SqlParameter[] parameters = {
+        //        new SqlParameter("@phone", user.PhoneNumber),
+        //        new SqlParameter("@pass", user.Password),
+        //        new SqlParameter("@role", user.Role), // "Patient" hoặc "Doctor"
+        //        new SqlParameter("@name", user.FullName)
+        //    };
+
+        //    try
+        //    {
+        //        object result = DBHelper.ExecuteScalar(query, parameters);
+        //        return (result != null) ? Convert.ToInt32(result) : 0;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine("Lỗi RegisterUser DAL: " + ex.Message);
+        //        return 0;
+        //    }
+        //}
+
+        // 3. Đăng ký tài khoản (Sử dụng Transaction để đảm bảo tính toàn vẹn)
+        public bool RegisterFullAccount(UserDTO user)
         {
-            // Lệnh SELECT SCOPE_IDENTITY() dùng để lấy ID tự tăng vừa được tạo ra
-            string query = @"INSERT INTO Users (phone_number, password, role, Status, FullName) 
-                     VALUES (@phone, @pass, @role, 1, @name);
-                     SELECT SCOPE_IDENTITY();";
+            List<SqlCommand> commands = new List<SqlCommand>();
 
-            SqlParameter[] parameters = {
-        new SqlParameter("@phone", user.PhoneNumber),
-        new SqlParameter("@pass", user.Password),
-        new SqlParameter("@role", user.Role),
-        new SqlParameter("@name", user.FullName)
-    };
+            // LỆNH 1: Thêm vào bảng Users (Lưu ý: Dob và Gender giờ nằm ở đây)
+            string queryUser = @"INSERT INTO Users (phone_number, password, role, Status, FullName, Dob, Gender) 
+                                 VALUES (@phone, @pass, @role, 1, @name, @dob, @gender);
+                                 SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
-            try
+            SqlCommand cmd1 = new SqlCommand(queryUser);
+            cmd1.Parameters.AddWithValue("@phone", user.PhoneNumber);
+            cmd1.Parameters.AddWithValue("@pass", user.Password);
+            cmd1.Parameters.AddWithValue("@role", user.Role);
+            cmd1.Parameters.AddWithValue("@name", user.FullName);
+            // Sử dụng user.Dob và user.Gender từ DTO đã sửa ở bước trước
+            cmd1.Parameters.AddWithValue("@dob", (object)user.Dob ?? DBNull.Value);
+            cmd1.Parameters.AddWithValue("@gender", (object)user.Gender ?? DBNull.Value);
+            commands.Add(cmd1);
+
+            // LỆNH 2: Thêm vào bảng con tương ứng để giữ liên kết UserId
+            if (user.Role == "Patient")
             {
-                // Dùng ExecuteScalar để lấy giá trị ID (kiểu object) rồi ép sang int
-                object result = DBHelper.ExecuteNonQuery(query, parameters);
-                return (result != null) ? Convert.ToInt32(result) : 0;
+                // Bảng Patients giờ có thể để trống hoặc thêm các cột bệnh lý sau này
+                string queryPat = "INSERT INTO Patients (UserId) VALUES (@uid)";
+                SqlCommand cmd2 = new SqlCommand(queryPat);
+                cmd2.Parameters.AddWithValue("@uid", 0); // DBHelper sẽ tự thay @uid bằng ID vừa tạo từ cmd1
+                commands.Add(cmd2);
             }
-            catch { return 0; }
-        }
-        // Hàm lưu vào bảng Patients (Bệnh nhân)
-        public bool InsertPatient(int userId, DateTime dob, string gender)
-        {
-            string query = "INSERT INTO Patients (UserId, dob, gender) VALUES (@uid, @dob, @gen)";
-            SqlParameter[] parameters = {
-            new SqlParameter("@uid", userId),
-            new SqlParameter("@dob", dob),
-            new SqlParameter("@gen", gender)
-    };
-            return DBHelper.ExecuteNonQuery(query, parameters);
+            else if (user.Role == "Doctor")
+            {
+                // Bảng Doctors lưu UserId và chờ cập nhật CCHN, Price sau
+                string queryDoc = "INSERT INTO Doctors (UserId, cchn, Price) VALUES (@uid, 'PENDING', '0')";
+                SqlCommand cmd2 = new SqlCommand(queryDoc);
+                cmd2.Parameters.AddWithValue("@uid", 0);
+                commands.Add(cmd2);
+            }
+
+            // Gọi hàm thực thi Transaction (DBHelper cần hỗ trợ lấy ID từ lệnh trước chèn vào lệnh sau)
+            return DBHelper.ExecuteTransaction(commands);
         }
 
-        // Hàm lưu vào bảng Doctors (Bác sĩ - Chỉ lưu ID trước, các thông tin khác cập nhật sau)
-        public bool InsertDoctor(int userId)
+        //// 4. Các hàm bổ trợ chèn riêng lẻ (nếu không dùng Transaction)
+        //// userId ở đây là con số lấy từ hàm RegisterUser truyền qua
+        //public bool InsertPatient(int userId, DateTime dob, string gender)
+        //{
+        //    string query = "INSERT INTO Patients (UserId, dob, gender) VALUES (@uid, @dob, @gen)";
+
+        //    SqlParameter[] parameters = {
+        //        new SqlParameter("@uid", userId), // Giá trị cố định khớp với bảng Users
+        //        new SqlParameter("@dob", dob),
+        //        new SqlParameter("@gen", gender)
+        //    };
+
+        //    return DBHelper.ExecuteNonQuery(query, parameters);
+        //}
+
+        //// 4. Chèn vào bảng Doctors (Bác sĩ)
+        //public bool InsertDoctor(int userId)
+        //{
+        //    string query = "INSERT INTO Doctors (UserId) VALUES (@uid)";
+
+        //    SqlParameter[] parameters = {
+        //        new SqlParameter("@uid", userId) // Giá trị cố định khớp với bảng Users
+        //    };
+
+        //    return DBHelper.ExecuteNonQuery(query, parameters);
+        //}
+
+
+        // 4. Các hàm bổ trợ chèn riêng lẻ (nếu không dùng Transaction)
+        public int RegisterUserBasic(UserDTO user)
         {
-            string query = "INSERT INTO Doctors (UserId) VALUES (@uid)";
+            string query = @"INSERT INTO Users (phone_number, password, role, Status, FullName, Dob, Gender) 
+                             VALUES (@phone, @pass, @role, 1, @name, @dob, @gender);
+                             SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
+            SqlParameter[] parameters = {
+                new SqlParameter("@phone", user.PhoneNumber),
+                new SqlParameter("@pass", user.Password),
+                new SqlParameter("@role", user.Role),
+                new SqlParameter("@name", user.FullName),
+                new SqlParameter("@dob", (object)user.Dob ?? DBNull.Value),
+                new SqlParameter("@gender", (object)user.Gender ?? DBNull.Value)
+            };
+
+            object result = DBHelper.ExecuteScalar(query, parameters);
+            return result != null ? Convert.ToInt32(result) : 0;
+        }
+
+        public bool InsertPatientMinimal(int userId)
+        {
+            string query = "INSERT INTO Patients (UserId) VALUES (@uid)";
             SqlParameter[] parameters = { new SqlParameter("@uid", userId) };
             return DBHelper.ExecuteNonQuery(query, parameters);
         }
 
+        //public bool InsertDoctorMinimal(int userId)
+        //{
+        //    // CCHN và Price là NOT NULL nên cần truyền giá trị mặc định ban đầu
+        //    // CCHN và Price là NOT NULL, nên phải truyền giá trị mặc định ban đầu
+        //    string query = "INSERT INTO Doctors (UserId, cchn, Price) VALUES (@uid, N'Chưa cập nhật', '0')";
+        //    //string query = "INSERT INTO Doctors (UserId, cchn, Price) VALUES (@uid, 'N/A', '0')";
+        //    SqlParameter[] parameters = { new SqlParameter("@uid", userId) };
+        //    return DBHelper.ExecuteNonQuery(query, parameters);
+        //}
+
+        public bool InsertDoctorMinimal(int userId)
+        {
+            // Chúng ta phải truyền cả SpecialtyId và LocationId (giả sử ID mặc định là 1)
+            string query = @"INSERT INTO Doctors (UserId, SpecialtyId, LocationId, cchn, Price, experience_years, workplace, bio, SpecificAddress) 
+                     VALUES (@uid, @sid, @lid, @cchn, @price, @ex, @wp, @bio, @addr)";
+
+            SqlParameter[] parameters = {
+        new SqlParameter("@uid", userId),
+        new SqlParameter("@sid", 1), // ID chuyên khoa mặc định (vd: Đa khoa)
+        new SqlParameter("@lid", 1), // ID khu vực mặc định
+        new SqlParameter("@cchn", "PENDING"),
+        new SqlParameter("@price", 0),
+        new SqlParameter("@ex", 0),
+        new SqlParameter("@wp", "Chưa cập nhật"),
+        new SqlParameter("@bio", "Chưa có tiểu sử"),
+        new SqlParameter("@addr", "Chưa có địa chỉ")
+    };
+
+            return DBHelper.ExecuteNonQuery(query, parameters);
+        }
+
+        public bool DeleteUser(int userId)
+        {
+            // Lệnh xóa người dùng theo ID
+            string query = "DELETE FROM Users WHERE UserId = @uid";
+
+            SqlParameter[] parameters = {
+            new SqlParameter("@uid", userId)
+            };
+
+            try
+            {
+                // Sử dụng hàm ExecuteNonQuery đã có trong DBHelper của bạn
+                return DBHelper.ExecuteNonQuery(query, parameters);
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi nếu cần thiết
+                System.Diagnostics.Debug.WriteLine("Lỗi khi xóa User rác: " + ex.Message);
+                return false;
+            }
+        }
     }
 }

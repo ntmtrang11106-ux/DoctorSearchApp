@@ -57,7 +57,6 @@ namespace UI_Tier
             // 8. Chuyên khoa (Cái nhãn màu xanh góc trên cùng bên phải)
             lblSpecialtyTag.Text = doctor.SpecialtyName;
 
-            // 9. Hình ảnh (Nếu có đường dẫn hoặc Image)
             // 9. Hình ảnh
             string fileName = doctor.Picture?.Trim(); // Thêm Trim() để xóa khoảng trắng thừa
 

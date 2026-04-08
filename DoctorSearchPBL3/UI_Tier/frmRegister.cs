@@ -14,7 +14,7 @@ namespace UI_Tier
         // 1. Khai báo tầng BUS để xử lý nghiệp vụ
         private LoginBUS _loginBUS = new LoginBUS();
         // Biến này cực kỳ quan trọng để phân biệt 2 luồng
-        private string currentRole = "Patient";
+        private string currentRole = "";
 
         public frmRegister()
         {
@@ -27,12 +27,13 @@ namespace UI_Tier
             this.Close();
         }
 
-        #region Logic Đổi Luồng (Patient / Doctor)
+        #region Xử lý chọn Vai trò (Role)
         private void SetActivePanel(bool isPatientSelected)
         {
             this.SuspendLayout();
             if (isPatientSelected)
             {
+                currentRole = "Patient";
                 // Panel Bệnh nhân được chọn: Chữ đen, Nền trắng
                 panel7.BackColor = Color.White;
                 label2.ForeColor = Color.Black;
@@ -45,6 +46,7 @@ namespace UI_Tier
             }
             else
             {
+                currentRole = "Doctor";
                 // Ngược lại: Bác sĩ được chọn
                 panel8.BackColor = Color.White;
                 label4.ForeColor = Color.Black;
@@ -71,41 +73,72 @@ namespace UI_Tier
 
         // MẸO: Bạn hãy gán sự kiện Click của label2, label3, label4, label5 
         // vào các hàm panel_MouseClick tương ứng để bấm vào chữ cũng đổi được luồng.
-#endregion
+        #endregion
 
-        #region Nút Đăng Ký
+        //private void btnLogin_Click(object sender, EventArgs e)
+        //{
+        //    string name = txtUsername.Text.Trim();
+        //    string phone = textBox1.Text.Trim();
+        //    string pass = textBox4.Text.Trim();
+        //    string confirm = textBox5.Text.Trim();
+
+        //    // 2. Lấy thông tin bổ sung cho bảng Patient
+        //    // Giả sử bạn dùng Guna2DateTimePicker tên là dtpBirth
+        //    DateTime dob = dateTimePicker1.Value;
+
+        //    // 2. Lấy Giới tính từ RadioButton
+        //    // Nếu radioButton1 được chọn thì là "Nam", ngược lại radioButton2 là "Nữ"
+        //    string gender = radioButton1.Checked ? "Nam" : "Nữ";
+
+        //    // 3. Gọi tầng BUS với đầy đủ tham số mới
+        //    string result = _loginBUS.Register(phone, name, pass, confirm, currentRole, dob, gender);
+        //    if (result == "Success")
+        //    {
+        //        MessageBox.Show($"Đăng ký tài khoản {currentRole} thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        //        if (currentRole == "Doctor")
+        //        {
+        //            MessageBox.Show("Sau khi đăng nhập lần đầu, bác sĩ vui lòng hoàn thiện hồ sơ chuyên môn.", "Hướng dẫn");
+        //        }
+
+        //        this.Close(); // Đóng form để quay lại màn hình Login
+        //    }
+        //    else
+        //    {
+        //        // Hiển thị lỗi cụ thể (SĐT trùng, Pass không khớp, lỗi SQL...)
+        //        MessageBox.Show(result, "Lỗi đăng ký", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //    }
+        //}
+
+        #region
         private void btnLogin_Click(object sender, EventArgs e)
         {
+            // 1. Kiểm tra xem người dùng đã chọn vai trò chưa
+            if (string.IsNullOrEmpty(currentRole))
+            {
+                MessageBox.Show("Vui lòng chọn vai trò là Bệnh nhân hoặc Bác sĩ!");
+                return;
+            }
+
+            // 2. Lấy thông tin từ các control
             string name = txtUsername.Text.Trim();
             string phone = textBox1.Text.Trim();
             string pass = textBox4.Text.Trim();
             string confirm = textBox5.Text.Trim();
-
-            // 2. Lấy thông tin bổ sung cho bảng Patient
-            // Giả sử bạn dùng Guna2DateTimePicker tên là dtpBirth
             DateTime dob = dateTimePicker1.Value;
-
-            // 2. Lấy Giới tính từ RadioButton
-            // Nếu radioButton1 được chọn thì là "Nam", ngược lại radioButton2 là "Nữ"
             string gender = radioButton1.Checked ? "Nam" : "Nữ";
 
-            // 3. Gọi tầng BUS với đầy đủ tham số mới
+            // 3. Truyền biến currentRole vào hàm Register của BUS
             string result = _loginBUS.Register(phone, name, pass, confirm, currentRole, dob, gender);
+
             if (result == "Success")
             {
-                MessageBox.Show($"Đăng ký tài khoản {currentRole} thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                if (currentRole == "Doctor")
-                {
-                    MessageBox.Show("Sau khi đăng nhập lần đầu, bác sĩ vui lòng hoàn thiện hồ sơ chuyên môn.", "Hướng dẫn");
-                }
-
-                this.Close(); // Đóng form để quay lại màn hình Login
+                MessageBox.Show($"Đăng ký tài khoản {currentRole} thành công!", "Thông báo");
+                this.Close();
             }
             else
             {
-                // Hiển thị lỗi cụ thể (SĐT trùng, Pass không khớp, lỗi SQL...)
-                MessageBox.Show(result, "Lỗi đăng ký", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(result, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
         #endregion
