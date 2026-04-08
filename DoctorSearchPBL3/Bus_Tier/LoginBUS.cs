@@ -32,97 +32,6 @@ namespace Bus_Tier
             return "Số điện thoại hoặc mật khẩu không chính xác!";
         }
 
-        // 1. Hàm Đăng ký (Dùng cho Form Register)
-        // Cập nhật hàm Register để nhận thêm Ngày sinh và Giới tính cho Bệnh nhân
-        //public string Register(string phone, string name, string pass, string confirm, string role, DateTime dob, string gender)
-        //{
-        //    // 1. Kiểm tra logic cơ bản
-        //    if (string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(pass))
-        //        return "Vui lòng nhập đầy đủ các trường!";
-
-        //    if (phone.Length != 10) return "Số điện thoại phải có 10 chữ số!";
-
-        //    if (pass != confirm) return "Mật khẩu xác nhận không khớp!";
-
-        //    if (_dal.IsPhoneExists(phone)) return "Số điện thoại này đã được đăng ký!";
-
-        //    // 2. Tạo đối tượng UserDTO
-        //    UserDTO newUser = new UserDTO
-        //    {
-        //        PhoneNumber = phone,
-        //        FullName = name,
-        //        Password = pass,
-        //        Role = role
-        //    };
-
-        //    // 3. Thực hiện lưu vào bảng Users và lấy UserId vừa tạo
-        //    // (Lưu ý: Hàm RegisterUser ở tầng DAL lúc này phải trả về kiểu int)
-        //    int newUserId = _dal.RegisterUser(newUser);
-
-        //    if (newUserId > 0)
-        //    {
-        //        // 4. Dựa vào Role để lưu vào bảng chi tiết
-        //        if (role == "Patient")
-        //        {
-        //            // Lưu vào bảng Patients
-        //            bool isSaved = _dal.InsertPatient(newUserId, dob, gender);
-        //            return isSaved ? "Success" : "Lỗi: Không thể khởi tạo dữ liệu Bệnh nhân!";
-        //        }
-        //        else if (role == "Doctor")
-        //        {
-        //            // Lưu vào bảng Doctors (Chỉ cần tạo dòng với UserId, các thông tin khác cập nhật sau)
-        //            bool isSaved = _dal.InsertDoctor(newUserId);
-        //            return isSaved ? "Success" : "Lỗi: Không thể khởi tạo dữ liệu Bác sĩ!";
-        //        }
-        //        return "Success";
-        //    }
-
-        //    return "Đăng ký thất bại, lỗi hệ thống tại bảng Users!";
-        //}
-
-
-        //public string Register(string phone, string name, string pass, string confirm, string role, DateTime dob, string gender)
-        //{
-        //    // 1. Kiểm tra logic nhập liệu (Validation)
-        //    if (string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(name) ||
-        //        string.IsNullOrWhiteSpace(pass) || string.IsNullOrWhiteSpace(confirm))
-        //        return "Vui lòng nhập đầy đủ các trường!";
-
-        //    if (phone.Length != 10)
-        //        return "Số điện thoại phải có đúng 10 chữ số!";
-
-        //    if (pass != confirm)
-        //        return "Mật khẩu xác nhận không khớp!";
-
-        //    // 2. Kiểm tra sự tồn tại của SĐT (Sử dụng DAL)
-        //    if (_dal.IsPhoneExists(phone))
-        //        return "Số điện thoại này đã được đăng ký!";
-
-        //    // 3. Đóng gói dữ liệu vào DTO
-        //    UserDTO newUser = new UserDTO
-        //    {
-        //        PhoneNumber = phone,
-        //        FullName = name,
-        //        Password = pass,
-        //        Role = role
-        //    };
-
-        //    // 4. Gọi hàm DAL xử lý Giao dịch (Transaction)
-        //    // Hàm này sẽ tự động: Thêm vào Users -> Lấy ID -> Thêm vào Patients/Doctors
-        //    // Nếu có bất kỳ lỗi nào ở giữa, nó sẽ Rollback (tự xóa) và trả về false.
-        //    bool isSuccess = _dal.RegisterFullAccount(newUser, dob, gender);
-
-        //    if (isSuccess)
-        //    {
-        //        return "Success";
-        //    }
-        //    else
-        //    {
-        //        // Vì dùng Transaction nên nếu vào đây, SQL hoàn toàn sạch sẽ, không có dữ liệu rác
-        //        return "Đăng ký thất bại: Lỗi hệ thống trong quá trình lưu hồ sơ!";
-        //    }
-        //}
-
         // 2. Chức năng Đăng ký (Sử dụng các hàm lẻ từ DAL)
         public string Register(string phone, string name, string pass, string confirm, string role, DateTime dob, string gender)
         {
@@ -150,7 +59,7 @@ namespace Bus_Tier
                 Role = role,
                 Dob = dob,
                 Gender = gender,
-                Status = true // Mặc định kích hoạt
+                Status = "Hoạt động" // Mặc định kích hoạt
             };
 
             // --- BƯỚC 3: THỰC THI LƯU DỮ LIỆU ---

@@ -75,41 +75,6 @@ namespace UI_Tier
         // vào các hàm panel_MouseClick tương ứng để bấm vào chữ cũng đổi được luồng.
         #endregion
 
-        //private void btnLogin_Click(object sender, EventArgs e)
-        //{
-        //    string name = txtUsername.Text.Trim();
-        //    string phone = textBox1.Text.Trim();
-        //    string pass = textBox4.Text.Trim();
-        //    string confirm = textBox5.Text.Trim();
-
-        //    // 2. Lấy thông tin bổ sung cho bảng Patient
-        //    // Giả sử bạn dùng Guna2DateTimePicker tên là dtpBirth
-        //    DateTime dob = dateTimePicker1.Value;
-
-        //    // 2. Lấy Giới tính từ RadioButton
-        //    // Nếu radioButton1 được chọn thì là "Nam", ngược lại radioButton2 là "Nữ"
-        //    string gender = radioButton1.Checked ? "Nam" : "Nữ";
-
-        //    // 3. Gọi tầng BUS với đầy đủ tham số mới
-        //    string result = _loginBUS.Register(phone, name, pass, confirm, currentRole, dob, gender);
-        //    if (result == "Success")
-        //    {
-        //        MessageBox.Show($"Đăng ký tài khoản {currentRole} thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-        //        if (currentRole == "Doctor")
-        //        {
-        //            MessageBox.Show("Sau khi đăng nhập lần đầu, bác sĩ vui lòng hoàn thiện hồ sơ chuyên môn.", "Hướng dẫn");
-        //        }
-
-        //        this.Close(); // Đóng form để quay lại màn hình Login
-        //    }
-        //    else
-        //    {
-        //        // Hiển thị lỗi cụ thể (SĐT trùng, Pass không khớp, lỗi SQL...)
-        //        MessageBox.Show(result, "Lỗi đăng ký", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //    }
-        //}
-
         #region
         private void btnLogin_Click(object sender, EventArgs e)
         {

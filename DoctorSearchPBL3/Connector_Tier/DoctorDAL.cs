@@ -10,23 +10,10 @@ namespace DAL_Tier
         public List<DoctorDTO> GetAllDoctors()
         {
             List<DoctorDTO> list = new List<DoctorDTO>();
-            //string query = @"
-            //SELECT d.Id, u.FullName,u.Status, d.workplace, d.SpecificAddress, d.experience_years, 
-            //       u.Picture, d.Price, d.bio, s.Name AS SpecialtyName, l.Name AS LocationName,
-            //       (SELECT AVG(CAST(r.Rating AS FLOAT)) FROM Reviews r 
-            //        JOIN Appointments a ON r.AppointmentId = a.Id 
-            //        JOIN TimeSlots ts ON a.TimeSlotId = ts.Id WHERE ts.DoctorId = d.Id) AS AvgRating,
-            //       (SELECT COUNT(r.Id) FROM Reviews r 
-            //        JOIN Appointments a ON r.AppointmentId = a.Id 
-            //        JOIN TimeSlots ts ON a.TimeSlotId = ts.Id WHERE ts.DoctorId = d.Id) AS TotalReviews
-            //FROM Doctors d
-            //INNER JOIN Users u ON d.UserId = u.UserId
-            //INNER JOIN Locations l ON d.LocationId = l.Id
-            //INNER JOIN Specialties s ON d.SpecialtyId = s.Id";
 
             string query = @"
             SELECT d.UserId, u.FullName, u.Status, d.workplace, d.SpecificAddress, d.experience_years, 
-                   u.Picture, d.Price, d.bio, s.Name AS SpecialtyName, l.Name AS LocationName,
+                   u.Picture, d.Price, d.bio, d.WorkingTime, s.Name AS SpecialtyName, l.Name AS LocationName,
                    (SELECT AVG(CAST(r.Rating AS FLOAT)) FROM Reviews r 
                     JOIN Appointments a ON r.AppointmentId = a.Id 
                     JOIN TimeSlots ts ON a.TimeSlotId = ts.Id WHERE ts.DoctorId = d.UserId) AS AvgRating,
@@ -44,42 +31,34 @@ namespace DAL_Tier
             {
                 list.Add(new DoctorDTO
                 {
-                    //Id = Convert.ToInt32(row["Id"]),
-                    //FullName = row["FullName"].ToString(),
-                    //Workplace = row["workplace"].ToString(),
-                    //SpecificAddress = row["SpecificAddress"].ToString(),
-                    //LocationName = row["LocationName"].ToString(),
-                    //SpecialtyName = row["SpecialtyName"].ToString(),
-                    //ExperienceYears = Convert.ToInt32(row["experience_years"]),
-                    //Price = Convert.ToDecimal(row["Price"]),
-                    //AverageRating = row["AvgRating"] != DBNull.Value ? Convert.ToDouble(row["AvgRating"]) : 0.0,
-                    //TotalReviews = Convert.ToInt32(row["TotalReviews"]),
-                    //Picture = row["Picture"].ToString(),
-                    //Bio = row["bio"].ToString(),
-                    //Status = row["status"].ToString()
 
-                    // Đổi từ Id sang UserId theo chuẩn mới
                     UserId = Convert.ToInt32(row["UserId"]),
-                    FullName = row["FullName"].ToString(),
-                    Workplace = row["workplace"].ToString(),
-                    SpecificAddress = row["SpecificAddress"].ToString(),
-                    LocationName = row["LocationName"].ToString(),
-                    SpecialtyName = row["SpecialtyName"].ToString(),
-                    ExperienceYears = Convert.ToInt32(row["experience_years"]),
-                    Price = Convert.ToDecimal(row["Price"]),
+                    FullName = row["FullName"]?.ToString() ?? "",
+                    Status = row["Status"]?.ToString() ?? "Hoạt động", // Status giờ là NVARCHAR
+                    Workplace = row["workplace"]?.ToString() ?? "",
+                    SpecificAddress = row["SpecificAddress"]?.ToString() ?? "",
+                    ExperienceYears = row["experience_years"] != DBNull.Value ? Convert.ToInt32(row["experience_years"]) : 0,
+
+                    // Xử lý Price: Chuyển về string hoặc decimal tùy DTO bạn chọn (đang để string theo DTO trên)
+                    Price = row["Price"]?.ToString() ?? "0",
+
+                    // Cột mới thêm
+                    WorkingTime = row["WorkingTime"]?.ToString() ?? "Chưa cập nhật",
+
+                    Picture = row["Picture"]?.ToString() ?? "default.png",
+                    Bio = row["bio"]?.ToString() ?? "",
+                    LocationName = row["LocationName"]?.ToString() ?? "Chưa xác định",
+                    SpecialtyName = row["SpecialtyName"]?.ToString() ?? "Đa khoa",
+
                     AverageRating = row["AvgRating"] != DBNull.Value ? Convert.ToDouble(row["AvgRating"]) : 0.0,
-                    TotalReviews = Convert.ToInt32(row["TotalReviews"]),
-                    Picture = row["Picture"].ToString(),
-                    Bio = row["bio"].ToString(),
-                    // Status là BIT trong SQL, chuyển về string hoặc bool tùy DTO của bạn
-                    Status = row["Status"].ToString()
+                    TotalReviews = row["TotalReviews"] != DBNull.Value ? Convert.ToInt32(row["TotalReviews"]) : 0
                 });
             }
             return list;
         }
 
         // 2. Chức năng cập nhật hồ sơ bác sĩ (Sửa lại query cho đúng tên cột mới)
-        public bool UpdateDoctorProfile(int userId, string cccd, string cchn, string exp, int locationId, int specId)
+        public bool UpdateDoctorProfile(int userId, string cccd, string cchn, string exp, int locationId, int specId, string workingTime)
         {
             // BƯỚC 1: Cập nhật CCCD ở bảng Users
             string queryUser = "UPDATE Users SET CCCD = @cccd WHERE UserId = @userId";
@@ -95,7 +74,8 @@ namespace DAL_Tier
                                  SET cchn = @cchn, 
                                      experience_years = @exp, 
                                      SpecialtyId = @specId,
-                                     LocationId = @locId
+                                     LocationId = @locId,
+                                     WorkingTime = @wt
                                  WHERE UserId = @userId";
 
             SqlParameter[] paramDoctor = {
@@ -103,6 +83,7 @@ namespace DAL_Tier
                 new SqlParameter("@exp", exp),
                 new SqlParameter("@specId", specId),
                 new SqlParameter("@locId", locationId),
+                new SqlParameter("@wt", (object)workingTime ?? DBNull.Value),
                 new SqlParameter("@userId", userId)
             };
 

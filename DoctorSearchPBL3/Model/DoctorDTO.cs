@@ -1,86 +1,4 @@
-﻿//namespace DTO_Tier
-//{
-//    public class DoctorDTO
-//    {
-//        public int Id { get; set; }
-//        public string full_name { get; set; }
-//        public string Workplace { get; set; }
-//        public string LocationName { get; set; }
-//        public string SpecialtyName { get; set; }
-//        public int ExperienceYears { get; set; }
-//        public double AvgRating { get; set; }
-//        public int TotalReviews { get; set; }
-//    }
-//}
-
-//namespace DTO_Tier
-//{
-//    public class DoctorDTO
-//    {
-//        // --- THÔNG TIN ĐỊNH DANH ---
-
-//        // Khớp với cột Id (Primary Key) trong bảng Doctors
-//        public int Id { get; set; }
-
-//        // Khớp với cột UserId (Foreign Key) để liên kết với bảng Users
-//        public int UserId { get; set; }
-
-
-//        // --- THÔNG TIN LẤY TỪ BẢNG USERS (JOIN) ---
-
-//        // Lấy từ cột FullName trong bảng Users
-//        public string FullName { get; set; } = string.Empty;
-
-//        // Lấy từ cột Status trong bảng Users (Dùng string để dễ hiển thị lên UI)
-//        public string Status { get; set; } = string.Empty;
-
-
-//        // --- THÔNG TIN CHUYÊN MÔN (BẢNG DOCTORS) ---
-
-//        // Khớp với cột cchn (Chứng chỉ hành nghề) - NOT NULL
-//        public string Cchn { get; set; } = string.Empty;
-
-//        // Khớp với cột workplace
-//        public string Workplace { get; set; } = string.Empty;
-
-//        // Khớp với cột SpecificAddress
-//        public string SpecificAddress { get; set; } = string.Empty;
-
-//        // Khớp với cột experience_years
-//        public int ExperienceYears { get; set; }
-
-//        // Khớp với cột bio (Tiểu sử)
-//        public string Bio { get; set; } = string.Empty;
-
-//        // Khớp với cột Picture (Đường dẫn ảnh)
-//        public string Picture { get; set; } = "default.png";
-
-//        // Khớp với cột Price (Kiểu Decimal cho tiền tệ) - NOT NULL
-//        public decimal Price { get; set; }
-
-
-//        // --- THÔNG TIN LIÊN KẾT BẢNG KHÁC (JOIN) ---
-
-//        // Lấy từ bảng Locations (thông qua LocationId)
-//        public string LocationName { get; set; } = string.Empty;
-
-//        // Lấy từ bảng Specialties (thông qua SpecialtyId)
-//        public string SpecialtyName { get; set; } = string.Empty;
-
-
-//        // --- THÔNG TIN TÍNH TOÁN (SUBQUERY) ---
-
-//        // Trung bình cộng Rating từ bảng Reviews
-//        public double AverageRating { get; set; }
-
-//        // Tổng số lượt đánh giá từ bảng Reviews
-//        public int TotalReviews { get; set; }
-//    }
-//}
-
-
-
-using System;
+﻿using System;
 
 namespace DTO_Tier
 {
@@ -88,27 +6,29 @@ namespace DTO_Tier
     {
         // --- THÔNG TIN ĐỊNH DANH ---
 
-        // Vì hiện tại Doctors dùng UserId làm khóa chính (theo script SQL vừa chạy), 
-        // ta nên dùng UserId làm định danh duy nhất luôn.
+        // Khóa ngoại liên kết trực tiếp với bảng Users (Primary Key của bảng Doctors hiện tại)
         public int UserId { get; set; }
 
-        // --- THÔNG TIN CÁ NHÂN (JOIN TỪ BẢNG USERS) ---
+        // --- THÔNG TIN CÁ NHÂN (LẤY TỪ BẢNG USERS THÔNG QUA JOIN) ---
 
         public string FullName { get; set; } = string.Empty;
 
-        // Trạng thái từ bảng Users
+        // Trạng thái tài khoản (Đã chuyển từ bool sang string: "Hoạt động" hoặc "Không hoạt động")
         public string Status { get; set; } = string.Empty;
 
-        // Ảnh chân dung hiện đã nằm ở bảng Users
+        // Đường dẫn ảnh chân dung (Lưu ở bảng Users)
         public string Picture { get; set; }
 
-        // CCCD cũng đã được chuyển sang bảng Users
+        // Số định danh cá nhân (Lưu ở bảng Users)
         public string CCCD { get; set; } = string.Empty;
+
+        // Số điện thoại (Nếu cần hiển thị liên hệ - Join từ bảng Users)
+        public string PhoneNumber { get; set; } = string.Empty;
 
 
         // --- THÔNG TIN CHUYÊN MÔN (BẢNG DOCTORS) ---
 
-        // Chứng chỉ hành nghề (cchn)
+        // Chứng chỉ hành nghề (cchn) - Hiện tại đã cho phép NULL trong DB
         public string Cchn { get; set; } = string.Empty;
 
         public string Workplace { get; set; } = string.Empty;
@@ -119,22 +39,29 @@ namespace DTO_Tier
 
         public string Bio { get; set; } = string.Empty;
 
-        // Giá khám
-        public decimal Price { get; set; }
+        // Giờ làm việc (Cột mới thêm vào theo yêu cầu: "08:00 - 17:00")
+        public string WorkingTime { get; set; } = string.Empty;
+
+        // Giá khám (Trong SQL đang để NVARCHAR(50) nên dùng string để linh hoạt, 
+        // hoặc dùng decimal nếu bạn muốn tính toán số học)
+        public string Price { get; set; } = "0";
 
 
-        // --- THÔNG TIN LIÊN KẾT & TÍNH TOÁN ---
+        // --- THÔNG TIN LIÊN KẾT (JOIN TỪ BẢNG KHÁC) ---
 
-        // Tên khu vực (Join bảng Locations)
+        // Tên khu vực (Join từ bảng Locations qua LocationId)
         public string LocationName { get; set; } = string.Empty;
 
-        // Tên chuyên khoa (Join bảng Specialties)
+        // Tên chuyên khoa (Join từ bảng Specialties qua SpecialtyId)
         public string SpecialtyName { get; set; } = string.Empty;
 
-        // Điểm đánh giá trung bình
+
+        // --- THÔNG TIN THỐNG KÊ (SUBQUERY HOẶC TÍNH TOÁN) ---
+
+        // Điểm đánh giá trung bình (Ví dụ: 4.5/5)
         public double AverageRating { get; set; }
 
-        // Tổng số lượt review
+        // Tổng số lượt bệnh nhân đã đánh giá
         public int TotalReviews { get; set; }
     }
 }

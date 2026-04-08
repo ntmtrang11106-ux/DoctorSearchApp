@@ -1,22 +1,4 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Text;
-
-//namespace DTO_Tier
-//{
-//    public class UserDTO
-//    {
-//        public int UserId { get; set; }
-//        public string PhoneNumber { get; set; }
-//        public string Password { get; set; }
-//        public string FullName { get; set; }
-//        public string Role { get; set; } // 'Admin', 'Doctor', 'Patient'
-//        public bool Status { get; set; }
-//    }
-//}
-
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -37,7 +19,7 @@ namespace DTO_Tier
         public string Role { get; set; }
 
         // Trạng thái hoạt động (True: Active, False: Locked)
-        public bool Status { get; set; }
+        public string Status { get; set; }
 
         // --- CÁC TRƯỜNG MỚI BỔ SUNG TỪ DB CHUẨN HÓA V2.0 ---
 

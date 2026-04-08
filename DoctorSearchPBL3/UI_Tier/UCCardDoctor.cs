@@ -35,17 +35,27 @@ namespace UI_Tier
         public void SetDoctorData(DoctorDTO doctor, bool isGuess)
 
         {
+            // 1. Tên bác sĩ
             lblFullName.Text = doctor.FullName;
+            // 2. Nơi làm việc
             lblWorkPlace.Text = doctor.Workplace;
             // 3. Địa chỉ (Kết hợp địa chỉ chi tiết và tên khu vực)
             lblSpecificAdress.Text = $"{doctor.SpecificAddress}, {doctor.LocationName}";
 
             // 4. Thời gian làm việc (Nếu trong DTO bạn có trường Status hoặc WorkingTime)
             // Giả sử Status chứa chuỗi "Thứ 2 - Thứ 6, 8:00 - 16:00"
-            lblWorkingTime.Text = doctor.Status;
+            lblWorkingTime.Text = string.IsNullOrEmpty(doctor.WorkingTime) ? "Giờ làm việc: Chưa cập nhật" : "Từ " + doctor.WorkingTime +" giờ";
 
-            // 5. Giá tiền (Định dạng tiền tệ VNĐ: 500.000đ)
-            lblPrice.Text = doctor.Price.ToString("#,##0") + "đ";
+            // 5. Giá tiền
+            // Vì Price trong DTO mới là string hoặc đã thay đổi, ta cần ép kiểu để định dạng
+            if (decimal.TryParse(doctor.Price, out decimal priceValue))
+            {
+                lblPrice.Text = priceValue.ToString("#,##0") + ".000VNĐ";
+            }
+            else
+            {
+                lblPrice.Text = "Liên hệ";
+            }
 
             // 6. Đánh giá (Số sao và tổng lượt review)
             lblRating.Text = $"{doctor.AverageRating}";
