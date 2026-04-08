@@ -29,12 +29,13 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
-            button1 = new Button();
+            btnLogin = new Button();
             txtSearchBar = new TextBox();
             pnlSearch = new Panel();
             pnlAlert = new Panel();
-            label3 = new Label();
-            label4 = new Label();
+            lblPageStatus = new Label();
+            lblPrev = new Label();
+            lblNext = new Label();
             flpFilter = new FlowLayoutPanel();
             btnAll = new Button();
             btnCardiology = new Button();
@@ -62,28 +63,28 @@
             // 
             // panel1
             // 
-            panel1.Controls.Add(button1);
+            panel1.Controls.Add(btnLogin);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
             panel1.Size = new Size(1845, 115);
             panel1.TabIndex = 0;
             // 
-            // button1
+            // btnLogin
             // 
-            button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button1.BackColor = Color.FromArgb(24, 112, 255);
-            button1.FlatAppearance.BorderSize = 0;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button1.ForeColor = Color.White;
-            button1.Location = new Point(1531, 23);
-            button1.Name = "button1";
-            button1.Size = new Size(277, 65);
-            button1.TabIndex = 1;
-            button1.Text = "Đăng nhập";
-            button1.UseVisualStyleBackColor = false;
-            button1.Click += button1_Click;
+            btnLogin.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnLogin.BackColor = Color.FromArgb(24, 112, 255);
+            btnLogin.FlatAppearance.BorderSize = 0;
+            btnLogin.FlatStyle = FlatStyle.Flat;
+            btnLogin.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnLogin.ForeColor = Color.White;
+            btnLogin.Location = new Point(1531, 23);
+            btnLogin.Name = "btnLogin";
+            btnLogin.Size = new Size(277, 65);
+            btnLogin.TabIndex = 1;
+            btnLogin.Text = "Đăng nhập";
+            btnLogin.UseVisualStyleBackColor = false;
+            btnLogin.Click += button1_Click;
             // 
             // txtSearchBar
             // 
@@ -111,33 +112,50 @@
             // 
             pnlAlert.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             pnlAlert.BackColor = Color.AliceBlue;
-            pnlAlert.Controls.Add(label3);
-            pnlAlert.Controls.Add(label4);
+            pnlAlert.Controls.Add(lblPageStatus);
+            pnlAlert.Controls.Add(lblPrev);
+            pnlAlert.Controls.Add(lblNext);
             pnlAlert.Location = new Point(0, 229);
             pnlAlert.Name = "pnlAlert";
             pnlAlert.Padding = new Padding(10);
             pnlAlert.Size = new Size(1845, 70);
             pnlAlert.TabIndex = 5;
             // 
-            // label3
+            // lblPageStatus
             // 
-            label3.AutoSize = true;
-            label3.Location = new Point(157, 17);
-            label3.Name = "label3";
-            label3.Padding = new Padding(5);
-            label3.Size = new Size(978, 47);
-            label3.TabIndex = 0;
-            label3.Text = "Bạn đang ở chế độ khách. Vui lòng đăng nhập để có thể đặt lịch khám với bác sĩ.";
+            lblPageStatus.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblPageStatus.AutoSize = true;
+            lblPageStatus.Font = new Font("Segoe UI", 11F);
+            lblPageStatus.Location = new Point(1396, 16);
+            lblPageStatus.Name = "lblPageStatus";
+            lblPageStatus.RightToLeft = RightToLeft.No;
+            lblPageStatus.Size = new Size(67, 41);
+            lblPageStatus.TabIndex = 2;
+            lblPageStatus.Text = "1/...";
             // 
-            // label4
+            // lblPrev
             // 
-            label4.AutoSize = true;
-            label4.ForeColor = SystemColors.Highlight;
-            label4.Location = new Point(43, 20);
-            label4.Name = "label4";
-            label4.Size = new Size(87, 37);
-            label4.TabIndex = 1;
-            label4.Text = "Lưu ý:";
+            lblPrev.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblPrev.AutoSize = true;
+            lblPrev.Font = new Font("Segoe UI", 11F);
+            lblPrev.Location = new Point(1157, 16);
+            lblPrev.Name = "lblPrev";
+            lblPrev.Size = new Size(219, 41);
+            lblPrev.TabIndex = 1;
+            lblPrev.Text = "Trang trước <<";
+            lblPrev.Click += lblPrev_Click;
+            // 
+            // lblNext
+            // 
+            lblNext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblNext.AutoSize = true;
+            lblNext.Font = new Font("Segoe UI", 11F);
+            lblNext.Location = new Point(1590, 16);
+            lblNext.Name = "lblNext";
+            lblNext.Size = new Size(194, 41);
+            lblNext.TabIndex = 0;
+            lblNext.Text = ">> Trang sau";
+            lblNext.Click += lblNext_Click;
             // 
             // flpFilter
             // 
@@ -307,9 +325,8 @@
             flpDoctors.AutoScroll = true;
             flpDoctors.Location = new Point(0, 617);
             flpDoctors.Name = "flpDoctors";
-            flpDoctors.Size = new Size(1845, 360);
+            flpDoctors.Size = new Size(1845, 359);
             flpDoctors.TabIndex = 4;
-            flpDoctors.Paint += flpDoctors_Paint;
             // 
             // frmGuest
             // 
@@ -326,7 +343,7 @@
             Name = "frmGuest";
             Text = "DoctorSearch";
             WindowState = FormWindowState.Maximized;
-            Load += frmHome_Load;
+            Load += frmGuest_Load;
             panel1.ResumeLayout(false);
             pnlSearch.ResumeLayout(false);
             pnlSearch.PerformLayout();
@@ -343,7 +360,7 @@
         #endregion
 
         private Panel panel1;
-        private Button button1;
+        private Button btnLogin;
         private TextBox txtSearchBar;
         private Panel pnlSearch;
         private PictureBox pictureBox1;
@@ -363,7 +380,8 @@
         private FlowLayoutPanel flpDoctors;
         private FlowLayoutPanel flpFilter;
         private Panel pnlAlert;
-        private Label label3;
-        private Label label4;
+        private Label lblPrev;
+        private Label lblNext;
+        private Label lblPageStatus;
     }
 }

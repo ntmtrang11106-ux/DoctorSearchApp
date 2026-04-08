@@ -30,7 +30,7 @@
         {
             button1 = new Button();
             panel1 = new Panel();
-            button2 = new Button();
+            btnLogout = new Button();
             pnMain = new Panel();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -52,7 +52,7 @@
             // 
             // panel1
             // 
-            panel1.Controls.Add(button2);
+            panel1.Controls.Add(btnLogout);
             panel1.Controls.Add(button1);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
@@ -60,21 +60,21 @@
             panel1.Size = new Size(1845, 115);
             panel1.TabIndex = 1;
             // 
-            // button2
+            // btnLogout
             // 
-            button2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button2.BackColor = Color.FromArgb(24, 112, 255);
-            button2.FlatAppearance.BorderSize = 0;
-            button2.FlatStyle = FlatStyle.Flat;
-            button2.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button2.ForeColor = Color.White;
-            button2.Location = new Point(1531, 23);
-            button2.Name = "button2";
-            button2.Size = new Size(277, 65);
-            button2.TabIndex = 2;
-            button2.Text = "Đăng xuất";
-            button2.TextAlign = ContentAlignment.BottomCenter;
-            button2.UseVisualStyleBackColor = false;
+            btnLogout.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnLogout.BackColor = Color.FromArgb(24, 112, 255);
+            btnLogout.FlatAppearance.BorderSize = 0;
+            btnLogout.FlatStyle = FlatStyle.Flat;
+            btnLogout.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnLogout.ForeColor = Color.White;
+            btnLogout.Location = new Point(1531, 23);
+            btnLogout.Name = "btnLogout";
+            btnLogout.Size = new Size(277, 65);
+            btnLogout.TabIndex = 2;
+            btnLogout.Text = "Đăng xuất";
+            btnLogout.UseVisualStyleBackColor = false;
+            btnLogout.Click += btnLogout_Click;
             // 
             // pnMain
             // 
@@ -103,7 +103,7 @@
 
         private Button button1;
         private Panel panel1;
-        private Button button2;
+        private Button btnLogout;
         private Panel pnMain;
     }
 }

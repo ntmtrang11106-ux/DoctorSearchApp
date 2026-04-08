@@ -15,50 +15,96 @@ namespace UI_Tier
         // Khai báo một lần ở cấp độ class để tái sử dụng
         private DoctorBUS _bus = new DoctorBUS();
 
+        private List<DoctorDTO> _allDoctors = new List<DoctorDTO>();
+        private int _pageSize = 8;     // Số lượng 1 trang
+        private int _currentPage = 1;  // Trang hiện tại
+
         public ucPatient_SearchDoc()
         {
             InitializeComponent();
         }
 
-        public void LoadDoctorData()
+        public void InitData()
         {
-            // 1. Xóa sạch các control cũ để tránh trùng lặp khi load lại
-            UIHelper.SetDoubleBuffered(flpDoctors); // Tăng hiệu suất khi có nhiều control
-            flpDoctors.Controls.Clear();
-
             try
             {
-                // 2. Lấy danh sách từ tầng BUS
-                List<DoctorDTO> list = _bus.GetListDoctors();
-
-                // Kiểm tra nếu danh sách rỗng thì thoát
-                if (list == null || list.Count == 0) return;
-
-                // 3. Duyệt danh sách và thêm vào FlowLayoutPanel
-                foreach (var doc in list)
-                {
-                    // Khởi tạo UserControl Card
-                    UCCardDoctor card = new UCCardDoctor();
-
-                    // Truyền dữ liệu vào Card (Hàm này bạn đã viết ở UCCardDoctor)
-                    card.SetDoctorData(doc);
-
-                    // Chỉnh khoảng cách giữa các card cho đẹp
-                    card.Margin = new Padding(15);
-
-                    // THÊM VÀO flpDoctors
-                    flpDoctors.Controls.Add(card);
-                }
+                _allDoctors = _bus.GetListDoctors();
+                _currentPage = 1; // Reset về trang 1
+                DisplayPage(_currentPage);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi tải danh sách bác sĩ: " + ex.Message);
+                MessageBox.Show("Lỗi: " + ex.Message);
             }
+        }
+
+        // Hàm này dùng để vẽ 8 ông bác sĩ lên FlowLayoutPanel dựa vào số trang
+        public void DisplayPage(int pageNumber)
+        {
+            flpDoctors.Controls.Clear();
+
+            if (_allDoctors == null || _allDoctors.Count == 0) return;
+
+            // Tính toán vị trí bắt đầu và kết thúc
+            // Trang 1: lấy từ 0 đến 7
+            // Trang 2: lấy từ 8 đến 15
+            int startIndex = (pageNumber - 1) * _pageSize;
+
+            // Lấy ra 8 ông (hoặc ít hơn nếu là trang cuối)
+            var pageItems = _allDoctors.Skip(startIndex).Take(_pageSize).ToList();
+
+            foreach (var doc in pageItems)
+            {
+                UCCardDoctor card = new UCCardDoctor();
+                card.SetDoctorData(doc, true);
+                card.Margin = new Padding(15);
+                flpDoctors.Controls.Add(card);
+            }
+
+            // Cập nhật cái nhãn hiển thị số trang (ví dụ: Trang 1 / 10)
+            int totalPages = (int)Math.Ceiling((double)_allDoctors.Count / _pageSize);
+            lblPageStatus.Text = $"Trang {_currentPage} / {totalPages}";
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // 1. Khởi tạo Form Login
+            frmLogin loginForm = new frmLogin();
+
+            // 2. Ẩn Form hiện tại (frmGuest)
+            this.Hide();
+
+            // 3. Hiển thị Form Login
+            loginForm.ShowDialog();
+            // Dùng ShowDialog để nó chặn không cho tương tác với Form cũ 
+            // hoặc dùng loginForm.Show() nếu muốn mở tự do.
+
+            // 4. (Tùy chọn) Sau khi đóng Login thì hiện lại Guest
+            this.Show();
         }
 
         private void ucPatient_SearchDoc_Load(object sender, EventArgs e)
         {
-            LoadDoctorData();
+            InitData();
+        }
+
+        private void lblPrev_Click(object sender, EventArgs e)
+        {
+            if (_currentPage > 1)
+            {
+                _currentPage--;
+                DisplayPage(_currentPage);
+            }
+        }
+
+        private void lblNext_Click(object sender, EventArgs e)
+        {
+            int totalPages = (int)Math.Ceiling((double)_allDoctors.Count / _pageSize);
+            if (_currentPage < totalPages)
+            {
+                _currentPage++;
+                DisplayPage(_currentPage);
+            }
         }
     }
 }

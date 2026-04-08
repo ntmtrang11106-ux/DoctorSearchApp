@@ -14,6 +14,8 @@ namespace UI_Tier
         {
             InitializeComponent();
 
+            UIHelper.ApplyRoundedRegion(btnLogout, 15);
+
             // Add main card in panel
             pnMain.Controls.Clear();
             ucPatient_SearchDoc searchDocControl = new ucPatient_SearchDoc();
@@ -30,6 +32,11 @@ namespace UI_Tier
                 cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
                 return cp;
             }
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

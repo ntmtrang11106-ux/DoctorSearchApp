@@ -35,7 +35,7 @@
             pictureBox2 = new PictureBox();
             pictureBox3 = new PictureBox();
             pictureBox4 = new PictureBox();
-            btnLogin = new Button();
+            btnBook = new Button();
             lblEx = new Label();
             lblTotalReviews = new Label();
             pnlContainer = new Panel();
@@ -131,21 +131,21 @@
             pictureBox4.TabIndex = 12;
             pictureBox4.TabStop = false;
             // 
-            // btnLogin
+            // btnBook
             // 
-            btnLogin.BackColor = Color.FromArgb(24, 112, 255);
-            btnLogin.Dock = DockStyle.Bottom;
-            btnLogin.FlatAppearance.BorderSize = 0;
-            btnLogin.FlatStyle = FlatStyle.Flat;
-            btnLogin.Font = new Font("Segoe UI", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnLogin.ForeColor = Color.White;
-            btnLogin.Location = new Point(10, 830);
-            btnLogin.Name = "btnLogin";
-            btnLogin.Padding = new Padding(5, 3, 5, 3);
-            btnLogin.Size = new Size(650, 60);
-            btnLogin.TabIndex = 14;
-            btnLogin.Text = "Đăng nhập để đặt lịch";
-            btnLogin.UseVisualStyleBackColor = false;
+            btnBook.BackColor = Color.FromArgb(24, 112, 255);
+            btnBook.Dock = DockStyle.Bottom;
+            btnBook.FlatAppearance.BorderSize = 0;
+            btnBook.FlatStyle = FlatStyle.Flat;
+            btnBook.Font = new Font("Segoe UI", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnBook.ForeColor = Color.White;
+            btnBook.Location = new Point(10, 830);
+            btnBook.Name = "btnBook";
+            btnBook.Padding = new Padding(5, 3, 5, 3);
+            btnBook.Size = new Size(650, 60);
+            btnBook.TabIndex = 14;
+            btnBook.Text = "Đăng nhập để đặt lịch";
+            btnBook.UseVisualStyleBackColor = false;
             // 
             // lblEx
             // 
@@ -282,7 +282,7 @@
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(lblSpecialtyTag);
-            Controls.Add(btnLogin);
+            Controls.Add(btnBook);
             Controls.Add(pnlContainer);
             Name = "UCCardDoctor";
             Padding = new Padding(10);
@@ -311,7 +311,7 @@
         private PictureBox pictureBox2;
         private PictureBox pictureBox3;
         private PictureBox pictureBox4;
-        private Button btnLogin;
+        private Button btnBook;
         private Label lblEx;
         private Label lblTotalReviews;
         private Panel pnlContainer;
