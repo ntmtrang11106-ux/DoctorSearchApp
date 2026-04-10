@@ -41,7 +41,14 @@ namespace UI_Tier
         // Hàm này dùng để vẽ 8 ông bác sĩ lên FlowLayoutPanel dựa vào số trang
         public void DisplayPage(int pageNumber)
         {
-            flpDoctors.Controls.Clear();
+            flpDoctors.SuspendLayout(); // Tạm dừng vẽ giao diện
+
+            while (flpDoctors.Controls.Count > 0)
+            {
+                var control = flpDoctors.Controls[0];
+                flpDoctors.Controls.RemoveAt(0);
+                control.Dispose(); // Xóa hẳn khỏi bộ nhớ
+            }
 
             if (_allDoctors == null || _allDoctors.Count == 0) return;
 
@@ -57,13 +64,15 @@ namespace UI_Tier
             {
                 UCCardDoctor card = new UCCardDoctor();
                 card.SetDoctorData(doc, true);
-                card.Margin = new Padding(15);
+                card.Margin = new Padding(25);
                 flpDoctors.Controls.Add(card);
             }
 
             // Cập nhật cái nhãn hiển thị số trang (ví dụ: Trang 1 / 10)
             int totalPages = (int)Math.Ceiling((double)_allDoctors.Count / _pageSize);
             lblPageStatus.Text = $"Trang {_currentPage} / {totalPages}";
+
+            flpDoctors.ResumeLayout(); // Cho phép vẽ lại giao diện
         }
 
         private void button1_Click(object sender, EventArgs e)

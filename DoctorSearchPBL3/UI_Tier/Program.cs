@@ -12,12 +12,13 @@ namespace UI_Tier
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
 
-            //Application.Run(new frmGuest());
+            Application.Run(new frmGuest());
 
             // test form
             //Application.Run(new frmLogin());
             //Application.Run(new frmRegister());
-            Application.Run(new frmPatient());
+            //Application.Run(new frmPatient());
+            //Application.Run(new frmDoctor());
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace UI_Tier
 {
-    partial class frmPatient
+    partial class frmDoctor
     {
         /// <summary>
         /// Required designer variable.
@@ -30,19 +30,18 @@
         {
             panel1 = new Panel();
             btnLogout = new Button();
-            pnMain = new Panel();
+            panel2 = new Panel();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
             // 
             panel1.Controls.Add(btnLogout);
-            panel1.Controls.Add(button1);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
             panel1.Size = new Size(1845, 115);
-            panel1.TabIndex = 1;
+            panel1.TabIndex = 2;
             // 
             // btnLogout
             // 
@@ -60,24 +59,23 @@
             btnLogout.UseVisualStyleBackColor = false;
             btnLogout.Click += btnLogout_Click;
             // 
-            // pnMain
+            // panel2
             // 
-            pnMain.Dock = DockStyle.Fill;
-            pnMain.Location = new Point(0, 115);
-            pnMain.Name = "pnMain";
-            pnMain.Size = new Size(1845, 862);
-            pnMain.TabIndex = 2;
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(0, 115);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(1845, 862);
+            panel2.TabIndex = 3;
             // 
-            // frmPatient
+            // frmDoctor
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.White;
             ClientSize = new Size(1845, 977);
-            Controls.Add(pnMain);
+            Controls.Add(panel2);
             Controls.Add(panel1);
-            Name = "frmPatient";
-            Text = "frmPatient";
+            Name = "frmDoctor";
+            Text = "frmDoctor";
             WindowState = FormWindowState.Maximized;
             panel1.ResumeLayout(false);
             ResumeLayout(false);
@@ -85,9 +83,9 @@
 
         #endregion
 
-        private Button button1;
         private Panel panel1;
         private Button btnLogout;
-        private Panel pnMain;
+        private Button button1;
+        private Panel panel2;
     }
 }

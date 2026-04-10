@@ -126,7 +126,7 @@
             lblPageStatus.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblPageStatus.AutoSize = true;
             lblPageStatus.Font = new Font("Segoe UI", 11F);
-            lblPageStatus.Location = new Point(1396, 16);
+            lblPageStatus.Location = new Point(1379, 14);
             lblPageStatus.Name = "lblPageStatus";
             lblPageStatus.RightToLeft = RightToLeft.No;
             lblPageStatus.Size = new Size(67, 41);
@@ -138,7 +138,7 @@
             lblPrev.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblPrev.AutoSize = true;
             lblPrev.Font = new Font("Segoe UI", 11F);
-            lblPrev.Location = new Point(1157, 16);
+            lblPrev.Location = new Point(1140, 14);
             lblPrev.Name = "lblPrev";
             lblPrev.Size = new Size(219, 41);
             lblPrev.TabIndex = 1;
@@ -150,7 +150,7 @@
             lblNext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblNext.AutoSize = true;
             lblNext.Font = new Font("Segoe UI", 11F);
-            lblNext.Location = new Point(1590, 16);
+            lblNext.Location = new Point(1554, 14);
             lblNext.Name = "lblNext";
             lblNext.Size = new Size(194, 41);
             lblNext.TabIndex = 0;
@@ -172,7 +172,7 @@
             flpFilter.Location = new Point(144, 91);
             flpFilter.Name = "flpFilter";
             flpFilter.Padding = new Padding(10);
-            flpFilter.Size = new Size(1653, 132);
+            flpFilter.Size = new Size(1687, 132);
             flpFilter.TabIndex = 3;
             flpFilter.Paint += flowLayoutPanel2_Paint;
             // 
@@ -325,7 +325,7 @@
             flpDoctors.AutoScroll = true;
             flpDoctors.Location = new Point(0, 617);
             flpDoctors.Name = "flpDoctors";
-            flpDoctors.Size = new Size(1845, 359);
+            flpDoctors.Size = new Size(1845, 360);
             flpDoctors.TabIndex = 4;
             // 
             // frmGuest
@@ -334,10 +334,10 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(1845, 977);
-            Controls.Add(flpDoctors);
             Controls.Add(panel3);
             Controls.Add(pnlSearch);
             Controls.Add(panel1);
+            Controls.Add(flpDoctors);
             Cursor = Cursors.SizeAll;
             Font = new Font("Segoe UI", 10.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Name = "frmGuest";
