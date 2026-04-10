@@ -37,7 +37,6 @@
             // panel1
             // 
             panel1.Controls.Add(btnLogout);
-            panel1.Controls.Add(button1);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
@@ -77,7 +76,7 @@
             Controls.Add(pnMain);
             Controls.Add(panel1);
             Name = "frmPatient";
-            Text = "frmPatient";
+            Text = "DoctorSearch";
             WindowState = FormWindowState.Maximized;
             panel1.ResumeLayout(false);
             ResumeLayout(false);

@@ -38,7 +38,7 @@
             label3 = new Label();
             label2 = new Label();
             panel4 = new Panel();
-            dateTimePicker1 = new DateTimePicker();
+            dtpDOB = new DateTimePicker();
             flowLayoutPanel1 = new FlowLayoutPanel();
             radioButton1 = new RadioButton();
             radioButton2 = new RadioButton();
@@ -172,7 +172,7 @@
             // 
             // panel4
             // 
-            panel4.Controls.Add(dateTimePicker1);
+            panel4.Controls.Add(dtpDOB);
             panel4.Controls.Add(flowLayoutPanel1);
             panel4.Controls.Add(label13);
             panel4.Controls.Add(panel10);
@@ -192,16 +192,16 @@
             panel4.Size = new Size(1979, 991);
             panel4.TabIndex = 2;
             // 
-            // dateTimePicker1
+            // dtpDOB
             // 
-            dateTimePicker1.CalendarFont = new Font("Segoe UI", 12F);
-            dateTimePicker1.CustomFormat = "  dd / MM / yyyy";
-            dateTimePicker1.Font = new Font("Segoe UI", 12F);
-            dateTimePicker1.Format = DateTimePickerFormat.Custom;
-            dateTimePicker1.Location = new Point(135, 510);
-            dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(732, 50);
-            dateTimePicker1.TabIndex = 24;
+            dtpDOB.CalendarFont = new Font("Segoe UI", 12F);
+            dtpDOB.CustomFormat = "  dd / MM / yyyy";
+            dtpDOB.Font = new Font("Segoe UI", 12F);
+            dtpDOB.Format = DateTimePickerFormat.Custom;
+            dtpDOB.Location = new Point(135, 510);
+            dtpDOB.Name = "dtpDOB";
+            dtpDOB.Size = new Size(732, 50);
+            dtpDOB.TabIndex = 24;
             // 
             // flowLayoutPanel1
             // 
@@ -492,7 +492,7 @@
         private Label label9;
         private Panel panel6;
         private TextBox textBox1;
-        private DateTimePicker dateTimePicker1;
+        private DateTimePicker dtpDOB;
         private FlowLayoutPanel flowLayoutPanel1;
         private RadioButton radioButton1;
         private RadioButton radioButton2;

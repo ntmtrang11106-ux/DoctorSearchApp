@@ -35,6 +35,7 @@
             label2 = new Label();
             label1 = new Label();
             flpFilter = new FlowLayoutPanel();
+            btnAll = new Button();
             btnCardiology = new Button();
             btnInternalMedicine = new Button();
             btnSurgery = new Button();
@@ -48,7 +49,6 @@
             lblPrev = new Label();
             lblNext = new Label();
             flpDoctors = new FlowLayoutPanel();
-            btnAll = new Button();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -70,7 +70,7 @@
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 0);
             panel3.Name = "panel3";
-            panel3.Size = new Size(1845, 569);
+            panel3.Size = new Size(1845, 524);
             panel3.TabIndex = 6;
             // 
             // pictureBox2
@@ -137,8 +137,19 @@
             flpFilter.Location = new Point(144, 314);
             flpFilter.Name = "flpFilter";
             flpFilter.Padding = new Padding(10);
-            flpFilter.Size = new Size(1653, 132);
+            flpFilter.Size = new Size(1653, 137);
             flpFilter.TabIndex = 7;
+            // 
+            // btnAll
+            // 
+            btnAll.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnAll.ForeColor = Color.Black;
+            btnAll.Location = new Point(13, 13);
+            btnAll.Name = "btnAll";
+            btnAll.Size = new Size(255, 55);
+            btnAll.TabIndex = 0;
+            btnAll.Text = "Tất cả";
+            btnAll.UseVisualStyleBackColor = true;
             // 
             // btnCardiology
             // 
@@ -227,7 +238,7 @@
             pnlAlert.Controls.Add(lblPageStatus);
             pnlAlert.Controls.Add(lblPrev);
             pnlAlert.Controls.Add(lblNext);
-            pnlAlert.Location = new Point(0, 501);
+            pnlAlert.Location = new Point(0, 457);
             pnlAlert.Name = "pnlAlert";
             pnlAlert.Padding = new Padding(10);
             pnlAlert.Size = new Size(1845, 67);
@@ -273,21 +284,10 @@
             // 
             flpDoctors.AutoScroll = true;
             flpDoctors.Dock = DockStyle.Fill;
-            flpDoctors.Location = new Point(0, 569);
+            flpDoctors.Location = new Point(0, 524);
             flpDoctors.Name = "flpDoctors";
-            flpDoctors.Size = new Size(1845, 293);
+            flpDoctors.Size = new Size(1845, 338);
             flpDoctors.TabIndex = 7;
-            // 
-            // btnAll
-            // 
-            btnAll.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnAll.ForeColor = Color.Black;
-            btnAll.Location = new Point(13, 13);
-            btnAll.Name = "btnAll";
-            btnAll.Size = new Size(255, 55);
-            btnAll.TabIndex = 0;
-            btnAll.Text = "Tất cả";
-            btnAll.UseVisualStyleBackColor = true;
             // 
             // ucPatient_SearchDoc
             // 

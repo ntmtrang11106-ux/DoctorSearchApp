@@ -16,6 +16,11 @@ namespace UI_Tier
 
             UIHelper.ApplyRoundedRegion(btnLogout, 15);
 
+            // Add main card in panel
+            pnMain.Controls.Clear();
+            ucAppointment AppointmentControl = new ucAppointment();
+            AppointmentControl.Dock = DockStyle.Fill; // Đảm bảo UserControl chiếm toàn bộ pnMain
+            pnMain.Controls.Add(AppointmentControl);
         }
 
         private void btnLogout_Click(object sender, EventArgs e)

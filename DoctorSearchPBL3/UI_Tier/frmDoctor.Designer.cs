@@ -30,7 +30,7 @@
         {
             panel1 = new Panel();
             btnLogout = new Button();
-            panel2 = new Panel();
+            pnMain = new Panel();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -59,23 +59,24 @@
             btnLogout.UseVisualStyleBackColor = false;
             btnLogout.Click += btnLogout_Click;
             // 
-            // panel2
+            // pnMain
             // 
-            panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(0, 115);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(1845, 862);
-            panel2.TabIndex = 3;
+            pnMain.Dock = DockStyle.Fill;
+            pnMain.Location = new Point(0, 115);
+            pnMain.Name = "pnMain";
+            pnMain.Size = new Size(1845, 862);
+            pnMain.TabIndex = 3;
             // 
             // frmDoctor
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.White;
             ClientSize = new Size(1845, 977);
-            Controls.Add(panel2);
+            Controls.Add(pnMain);
             Controls.Add(panel1);
             Name = "frmDoctor";
-            Text = "frmDoctor";
+            Text = "DoctorSearch";
             WindowState = FormWindowState.Maximized;
             panel1.ResumeLayout(false);
             ResumeLayout(false);
@@ -86,6 +87,6 @@
         private Panel panel1;
         private Button btnLogout;
         private Button button1;
-        private Panel panel2;
+        private Panel pnMain;
     }
 }

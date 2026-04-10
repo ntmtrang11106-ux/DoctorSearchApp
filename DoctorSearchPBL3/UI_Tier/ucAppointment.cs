@@ -13,6 +13,8 @@ namespace UI_Tier
         public ucAppointment()
         {
             InitializeComponent();
+
+            UIHelper.ApplyRoundedRegion(btnAddTimeSlot, 10);
         }
     }
 }
