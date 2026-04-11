@@ -61,10 +61,15 @@ namespace UI_Tier
             var pageItems = _allApps.Skip(startIndex).Take(_pageSize).ToList();
 
             foreach (var ap in pageItems)
-            {
+            { 
                 ucAppItem card = new ucAppItem();
                 card.SetAppItemData(ap);
                 card.Margin = new Padding(25);
+                // Ép chiều ngang UC = Chiều ngang Panel - (trừ đi 25~30 để chừa chỗ cho thanh cuộn)
+                card.Width = flpAppItem.Width - 70;
+
+                // Thêm dòng này để nếu resize Form thì UC nó cũng co giãn theo (tùy chọn)
+                //card.Anchor = AnchorStyles.Left | AnchorStyles.Right;
                 flpAppItem.Controls.Add(card);
             }
 

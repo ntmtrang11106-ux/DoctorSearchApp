@@ -151,6 +151,7 @@
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
+            BorderStyle = BorderStyle.FixedSingle;
             Controls.Add(btnStatus);
             Controls.Add(pictureBox4);
             Controls.Add(lblSymptoms);
@@ -162,7 +163,7 @@
             Controls.Add(pictureBox1);
             Controls.Add(lblPatientName);
             Name = "ucAppItem";
-            Size = new Size(1830, 300);
+            Size = new Size(1828, 298);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
