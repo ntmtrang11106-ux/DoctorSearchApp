@@ -15,37 +15,47 @@ namespace UI_Tier
         private void UCCardDoctor_Load(object sender, EventArgs e)
         {
             // Bo góc cho toàn bộ Card (nếu muốn)
-            ApplyRoundedRegion(this, 15);
+            UIHelper.ApplyRoundedRegion(this, 15);
 
             // Bo góc cho Label chuyên khoa ở góc phải
-            ApplyRoundedRegion(lblSpecialtyTag, 8);
+            UIHelper.ApplyRoundedRegion(lblSpecialtyTag, 8);
 
             // Bo góc cho Button Đăng nhập
-            ApplyRoundedRegion(btnLogin, 10);
+            UIHelper.ApplyRoundedRegion(btnBook, 10);
 
             // Bo góc cho PictureBox (nếu bạn muốn bo nhẹ 4 góc)
-            ApplyRoundedRegion(picDoctor, 15);
+            UIHelper.ApplyRoundedRegion(picDoctor, 15);
 
-            ApplyRoundedRegion(pnlContainer, 20);
+            UIHelper.ApplyRoundedRegion(pnlContainer, 20);
         }
 
         // Hàm này dùng để "đổ" dữ liệu từ đối tượng Doctor vào các Label
         // Trong UCCardDoctor.cs
-        
-        public void SetDoctorData(DoctorDTO doctor)
+
+        public void SetDoctorData(DoctorDTO doctor, bool isGuess)
 
         {
+            // 1. Tên bác sĩ
             lblFullName.Text = doctor.FullName;
+            // 2. Nơi làm việc
             lblWorkPlace.Text = doctor.Workplace;
             // 3. Địa chỉ (Kết hợp địa chỉ chi tiết và tên khu vực)
             lblSpecificAdress.Text = $"{doctor.SpecificAddress}, {doctor.LocationName}";
 
             // 4. Thời gian làm việc (Nếu trong DTO bạn có trường Status hoặc WorkingTime)
             // Giả sử Status chứa chuỗi "Thứ 2 - Thứ 6, 8:00 - 16:00"
-            lblWorkingTime.Text = doctor.Status;
+            lblWorkingTime.Text = string.IsNullOrEmpty(doctor.WorkingTime) ? "Giờ làm việc: Chưa cập nhật" : "Từ " + doctor.WorkingTime +" giờ";
 
-            // 5. Giá tiền (Định dạng tiền tệ VNĐ: 500.000đ)
-            lblPrice.Text = doctor.Price.ToString("#,##0") + "đ";
+            // 5. Giá tiền
+            // Vì Price trong DTO mới là string hoặc đã thay đổi, ta cần ép kiểu để định dạng
+            if (decimal.TryParse(doctor.Price, out decimal priceValue))
+            {
+                lblPrice.Text = priceValue.ToString("#,##0") + ".000VNĐ";
+            }
+            else
+            {
+                lblPrice.Text = "Liên hệ";
+            }
 
             // 6. Đánh giá (Số sao và tổng lượt review)
             lblRating.Text = $"{doctor.AverageRating}";
@@ -57,7 +67,6 @@ namespace UI_Tier
             // 8. Chuyên khoa (Cái nhãn màu xanh góc trên cùng bên phải)
             lblSpecialtyTag.Text = doctor.SpecialtyName;
 
-            // 9. Hình ảnh (Nếu có đường dẫn hoặc Image)
             // 9. Hình ảnh
             string fileName = doctor.Picture?.Trim(); // Thêm Trim() để xóa khoảng trắng thừa
 
@@ -86,26 +95,12 @@ namespace UI_Tier
                 picDoctor.Image = null;
                 System.Diagnostics.Debug.WriteLine("KHÔNG TÌM THẤY FILE ẢNH!");
             }
-        }
 
-        // Hàm tạo đường dẫn hình chữ nhật bo tròn
-        private GraphicsPath GetRoundedPath(Rectangle rect, int radius)
-        {
-            GraphicsPath path = new GraphicsPath();
-            float curveSize = radius * 2F;
-            path.StartFigure();
-            path.AddArc(rect.X, rect.Y, curveSize, curveSize, 180, 90);
-            path.AddArc(rect.Right - curveSize, rect.Y, curveSize, curveSize, 270, 90);
-            path.AddArc(rect.Right - curveSize, rect.Bottom - curveSize, curveSize, curveSize, 0, 90);
-            path.AddArc(rect.X, rect.Bottom - curveSize, curveSize, curveSize, 90, 90);
-            path.CloseFigure();
-            return path;
-        }
-
-        // Hàm áp dụng bo góc cho một Control bất kỳ
-        private void ApplyRoundedRegion(Control control, int radius)
-        {
-            control.Region = new Region(GetRoundedPath(control.ClientRectangle, radius));
+            // 10. Button
+            if(isGuess)
+                btnBook.Text = "Đăng nhập để đặt lịch";
+            else
+                btnBook.Text = "Đặt lịch";
         }
 
         private void UCCardDoctor_Paint(object sender, PaintEventArgs e)
@@ -121,11 +116,12 @@ namespace UI_Tier
             using (Pen pen = new Pen(borderColor, borderWidth))
             {
                 // Vẽ đường viền theo khung đã bo góc
-                using (var path = GetRoundedPath(paintControl.ClientRectangle, borderRadius))
+                using (var path = UIHelper.GetRoundedPath(paintControl.ClientRectangle, borderRadius))
                 {
                     e.Graphics.DrawPath(pen, path);
                 }
             }
         }
+
     }
 }

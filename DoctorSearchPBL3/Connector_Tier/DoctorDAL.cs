@@ -1,91 +1,4 @@
-﻿//using DTO_Tier;
-//using Microsoft.Data.SqlClient;
-//using System.Data;
-
-//public class DoctorDAL
-//{
-//    private string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=DoctorSearchDB;Integrated Security=True;TrustServerCertificate=True";
-//    public List<DoctorDTO> GetAllDoctors()
-//    {
-//        List<DoctorDTO> list = new List<DoctorDTO>();
-
-//        // Query sử dụng Subquery để tính AvgRating và TotalReviews trực tiếp từ bảng Reviews
-//        string query = @"
-//        SELECT 
-//            d.Id, 
-//            d.full_name, 
-//            d.workplace, 
-//            d.SpecificAddress, 
-//            d.experience_years, 
-//            d.Picture, 
-//            d.Price,
-//            d.status,
-//            d.bio,
-//            s.Name AS SpecialtyName,
-//            l.Name AS LocationName,
-//            (SELECT AVG(CAST(r.Rating AS FLOAT)) 
-//             FROM Reviews r 
-//             JOIN Appointments a ON r.AppointmentId = a.Id 
-//             JOIN TimeSlots ts ON a.TimeSlotId = ts.Id 
-//             WHERE ts.DoctorId = d.Id) AS AvgRating,
-//            (SELECT COUNT(r.Id) 
-//             FROM Reviews r 
-//             JOIN Appointments a ON r.AppointmentId = a.Id 
-//             JOIN TimeSlots ts ON a.TimeSlotId = ts.Id 
-//             WHERE ts.DoctorId = d.Id) AS TotalReviews
-//        FROM Doctors d
-//        INNER JOIN Locations l ON d.LocationId = l.Id
-//        INNER JOIN Specialties s ON d.SpecialtyId = s.Id";
-
-//        using (SqlConnection conn = new SqlConnection(connectionString))
-//        {
-//            SqlCommand cmd = new SqlCommand(query, conn);
-//            try
-//            {
-//                conn.Open();
-//                using (SqlDataReader reader = cmd.ExecuteReader())
-//                {
-//                    while (reader.Read())
-//                    {
-//                        DoctorDTO doctor = new DoctorDTO
-//                        {
-//                            Id = reader["Id"] != DBNull.Value ? Convert.ToInt32(reader["Id"]) : 0,
-//                            FullName = reader["full_name"]?.ToString() ?? "",
-//                            Workplace = reader["workplace"]?.ToString() ?? "",
-
-//                            // Cập nhật trường địa chỉ chi tiết mới thêm
-//                            SpecificAddress = reader["SpecificAddress"]?.ToString() ?? "",
-
-//                            LocationName = reader["LocationName"]?.ToString() ?? "",
-//                            SpecialtyName = reader["SpecialtyName"]?.ToString() ?? "",
-//                            ExperienceYears = reader["experience_years"] != DBNull.Value ? Convert.ToInt32(reader["experience_years"]) : 0,
-//                            Bio = reader["bio"]?.ToString() ?? "",
-//                            Status = reader["status"]?.ToString() ?? "",
-//                            Picture = reader["Picture"] != DBNull.Value ? reader["Picture"].ToString() : "default.png",
-
-//                            // Đọc giá tiền (Decimal)
-//                            Price = reader["Price"] != DBNull.Value ? Convert.ToDecimal(reader["Price"]) : 0,
-
-//                            // Đọc dữ liệu đánh giá từ Subquery
-//                            AverageRating = reader["AvgRating"] != DBNull.Value ? Convert.ToDouble(reader["AvgRating"]) : 0.0,
-//                            TotalReviews = reader["TotalReviews"] != DBNull.Value ? Convert.ToInt32(reader["TotalReviews"]) : 0
-//                        };
-//                        list.Add(doctor);
-//                    }
-//                }
-//            }
-//            catch (Exception ex)
-//            {
-//                System.Diagnostics.Debug.WriteLine("Lỗi DAL tại GetAllDoctors: " + ex.Message);
-//                throw;
-//            }
-//        }
-//        return list;
-//    }
-//}
-
-
-using DTO_Tier;
+﻿using DTO_Tier;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
@@ -97,16 +10,18 @@ namespace DAL_Tier
         public List<DoctorDTO> GetAllDoctors()
         {
             List<DoctorDTO> list = new List<DoctorDTO>();
+
             string query = @"
-            SELECT d.Id, d.full_name, d.workplace, d.SpecificAddress, d.experience_years, 
-                   d.Picture, d.Price, d.status, d.bio, s.Name AS SpecialtyName, l.Name AS LocationName,
+            SELECT d.UserId, u.FullName, u.Status, d.workplace, d.SpecificAddress, d.experience_years, 
+                   u.Picture, d.Price, d.bio, d.WorkingTime, s.Name AS SpecialtyName, l.Name AS LocationName,
                    (SELECT AVG(CAST(r.Rating AS FLOAT)) FROM Reviews r 
                     JOIN Appointments a ON r.AppointmentId = a.Id 
-                    JOIN TimeSlots ts ON a.TimeSlotId = ts.Id WHERE ts.DoctorId = d.Id) AS AvgRating,
+                    JOIN TimeSlots ts ON a.TimeSlotId = ts.Id WHERE ts.DoctorId = d.UserId) AS AvgRating,
                    (SELECT COUNT(r.Id) FROM Reviews r 
                     JOIN Appointments a ON r.AppointmentId = a.Id 
-                    JOIN TimeSlots ts ON a.TimeSlotId = ts.Id WHERE ts.DoctorId = d.Id) AS TotalReviews
+                    JOIN TimeSlots ts ON a.TimeSlotId = ts.Id WHERE ts.DoctorId = d.UserId) AS TotalReviews
             FROM Doctors d
+            INNER JOIN Users u ON d.UserId = u.UserId
             INNER JOIN Locations l ON d.LocationId = l.Id
             INNER JOIN Specialties s ON d.SpecialtyId = s.Id";
 
@@ -116,36 +31,63 @@ namespace DAL_Tier
             {
                 list.Add(new DoctorDTO
                 {
-                    Id = Convert.ToInt32(row["Id"]),
-                    FullName = row["full_name"].ToString(),
-                    Workplace = row["workplace"].ToString(),
-                    SpecificAddress = row["SpecificAddress"].ToString(),
-                    LocationName = row["LocationName"].ToString(),
-                    SpecialtyName = row["SpecialtyName"].ToString(),
-                    ExperienceYears = Convert.ToInt32(row["experience_years"]),
-                    Price = Convert.ToDecimal(row["Price"]),
+
+                    UserId = Convert.ToInt32(row["UserId"]),
+                    FullName = row["FullName"]?.ToString() ?? "",
+                    Status = row["Status"]?.ToString() ?? "Hoạt động", // Status giờ là NVARCHAR
+                    Workplace = row["workplace"]?.ToString() ?? "",
+                    SpecificAddress = row["SpecificAddress"]?.ToString() ?? "",
+                    ExperienceYears = row["experience_years"] != DBNull.Value ? Convert.ToInt32(row["experience_years"]) : 0,
+
+                    // Xử lý Price: Chuyển về string hoặc decimal tùy DTO bạn chọn (đang để string theo DTO trên)
+                    Price = row["Price"]?.ToString() ?? "0",
+
+                    // Cột mới thêm
+                    WorkingTime = row["WorkingTime"]?.ToString() ?? "Chưa cập nhật",
+
+                    Picture = row["Picture"]?.ToString() ?? "default.png",
+                    Bio = row["bio"]?.ToString() ?? "",
+                    LocationName = row["LocationName"]?.ToString() ?? "Chưa xác định",
+                    SpecialtyName = row["SpecialtyName"]?.ToString() ?? "Đa khoa",
+
                     AverageRating = row["AvgRating"] != DBNull.Value ? Convert.ToDouble(row["AvgRating"]) : 0.0,
-                    TotalReviews = Convert.ToInt32(row["TotalReviews"]),
-                    Picture = row["Picture"].ToString(),
-                    Bio = row["bio"].ToString(),
-                    Status = row["status"].ToString()
+                    TotalReviews = row["TotalReviews"] != DBNull.Value ? Convert.ToInt32(row["TotalReviews"]) : 0
                 });
             }
             return list;
         }
 
-        // Chức năng cập nhật bác sĩ
-        public bool UpdateDoctor(DoctorDTO doctor)
+        // 2. Chức năng cập nhật hồ sơ bác sĩ (Sửa lại query cho đúng tên cột mới)
+        public bool UpdateDoctorProfile(int userId, string cccd, string cchn, string exp, int locationId, int specId, string workingTime)
         {
-            string query = "UPDATE Doctors SET full_name = @name, workplace = @work, experience_years = @exp, Price = @price WHERE Id = @id";
-            SqlParameter[] parameters = new SqlParameter[] {
-                new SqlParameter("@name", doctor.FullName),
-                new SqlParameter("@work", doctor.Workplace),
-                new SqlParameter("@exp", doctor.ExperienceYears),
-                new SqlParameter("@price", doctor.Price),
-                new SqlParameter("@id", doctor.Id)
+            // BƯỚC 1: Cập nhật CCCD ở bảng Users
+            string queryUser = "UPDATE Users SET CCCD = @cccd WHERE UserId = @userId";
+            SqlParameter[] paramUser = {
+                new SqlParameter("@cccd", cccd),
+                new SqlParameter("@userId", userId)
             };
-            return DBHelper.ExecuteNonQuery(query, parameters);
+            DBHelper.ExecuteNonQuery(queryUser, paramUser);
+
+            // BƯỚC 2: Cập nhật thông tin chuyên môn ở bảng Doctors
+            // Lưu ý: Tên cột cchn và experience_years phải khớp với script SQL bạn vừa chạy
+            string queryDoctor = @"UPDATE Doctors 
+                                 SET cchn = @cchn, 
+                                     experience_years = @exp, 
+                                     SpecialtyId = @specId,
+                                     LocationId = @locId,
+                                     WorkingTime = @wt
+                                 WHERE UserId = @userId";
+
+            SqlParameter[] paramDoctor = {
+                new SqlParameter("@cchn", cchn),
+                new SqlParameter("@exp", exp),
+                new SqlParameter("@specId", specId),
+                new SqlParameter("@locId", locationId),
+                new SqlParameter("@wt", (object)workingTime ?? DBNull.Value),
+                new SqlParameter("@userId", userId)
+            };
+
+            return DBHelper.ExecuteNonQuery(queryDoctor, paramDoctor);
         }
 
         // Thêm hàm này vào class DoctorDAL của bạn

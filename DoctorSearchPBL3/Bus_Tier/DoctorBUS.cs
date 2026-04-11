@@ -22,16 +22,15 @@ namespace BUS_Tier
         }
 
         // Cập nhật thông tin và kiểm tra logic
-        public string UpdateDoctorInfo(DoctorDTO doctor)
+        public string UpdateProfile(int userId, string cccd, string cchn, string exp, int clinicId, int specId, string workingTime)
         {
-            // Kiểm tra nghiệp vụ (ví dụ: kinh nghiệm không được âm)
-            if (doctor.ExperienceYears < 0) return "Số năm kinh nghiệm không hợp lệ!";
-            if (string.IsNullOrEmpty(doctor.FullName)) return "Tên bác sĩ không được để trống!";
+            if (string.IsNullOrEmpty(cccd) || string.IsNullOrEmpty(cchn))
+                return "Vui lòng nhập đầy đủ CCCD và Mã chứng chỉ hành nghề!";
 
-            bool result = doctorDAL.UpdateDoctor(doctor);
-            return result ? "Cập nhật thành công!" : "Cập nhật thất bại, vui lòng kiểm tra lại!";
+            if (cccd.Length != 12) return "CCCD không hợp lệ!";
+
+            bool success = doctorDAL.UpdateDoctorProfile(userId, cccd, cchn, exp, clinicId, specId, workingTime);
+            return success ? "Success" : "Lỗi khi cập nhật hồ sơ bác sĩ!";
         }
     }
 } 
-
-////
