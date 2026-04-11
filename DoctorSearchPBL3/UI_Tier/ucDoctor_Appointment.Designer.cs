@@ -1,6 +1,6 @@
 ﻿namespace UI_Tier
 {
-    partial class ucAppointment
+    partial class ucDoctor_Appointment
     {
         /// <summary> 
         /// Required designer variable.
@@ -48,7 +48,7 @@
             lblPageStatus = new Label();
             lblPrev = new Label();
             lblNext = new Label();
-            flpTimeSlot = new FlowLayoutPanel();
+            flpAppItem = new FlowLayoutPanel();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             flpFilter.SuspendLayout();
@@ -284,23 +284,25 @@
             lblNext.TabIndex = 0;
             lblNext.Text = ">> Trang sau";
             // 
-            // flpTimeSlot
+            // flpAppItem
             // 
-            flpTimeSlot.Dock = DockStyle.Fill;
-            flpTimeSlot.Location = new Point(0, 528);
-            flpTimeSlot.Name = "flpTimeSlot";
-            flpTimeSlot.Size = new Size(1845, 334);
-            flpTimeSlot.TabIndex = 7;
+            flpAppItem.Dock = DockStyle.Fill;
+            flpAppItem.FlowDirection = FlowDirection.TopDown;
+            flpAppItem.Location = new Point(0, 528);
+            flpAppItem.Name = "flpAppItem";
+            flpAppItem.Size = new Size(1845, 334);
+            flpAppItem.TabIndex = 7;
             // 
-            // ucAppointment
+            // ucDoctor_Appointment
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            Controls.Add(flpTimeSlot);
+            Controls.Add(flpAppItem);
             Controls.Add(panel3);
-            Name = "ucAppointment";
+            Name = "ucDoctor_Appointment";
             Size = new Size(1845, 862);
+            Load += ucDoctor_Appointment_Load;
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
@@ -327,7 +329,7 @@
         private Label lblPageStatus;
         private Label lblPrev;
         private Label lblNext;
-        private FlowLayoutPanel flpTimeSlot;
+        private FlowLayoutPanel flpAppItem;
         private DateTimePicker dtpBegin;
         private Label label4;
         private Label label3;

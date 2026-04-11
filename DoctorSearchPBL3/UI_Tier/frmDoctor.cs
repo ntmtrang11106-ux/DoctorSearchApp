@@ -18,7 +18,7 @@ namespace UI_Tier
 
             // Add main card in panel
             pnMain.Controls.Clear();
-            ucAppointment AppointmentControl = new ucAppointment();
+            ucDoctor_Appointment AppointmentControl = new ucDoctor_Appointment();
             AppointmentControl.Dock = DockStyle.Fill; // Đảm bảo UserControl chiếm toàn bộ pnMain
             pnMain.Controls.Add(AppointmentControl);
         }
