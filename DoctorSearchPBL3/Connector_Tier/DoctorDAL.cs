@@ -97,18 +97,29 @@ namespace DAL_Tier
         public List<DoctorDTO> GetAllDoctors()
         {
             List<DoctorDTO> list = new List<DoctorDTO>();
-            string query = @"
-            SELECT d.Id, d.full_name, d.workplace, d.SpecificAddress, d.experience_years, 
-                   d.Picture, d.Price, d.status, d.bio, s.Name AS SpecialtyName, l.Name AS LocationName,
-                   (SELECT AVG(CAST(r.Rating AS FLOAT)) FROM Reviews r 
-                    JOIN Appointments a ON r.AppointmentId = a.Id 
-                    JOIN TimeSlots ts ON a.TimeSlotId = ts.Id WHERE ts.DoctorId = d.Id) AS AvgRating,
-                   (SELECT COUNT(r.Id) FROM Reviews r 
-                    JOIN Appointments a ON r.AppointmentId = a.Id 
-                    JOIN TimeSlots ts ON a.TimeSlotId = ts.Id WHERE ts.DoctorId = d.Id) AS TotalReviews
-            FROM Doctors d
-            INNER JOIN Locations l ON d.LocationId = l.Id
-            INNER JOIN Specialties s ON d.SpecialtyId = s.Id";
+            string query = @"SELECT 
+                                d.Id, 
+                                u.FullName as full_name,          -- Sửa từ full_name thành FullName
+                                d.workplace, 
+                                d.SpecificAddress, 
+                                d.experience_years, 
+                                u.Picture,           -- Lấy từ bảng Users
+                                d.Price, 
+                                u.status, 
+                                d.bio, 
+                                s.Name AS SpecialtyName, 
+                                l.Name AS LocationName,
+                                (SELECT AVG(CAST(r.Rating AS FLOAT)) FROM Reviews r 
+                                 JOIN Appointments a ON r.AppointmentId = a.Id 
+                                 JOIN TimeSlots ts ON a.TimeSlotId = ts.Id WHERE ts.DoctorId = d.Id) AS AvgRating,
+                                (SELECT COUNT(r.Id) FROM Reviews r 
+                                 JOIN Appointments a ON r.AppointmentId = a.Id 
+                                 JOIN TimeSlots ts ON a.TimeSlotId = ts.Id WHERE ts.DoctorId = d.Id) AS TotalReviews
+                            FROM Doctors d
+                            INNER JOIN Locations l ON d.LocationId = l.Id
+                            INNER JOIN Specialties s ON d.SpecialtyId = s.Id
+                            INNER JOIN Users u ON d.UserId = u.UserId -- PHẢI CÓ DÒNG NÀY: Nối Doctors với Users qua UserId
+                            ORDER BY d.Id;";
 
             DataTable dt = DBHelper.GetDataTable(query);
 

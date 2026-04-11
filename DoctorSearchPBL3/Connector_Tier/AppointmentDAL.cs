@@ -15,7 +15,7 @@ namespace DAL_Tier
             List<AppointmentDTO> list = new List<AppointmentDTO>();
             string query = @"SELECT 
                                 a.Id AS Id,
-                                p.full_name AS full_name, 
+                                u.FullName AS full_name, 
                                 u.phone_number AS phone_number, 
                                 t.Date AS Date, 
                                 t.StartTime, 
@@ -25,7 +25,7 @@ namespace DAL_Tier
                                 a.CreatedAt 
                             FROM Appointments a 
                             LEFT JOIN Patients p ON a.PatientId = p.Id 
-                            LEFT JOIN Users u ON p.UserId = u.Id 
+                            LEFT JOIN Users u ON p.UserId = u.UserId 
                             LEFT JOIN TimeSlots t ON a.TimeSlotId = t.Id
                             ORDER BY t.Date DESC;"; // Sắp xếp theo ngày mới nhất
             DataTable dt = DBHelper.GetDataTable(query);
