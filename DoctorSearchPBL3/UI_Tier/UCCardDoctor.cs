@@ -32,57 +32,116 @@ namespace UI_Tier
         // Hàm này dùng để "đổ" dữ liệu từ đối tượng Doctor vào các Label
         // Trong UCCardDoctor.cs
 
+        //    public void SetDoctorData(DoctorDTO doctor, bool isGuess)
+
+        //    {
+        //        if (doctor == null) return;
+        //        // 1. Tên bác sĩ
+        //        lblFullName.Text = doctor.User.FullName;
+        //        // 2. Nơi làm việc
+        //        lblWorkPlace.Text = doctor.ClinicName;
+        //        // 3. Địa chỉ (Kết hợp địa chỉ chi tiết và tên khu vực)
+        //        lblSpecificAdress.Text = $"{doctor.ClinicAddress}, {doctor.Location.LocationName}";
+
+        //        // 4. Thời gian làm việc (Nếu trong DTO bạn có trường Status hoặc WorkingTime)
+        //        // Giả sử Status chứa chuỗi "Thứ 2 - Thứ 6, 8:00 - 16:00"
+        //        lblWorkingTime.Text = string.IsNullOrEmpty(doctor.WorkingTime) ? "Giờ làm việc: Chưa cập nhật" : "Từ " + doctor.WorkingTime +" giờ";
+
+        //        // 5. Giá tiền
+        //        if (doctor.Price.HasValue)
+        //        {
+        //            // Định dạng tiền tệ: ví dụ 500000 -> 500,000 VNĐ
+        //            lblPrice.Text = doctor.Price.Value.ToString("#,##0") + " VNĐ"; 
+        //}
+        //        else
+        //        {
+        //            lblPrice.Text = "Giá: Liên hệ";
+        //        }
+
+        //        // 6. Đánh giá (Số sao và tổng lượt review)
+        //        //lblRating.Text = $"{doctor.AverageRating}";
+        //        //lblTotalReviews.Text = $"({doctor.TotalReviews} đánh giá)";
+
+        //        // 7. Kinh nghiệm
+        //        lblEx.Text = $"{doctor.Experience_Years} năm kinh nghiệm";
+
+        //        // 8. Chuyên khoa (Cái nhãn màu xanh góc trên cùng bên phải)
+        //        lblSpecialtyTag.Text = doctor.Specialty.SpecialtyName;
+
+        //        // 9. Hình ảnh
+        //        string fileName = doctor.User.Picture?.Trim(); // Thêm Trim() để xóa khoảng trắng thừa
+
+        //        // Thử in ra console hoặc Debug để xem đường dẫn thực tế mà app đang tìm
+        //        string imageFolder = Path.Combine(Application.StartupPath, "Resources_Images");
+        //        string imagePath = Path.Combine(imageFolder, fileName ?? "");
+
+        //        // Dòng này cực kỳ quan trọng để bạn tự kiểm tra lỗi
+        //        System.Diagnostics.Debug.WriteLine("Đường dẫn tìm ảnh: " + imagePath);
+
+        //        if (!string.IsNullOrEmpty(fileName) && File.Exists(imagePath))
+        //        {
+        //            // Giải phóng ảnh cũ nếu có để tránh tràn bộ nhớ
+        //            if (picDoctor.Image != null) picDoctor.Image.Dispose();
+
+        //            // Dùng FileStream để tránh việc file bị khóa (Lock)
+        //            using (FileStream fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
+        //            {
+        //                picDoctor.Image = Image.FromStream(fs);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            // Nếu không tìm thấy, gán ảnh mặc định từ Resource (nếu bạn đã add vào Resources.resx)
+        //            // Hoặc tạm thời để trống để biết là không tìm thấy file
+        //            picDoctor.Image = null;
+        //            System.Diagnostics.Debug.WriteLine("KHÔNG TÌM THẤY FILE ẢNH!");
+        //        }
+
+        //        // 10. Button
+        //        if(isGuess)
+        //            btnBook.Text = "Đăng nhập để đặt lịch";
+        //        else
+        //            btnBook.Text = "Đặt lịch";
+        //    }
+
         public void SetDoctorData(DoctorDTO doctor, bool isGuess)
-
         {
-            // 1. Tên bác sĩ
-            lblFullName.Text = doctor.FullName;
-            // 2. Nơi làm việc
-            lblWorkPlace.Text = doctor.Workplace;
-            // 3. Địa chỉ (Kết hợp địa chỉ chi tiết và tên khu vực)
-            lblSpecificAdress.Text = $"{doctor.SpecificAddress}, {doctor.LocationName}";
+            if (doctor == null) return;
 
-            // 4. Thời gian làm việc (Nếu trong DTO bạn có trường Status hoặc WorkingTime)
-            // Giả sử Status chứa chuỗi "Thứ 2 - Thứ 6, 8:00 - 16:00"
-            lblWorkingTime.Text = string.IsNullOrEmpty(doctor.WorkingTime) ? "Giờ làm việc: Chưa cập nhật" : "Từ " + doctor.WorkingTime +" giờ";
+            // 1. Tên bác sĩ - Dùng ?. để an toàn
+            lblFullName.Text = doctor.User?.FullName ?? "N/A";
 
-            // 5. Giá tiền
-            // Vì Price trong DTO mới là string hoặc đã thay đổi, ta cần ép kiểu để định dạng
-            if (decimal.TryParse(doctor.Price, out decimal priceValue))
-            {
-                lblPrice.Text = priceValue.ToString("#,##0") + ".000VNĐ";
-            }
+            // 2. Nơi làm việc [cite: 27]
+            lblWorkPlace.Text = doctor.ClinicName ?? "Phòng khám riêng";
+
+            // 3. Địa chỉ (Kiểm tra null cho Location để tránh lỗi như trong hình) [cite: 31]
+            lblSpecificAdress.Text = $"{doctor.ClinicAddress}, {doctor.Location?.LocationName ?? "N/A"}";
+
+            // 4. Thời gian làm việc
+            lblWorkingTime.Text = string.IsNullOrEmpty(doctor.WorkingTime)
+                ? "Giờ làm việc: Chưa cập nhật"
+                : "Lịch: " + doctor.WorkingTime;
+
+            // 5. Giá tiền [cite: 27]
+            if (doctor.Price.HasValue)
+                lblPrice.Text = doctor.Price.Value.ToString("#,##0") + " VNĐ";
             else
-            {
-                lblPrice.Text = "Liên hệ";
-            }
+                lblPrice.Text = "Giá: Liên hệ";
 
-            // 6. Đánh giá (Số sao và tổng lượt review)
-            lblRating.Text = $"{doctor.AverageRating}";
-            lblTotalReviews.Text = $"({doctor.TotalReviews} đánh giá)";
+            // 7. Kinh nghiệm [cite: 27]
+            lblEx.Text = $"{(doctor.Experience_Years ?? 0)} năm kinh nghiệm";
 
-            // 7. Kinh nghiệm
-            lblEx.Text = $"{doctor.ExperienceYears} năm kinh nghiệm";
-
-            // 8. Chuyên khoa (Cái nhãn màu xanh góc trên cùng bên phải)
-            lblSpecialtyTag.Text = doctor.SpecialtyName;
+            // 8. Chuyên khoa [cite: 33]
+            lblSpecialtyTag.Text = doctor.Specialty?.SpecialtyName ?? "Đa khoa";
 
             // 9. Hình ảnh
-            string fileName = doctor.Picture?.Trim(); // Thêm Trim() để xóa khoảng trắng thừa
-
-            // Thử in ra console hoặc Debug để xem đường dẫn thực tế mà app đang tìm
+            string fileName = doctor.User?.Picture?.Trim();
             string imageFolder = Path.Combine(Application.StartupPath, "Resources_Images");
             string imagePath = Path.Combine(imageFolder, fileName ?? "");
 
-            // Dòng này cực kỳ quan trọng để bạn tự kiểm tra lỗi
-            System.Diagnostics.Debug.WriteLine("Đường dẫn tìm ảnh: " + imagePath);
-
             if (!string.IsNullOrEmpty(fileName) && File.Exists(imagePath))
             {
-                // Giải phóng ảnh cũ nếu có để tránh tràn bộ nhớ
                 if (picDoctor.Image != null) picDoctor.Image.Dispose();
-
-                // Dùng FileStream để tránh việc file bị khóa (Lock)
                 using (FileStream fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
                 {
                     picDoctor.Image = Image.FromStream(fs);
@@ -90,18 +149,14 @@ namespace UI_Tier
             }
             else
             {
-                // Nếu không tìm thấy, gán ảnh mặc định từ Resource (nếu bạn đã add vào Resources.resx)
-                // Hoặc tạm thời để trống để biết là không tìm thấy file
-                picDoctor.Image = null;
-                System.Diagnostics.Debug.WriteLine("KHÔNG TÌM THẤY FILE ẢNH!");
+                picDoctor.Image = null; // Hoặc gán ảnh mặc định
             }
 
             // 10. Button
-            if(isGuess)
-                btnBook.Text = "Đăng nhập để đặt lịch";
-            else
-                btnBook.Text = "Đặt lịch";
+            btnBook.Text = isGuess ? "Đăng nhập để đặt lịch" : "Đặt lịch ngay";
         }
+
+
 
         private void UCCardDoctor_Paint(object sender, PaintEventArgs e)
         {
