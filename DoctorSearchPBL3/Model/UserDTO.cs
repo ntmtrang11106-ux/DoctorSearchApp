@@ -1,38 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DTO_Tier
 {
+   
+    [Table("User")] // Tên bảng theo source [cite: 20]
     public class UserDTO
     {
-        // Khóa chính đã đồng bộ là UserId
-        public int Id { get; set; }
+        [Key]
+        public int Id { get; set; } // 
 
-        public string PhoneNumber { get; set; }
+        [Required]
+        public string Role { get; set; } // 
 
-        public string Password { get; set; }
+        [Required]
+        [StringLength(15)]
+        public string PhoneNumber { get; set; } // 
 
-        public string FullName { get; set; }
+        [Required]
+        [StringLength(100)]
+        public string FullName { get; set; } // 
 
-        // Vai trò người dùng: 'Admin', 'Doctor', 'Patient'
-        public string Role { get; set; }
+        [Required]
+        [StringLength(255)]
+        public string Password { get; set; } // 
 
-        // Trạng thái hoạt động (True: Active, False: Locked)
-        public string Status { get; set; }
+        public DateTime? Dob { get; set; } // 
+        public string Gender { get; set; } // 
+        public string CCCD { get; set; } // 
 
-        // --- CÁC TRƯỜNG MỚI BỔ SUNG TỪ DB CHUẨN HÓA V2.0 ---
+        [StringLength(255)]
+        public string Residential_Address { get; set; } // 
 
-        // Ngày sinh (Nullable vì trong DB chúng ta để Allow Null)
-        public DateTime? Dob { get; set; }
+        public string Picture { get; set; } // 
+        public string Status { get; set; } // 
 
-        // Giới tính (Nam, Nữ, Khác)
-        public string Gender { get; set; }
-
-        // Số Căn cước công dân
-        public string CCCD { get; set; }
-
-        // Đường dẫn ảnh chân dung hoặc chuỗi Base64
-        public string Picture { get; set; }
+        public DateTime Created_At { get; set; } = DateTime.Now; // 
     }
 }
