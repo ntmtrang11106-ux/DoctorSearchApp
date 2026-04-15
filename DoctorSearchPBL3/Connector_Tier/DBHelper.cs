@@ -1,13 +1,14 @@
-﻿using Microsoft.Data.SqlClient; // Dùng thư viện Microsoft
+﻿using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Configuration; // Nếu bạn dùng web.config hoặc app.config
 
 namespace DAL_Tier
 {
     public class DBHelper
     {
-        private static string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=DoctorSearchDB;Integrated Security=True;TrustServerCertificate=True";
+        // Cập nhật tên Database thành DoctorSearchDB_CodeFirst cho đồng bộ với AppDbContext
+        private static string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=DoctorSearchDB_CodeFirst;Integrated Security=True;TrustServerCertificate=True";
 
-        // Hàm lấy dữ liệu (Dùng cho SELECT)
         public static DataTable GetDataTable(string query, SqlParameter[] parameters = null)
         {
             DataTable dt = new DataTable();
@@ -15,41 +16,22 @@ namespace DAL_Tier
             {
                 SqlCommand cmd = new SqlCommand(query, conn);
                 if (parameters != null) cmd.Parameters.AddRange(parameters);
-
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
-                try
-                {
-                    conn.Open();
-                    da.Fill(dt);
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine("Lỗi DBHelper GetDataTable: " + ex.Message);
-                }
+                try { conn.Open(); da.Fill(dt); }
+                catch (Exception ex) { System.Diagnostics.Debug.WriteLine("Lỗi GetDataTable: " + ex.Message); }
             }
             return dt;
         }
 
-        // Hàm thực thi lệnh (Dùng cho INSERT, UPDATE, DELETE)
         public static bool ExecuteNonQuery(string query, SqlParameter[] parameters = null)
         {
-            int rows = 0;
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 SqlCommand cmd = new SqlCommand(query, conn);
                 if (parameters != null) cmd.Parameters.AddRange(parameters);
-                try
-                {
-                    conn.Open();
-                    rows = cmd.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine("Lỗi DBHelper ExecuteNonQuery: " + ex.Message);
-                    return false;
-                }
+                try { conn.Open(); return cmd.ExecuteNonQuery() > 0; }
+                catch (Exception ex) { System.Diagnostics.Debug.WriteLine("Lỗi ExecuteNonQuery: " + ex.Message); return false; }
             }
-            return rows > 0;
         }
     }
 }

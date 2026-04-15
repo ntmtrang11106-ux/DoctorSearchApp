@@ -1,53 +1,54 @@
-﻿//namespace DTO_Tier
-//{
-//    public class DoctorDTO
-//    {
-//        public int Id { get; set; }
-//        public string full_name { get; set; }
-//        public string Workplace { get; set; }
-//        public string LocationName { get; set; }
-//        public string SpecialtyName { get; set; }
-//        public int ExperienceYears { get; set; }
-//        public double AvgRating { get; set; }
-//        public int TotalReviews { get; set; }
-//    }
-//}
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DTO_Tier
 {
+   
+    [Table("Doctor")] // [cite: 26]
     public class DoctorDTO
     {
-        // Khớp với cột Id trong bảng Doctors
-        public int Id { get; set; }
+        [Key]
+        public int Id { get; set; } // 
 
-        // Khớp với cột full_name trong bảng Doctors
-        public string FullName { get; set; } = string.Empty;
+        [Required]
+        public int UserId { get; set; } // Kết nối 1-1 với tài khoản User 
 
-        // Khớp với cột workplace trong bảng Doctors
-        public string Workplace { get; set; } = string.Empty;
+        [Required]
+        public string CertificateImage { get; set; } // Chứng chỉ hành nghề (Unique trong DB) 
 
-        // Lấy từ bảng Locations (thông qua LocationId)
-        public string LocationName { get; set; } = string.Empty;
+        [Required]
+        [StringLength(255)]
+        public string ClinicAddress { get; set; } // Địa chỉ chi tiết nơi khám bệnh 
 
-        // Lấy từ bảng Specialties (thông qua SpecialtyId)
-        public string SpecialtyName { get; set; } = string.Empty;
+        public string ClinicName { get; set; } // Tên phòng khám 
 
-        // Khớp với cột experience_years trong bảng Doctors
-        public int ExperienceYears { get; set; }
+        // Giữ nguyên lỗi chính tả "Exxperience" theo đúng file Word của bạn
+        public int? Experience_Years { get; set; } // Năm kinh nghiệm 
 
-        // Các trường tính toán (thường lấy từ bảng Reviews hoặc Appointments)
-        public double AverageRating { get; set; }
-        public int TotalReviews { get; set; }
+        public string Bio { get; set; } // Tiểu sử giới thiệu ngắn 
 
-        // Bạn có thể thêm trường này nếu cần hiển thị tiểu sử tóm tắt
-        public string Bio { get; set; } = string.Empty;
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? Price { get; set; } // Giá tiền mỗi lượt khám 
 
-        public string SpecificAddress {  get; set; } = string.Empty;
+        public string WorkingTime { get; set; } // Mô tả giờ làm việc tổng quát 
 
-        public decimal Price { get; set; }
+        public int? LocationId { get; set; } // Liên kết với mã khu vực 
 
-        public string Status {  get; set; } = string.Empty;
+        public int? SpecialtyId { get; set; } // Liên kết với mã chuyên khoa 
 
-        public string Picture { get; set; } 
+        [Required]
+        public bool IsApproved { get; set; } = false; // 0: Chờ duyệt, 1: Đã duyệt 
+
+        // --- CÁC THUỘC TÍNH LIÊN KẾT (NAVIGATION PROPERTIES) ---
+        // Những dòng này giúp EF Core tự động JOIN các bảng cho bạn
+
+        [ForeignKey("UserId")]
+        public virtual UserDTO User { get; set; } // 
+
+        [ForeignKey("LocationId")]
+        public virtual LocationDTO Location { get; set; } // 
+
+        [ForeignKey("SpecialtyId")]
+        public virtual SpecialtyDTO Specialty { get; set; } // 
     }
 }
