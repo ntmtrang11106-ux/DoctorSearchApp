@@ -90,7 +90,7 @@ namespace UI_Tier
             string phone = textBox1.Text.Trim();
             string pass = textBox4.Text.Trim();
             string confirm = textBox5.Text.Trim();
-            DateTime dob = dateTimePicker1.Value;
+            DateTime dob = dtpDOB.Value;
             string gender = radioButton1.Checked ? "Nam" : "Nữ";
 
             // 3. Truyền biến currentRole vào hàm Register của BUS
