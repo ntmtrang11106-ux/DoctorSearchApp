@@ -35,31 +35,31 @@ namespace UI_Tier
         public void SetDoctorData(DoctorDTO doctor, bool isGuess)
 
         {
-            lblFullName.Text = doctor.FullName;
-            lblWorkPlace.Text = doctor.Workplace;
+            lblFullName.Text = doctor.User.FullName;
+            lblWorkPlace.Text = doctor.ClinicName;
             // 3. Địa chỉ (Kết hợp địa chỉ chi tiết và tên khu vực)
-            lblSpecificAdress.Text = $"{doctor.SpecificAddress}, {doctor.LocationName}";
+            lblSpecificAdress.Text = $"{doctor.ClinicAddress}, {doctor.Location.LocationName}";
 
             // 4. Thời gian làm việc (Nếu trong DTO bạn có trường Status hoặc WorkingTime)
             // Giả sử Status chứa chuỗi "Thứ 2 - Thứ 6, 8:00 - 16:00"
-            lblWorkingTime.Text = doctor.Status;
+            lblWorkingTime.Text = doctor.User.Status;
 
             // 5. Giá tiền (Định dạng tiền tệ VNĐ: 500.000đ)
-            lblPrice.Text = doctor.Price.ToString("#,##0") + "đ";
+            lblPrice.Text = UIHelper.FormatVND(doctor.Price);
 
             // 6. Đánh giá (Số sao và tổng lượt review)
             lblRating.Text = $"{doctor.AverageRating}";
             lblTotalReviews.Text = $"({doctor.TotalReviews} đánh giá)";
 
             // 7. Kinh nghiệm
-            lblEx.Text = $"{doctor.ExperienceYears} năm kinh nghiệm";
+            lblEx.Text = $"{doctor.Experience_Years} năm kinh nghiệm";
 
             // 8. Chuyên khoa (Cái nhãn màu xanh góc trên cùng bên phải)
-            lblSpecialtyTag.Text = doctor.SpecialtyName;
+            lblSpecialtyTag.Text = doctor.Specialty.SpecialtyName;
 
             // 9. Hình ảnh (Nếu có đường dẫn hoặc Image)
             // 9. Hình ảnh
-            string fileName = doctor.Picture?.Trim(); // Thêm Trim() để xóa khoảng trắng thừa
+            string fileName = doctor.User.Picture?.Trim(); // Thêm Trim() để xóa khoảng trắng thừa
 
             // Thử in ra console hoặc Debug để xem đường dẫn thực tế mà app đang tìm
             string imageFolder = Path.Combine(Application.StartupPath, "Resources_Images");

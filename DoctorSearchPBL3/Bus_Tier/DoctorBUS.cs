@@ -38,5 +38,24 @@ namespace BUS_Tier
             bool result = doctorDAL.UpdateDoctor(doctor);
             return result ? "Cập nhật thành công!" : "Cập nhật thất bại, vui lòng kiểm tra lại!";
         }
+        private void CalculateDoctorStats(DoctorDTO doctor)
+        {
+            if (doctor.Reviews != null && doctor.Reviews.Any())
+            {
+                // Chỉ lấy những đánh giá được phép hiển thị theo file Word 
+                var validReviews = doctor.Reviews.Where(r => r.IsVisible).ToList();
+
+                if (validReviews.Any())
+                {
+                    doctor.TotalReviews = validReviews.Count;
+                    doctor.AverageRating = Math.Round(validReviews.Average(r => r.Rating), 1);
+                }
+                else
+                {
+                    doctor.TotalReviews = 0;
+                    doctor.AverageRating = 5.0; // Mặc định 5 sao cho chuyên nghiệp
+                }
+            }
+        }
     }
 }

@@ -49,6 +49,14 @@ namespace DTO_Tier
         public virtual LocationDTO Location { get; set; } // 
 
         [ForeignKey("SpecialtyId")]
-        public virtual SpecialtyDTO Specialty { get; set; } // 
+        public virtual SpecialtyDTO Specialty { get; set; } //
+                                                            //
+        [NotMapped]
+        public double AverageRating { get; set; } // Sẽ được BUS tính và gán vào
+
+        [NotMapped]
+        public int TotalReviews { get; set; } // Sẽ được BUS đếm và gán vào
+
+        public virtual ICollection<ReviewsDTO> Reviews { get; set; } = new List<ReviewsDTO>();
     }
 }
