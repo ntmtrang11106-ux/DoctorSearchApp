@@ -23,7 +23,7 @@ namespace DTO_Tier
         public string Symptoms { get; set; } // Triệu chứng bệnh nhân nhập 
 
         [StringLength(20)]
-        public string Status { get; set; } = "Chờ duyệt"; // Trạng thái: Chờ duyệt, Thành công... 
+        public string Status { get; set; } //= "Chờ duyệt"; // Trạng thái: Chờ duyệt, Thành công... 
 
         public DateTime CreatedAt { get; set; } = DateTime.Now; // Thời điểm ghi nhận lịch đặt 
 

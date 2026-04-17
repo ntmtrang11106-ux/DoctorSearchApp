@@ -79,7 +79,10 @@ namespace UI_Tier
             }
             else if (result == "Doctor")
             {
-                MessageBox.Show("Tài khoản Bác sĩ: Hiện tại chưa có Form giao diện.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.Hide();
+                frmDoctor f = new frmDoctor();
+                f.ShowDialog();
+                this.Close();
             }
             else if (result == "Admin")
             {

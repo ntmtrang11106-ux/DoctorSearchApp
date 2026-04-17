@@ -22,7 +22,7 @@ namespace UI_Tier
         // Khai báo một lần ở cấp độ class để tái sử dụng
         private AppointmentBUS _bus = new AppointmentBUS();
 
-        private List<AppointmentDTO> _allApps = new List<AppointmentDTO>();
+        private List<AppointmentsDTO> _allApps = new List<AppointmentsDTO>();
         private int _pageSize = 10;     // Số lượng 1 trang
         private int _currentPage = 1;  // Trang hiện tại
 

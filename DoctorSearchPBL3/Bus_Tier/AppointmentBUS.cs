@@ -9,9 +9,8 @@ namespace BUS_Tier
     public class AppointmentBUS
     {
         private AppointmentDAL dal = new AppointmentDAL();
-        private List<AppointmentDTO> _cachedList; // "Kho" chứa data
 
-        public List<AppointmentDTO> GetAll()
+        public List<AppointmentsDTO> GetAll()
         {
             return dal.GetAllAppointments();
         }

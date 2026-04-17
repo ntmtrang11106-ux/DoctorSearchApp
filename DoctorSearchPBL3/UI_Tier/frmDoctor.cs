@@ -21,6 +21,24 @@ namespace UI_Tier
             ucDoctor_Appointment AppointmentControl = new ucDoctor_Appointment();
             AppointmentControl.Dock = DockStyle.Fill; // Đảm bảo UserControl chiếm toàn bộ pnMain
             pnMain.Controls.Add(AppointmentControl);
+
+        }
+
+        /// <summary>
+        /// Hàm dùng chung để thay đổi nội dung hiển thị trong panel chính (pnMain).
+        /// Việc dùng hàm này giúp giải phóng bộ nhớ (Dispose) các Control cũ, tránh giật lag.
+        /// </summary>
+        private void ShowUserControl(UserControl uc)
+        {
+            // Giải phóng các control cũ để tối ưu RAM
+            foreach (Control ctrl in pnMain.Controls)
+            {
+                ctrl.Dispose();
+            }
+
+            pnMain.Controls.Clear();
+            uc.Dock = DockStyle.Fill;
+            pnMain.Controls.Add(uc);
         }
 
         private void btnLogout_Click(object sender, EventArgs e)
