@@ -14,5 +14,16 @@ namespace BUS_Tier
         {
             return dal.GetAllAppointments();
         }
+
+        //tạo lịch hẹn mới
+        public bool BookAppointment(AppointmentsDTO app)
+        {
+            // 1. Logic: Kiểm tra nếu các ID quan trọng bị trống thì không cho đặt
+            if (app.PatientId <= 0 || app.DoctorId <= 0 || app.TimeSlotId <= 0)
+                return false;
+
+            // 2. Gọi DAL thực hiện thêm vào DB
+            return dal.CreateAppointment(app);
+        }
     }
 }

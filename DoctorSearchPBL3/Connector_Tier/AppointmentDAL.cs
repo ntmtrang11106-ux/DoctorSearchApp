@@ -122,5 +122,27 @@ namespace DAL_Tier
             }
             return list;
         }
+
+        //Tạo lịch hẹn mới
+        public bool CreateAppointment(AppointmentsDTO app)
+        {
+            // Tên bảng và cột khớp với SQL của bạn ([User], Patient, Appointments)
+            string query = @"
+                INSERT INTO Appointments (PatientId, DoctorId, TimeSlotId, Symptoms, Status, CreatedAt)
+                VALUES (@PatientId, @DoctorId, @TimeSlotId, @Symptoms, @Status, @CreatedAt)";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@PatientId", app.PatientId),
+                new SqlParameter("@DoctorId", app.DoctorId),
+                new SqlParameter("@TimeSlotId", app.TimeSlotId),
+                new SqlParameter("@Symptoms", (object)app.Symptoms ?? DBNull.Value),
+                new SqlParameter("@Status", app.Status ?? "Chờ duyệt"),
+                new SqlParameter("@CreatedAt", DateTime.Now)
+            };
+
+            // Tận dụng hàm ExecuteNonQuery từ DBHelper của bạn
+            return DBHelper.ExecuteNonQuery(query, parameters);
+        }
     }
 }
