@@ -13,10 +13,19 @@ namespace BUS_Tier
         private ArticleDAL _articleDAL = new ArticleDAL();
 
         // Một hàm trả về cả 2 danh sách để Form hiển thị
-        public (List<DoctorDTO> doctors, List<ArticleDTO> articles) GetIntegratedSearch(string keyword, string spec, string loc)
+        public (List<DoctorDTO> doctors, List<ArticlesDTO> articles) ExecuteIntegratedSearch(
+    string keyword,
+    List<string> specs,
+    string loc,
+    string gender,
+    string sortDoctor,
+    string sortArticle)
         {
-            var doctors = _doctorDAL.SearchDoctors(keyword, spec, loc);
-            var articles = _articleDAL.SearchArticles(keyword);
+            // Gọi DAL tìm Bác sĩ
+            var doctors = _doctorDAL.SearchDoctors(keyword, specs, loc, gender, sortDoctor);
+
+            // Gọi DAL tìm Bài viết
+            var articles = _articleDAL.SearchArticles(keyword, specs, sortArticle);
 
             return (doctors, articles);
         }

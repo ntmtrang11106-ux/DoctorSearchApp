@@ -92,8 +92,10 @@
             txtSearchBar.Location = new Point(144, 21);
             txtSearchBar.Name = "txtSearchBar";
             txtSearchBar.PlaceholderText = "Tìm kiếm tên bác sĩ ...";
-            txtSearchBar.Size = new Size(1653, 57);
+            txtSearchBar.Size = new Size(1653, 44);
             txtSearchBar.TabIndex = 1;
+            txtSearchBar.TextChanged += txtSearchBar_TextChanged;
+            txtSearchBar.KeyDown += txtSearchBar_KeyDown;
             // 
             // pnlSearch
             // 
@@ -129,7 +131,7 @@
             lblPageStatus.Location = new Point(1396, 16);
             lblPageStatus.Name = "lblPageStatus";
             lblPageStatus.RightToLeft = RightToLeft.No;
-            lblPageStatus.Size = new Size(67, 41);
+            lblPageStatus.Size = new Size(49, 30);
             lblPageStatus.TabIndex = 2;
             lblPageStatus.Text = "1/...";
             // 
@@ -140,7 +142,7 @@
             lblPrev.Font = new Font("Segoe UI", 11F);
             lblPrev.Location = new Point(1157, 16);
             lblPrev.Name = "lblPrev";
-            lblPrev.Size = new Size(219, 41);
+            lblPrev.Size = new Size(160, 30);
             lblPrev.TabIndex = 1;
             lblPrev.Text = "Trang trước <<";
             lblPrev.Click += lblPrev_Click;
@@ -152,7 +154,7 @@
             lblNext.Font = new Font("Segoe UI", 11F);
             lblNext.Location = new Point(1590, 16);
             lblNext.Name = "lblNext";
-            lblNext.Size = new Size(194, 41);
+            lblNext.Size = new Size(141, 30);
             lblNext.TabIndex = 0;
             lblNext.Text = ">> Trang sau";
             lblNext.Click += lblNext_Click;
@@ -305,7 +307,7 @@
             label2.Font = new Font("Segoe UI", 13F, FontStyle.Italic);
             label2.Location = new Point(56, 84);
             label2.Name = "label2";
-            label2.Size = new Size(880, 47);
+            label2.Size = new Size(645, 36);
             label2.TabIndex = 1;
             label2.Text = "Đặt lịch khám nhanh chóng, tư vấn chuyên khoa tiện lợi";
             // 
@@ -315,7 +317,7 @@
             label1.Font = new Font("Segoe UI", 17F, FontStyle.Bold);
             label1.Location = new Point(43, 12);
             label1.Name = "label1";
-            label1.Size = new Size(735, 62);
+            label1.Size = new Size(535, 46);
             label1.TabIndex = 0;
             label1.Text = "Tìm kiếm bác sĩ phù hợp với bạn";
             // 
@@ -330,7 +332,7 @@
             // 
             // frmGuest
             // 
-            AutoScaleDimensions = new SizeF(15F, 37F);
+            AutoScaleDimensions = new SizeF(11F, 28F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(1845, 977);

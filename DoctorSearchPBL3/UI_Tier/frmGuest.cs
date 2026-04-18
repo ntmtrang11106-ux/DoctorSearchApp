@@ -129,5 +129,15 @@ namespace UI_Tier
                 DisplayPage(_currentPage);
             }
         }
+
+        private void txtSearchBar_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtSearchBar_KeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
     }
 }

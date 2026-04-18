@@ -1,38 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using DTO_Tier;
+﻿using DTO_Tier;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Text;
 
 namespace DAL_Tier
 {
     public class ArticleDAL
     {
-        public List<ArticleDTO> SearchArticles(string keyword)
+        public List<ArticlesDTO> SearchArticles(string keyword, List<string> selectedSpecs, string sortType)
         {
-            List<ArticleDTO> list = new List<ArticleDTO>();
-            // Tìm trong Tiêu đề hoặc Nội dung bài viết
-            string query = "SELECT * FROM Articles WHERE Title LIKE @key OR Content LIKE @key";
-            SqlParameter[] parameters = {
-                new SqlParameter("@key", "%" + keyword + "%")
-            };
-
-            DataTable dt = DBHelper.GetDataTable(query, parameters);
-            foreach (DataRow row in dt.Rows)
+            using (var context = new AppDbContext())
             {
-                list.Add(new ArticleDTO
+                // 1. Khởi tạo truy vấn kèm theo bảng nối Chuyên khoa
+                var query = context.Articles
+                    .Include(a => a.ArticleSpecialties)
+                        .ThenInclude(aspec => aspec.Specialty)
+                    .AsQueryable();
+
+                // 2. Lọc theo từ khóa trong Tiêu đề
+                if (!string.IsNullOrEmpty(keyword))
+                    query = query.Where(a => a.Title.Contains(keyword));
+
+                // 3. Lọc đa chuyên khoa (N-N)
+                if (selectedSpecs != null && selectedSpecs.Any() && !selectedSpecs.Contains("Tất cả"))
                 {
-                    Id = Convert.ToInt32(row["Id"]),
-                    Title = row["Title"].ToString(),
-                    Content = row["Content"].ToString(),
-                    Thumbnail = row["Thumbnail"].ToString(),
-                    Views = Convert.ToInt32(row["Views"]),
-                    CreatedAt = Convert.ToDateTime(row["CreatedAt"])
-                });
+                    query = query.Where(a => a.ArticleSpecialties.Any(aspec => selectedSpecs.Contains(aspec.Specialty.SpecialtyName)));
+                }
+
+                // 4. Sắp xếp linh hoạt theo ý Trang
+                switch (sortType)
+                {
+                    case "Mới nhất":
+                        query = query.OrderByDescending(a => a.CreatedAt);
+                        break;
+                    case "Xem nhiều nhất":
+                        query = query.OrderByDescending(a => a.Views);
+                        break;
+                    case "Xem ít nhất":
+                        query = query.OrderBy(a => a.Views);
+                        break;
+                    default:
+                        query = query.OrderByDescending(a => a.CreatedAt);
+                        break;
+                }
+
+                return query.ToList();
             }
-            return list;
         }
+        // Cách lấy Bài viết kèm tất cả Chuyên khoa bằng EF Core (CodeFirst)
+        public List<ArticlesDTO> GetAllArticles()
+        {
+            using (var context = new AppDbContext())
+            {
+                return context.Articles
+                    .Include(a => a.ArticleSpecialties) // Bốc bảng nối
+                        .ThenInclude(aspec => aspec.Specialty) // Bốc tên chuyên khoa từ bảng nối đó
+                    .ToList();
+            }
+        }
+
     }
 }
