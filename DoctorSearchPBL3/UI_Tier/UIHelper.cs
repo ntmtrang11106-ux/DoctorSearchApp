@@ -53,5 +53,17 @@ namespace UI_Tier
                 BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
                 null, control, new object[] { true });
         }
+        // --- HÀM MỚI: Xử lý hiển thị tiền tệ chuẩn Việt Nam ---
+        public static string FormatVND(decimal? price)
+        {
+            // Kiểm tra nếu giá trị bị null hoặc bằng 0 theo đúng file Word [cite: 27]
+            if (!price.HasValue || price == 0)
+            {
+                return "Liên hệ";
+            }
+
+            // "N0" giúp tự động thêm dấu chấm phân cách hàng nghìn (VD: 500.000)
+            return price.Value.ToString("N0") + " đ";
+        }
     }
 }
