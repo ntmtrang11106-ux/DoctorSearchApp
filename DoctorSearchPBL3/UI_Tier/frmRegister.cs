@@ -43,6 +43,16 @@ namespace UI_Tier
                 panel8.BackColor = Color.FromArgb(24, 112, 255); // Hoặc màu xanh bạn thích
                 label4.ForeColor = Color.White;
                 label5.ForeColor = Color.White;
+
+                // Ẩn các thông tin chỉ dành cho bác sĩ nếu có (ví dụ: Chuyên khoa, Số năm kinh nghiệm...)
+                panel14.Hide();
+                panel22.Hide();
+                panel25.Hide();
+                panel26.Hide();
+                panel15.Hide();
+
+                // Hiển thị các thông tin chỉ dành cho bệnh nhân nếu có (ví dụ: BHYT...)
+                panel27.Show();
             }
             else
             {
@@ -55,6 +65,16 @@ namespace UI_Tier
                 panel7.BackColor = Color.FromArgb(24, 112, 255);
                 label2.ForeColor = Color.White;
                 label3.ForeColor = Color.White;
+
+                // Ẩn các thông tin chỉ dành cho bệnh nhân nếu có (ví dụ: BHYT...)
+                panel27.Hide();
+
+                // Hiển thị các thông tin chỉ dành cho bác sĩ nếu có (ví dụ: Chuyên khoa, Số năm kinh nghiệm...)
+                panel14.Show();
+                panel22.Show();
+                panel25.Show();
+                panel26.Show();
+                panel15.Show();
             }
             this.ResumeLayout();
         }
@@ -87,7 +107,7 @@ namespace UI_Tier
 
             // 2. Lấy thông tin từ các control
             string name = txtUsername.Text.Trim();
-            string phone = textBox1.Text.Trim();
+            string phone = txtPhoneNumber.Text.Trim();
             string pass = textBox4.Text.Trim();
             string confirm = textBox5.Text.Trim();
             DateTime dob = dtpDOB.Value;
@@ -107,5 +127,10 @@ namespace UI_Tier
             }
         }
         #endregion
+
+        private void panel29_MouseClick(object sender, MouseEventArgs e)
+        {
+            ofdCCHN.ShowDialog();
+        }
     }
 }

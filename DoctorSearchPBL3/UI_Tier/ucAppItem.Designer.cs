@@ -29,17 +29,13 @@
         private void InitializeComponent()
         {
             lblPatientName = new Label();
-            pictureBox1 = new PictureBox();
-            pictureBox2 = new PictureBox();
             pictureBox3 = new PictureBox();
             lblPhoneNumber = new Label();
             lblDate = new Label();
             lblTime = new Label();
             lblSymptoms = new Label();
-            pictureBox4 = new PictureBox();
             btnStatus = new Button();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
+            pictureBox4 = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             SuspendLayout();
@@ -48,38 +44,18 @@
             // 
             lblPatientName.AutoSize = true;
             lblPatientName.Font = new Font("Segoe UI", 15F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblPatientName.Location = new Point(68, 23);
+            lblPatientName.Location = new Point(370, 71);
             lblPatientName.Name = "lblPatientName";
             lblPatientName.Size = new Size(317, 54);
             lblPatientName.TabIndex = 0;
             lblPatientName.Text = "Nguyễn Văn An";
             // 
-            // pictureBox1
-            // 
-            pictureBox1.Image = Properties.Resources.telephone;
-            pictureBox1.Location = new Point(74, 102);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(37, 37);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 1;
-            pictureBox1.TabStop = false;
-            // 
-            // pictureBox2
-            // 
-            pictureBox2.Image = Properties.Resources.calendar;
-            pictureBox2.Location = new Point(72, 165);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(37, 37);
-            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox2.TabIndex = 2;
-            pictureBox2.TabStop = false;
-            // 
             // pictureBox3
             // 
             pictureBox3.Image = Properties.Resources.clock;
-            pictureBox3.Location = new Point(73, 228);
+            pictureBox3.Location = new Point(39, 119);
             pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(37, 37);
+            pictureBox3.Size = new Size(55, 55);
             pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox3.TabIndex = 3;
             pictureBox3.TabStop = false;
@@ -87,65 +63,66 @@
             // lblPhoneNumber
             // 
             lblPhoneNumber.AutoSize = true;
-            lblPhoneNumber.Font = new Font("Segoe UI", 10F);
-            lblPhoneNumber.Location = new Point(136, 101);
+            lblPhoneNumber.Font = new Font("Segoe UI", 11F);
+            lblPhoneNumber.Location = new Point(380, 154);
             lblPhoneNumber.Name = "lblPhoneNumber";
-            lblPhoneNumber.Size = new Size(167, 37);
+            lblPhoneNumber.Size = new Size(178, 41);
             lblPhoneNumber.TabIndex = 4;
             lblPhoneNumber.Text = "0000000000";
             // 
             // lblDate
             // 
             lblDate.AutoSize = true;
-            lblDate.Font = new Font("Segoe UI", 10F);
-            lblDate.Location = new Point(136, 164);
+            lblDate.Font = new Font("Segoe UI", 11F);
+            lblDate.Location = new Point(124, 98);
             lblDate.Name = "lblDate";
-            lblDate.Size = new Size(159, 37);
+            lblDate.Size = new Size(170, 41);
             lblDate.TabIndex = 5;
             lblDate.Text = "22/10/2026";
             // 
             // lblTime
             // 
             lblTime.AutoSize = true;
-            lblTime.Font = new Font("Segoe UI", 10F);
-            lblTime.Location = new Point(136, 227);
+            lblTime.Font = new Font("Segoe UI", 11F);
+            lblTime.Location = new Point(122, 154);
             lblTime.Name = "lblTime";
-            lblTime.Size = new Size(174, 37);
+            lblTime.Size = new Size(190, 41);
             lblTime.TabIndex = 6;
             lblTime.Text = "8h30' - 9h45'";
             // 
             // lblSymptoms
             // 
-            lblSymptoms.Font = new Font("Segoe UI", 10F);
-            lblSymptoms.Location = new Point(575, 101);
+            lblSymptoms.Font = new Font("Segoe UI", 11F);
+            lblSymptoms.ImageAlign = ContentAlignment.MiddleLeft;
+            lblSymptoms.Location = new Point(828, 119);
             lblSymptoms.Name = "lblSymptoms";
-            lblSymptoms.Size = new Size(1182, 170);
+            lblSymptoms.Size = new Size(542, 131);
             lblSymptoms.TabIndex = 7;
             lblSymptoms.Text = "Đau ngực, khó thở";
-            // 
-            // pictureBox4
-            // 
-            pictureBox4.Image = Properties.Resources.document;
-            pictureBox4.Location = new Point(529, 101);
-            pictureBox4.Name = "pictureBox4";
-            pictureBox4.Size = new Size(37, 37);
-            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox4.TabIndex = 8;
-            pictureBox4.TabStop = false;
             // 
             // btnStatus
             // 
             btnStatus.BackColor = Color.PaleGreen;
             btnStatus.FlatAppearance.BorderSize = 0;
             btnStatus.FlatStyle = FlatStyle.Flat;
-            btnStatus.Font = new Font("Segoe UI", 11F);
+            btnStatus.Font = new Font("Segoe UI", 12F);
             btnStatus.ForeColor = Color.DarkGreen;
-            btnStatus.Location = new Point(552, 27);
+            btnStatus.Location = new Point(1414, 119);
             btnStatus.Name = "btnStatus";
-            btnStatus.Size = new Size(254, 47);
+            btnStatus.Size = new Size(254, 55);
             btnStatus.TabIndex = 9;
             btnStatus.Text = "Thành công";
             btnStatus.UseVisualStyleBackColor = false;
+            // 
+            // pictureBox4
+            // 
+            pictureBox4.Image = Properties.Resources.document;
+            pictureBox4.Location = new Point(749, 119);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new Size(55, 55);
+            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox4.TabIndex = 8;
+            pictureBox4.TabStop = false;
             // 
             // ucAppItem
             // 
@@ -159,13 +136,9 @@
             Controls.Add(lblDate);
             Controls.Add(lblPhoneNumber);
             Controls.Add(pictureBox3);
-            Controls.Add(pictureBox2);
-            Controls.Add(pictureBox1);
             Controls.Add(lblPatientName);
             Name = "ucAppItem";
-            Size = new Size(1828, 298);
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+            Size = new Size(2295, 298);
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             ResumeLayout(false);
@@ -175,14 +148,12 @@
         #endregion
 
         private Label lblPatientName;
-        private PictureBox pictureBox1;
-        private PictureBox pictureBox2;
         private PictureBox pictureBox3;
         private Label lblPhoneNumber;
         private Label lblDate;
         private Label lblTime;
         private Label lblSymptoms;
-        private PictureBox pictureBox4;
         private Button btnStatus;
+        private PictureBox pictureBox4;
     }
 }

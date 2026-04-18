@@ -47,7 +47,7 @@ namespace UI_Tier
             }
             btnStatus.Text = data.Status ?? "Chờ duyệt";
             //
-            
+
 
             // 2. Xử lý hiển thị cho trạng thái (Status)
             btnStatus.Text = data.Status;
