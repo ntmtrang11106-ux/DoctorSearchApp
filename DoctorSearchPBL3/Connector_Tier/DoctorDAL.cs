@@ -149,17 +149,21 @@ namespace DAL_Tier
         {
             List<DoctorDTO> list = new List<DoctorDTO>();
 
-            // Query lấy đầy đủ thông tin từ các bảng liên quan [cite: 21, 27, 31, 33]
+            // Cập nhật Query để tính toán AvgRating và TotalCount từ bảng Reviews 
             string query = @"
-                SELECT 
-                    d.*, 
-                    u.FullName, u.PhoneNumber, u.Picture, u.Status, u.CCCD,
-                    s.SpecialtyName,
-                    l.LocationName
-                FROM Doctor d
-                INNER JOIN [User] u ON d.UserId = u.Id
-                LEFT JOIN Specialtie s ON d.SpecialtyId = s.Id
-                LEFT JOIN Location l ON d.LocationId = l.Id";
+            SELECT 
+                d.*, 
+                u.FullName, u.PhoneNumber, u.Picture, u.Status, u.CCCD,
+                s.SpecialtyName,
+                l.LocationName,
+                -- Tính trung bình số sao từ bảng Reviews, nếu không có thì trả về 0 
+                ISNULL((SELECT AVG(CAST(Rating AS FLOAT)) FROM Reviews r WHERE r.DoctorID = d.Id AND r.IsVisible = 1), 0) AS AvgRating,
+                -- Đếm tổng số lượt đánh giá công khai 
+                (SELECT COUNT(*) FROM Reviews r WHERE r.DoctorID = d.Id AND r.IsVisible = 1) AS TotalCount
+            FROM Doctor d
+            INNER JOIN [User] u ON d.UserId = u.Id
+            LEFT JOIN Specialtie s ON d.SpecialtyId = s.Id
+            LEFT JOIN Location l ON d.LocationId = l.Id";
 
             DataTable dt = DBHelper.GetDataTable(query);
 
@@ -178,7 +182,11 @@ namespace DAL_Tier
                     WorkingTime = row["WorkingTime"]?.ToString(),
                     IsApproved = row["IsApproved"] != DBNull.Value && Convert.ToBoolean(row["IsApproved"]),
 
-                    // KHỞI TẠO CÁC ĐỐI TƯỢNG LỒNG (Navigation Properties) để tránh lỗi NullReferenceException
+                    // Gán giá trị đã tính toán vào các thuộc tính DTO 
+
+                    AverageRating = row["AvgRating"] != DBNull.Value ? Convert.ToDouble(row["AvgRating"]) : 0,
+                    TotalReviews = row["TotalCount"] != DBNull.Value ? Convert.ToInt32(row["TotalCount"]) : 0,
+
                     User = new UserDTO
                     {
                         FullName = row["FullName"]?.ToString(),
