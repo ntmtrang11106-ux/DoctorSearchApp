@@ -72,49 +72,63 @@ namespace DAL_Tier
         //}
 
 
-        // Trong AppointmentDAL.cs
         public List<AppointmentsDTO> GetAllAppointments()
         {
             List<AppointmentsDTO> list = new List<AppointmentsDTO>();
 
-            // Sửa lại Query: Thay INNER thành LEFT và đảm bảo khoảng trắng
+            // Query lấy 'Full combo': Thông tin Appointment + Patient + Doctor + TimeSlot
             string query = @"
-            SELECT 
-                a.Id, a.PatientId, a.DoctorId, a.TimeSlotId, a.Symptoms, a.Status, a.CreatedAt,
-                u.FullName, u.PhoneNumber, 
-                t.Date, t.StartTime, t.EndTime
-            FROM Appointments a
-            LEFT JOIN Patient p ON a.PatientId = p.Id
-            LEFT JOIN [User] u ON p.UserId = u.Id
-            LEFT JOIN TimeSlots t ON a.TimeSlotId = t.Id
-            ORDER BY a.CreatedAt DESC"; // Sắp xếp theo lịch mới nhất
+                            SELECT 
+                                a.Id, a.PatientId, a.DoctorId, a.TimeSlotId, a.Symptoms, a.Status, a.CreatedAt,
+                                up.FullName AS PatientName, up.PhoneNumber AS PatientPhone,
+                                ud.FullName AS DoctorName,
+                                t.Date, t.StartTime, t.EndTime
+                            FROM Appointments a
+                            LEFT JOIN Patient p ON a.PatientId = p.Id
+                            LEFT JOIN [User] up ON p.UserId = up.Id
+                            LEFT JOIN Doctor d ON a.DoctorId = d.Id
+                            LEFT JOIN [User] ud ON d.UserId = ud.Id
+                            LEFT JOIN TimeSlots t ON a.TimeSlotId = t.Id
+                            ORDER BY a.CreatedAt DESC";
 
             DataTable dt = DBHelper.GetDataTable(query);
 
             foreach (DataRow row in dt.Rows)
             {
+                // Hàm phụ check null và chuyển đổi để code chính nhìn cho gọn
                 list.Add(new AppointmentsDTO
                 {
                     Id = Convert.ToInt32(row["Id"]),
-                    PatientId = row["PatientId"] != DBNull.Value ? Convert.ToInt32(row["PatientId"]) : 0,
-                    DoctorId = row["DoctorId"] != DBNull.Value ? Convert.ToInt32(row["DoctorId"]) : 0,
-                    TimeSlotId = row["TimeSlotId"] != DBNull.Value ? Convert.ToInt32(row["TimeSlotId"]) : 0,
+                    PatientId = Convert.ToInt32(row["PatientId"]),
+                    DoctorId = Convert.ToInt32(row["DoctorId"]),
+                    TimeSlotId = Convert.ToInt32(row["TimeSlotId"]),
                     Symptoms = row["Symptoms"]?.ToString() ?? "Không có triệu chứng",
                     Status = row["Status"]?.ToString() ?? "Chờ duyệt",
                     CreatedAt = Convert.ToDateTime(row["CreatedAt"]),
 
-                    // Đổ dữ liệu vào đối tượng lồng nhau (Navigation Properties)
+                    // Đổ dữ liệu Bệnh nhân
                     Patient = new PatientDTO
                     {
                         User = new UserDTO
                         {
-                            FullName = row["FullName"] != DBNull.Value ? row["FullName"].ToString() : "N/A",
-                            PhoneNumber = row["PhoneNumber"] != DBNull.Value ? row["PhoneNumber"].ToString() : "N/A"
+                            FullName = row["PatientName"] != DBNull.Value ? row["PatientName"].ToString() : "N/A",
+                            PhoneNumber = row["PatientPhone"] != DBNull.Value ? row["PatientPhone"].ToString() : "N/A"
                         }
                     },
+
+                    // Đổ dữ liệu Bác sĩ (Nhớ thêm property Doctor vào AppointmentsDTO nếu chưa có)
+                    Doctor = new DoctorDTO
+                    {
+                        User = new UserDTO
+                        {
+                            FullName = row["DoctorName"] != DBNull.Value ? row["DoctorName"].ToString() : "BS. Chưa xác định"
+                        }
+                    },
+
+                    // Đổ dữ liệu Khung giờ
                     TimeSlot = new TimeSlotsDTO
                     {
-                        Date = row["Date"] != DBNull.Value ? Convert.ToDateTime(row["Date"]) : DateTime.Now,
+                        Date = row["Date"] != DBNull.Value ? Convert.ToDateTime(row["Date"]) : DateTime.MinValue,
                         StartTime = row["StartTime"] != DBNull.Value ? (TimeSpan)row["StartTime"] : TimeSpan.Zero,
                         EndTime = row["EndTime"] != DBNull.Value ? (TimeSpan)row["EndTime"] : TimeSpan.Zero
                     }
@@ -126,23 +140,34 @@ namespace DAL_Tier
         //Tạo lịch hẹn mới
         public bool CreateAppointment(AppointmentsDTO app)
         {
-            // Tên bảng và cột khớp với SQL của bạn ([User], Patient, Appointments)
+            // Cẩn thận với các bảng có tên trùng từ khóa như [User] (nếu sau này có đụng tới)
             string query = @"
-                INSERT INTO Appointments (PatientId, DoctorId, TimeSlotId, Symptoms, Status, CreatedAt)
-                VALUES (@PatientId, @DoctorId, @TimeSlotId, @Symptoms, @Status, @CreatedAt)";
+            INSERT INTO Appointments (PatientId, DoctorId, TimeSlotId, Symptoms, Status, CreatedAt)
+            VALUES (@PatientId, @DoctorId, @TimeSlotId, @Symptoms, @Status, @CreatedAt)";
 
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@PatientId", app.PatientId),
-                new SqlParameter("@DoctorId", app.DoctorId),
-                new SqlParameter("@TimeSlotId", app.TimeSlotId),
-                new SqlParameter("@Symptoms", (object)app.Symptoms ?? DBNull.Value),
-                new SqlParameter("@Status", app.Status ?? "Chờ duyệt"),
-                new SqlParameter("@CreatedAt", DateTime.Now)
-            };
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@PatientId", app.PatientId),
+                    new SqlParameter("@DoctorId", app.DoctorId),
+                    new SqlParameter("@TimeSlotId", app.TimeSlotId),
+                    // Nếu Symptoms null thì đẩy DBNull xuống database
+                    new SqlParameter("@Symptoms", (object)app.Symptoms ?? DBNull.Value),
+                    // Ưu tiên Status từ app, nếu không có thì để mặc định 'Chờ duyệt'
+                    new SqlParameter("@Status", string.IsNullOrEmpty(app.Status) ? "Chờ duyệt" : app.Status),
+                    // Luôn lấy thời điểm hiện tại của hệ thống để làm thời gian tạo
+                    new SqlParameter("@CreatedAt", DateTime.Now)
+                };
 
-            // Tận dụng hàm ExecuteNonQuery từ DBHelper của bạn
-            return DBHelper.ExecuteNonQuery(query, parameters);
+                try
+                {
+                    return DBHelper.ExecuteNonQuery(query, parameters);
+                }
+                catch (Exception ex)
+                {
+                    // Debug nhẹ nếu có lỗi xảy ra (ví dụ lỗi khóa ngoại)
+                    Console.WriteLine("Lỗi khi tạo Appointment: " + ex.Message);
+                    return false;
+                }
         }
     }
 }

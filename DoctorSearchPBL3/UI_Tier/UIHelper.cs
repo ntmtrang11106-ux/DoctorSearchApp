@@ -28,6 +28,7 @@ namespace UI_Tier
             control.Region = new Region(GetRoundedPath(control.ClientRectangle, radius));
         }
 
+        // Hàm này dùng để vẽ lại Button với bo góc và viền tùy chỉnh
         public static void btn_Paint(object sender, PaintEventArgs e)
         {
             Button btn = (Button)sender;
@@ -43,6 +44,33 @@ namespace UI_Tier
             using (Pen pen = new Pen(btn.BackColor, 1))
             {
                 e.Graphics.DrawPath(pen, GetRoundedPath(btn.ClientRectangle, borderRadius));
+            }
+        }
+
+        // Hàm này dùng để vẽ lại UserControl với bo góc và viền tùy chỉnh
+        public static void uc_Paint(object sender, PaintEventArgs e, int radius, Color borderColor, int borderSize)
+        {
+            Control uc = (Control)sender;
+            if (uc == null) return;
+
+            // Khử răng cưa cực quan trọng để viền không bị nát
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            // QUAN TRỌNG: Trừ đi 1 pixel ở Width và Height 
+            // Điều này giúp đường vẽ của Pen nằm trọn vẹn bên trong khung đã cắt
+            Rectangle rect = new Rectangle(0, 0, uc.Width - 1, uc.Height - 1);
+
+            if (borderSize > 0)
+            {
+                using (GraphicsPath pathBorder = GetRoundedPath(rect, radius))
+                {
+                    using (Pen pen = new Pen(borderColor, borderSize))
+                    {
+                        // Inset giúp đẩy viền vào trong, tránh bị mất nét do Region cắt
+                        pen.Alignment = PenAlignment.Inset;
+                        e.Graphics.DrawPath(pen, pathBorder);
+                    }
+                }
             }
         }
 
