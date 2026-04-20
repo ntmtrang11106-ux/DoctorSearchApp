@@ -10,19 +10,6 @@ namespace UI_Tier
         public UCCardDoctor()
         {
             InitializeComponent();
-            // Bo góc cho toàn bộ Card (nếu muốn)
-            UIHelper.ApplyRoundedRegion(this, 15);
-
-            // Bo góc cho Label chuyên khoa ở góc phải
-            UIHelper.ApplyRoundedRegion(lblSpecialtyTag, 8);
-
-            // Bo góc cho Button Đăng nhập
-            UIHelper.ApplyRoundedRegion(btnBook, 10);
-
-            // Bo góc cho PictureBox (nếu bạn muốn bo nhẹ 4 góc)
-            UIHelper.ApplyRoundedRegion(picDoctor, 15);
-
-            UIHelper.ApplyRoundedRegion(pnlContainer, 20);
 
         }
 
@@ -33,6 +20,8 @@ namespace UI_Tier
         public void SetDoctorData(DoctorDTO doctor, bool isGuess)
 
         {
+
+
             lblFullName.Text = doctor.User.FullName;
             lblWorkPlace.Text = doctor.ClinicName;
             // 3. Địa chỉ (Kết hợp địa chỉ chi tiết và tên khu vực)
@@ -85,7 +74,7 @@ namespace UI_Tier
             }
 
             // 10. Button
-            if(isGuess)
+            if (isGuess)
                 btnBook.Text = "Đăng nhập để đặt lịch";
             else
                 btnBook.Text = "Đặt lịch";
@@ -111,5 +100,21 @@ namespace UI_Tier
             }
         }
 
+        private void UCCardDoctor_Load(object sender, EventArgs e)
+        {
+            // Bo góc cho toàn bộ Card (nếu muốn)
+            UIHelper.ApplyRoundedRegion(this, 15);
+
+            // Bo góc cho Label chuyên khoa ở góc phải
+            UIHelper.ApplyRoundedRegion(lblSpecialtyTag, 8);
+
+            // Bo góc cho Button Đăng nhập
+            UIHelper.ApplyRoundedRegion(btnBook, 10);
+
+            // Bo góc cho PictureBox (nếu bạn muốn bo nhẹ 4 góc)
+            UIHelper.ApplyRoundedRegion(picDoctor, 15);
+
+            UIHelper.ApplyRoundedRegion(pnlContainer, 20);
+        }
     }
 }
