@@ -38,7 +38,7 @@ namespace BUS_Tier
             bool result = doctorDAL.UpdateDoctor(doctor);
             return result ? "Cập nhật thành công!" : "Cập nhật thất bại, vui lòng kiểm tra lại!";
         }
-        private void CalculateDoctorStats(DoctorDTO doctor)
+        public void CalculateDoctorStats(DoctorDTO doctor)
         {
             if (doctor.Reviews != null && doctor.Reviews.Any())
             {
