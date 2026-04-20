@@ -26,29 +26,22 @@ namespace BUS_Tier
         //}
 
         // Cập nhật thông tin và kiểm tra logic
-        public string UpdateProfile(int userId, string cccd, string cchn, string exp, int clinicId, int specId, string workingTime)
-        {
-<<<<<<<<< Temporary merge branch 1
-            if (string.IsNullOrEmpty(cccd) || string.IsNullOrEmpty(cchn))
-                return "Vui lòng nhập đầy đủ CCCD và Mã chứng chỉ hành nghề!";
-=========
-            // 1. Sửa tên biến thành Experience_Years theo DTO mới
-            if (doctor.Experience_Years < 0) return "Số năm kinh nghiệm không hợp lệ!";
+        //public string UpdateProfile(int userId, string cccd, string cchn, string exp, int clinicId, int specId, string workingTime)
+        //{
+        //    if (string.IsNullOrEmpty(cccd) || string.IsNullOrEmpty(cchn))
+        //        return "Vui lòng nhập đầy đủ CCCD và Mã chứng chỉ hành nghề!";
+        //    // 1. Sửa tên biến thành Experience_Years theo DTO mới
+        //    if (doctor.Experience_Years < 0) return "Số năm kinh nghiệm không hợp lệ!";
 
-            // 2. Kiểm tra FullName thông qua đối tượng User
-            if (doctor.User == null || string.IsNullOrEmpty(doctor.User.FullName))
-                return "Tên bác sĩ không được để trống!";
->>>>>>>>> Temporary merge branch 2
+        //    // 2. Kiểm tra FullName thông qua đối tượng User
+        //    if (doctor.User == null || string.IsNullOrEmpty(doctor.User.FullName))
+        //        return "Tên bác sĩ không được để trống!";
 
-            if (cccd.Length != 12) return "CCCD không hợp lệ!";
+        //    if (cccd.Length != 12) return "CCCD không hợp lệ!";
 
-            bool success = doctorDAL.UpdateDoctorProfile(userId, cccd, cchn, exp, clinicId, specId, workingTime);
-            return success ? "Success" : "Lỗi khi cập nhật hồ sơ bác sĩ!";
-        }
-<<<<<<<<< Temporary merge branch 1
-    }
-} 
-=========
+        //    bool success = doctorDAL.UpdateDoctorProfile(userId, cccd, cchn, exp, clinicId, specId, workingTime);
+        //    return success ? "Success" : "Lỗi khi cập nhật hồ sơ bác sĩ!";
+        //}
         private void CalculateDoctorStats(DoctorDTO doctor)
         {
             if (doctor.Reviews != null && doctor.Reviews.Any())
@@ -70,4 +63,3 @@ namespace BUS_Tier
         }
     }
 }
->>>>>>>>> Temporary merge branch 2
