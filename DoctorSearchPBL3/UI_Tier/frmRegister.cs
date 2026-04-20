@@ -6,6 +6,8 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using DTO_Tier;
+using DAL_Tier;
 
 namespace UI_Tier
 {

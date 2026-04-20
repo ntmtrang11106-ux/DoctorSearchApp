@@ -124,12 +124,12 @@
             // pnlContainer
             // 
             pnlContainer.BackColor = Color.White;
+            pnlContainer.Controls.Add(label2);
             pnlContainer.Controls.Add(label7);
             pnlContainer.Controls.Add(label6);
             pnlContainer.Controls.Add(label5);
             pnlContainer.Controls.Add(label4);
             pnlContainer.Controls.Add(label3);
-            pnlContainer.Controls.Add(label2);
             pnlContainer.Controls.Add(label1);
             pnlContainer.Controls.Add(lblRating);
             pnlContainer.Controls.Add(picDoctor);
@@ -149,51 +149,85 @@
             // 
             // label7
             // 
+            label7.BackColor = Color.Transparent;
             label7.Font = new Font("Segoe MDL2 Assets", 15F);
             label7.ForeColor = Color.DodgerBlue;
+<<<<<<< Updated upstream
             label7.Location = new Point(36, 752);
             label7.Name = "label7";
             label7.Size = new Size(50, 50);
+=======
+            label7.Location = new Point(25, 756);
+            label7.Margin = new Padding(4, 0, 4, 0);
+            label7.Name = "label7";
+            label7.Size = new Size(65, 65);
+>>>>>>> Stashed changes
             label7.TabIndex = 25;
             label7.Text = "";
             // 
             // label6
             // 
+            label6.BackColor = Color.Transparent;
             label6.Font = new Font("Segoe MDL2 Assets", 15F);
             label6.ForeColor = Color.Gold;
+<<<<<<< Updated upstream
             label6.Location = new Point(36, 692);
             label6.Name = "label6";
             label6.Size = new Size(50, 50);
+=======
+            label6.Location = new Point(25, 697);
+            label6.Margin = new Padding(4, 0, 4, 0);
+            label6.Name = "label6";
+            label6.Size = new Size(65, 65);
+>>>>>>> Stashed changes
             label6.TabIndex = 24;
             label6.Text = "";
             // 
             // label5
             // 
+            label5.BackColor = Color.Transparent;
             label5.Font = new Font("Segoe MDL2 Assets", 15F);
             label5.ForeColor = Color.DodgerBlue;
             label5.Location = new Point(36, 612);
             label5.Name = "label5";
+<<<<<<< Updated upstream
             label5.Size = new Size(50, 50);
+=======
+            label5.Size = new Size(65, 65);
+>>>>>>> Stashed changes
             label5.TabIndex = 23;
             label5.Text = "";
             // 
             // label4
             // 
+            label4.BackColor = Color.Transparent;
             label4.Font = new Font("Segoe MDL2 Assets", 15F);
             label4.ForeColor = Color.DodgerBlue;
             label4.Location = new Point(36, 553);
             label4.Name = "label4";
+<<<<<<< Updated upstream
             label4.Size = new Size(50, 50);
+=======
+            label4.Size = new Size(65, 65);
+>>>>>>> Stashed changes
             label4.TabIndex = 22;
             label4.Text = "";
             // 
             // label3
             // 
+            label3.BackColor = Color.Transparent;
             label3.Font = new Font("Segoe MDL2 Assets", 15F);
             label3.ForeColor = Color.DodgerBlue;
+<<<<<<< Updated upstream
             label3.Location = new Point(36, 501);
             label3.Name = "label3";
             label3.Size = new Size(50, 50);
+=======
+            label3.Location = new Point(25, 497);
+            label3.Margin = new Padding(4, 0, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new Size(65, 65);
+>>>>>>> Stashed changes
             label3.TabIndex = 21;
             label3.Text = "";
             // 
