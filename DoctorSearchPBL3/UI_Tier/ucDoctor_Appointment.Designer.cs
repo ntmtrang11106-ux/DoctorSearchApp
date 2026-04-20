@@ -292,7 +292,7 @@
             flpAppItem.AutoScroll = true;
             flpAppItem.FlowDirection = FlowDirection.TopDown;
             flpAppItem.Location = new Point(0, 528);
-            flpAppItem.Margin = new Padding(0, 0, 3, 3);
+            flpAppItem.Margin = new Padding(0);
             flpAppItem.Name = "flpAppItem";
             flpAppItem.Size = new Size(1845, 334);
             flpAppItem.TabIndex = 7;

@@ -11,6 +11,9 @@ namespace UI_Tier
         {
             InitializeComponent();
 
+            UIHelper.SetDoubleBuffered(this); // Kích hoạt Double Buffering cho UserControl để giảm nhấp nháy
+
+            this.Paint+=(sender, e) => UIHelper.uc_Paint(sender, e, 20, Color.FromArgb(224, 224, 224), 2);
         }
 
 
@@ -80,26 +83,6 @@ namespace UI_Tier
                 btnBook.Text = "Đặt lịch";
         }
 
-        private void UCCardDoctor_Paint(object sender, PaintEventArgs e)
-        {
-            Control paintControl = (Control)sender;
-            // Cấu hình màu viền (Xám nhạt) và độ dày (1px)
-            Color borderColor = Color.FromArgb(224, 224, 224);
-            int borderWidth = 1;
-            int borderRadius = 20; // Khớp với độ bo góc bạn đã làm
-
-            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-
-            using (Pen pen = new Pen(borderColor, borderWidth))
-            {
-                // Vẽ đường viền theo khung đã bo góc
-                using (var path = UIHelper.GetRoundedPath(paintControl.ClientRectangle, borderRadius))
-                {
-                    e.Graphics.DrawPath(pen, path);
-                }
-            }
-        }
-
         private void UCCardDoctor_Load(object sender, EventArgs e)
         {
             // Bo góc cho toàn bộ Card (nếu muốn)
@@ -113,8 +96,6 @@ namespace UI_Tier
 
             // Bo góc cho PictureBox (nếu bạn muốn bo nhẹ 4 góc)
             UIHelper.ApplyRoundedRegion(picDoctor, 15);
-
-            UIHelper.ApplyRoundedRegion(pnlContainer, 20);
         }
     }
 }
