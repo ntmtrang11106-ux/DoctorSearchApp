@@ -30,17 +30,18 @@
         {
             picDoctor = new PictureBox();
             lblFullName = new Label();
-            pictureBox1 = new PictureBox();
-            pictureBox2 = new PictureBox();
-            pictureBox3 = new PictureBox();
-            pictureBox4 = new PictureBox();
+            lblSpecialtyTag = new Label();
             btnBook = new Button();
             lblEx = new Label();
             lblTotalReviews = new Label();
             pnlContainer = new Panel();
+            label7 = new Label();
+            label6 = new Label();
+            label5 = new Label();
+            label4 = new Label();
+            label3 = new Label();
             label2 = new Label();
             label1 = new Label();
-            pictureBox5 = new PictureBox();
             lblRating = new Label();
             lblPrice = new Label();
             lblWorkingTime = new Label();
@@ -48,12 +49,7 @@
             lblWorkPlace = new Label();
             flpSpecialties = new FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)picDoctor).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             pnlContainer.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
             SuspendLayout();
             // 
             // picDoctor
@@ -78,49 +74,19 @@
             lblFullName.TabIndex = 1;
             lblFullName.Text = "Label1";
             // 
-            // pictureBox1
+            // lblSpecialtyTag
             // 
-            pictureBox1.Image = Properties.Resources.location;
-            pictureBox1.Location = new Point(31, 382);
-            pictureBox1.Margin = new Padding(2, 2, 2, 2);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(35, 35);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 6;
-            pictureBox1.TabStop = false;
-            // 
-            // pictureBox2
-            // 
-            pictureBox2.Image = Properties.Resources.clock;
-            pictureBox2.Location = new Point(32, 432);
-            pictureBox2.Margin = new Padding(2, 2, 2, 2);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(31, 31);
-            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox2.TabIndex = 7;
-            pictureBox2.TabStop = false;
-            // 
-            // pictureBox3
-            // 
-            pictureBox3.Image = Properties.Resources.star;
-            pictureBox3.Location = new Point(33, 542);
-            pictureBox3.Margin = new Padding(2, 2, 2, 2);
-            pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(31, 31);
-            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox3.TabIndex = 11;
-            pictureBox3.TabStop = false;
-            // 
-            // pictureBox4
-            // 
-            pictureBox4.Image = Properties.Resources.sun;
-            pictureBox4.Location = new Point(32, 588);
-            pictureBox4.Margin = new Padding(2, 2, 2, 2);
-            pictureBox4.Name = "pictureBox4";
-            pictureBox4.Size = new Size(35, 35);
-            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox4.TabIndex = 12;
-            pictureBox4.TabStop = false;
+            lblSpecialtyTag.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblSpecialtyTag.AutoSize = true;
+            lblSpecialtyTag.BackColor = Color.FromArgb(24, 112, 255);
+            lblSpecialtyTag.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblSpecialtyTag.ForeColor = SystemColors.ControlLightLight;
+            lblSpecialtyTag.Location = new Point(541, 26);
+            lblSpecialtyTag.Name = "lblSpecialtyTag";
+            lblSpecialtyTag.Padding = new Padding(5, 2, 5, 2);
+            lblSpecialtyTag.Size = new Size(93, 36);
+            lblSpecialtyTag.TabIndex = 5;
+            lblSpecialtyTag.Text = "label1";
             // 
             // btnBook
             // 
@@ -163,23 +129,22 @@
             // pnlContainer
             // 
             pnlContainer.BackColor = Color.White;
-            pnlContainer.Controls.Add(flpSpecialties);
+            pnlContainer.Controls.Add(label7);
+            pnlContainer.Controls.Add(label6);
+            pnlContainer.Controls.Add(label5);
+            pnlContainer.Controls.Add(label4);
+            pnlContainer.Controls.Add(label3);
             pnlContainer.Controls.Add(label2);
             pnlContainer.Controls.Add(label1);
-            pnlContainer.Controls.Add(pictureBox5);
             pnlContainer.Controls.Add(lblRating);
             pnlContainer.Controls.Add(picDoctor);
             pnlContainer.Controls.Add(lblPrice);
-            pnlContainer.Controls.Add(pictureBox3);
             pnlContainer.Controls.Add(lblWorkingTime);
             pnlContainer.Controls.Add(lblSpecificAdress);
             pnlContainer.Controls.Add(lblWorkPlace);
             pnlContainer.Controls.Add(lblFullName);
-            pnlContainer.Controls.Add(pictureBox4);
             pnlContainer.Controls.Add(lblTotalReviews);
             pnlContainer.Controls.Add(lblEx);
-            pnlContainer.Controls.Add(pictureBox2);
-            pnlContainer.Controls.Add(pictureBox1);
             pnlContainer.Dock = DockStyle.Fill;
             pnlContainer.Location = new Point(8, 8);
             pnlContainer.Margin = new Padding(2, 2, 2, 2);
@@ -187,6 +152,56 @@
             pnlContainer.Padding = new Padding(8, 8, 8, 8);
             pnlContainer.Size = new Size(499, 687);
             pnlContainer.TabIndex = 19;
+            // 
+            // label7
+            // 
+            label7.Font = new Font("Segoe MDL2 Assets", 15F);
+            label7.ForeColor = Color.DodgerBlue;
+            label7.Location = new Point(36, 752);
+            label7.Name = "label7";
+            label7.Size = new Size(50, 50);
+            label7.TabIndex = 25;
+            label7.Text = "";
+            // 
+            // label6
+            // 
+            label6.Font = new Font("Segoe MDL2 Assets", 15F);
+            label6.ForeColor = Color.Gold;
+            label6.Location = new Point(36, 692);
+            label6.Name = "label6";
+            label6.Size = new Size(50, 50);
+            label6.TabIndex = 24;
+            label6.Text = "";
+            // 
+            // label5
+            // 
+            label5.Font = new Font("Segoe MDL2 Assets", 15F);
+            label5.ForeColor = Color.DodgerBlue;
+            label5.Location = new Point(36, 612);
+            label5.Name = "label5";
+            label5.Size = new Size(50, 50);
+            label5.TabIndex = 23;
+            label5.Text = "";
+            // 
+            // label4
+            // 
+            label4.Font = new Font("Segoe MDL2 Assets", 15F);
+            label4.ForeColor = Color.DodgerBlue;
+            label4.Location = new Point(36, 553);
+            label4.Name = "label4";
+            label4.Size = new Size(50, 50);
+            label4.TabIndex = 22;
+            label4.Text = "";
+            // 
+            // label3
+            // 
+            label3.Font = new Font("Segoe MDL2 Assets", 15F);
+            label3.ForeColor = Color.DodgerBlue;
+            label3.Location = new Point(36, 501);
+            label3.Name = "label3";
+            label3.Size = new Size(50, 50);
+            label3.TabIndex = 21;
+            label3.Text = "";
             // 
             // label2
             // 
@@ -205,17 +220,6 @@
             label1.Name = "label1";
             label1.Size = new Size(0, 25);
             label1.TabIndex = 19;
-            // 
-            // pictureBox5
-            // 
-            pictureBox5.Image = Properties.Resources.coin;
-            pictureBox5.Location = new Point(32, 478);
-            pictureBox5.Margin = new Padding(2, 2, 2, 2);
-            pictureBox5.Name = "pictureBox5";
-            pictureBox5.Size = new Size(31, 31);
-            pictureBox5.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox5.TabIndex = 18;
-            pictureBox5.TabStop = false;
             // 
             // lblRating
             // 
@@ -296,15 +300,11 @@
             Name = "UCCardDoctor";
             Padding = new Padding(10);
             Size = new Size(670, 900);
+            Load += UCCardDoctor_Load;
             Paint += UCCardDoctor_Paint;
             ((System.ComponentModel.ISupportInitialize)picDoctor).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             pnlContainer.ResumeLayout(false);
             pnlContainer.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
             ResumeLayout(false);
         }
 
@@ -313,10 +313,7 @@
         private PictureBox picDoctor;
         private Label lblFullName;
         private Label lblHospital;
-        private PictureBox pictureBox1;
-        private PictureBox pictureBox2;
-        private PictureBox pictureBox3;
-        private PictureBox pictureBox4;
+        private Label lblSpecialtyTag;
         private Button btnBook;
         private Label lblEx;
         private Label lblTotalReviews;
@@ -326,9 +323,12 @@
         private Label lblWorkingTime;
         private Label lblSpecificAdress;
         private Label lblWorkPlace;
-        private PictureBox pictureBox5;
         private Label label1;
         private Label label2;
-        private FlowLayoutPanel flpSpecialties;
+        private Label label3;
+        private Label label6;
+        private Label label5;
+        private Label label4;
+        private Label label7;
     }
 }
