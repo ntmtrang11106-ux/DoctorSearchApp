@@ -48,7 +48,7 @@ namespace UI_Tier
             lblEx.Text = $"{doctor.Experience_Years} năm kinh nghiệm";
 
             // 8. Chuyên khoa (Cái nhãn màu xanh góc trên cùng bên phải)
-            BindData(doctor);
+            //BindData(doctor);
 
             // 9. Hình ảnh (Nếu có đường dẫn hoặc Image)
             // 9. Hình ảnh
@@ -106,33 +106,33 @@ namespace UI_Tier
                 }
             }
         }
-        public void BindData(DoctorDTO doctor)
-        {
-            // 1. Dọn dẹp các ô cũ (tránh bị hiện trùng lặp khi load lại)
-            flpSpecialties.Controls.Clear();
+        //public void BindData(DoctorDTO doctor)
+        //{
+        //    // 1. Dọn dẹp các ô cũ (tránh bị hiện trùng lặp khi load lại)
+        //    flpSpecialties.Controls.Clear();
 
-            // 2. Duyệt qua danh sách chuyên khoa N-N đã chốt ở DAL/BUS
-            foreach (var ds in doctor.DoctorSpecialties)
-            {
-                // Tạo một Label mới "tại chỗ"
-                Label lblTag = new Label();
+        //    // 2. Duyệt qua danh sách chuyên khoa N-N đã chốt ở DAL/BUS
+        //    foreach (var ds in doctor.DoctorSpecialties)
+        //    {
+        //        // Tạo một Label mới "tại chỗ"
+        //        Label lblTag = new Label();
 
-                // Thiết lập nội dung và kích thước
-                lblTag.Text = ds.Specialty.SpecialtyName;
-                lblTag.AutoSize = true; // Để ô tự dài ra theo tên chuyên khoa
+        //        // Thiết lập nội dung và kích thước
+        //        lblTag.Text = ds.Specialty.SpecialtyName;
+        //        lblTag.AutoSize = true; // Để ô tự dài ra theo tên chuyên khoa
 
-                // --- Trang trí cho giống cái "label1" màu xanh của bạn ---
-                lblTag.BackColor = Color.FromArgb(0, 120, 215); // Màu xanh dương đậm
-                lblTag.ForeColor = Color.White;                // Chữ trắng
-                lblTag.Font = new Font("Segoe UI", 8, FontStyle.Bold);
-                lblTag.Padding = new Padding(5, 2, 5, 2);      // Tạo khoảng cách chữ với viền cho đẹp
-                lblTag.Margin = new Padding(3, 0, 0, 0);       // Khoảng cách giữa các ô
-                lblTag.TextAlign = ContentAlignment.MiddleCenter;
+        //        // --- Trang trí cho giống cái "label1" màu xanh của bạn ---
+        //        lblTag.BackColor = Color.FromArgb(0, 120, 215); // Màu xanh dương đậm
+        //        lblTag.ForeColor = Color.White;                // Chữ trắng
+        //        lblTag.Font = new Font("Segoe UI", 8, FontStyle.Bold);
+        //        lblTag.Padding = new Padding(5, 2, 5, 2);      // Tạo khoảng cách chữ với viền cho đẹp
+        //        lblTag.Margin = new Padding(3, 0, 0, 0);       // Khoảng cách giữa các ô
+        //        lblTag.TextAlign = ContentAlignment.MiddleCenter;
 
-                // 3. Vứt ô này vào khay chứa FlowLayoutPanel
-                flpSpecialties.Controls.Add(lblTag);
-            }
-        }
+        //        // 3. Vứt ô này vào khay chứa FlowLayoutPanel
+        //        flpSpecialties.Controls.Add(lblTag);
+        //    }
+        //}
 
         private void UCCardDoctor_Load(object sender, EventArgs e)
         {

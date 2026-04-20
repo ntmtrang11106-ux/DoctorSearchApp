@@ -47,7 +47,6 @@
             lblWorkingTime = new Label();
             lblSpecificAdress = new Label();
             lblWorkPlace = new Label();
-            flpSpecialties = new FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)picDoctor).BeginInit();
             pnlContainer.SuspendLayout();
             SuspendLayout();
@@ -283,12 +282,12 @@
             // 
             // flpSpecialties
             // 
-            flpSpecialties.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            flpSpecialties.FlowDirection = FlowDirection.RightToLeft;
-            flpSpecialties.Location = new Point(0, 3);
-            flpSpecialties.Name = "flpSpecialties";
-            flpSpecialties.Size = new Size(496, 39);
-            flpSpecialties.TabIndex = 21;
+            //flpSpecialties.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            //flpSpecialties.FlowDirection = FlowDirection.RightToLeft;
+            //flpSpecialties.Location = new Point(0, 3);
+            //flpSpecialties.Name = "flpSpecialties";
+            //flpSpecialties.Size = new Size(496, 39);
+            //flpSpecialties.TabIndex = 21;
             // 
             // UCCardDoctor
             // 
