@@ -11,6 +11,8 @@ namespace DAL_Tier
         public DbSet<AdminDTO> Admins { get; set; }
         public DbSet<LocationDTO> Locations { get; set; }
         public DbSet<SpecialtyDTO> Specialties { get; set; }
+        public DbSet<DoctorSpecialtyDTO> DoctorSpecialties { get; set; }
+        public DbSet<ArticleSpecialtyDTO> ArticleSpecialties { get; set; }
         public DbSet<TimeSlotsDTO> TimeSlots { get; set; }
         public DbSet<AppointmentsDTO> Appointments { get; set; }
         public DbSet<ConversationDTO> Conversations { get; set; }
@@ -40,6 +42,33 @@ namespace DAL_Tier
             modelBuilder.Entity<DoctorDTO>().HasOne(d => d.User).WithOne().HasForeignKey<DoctorDTO>(d => d.UserId);
             modelBuilder.Entity<PatientDTO>().HasOne(p => p.User).WithOne().HasForeignKey<PatientDTO>(p => p.UserId);
             modelBuilder.Entity<AdminDTO>().HasOne(a => a.User).WithOne().HasForeignKey<AdminDTO>(a => a.UserId);
+            // --- 2. CẤU HÌNH QUAN HỆ NHIỀU-NHIỀU (BÁC SĨ - CHUYÊN KHOA) ---
+            // Thiết lập khóa chính cho bảng nối (Gồm 2 ID cộng lại)
+            modelBuilder.Entity<DoctorSpecialtyDTO>()
+                .HasKey(ds => new { ds.DoctorId, ds.SpecialtyId });
+
+            modelBuilder.Entity<DoctorSpecialtyDTO>()
+                .HasOne(ds => ds.Doctor)
+                .WithMany(d => d.DoctorSpecialties)
+                .HasForeignKey(ds => ds.DoctorId);
+
+            modelBuilder.Entity<DoctorSpecialtyDTO>()
+                .HasOne(ds => ds.Specialty)
+                .WithMany() // Một chuyên khoa có nhiều bác sĩ
+                .HasForeignKey(ds => ds.SpecialtyId);
+            // --- 3. CẤU HÌNH QUAN HỆ NHIỀU-NHIỀU (BÀI VIẾT - CHUYÊN KHOA) ---
+            modelBuilder.Entity<ArticleSpecialtyDTO>()
+                .HasKey(aspec => new { aspec.ArticleId, aspec.SpecialtyId });
+
+            modelBuilder.Entity<ArticleSpecialtyDTO>()
+                .HasOne(aspec => aspec.Article)
+                .WithMany(a => a.ArticleSpecialties)
+                .HasForeignKey(aspec => aspec.ArticleId);
+
+            modelBuilder.Entity<ArticleSpecialtyDTO>()
+                .HasOne(aspec => aspec.Specialty)
+                .WithMany() // Một chuyên khoa có nhiều bài viết
+                .HasForeignKey(aspec => aspec.SpecialtyId);
 
             // 3. GIẢI PHÁP TỔNG LỰC: Chặn Cascade Delete cho TOÀN BỘ Database
             // Đoạn code này sẽ tự động cấu hình cho tất cả 14 bảng, dứt điểm lỗi Multiple Cascade Paths
