@@ -28,16 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             lblPatientName = new Label();
-            pictureBox3 = new PictureBox();
             lblPhoneNumber = new Label();
             lblDate = new Label();
             lblTime = new Label();
             lblSymptoms = new Label();
             btnStatus = new Button();
-            pictureBox4 = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
+            label2 = new Label();
+            label1 = new Label();
+            btnAccept = new Button();
+            flpAction = new FlowLayoutPanel();
+            btnCancel = new Button();
+            btnRemove = new Button();
+            btnBook = new Button();
+            ttAction = new ToolTip(components);
+            flpAction.SuspendLayout();
             SuspendLayout();
             // 
             // lblPatientName
@@ -49,16 +55,6 @@
             lblPatientName.Size = new Size(317, 54);
             lblPatientName.TabIndex = 0;
             lblPatientName.Text = "Nguyễn Văn An";
-            // 
-            // pictureBox3
-            // 
-            pictureBox3.Image = Properties.Resources.clock;
-            pictureBox3.Location = new Point(39, 96);
-            pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(55, 55);
-            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox3.TabIndex = 3;
-            pictureBox3.TabStop = false;
             // 
             // lblPhoneNumber
             // 
@@ -94,65 +90,178 @@
             // 
             lblSymptoms.Font = new Font("Segoe UI", 11F);
             lblSymptoms.ImageAlign = ContentAlignment.MiddleLeft;
-            lblSymptoms.Location = new Point(851, 96);
+            lblSymptoms.Location = new Point(851, 83);
             lblSymptoms.Name = "lblSymptoms";
-            lblSymptoms.Size = new Size(542, 131);
+            lblSymptoms.Size = new Size(886, 131);
             lblSymptoms.TabIndex = 7;
             lblSymptoms.Text = "Đau ngực, khó thở";
             // 
             // btnStatus
             // 
+            btnStatus.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnStatus.BackColor = Color.PaleGreen;
             btnStatus.FlatAppearance.BorderSize = 0;
             btnStatus.FlatStyle = FlatStyle.Flat;
             btnStatus.Font = new Font("Segoe UI", 12F);
             btnStatus.ForeColor = Color.DarkGreen;
-            btnStatus.Location = new Point(1429, 96);
+            btnStatus.Location = new Point(1139, 96);
             btnStatus.Name = "btnStatus";
             btnStatus.Size = new Size(254, 55);
             btnStatus.TabIndex = 9;
             btnStatus.Text = "Thành công";
             btnStatus.UseVisualStyleBackColor = false;
             // 
-            // pictureBox4
+            // label2
             // 
-            pictureBox4.Image = Properties.Resources.document;
-            pictureBox4.Location = new Point(767, 96);
-            pictureBox4.Name = "pictureBox4";
-            pictureBox4.Size = new Size(55, 55);
-            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox4.TabIndex = 8;
-            pictureBox4.TabStop = false;
+            label2.Font = new Font("Segoe MDL2 Assets", 27F);
+            label2.ForeColor = Color.DimGray;
+            label2.Location = new Point(753, 71);
+            label2.Margin = new Padding(0);
+            label2.Name = "label2";
+            label2.Size = new Size(100, 100);
+            label2.TabIndex = 11;
+            label2.Text = "📄";
+            // 
+            // label1
+            // 
+            label1.Font = new Font("Segoe MDL2 Assets", 27F);
+            label1.ForeColor = Color.DimGray;
+            label1.Location = new Point(28, 71);
+            label1.Margin = new Padding(0);
+            label1.Name = "label1";
+            label1.Size = new Size(100, 100);
+            label1.TabIndex = 13;
+            label1.Text = "🕓";
+            // 
+            // btnAccept
+            // 
+            btnAccept.Anchor = AnchorStyles.None;
+            btnAccept.BackColor = Color.Honeydew;
+            btnAccept.FlatAppearance.BorderSize = 0;
+            btnAccept.FlatStyle = FlatStyle.Flat;
+            btnAccept.Font = new Font("Segoe MDL2 Assets", 20F);
+            btnAccept.ForeColor = Color.Green;
+            btnAccept.Location = new Point(0, 5);
+            btnAccept.Margin = new Padding(0, 5, 70, 0);
+            btnAccept.Name = "btnAccept";
+            btnAccept.Size = new Size(80, 80);
+            btnAccept.TabIndex = 14;
+            btnAccept.Text = "";
+            btnAccept.TextAlign = ContentAlignment.MiddleLeft;
+            btnAccept.UseVisualStyleBackColor = false;
+            // 
+            // flpAction
+            // 
+            flpAction.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            flpAction.Controls.Add(btnAccept);
+            flpAction.Controls.Add(btnCancel);
+            flpAction.Controls.Add(btnRemove);
+            flpAction.Controls.Add(btnBook);
+            flpAction.Location = new Point(1629, 75);
+            flpAction.Name = "flpAction";
+            flpAction.Size = new Size(608, 100);
+            flpAction.TabIndex = 15;
+            flpAction.WrapContents = false;
+            // 
+            // btnCancel
+            // 
+            btnCancel.Anchor = AnchorStyles.None;
+            btnCancel.BackColor = Color.Snow;
+            btnCancel.FlatAppearance.BorderSize = 0;
+            btnCancel.FlatStyle = FlatStyle.Flat;
+            btnCancel.Font = new Font("Segoe MDL2 Assets", 20F);
+            btnCancel.ForeColor = Color.DarkRed;
+            btnCancel.Location = new Point(150, 5);
+            btnCancel.Margin = new Padding(0, 5, 70, 0);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Size = new Size(80, 80);
+            btnCancel.TabIndex = 15;
+            btnCancel.Text = "";
+            btnCancel.TextAlign = ContentAlignment.MiddleLeft;
+            btnCancel.UseVisualStyleBackColor = false;
+            // 
+            // btnRemove
+            // 
+            btnRemove.Anchor = AnchorStyles.None;
+            btnRemove.BackColor = Color.LightGoldenrodYellow;
+            btnRemove.FlatAppearance.BorderSize = 0;
+            btnRemove.FlatStyle = FlatStyle.Flat;
+            btnRemove.Font = new Font("Segoe MDL2 Assets", 18F);
+            btnRemove.ForeColor = Color.Goldenrod;
+            btnRemove.Location = new Point(300, 5);
+            btnRemove.Margin = new Padding(0, 5, 70, 0);
+            btnRemove.Name = "btnRemove";
+            btnRemove.Size = new Size(80, 80);
+            btnRemove.TabIndex = 16;
+            btnRemove.Text = "";
+            btnRemove.TextAlign = ContentAlignment.MiddleRight;
+            btnRemove.UseVisualStyleBackColor = false;
+            // 
+            // btnBook
+            // 
+            btnBook.Anchor = AnchorStyles.None;
+            btnBook.BackColor = Color.Azure;
+            btnBook.FlatAppearance.BorderSize = 0;
+            btnBook.FlatStyle = FlatStyle.Flat;
+            btnBook.Font = new Font("Segoe MDL2 Assets", 18F);
+            btnBook.ForeColor = Color.DodgerBlue;
+            btnBook.Location = new Point(450, 5);
+            btnBook.Margin = new Padding(0, 5, 70, 0);
+            btnBook.Name = "btnBook";
+            btnBook.Size = new Size(80, 80);
+            btnBook.TabIndex = 17;
+            btnBook.Text = "";
+            btnBook.TextAlign = ContentAlignment.MiddleRight;
+            btnBook.UseVisualStyleBackColor = false;
             // 
             // ucAppItem
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.White;
+            Controls.Add(flpAction);
+            Controls.Add(label1);
+            Controls.Add(label2);
             Controls.Add(btnStatus);
-            Controls.Add(pictureBox4);
             Controls.Add(lblSymptoms);
             Controls.Add(lblTime);
             Controls.Add(lblDate);
             Controls.Add(lblPhoneNumber);
-            Controls.Add(pictureBox3);
             Controls.Add(lblPatientName);
             Name = "ucAppItem";
             Size = new Size(2297, 252);
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
+            flpAction.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
+            //
+            // ttAction
+            //
+            ttAction.InitialDelay = 500; // Sau 0.5s mới hiện (tránh việc di chuột qua là hiện liên tục gây ngứa mắt)
+            ttAction.AutoPopDelay = 5000; // Hiện trong 5s rồi tự tắt
+            ttAction.ReshowDelay = 100;   // Di chuyển giữa các nút thì hiện lại ngay
+            ttAction.ShowAlways = true;
+            //ttAction.IsBalloon = true;     // Để true nhìn nó sẽ có cái đuôi bo tròn giống bong bóng chat, nhìn hiện đại hơn
+            ttAction.SetToolTip(btnAccept, "Chấp nhận");
+            ttAction.SetToolTip(btnCancel, "Từ chối");
+            ttAction.SetToolTip(btnRemove, "Xóa lịch hẹn");
+            ttAction.SetToolTip(btnBook, "Đặt lịch ngay");
         }
 
         #endregion
 
         private Label lblPatientName;
-        private PictureBox pictureBox3;
         private Label lblPhoneNumber;
         private Label lblDate;
         private Label lblTime;
         private Label lblSymptoms;
         private Button btnStatus;
-        private PictureBox pictureBox4;
+        private Label label2;
+        private Label label1;
+        private Button btnAccept;
+        private FlowLayoutPanel flpAction;
+        private Button btnCancel;
+        private Button btnRemove;
+        private Button btnBook;
+        private ToolTip ttAction;
     }
 }

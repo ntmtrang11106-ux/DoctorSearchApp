@@ -10,10 +10,6 @@ namespace UI_Tier
         public UCCardDoctor()
         {
             InitializeComponent();
-        }
-
-        private void UCCardDoctor_Load(object sender, EventArgs e)
-        {
             // Bo góc cho toàn bộ Card (nếu muốn)
             UIHelper.ApplyRoundedRegion(this, 15);
 
@@ -24,7 +20,9 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(picDoctor, 15);
 
             UIHelper.ApplyRoundedRegion(pnlContainer, 20);
+
         }
+
 
         // Hàm này dùng để "đổ" dữ liệu từ đối tượng Doctor vào các Label
         // Trong UCCardDoctor.cs

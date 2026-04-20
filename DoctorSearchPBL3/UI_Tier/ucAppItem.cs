@@ -11,11 +11,16 @@ namespace UI_Tier
 {
     public partial class ucAppItem : UserControl
     {
+        
         public ucAppItem()
         {
             InitializeComponent();
 
             UIHelper.ApplyRoundedRegion(btnStatus, 10);
+            UIHelper.ApplyRoundedRegion(btnAccept, 40);
+            UIHelper.ApplyRoundedRegion(btnCancel, 40);
+            UIHelper.ApplyRoundedRegion(btnRemove, 40);
+            UIHelper.ApplyRoundedRegion(btnBook, 40);
         }
 
         // Trong file UC_AppItem.cs
