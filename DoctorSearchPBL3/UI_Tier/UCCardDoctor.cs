@@ -17,9 +17,6 @@ namespace UI_Tier
             // Bo góc cho toàn bộ Card (nếu muốn)
             UIHelper.ApplyRoundedRegion(this, 15);
 
-            // Bo góc cho Label chuyên khoa ở góc phải
-            UIHelper.ApplyRoundedRegion(lblSpecialtyTag, 8);
-
             // Bo góc cho Button Đăng nhập
             UIHelper.ApplyRoundedRegion(btnBook, 10);
 
@@ -41,20 +38,21 @@ namespace UI_Tier
             lblSpecificAdress.Text = $"{doctor.ClinicAddress}, {doctor.Location.LocationName}";
 
             // 4. Thời gian làm việc (Nếu trong DTO bạn có trường Status hoặc WorkingTime)
-            lblWorkingTime.Text = $"Lịch: {doctor.WorkingTime}";
+            // Giả sử Status chứa chuỗi "Thứ 2 - Thứ 6, 8:00 - 16:00"
+            lblWorkingTime.Text = doctor.User.Status;
 
             // 5. Giá tiền (Định dạng tiền tệ VNĐ: 500.000đ)
             lblPrice.Text = UIHelper.FormatVND(doctor.Price);
 
             // 6. Đánh giá (Số sao và tổng lượt review)
-            lblRating.Text = doctor.AverageRating.ToString("0.0"); // Ví dụ: 4.5
-            lblTotalReviews.Text = $"{doctor.TotalReviews} đánh giá";
+            lblRating.Text = $"{doctor.AverageRating}";
+            lblTotalReviews.Text = $"({doctor.TotalReviews} đánh giá)";
 
             // 7. Kinh nghiệm
             lblEx.Text = $"{doctor.Experience_Years} năm kinh nghiệm";
 
             // 8. Chuyên khoa (Cái nhãn màu xanh góc trên cùng bên phải)
-            lblSpecialtyTag.Text = doctor.Specialty.SpecialtyName;
+            BindData(doctor);
 
             // 9. Hình ảnh (Nếu có đường dẫn hoặc Image)
             // 9. Hình ảnh
@@ -110,6 +108,33 @@ namespace UI_Tier
                 {
                     e.Graphics.DrawPath(pen, path);
                 }
+            }
+        }
+        public void BindData(DoctorDTO doctor)
+        {
+            // 1. Dọn dẹp các ô cũ (tránh bị hiện trùng lặp khi load lại)
+            flpSpecialties.Controls.Clear();
+
+            // 2. Duyệt qua danh sách chuyên khoa N-N đã chốt ở DAL/BUS
+            foreach (var ds in doctor.DoctorSpecialties)
+            {
+                // Tạo một Label mới "tại chỗ"
+                Label lblTag = new Label();
+
+                // Thiết lập nội dung và kích thước
+                lblTag.Text = ds.Specialty.SpecialtyName;
+                lblTag.AutoSize = true; // Để ô tự dài ra theo tên chuyên khoa
+
+                // --- Trang trí cho giống cái "label1" màu xanh của bạn ---
+                lblTag.BackColor = Color.FromArgb(0, 120, 215); // Màu xanh dương đậm
+                lblTag.ForeColor = Color.White;                // Chữ trắng
+                lblTag.Font = new Font("Segoe UI", 8, FontStyle.Bold);
+                lblTag.Padding = new Padding(5, 2, 5, 2);      // Tạo khoảng cách chữ với viền cho đẹp
+                lblTag.Margin = new Padding(3, 0, 0, 0);       // Khoảng cách giữa các ô
+                lblTag.TextAlign = ContentAlignment.MiddleCenter;
+
+                // 3. Vứt ô này vào khay chứa FlowLayoutPanel
+                flpSpecialties.Controls.Add(lblTag);
             }
         }
 
