@@ -3,7 +3,7 @@ using DTO_Tier;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
+using System.Text.RegularExpressions;
 
 namespace BUS_Tier
 {
@@ -11,74 +11,104 @@ namespace BUS_Tier
     {
         private LoginDAL _dal = new LoginDAL();
 
+        // 1. Logic Đăng nhập
         public string Login(string phone, string pass)
         {
-            // 1. Kiểm tra đầu vào cơ bản
             if (string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(pass))
-                return "Vui lòng nhập đầy đủ thông tin!";
+                return "Vui lòng nhập đầy đủ số điện thoại và mật khẩu!";
 
-            // 2. Gọi tầng DAL để lấy dữ liệu. 
-            // Lưu ý: DAL.CheckLogin bây giờ chỉ cần phone và pass.
             DataTable dt = _dal.CheckLogin(phone, pass);
 
             if (dt != null && dt.Rows.Count > 0)
             {
-                // 3. Lấy giá trị của cột "Role" từ dòng đầu tiên tìm thấy
-                string userRole = dt.Rows[0]["Role"].ToString();
-                return userRole;
+                // Trả về vai trò để UI điều hướng (Admin, Doctor, Patient)
+                return dt.Rows[0]["Role"].ToString();
             }
 
             return "Số điện thoại hoặc mật khẩu không chính xác!";
         }
 
-        // 2. Chức năng Đăng ký (Sử dụng các hàm lẻ từ DAL)
-        // Thêm các tham số cho Patient và Doctor
-        public string Register(string phone, string name, string pass, string confirm, string role,
-                              DateTime dob, string gender,
-                              string cccd = null, string bhyt = null, string address = null, // Cho Patient
-                              string specialty = null, string license = null // Cho Doctor
-                              )
+        // 2. Logic Đăng ký Bệnh nhân
+        public string RegisterPatient(UserDTO user, string bhyt)
         {
-            // --- BƯỚC 1: VALIDATION CHUNG ---
-            if (string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(name) ||
-                string.IsNullOrWhiteSpace(pass) || string.IsNullOrWhiteSpace(confirm))
-                return "Vui lòng nhập đầy đủ các trường!";
+            // Kiểm tra chung (SĐT, Họ tên, Pass, CCCD 12 số)
+            string validateMsg = ValidateCommon(user);
+            if (validateMsg != "OK") return validateMsg;
 
-            // --- BƯỚC 2: ĐÓNG GÓI USER ---
-            UserDTO newUser = new UserDTO { /* ... như cũ ... */ };
+            // Kiểm tra mã BHYT theo định dạng ảnh mẫu
+            // Định dạng: 2 chữ cái đầu (VD: TE) + 13 chữ số tiếp theo
+            if (string.IsNullOrWhiteSpace(bhyt))
+                return "Vui lòng nhập mã số Bảo hiểm y tế!";
 
-            // --- BƯỚC 3: THỰC THI ---
-            int newUserId = _dal.RegisterUserBasic(newUser);
+            if (!Regex.IsMatch(bhyt, @"^[A-Z]{2}\d{13}$"))
+                return "Mã BHYT không đúng định dạng chuẩn (Ví dụ: TE15100...)!";
 
-            // Thực thi lưu
+            // Bước 1: Lưu bảng [User]
             int newUserId = _dal.RegisterUserBasic(user);
             if (newUserId > 0)
             {
-                // Gọi hàm chèn đa chuyên khoa bạn vừa viết ở DAL
+                // Bước 2: Lưu bảng Patient (Gọi đúng hàm InsertPatientFull vừa sửa ở DAL)
+                bool isDetailSaved = _dal.InsertPatientFull(newUserId, bhyt);
+
+                if (isDetailSaved) return "Success";
+
+                // Nếu lỗi bảng con thì xóa bảng cha để tránh rác dữ liệu
+                _dal.DeleteUser(newUserId);
+                return "Lỗi khi lưu thông tin chi tiết bệnh nhân!";
+            }
+            return "Đăng ký tài khoản thất bại!";
+        }
+
+        // 3. Logic Đăng ký Bác sĩ
+        public string RegisterDoctor(UserDTO user, string certImages, string clinicAddr, string clinicName, List<int> specialtyIds)
+        {
+            // Kiểm tra chung
+            string validateMsg = ValidateCommon(user);
+            if (validateMsg != "OK") return validateMsg;
+
+            // Kiểm tra nghiệp vụ bác sĩ
+            if (specialtyIds == null || specialtyIds.Count == 0)
+                return "Vui lòng chọn ít nhất một chuyên khoa!";
+            if (string.IsNullOrWhiteSpace(certImages))
+                return "Vui lòng cung cấp mã số chứng chỉ hành nghề!";
+            if (string.IsNullOrWhiteSpace(clinicName))
+                return "Vui lòng nhập tên bệnh viện/phòng khám công tác!";
+
+            // Bước 1: Lưu bảng [User]
+            int newUserId = _dal.RegisterUserBasic(user);
+            if (newUserId > 0)
+            {
+                // Bước 2: Lưu bảng Doctor & Chuyên khoa (Hàm InsertDoctorFull đã sửa ở DAL)
                 bool isDetailSaved = _dal.InsertDoctorFull(newUserId, certImages, clinicAddr, clinicName, "", specialtyIds);
 
                 if (isDetailSaved) return "Success";
 
-                if (role == "Patient")
-                {
-                    // Truyền thêm các thông tin từ giao diện vào
-                    isDetailSaved = _dal.InsertPatientFull(newUserId, cccd, bhyt, address);
-                }
-                else if (role == "Doctor")
-                {
-                    // Truyền thêm thông tin chuyên ngành
-                    isDetailSaved = _dal.InsertDoctorFull(newUserId, specialty, license);
-                }
-
-                if (isDetailSaved) return "Success";
-
                 _dal.DeleteUser(newUserId);
-                return "Lỗi khởi tạo hồ sơ chi tiết!";
+                return "Lỗi khi lưu hồ sơ bác sĩ!";
             }
-            return "Đăng ký thất bại!";
+            return "Đăng ký tài khoản thất bại!";
+        }
+
+        // 4. Hàm kiểm tra hợp lệ chung (Tối ưu cho 24T_DT1)
+        private string ValidateCommon(UserDTO user)
+        {
+            if (string.IsNullOrWhiteSpace(user.PhoneNumber) || string.IsNullOrWhiteSpace(user.FullName) ||
+                string.IsNullOrWhiteSpace(user.Password) || string.IsNullOrWhiteSpace(user.CCCD))
+                return "Vui lòng điền đầy đủ các thông tin bắt buộc!";
+
+            // Kiểm tra SĐT (Phải là 10 số)
+            if (!Regex.IsMatch(user.PhoneNumber, @"^\d{10}$"))
+                return "Số điện thoại không hợp lệ (yêu cầu đúng 10 chữ số)!";
+
+            // Kiểm tra CCCD (Phải là 12 số)
+            if (!Regex.IsMatch(user.CCCD, @"^\d{12}$"))
+                return "Mã CCCD không hợp lệ (yêu cầu đúng 12 chữ số)!";
+
+            // Kiểm tra trùng SĐT
+            if (_dal.IsPhoneExists(user.PhoneNumber))
+                return "Số điện thoại này đã được đăng ký trên hệ thống!";
+
+            return "OK";
         }
     }
 }
-
-
-///
