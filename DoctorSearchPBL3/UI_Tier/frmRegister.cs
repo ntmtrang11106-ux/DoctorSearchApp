@@ -1,4 +1,5 @@
 ﻿using BUS_Tier;
+using DTO_Tier;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -101,21 +102,16 @@ namespace UI_Tier
             // 1. Kiểm tra vai trò
             if (string.IsNullOrEmpty(currentRole))
             {
-                MessageBox.Show("Vui lòng chọn vai trò là Bệnh nhân hoặc Bác sĩ!");
+                MessageBox.Show("Vui lòng chọn vai trò!");
                 return;
             }
 
-            // 2. Xử lý địa chỉ (Gộp Tỉnh/Thành phố và Xã/Phường)
-            string province = cboProvince.Text.Trim(); 
-            string ward = cboRegion.Text.Trim();         
-            if (string.IsNullOrEmpty(province) || string.IsNullOrEmpty(ward))
-            {
-                MessageBox.Show("Vui lòng chọn đầy đủ địa chỉ nơi ở!");
-                return;
-            }
+            // 2. Xử lý gộp địa chỉ "Xã, Tỉnh"
+            string province = cboProvince.Text.Trim();
+            string ward = cboRegion.Text.Trim();
             string fullAddress = $"{ward}, {province}";
 
-            // 3. Đóng gói thông tin chung vào UserDTO
+            // 3. Đóng gói dữ liệu vào DTO
             UserDTO newUser = new UserDTO
             {
                 PhoneNumber = txtPhoneNumber.Text.Trim(),
@@ -125,50 +121,38 @@ namespace UI_Tier
                 Gender = radioButton1.Checked ? "Nam" : "Nữ",
                 Role = currentRole,
                 CCCD = txtCCCD.Text.Trim(),
-                Residential_Address = fullAddress, // Sử dụng địa chỉ đã gộp
+                Residential_Address = fullAddress,
                 Picture = "default.jpg",
                 Status = currentRole == "Doctor" ? "Pending" : "Active"
             };
 
-            // Kiểm tra mật khẩu xác nhận nhanh
-            string confirm = textBox5.Text.Trim();
-            if (newUser.Password != confirm)
-            {
-                MessageBox.Show("Mật khẩu xác nhận không khớp!", "Lỗi");
-                return;
-            }
-
             string result = "";
 
-            // 4. Xử lý logic theo Role
+            // 4. Gọi hàm BUS tương ứng theo vai trò
             if (currentRole == "Patient")
             {
-                // Lấy mã BHYT
-                string bhyt = textBox7.Text.Trim();
+                string bhyt = textBox7.Text.Trim(); // Mã số BHYT
                 result = _loginBUS.RegisterPatient(newUser, bhyt);
             }
             else if (currentRole == "Doctor")
             {
-                //// 4.1. Lấy danh sách ID chuyên khoa (Nhiều chuyên khoa)
+                //// Lấy danh sách ID Chuyên khoa (Nếu bạn dùng CheckedListBox)
                 //List<int> specialtyIds = new List<int>();
-                //// Nếu dùng ComboBox thường chỉ chọn 1, nếu dùng CheckedListBox thì lặp như sau:
                 //foreach (var item in clbSpecialties.CheckedItems)
                 //{
                 //    if (item is SpecialtyDTO spec) specialtyIds.Add(spec.Id);
                 //}
 
-                //// 4.2. Lấy thông tin chứng chỉ và nơi công tác
-                //string clinicName = txtClinicName.Text.Trim(); // Nơi công tác hiện tại
-                //string certImages = txtCertCode.Text.Trim();   // Mã số/Ảnh chứng chỉ
-                //string clinicAddr = fullAddress; // Có thể dùng địa chỉ riêng của phòng khám nếu có ô nhập
+                //string clinicName = txtClinicName.Text.Trim(); // Nơi công tác
+                //string certImages = txtCertCode.Text.Trim();   // Mã chứng chỉ
 
-                //result = _loginBUS.RegisterDoctor(newUser, certImages, clinicAddr, clinicName, specialtyIds);
+                //result = _loginBUS.RegisterDoctor(newUser, certImages, fullAddress, clinicName, specialtyIds);
             }
 
-            // 5. Thông báo kết quả
+            // 5. Kết quả
             if (result == "Success")
             {
-                MessageBox.Show($"Đăng ký tài khoản {currentRole} thành công!", "Thông báo");
+                MessageBox.Show($"Đăng ký {currentRole} thành công!");
                 this.Close();
             }
             else
