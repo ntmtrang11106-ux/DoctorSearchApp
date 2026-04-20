@@ -50,9 +50,14 @@ namespace BUS_Tier
             // --- BƯỚC 3: THỰC THI ---
             int newUserId = _dal.RegisterUserBasic(newUser);
 
+            // Thực thi lưu
+            int newUserId = _dal.RegisterUserBasic(user);
             if (newUserId > 0)
             {
-                bool isDetailSaved = false;
+                // Gọi hàm chèn đa chuyên khoa bạn vừa viết ở DAL
+                bool isDetailSaved = _dal.InsertDoctorFull(newUserId, certImages, clinicAddr, clinicName, "", specialtyIds);
+
+                if (isDetailSaved) return "Success";
 
                 if (role == "Patient")
                 {

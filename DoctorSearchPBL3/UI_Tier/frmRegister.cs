@@ -98,24 +98,74 @@ namespace UI_Tier
         #region
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            // 1. Kiểm tra xem người dùng đã chọn vai trò chưa
+            // 1. Kiểm tra vai trò
             if (string.IsNullOrEmpty(currentRole))
             {
                 MessageBox.Show("Vui lòng chọn vai trò là Bệnh nhân hoặc Bác sĩ!");
                 return;
             }
 
-            // 2. Lấy thông tin từ các control
-            string name = txtUsername.Text.Trim();
-            string phone = txtPhoneNumber.Text.Trim();
-            string pass = textBox4.Text.Trim();
+            // 2. Xử lý địa chỉ (Gộp Tỉnh/Thành phố và Xã/Phường)
+            string province = cboProvince.Text.Trim(); 
+            string ward = cboRegion.Text.Trim();         
+            if (string.IsNullOrEmpty(province) || string.IsNullOrEmpty(ward))
+            {
+                MessageBox.Show("Vui lòng chọn đầy đủ địa chỉ nơi ở!");
+                return;
+            }
+            string fullAddress = $"{ward}, {province}";
+
+            // 3. Đóng gói thông tin chung vào UserDTO
+            UserDTO newUser = new UserDTO
+            {
+                PhoneNumber = txtPhoneNumber.Text.Trim(),
+                FullName = txtUsername.Text.Trim(),
+                Password = textBox4.Text.Trim(),
+                Dob = dtpDOB.Value,
+                Gender = radioButton1.Checked ? "Nam" : "Nữ",
+                Role = currentRole,
+                CCCD = txtCCCD.Text.Trim(),
+                Residential_Address = fullAddress, // Sử dụng địa chỉ đã gộp
+                Picture = "default.jpg",
+                Status = currentRole == "Doctor" ? "Pending" : "Active"
+            };
+
+            // Kiểm tra mật khẩu xác nhận nhanh
             string confirm = textBox5.Text.Trim();
-            DateTime dob = dtpDOB.Value;
-            string gender = radioButton1.Checked ? "Nam" : "Nữ";
+            if (newUser.Password != confirm)
+            {
+                MessageBox.Show("Mật khẩu xác nhận không khớp!", "Lỗi");
+                return;
+            }
 
-            // 3. Truyền biến currentRole vào hàm Register của BUS
-            string result = _loginBUS.Register(phone, name, pass, confirm, currentRole, dob, gender);
+            string result = "";
 
+            // 4. Xử lý logic theo Role
+            if (currentRole == "Patient")
+            {
+                // Lấy mã BHYT
+                string bhyt = textBox7.Text.Trim();
+                result = _loginBUS.RegisterPatient(newUser, bhyt);
+            }
+            else if (currentRole == "Doctor")
+            {
+                //// 4.1. Lấy danh sách ID chuyên khoa (Nhiều chuyên khoa)
+                //List<int> specialtyIds = new List<int>();
+                //// Nếu dùng ComboBox thường chỉ chọn 1, nếu dùng CheckedListBox thì lặp như sau:
+                //foreach (var item in clbSpecialties.CheckedItems)
+                //{
+                //    if (item is SpecialtyDTO spec) specialtyIds.Add(spec.Id);
+                //}
+
+                //// 4.2. Lấy thông tin chứng chỉ và nơi công tác
+                //string clinicName = txtClinicName.Text.Trim(); // Nơi công tác hiện tại
+                //string certImages = txtCertCode.Text.Trim();   // Mã số/Ảnh chứng chỉ
+                //string clinicAddr = fullAddress; // Có thể dùng địa chỉ riêng của phòng khám nếu có ô nhập
+
+                //result = _loginBUS.RegisterDoctor(newUser, certImages, clinicAddr, clinicName, specialtyIds);
+            }
+
+            // 5. Thông báo kết quả
             if (result == "Success")
             {
                 MessageBox.Show($"Đăng ký tài khoản {currentRole} thành công!", "Thông báo");
