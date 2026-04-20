@@ -12,7 +12,10 @@ namespace BUS_Tier
 
         public List<DoctorDTO> GetListDoctors()
         {
-            return doctorDAL.GetAllDoctors();
+            var list = doctorDAL.GetAllDoctors();
+            foreach (var d in list)
+                CalculateDoctorStats(d);   // Gọi vào đây
+            return list;
         }
 
         //// Logic tìm kiếm theo tên
@@ -25,7 +28,7 @@ namespace BUS_Tier
         //                     .ToList();
         //}
 
-        //// Cập nhật thông tin và kiểm tra logic
+        // Cập nhật thông tin và kiểm tra logic
         //public string UpdateProfile(int userId, string cccd, string cchn, string exp, int clinicId, int specId, string workingTime)
         //{
         //    if (string.IsNullOrEmpty(cccd) || string.IsNullOrEmpty(cchn))
@@ -39,9 +42,27 @@ namespace BUS_Tier
 
         //    if (cccd.Length != 12) return "CCCD không hợp lệ!";
 
-        //    bool result = doctorDAL.UpdateDoctor(doctor);
-        //    return result ? "Cập nhật thành công!" : "Cập nhật thất bại, vui lòng kiểm tra lại!";
+        //    bool success = doctorDAL.UpdateDoctorProfile(userId, cccd, cchn, exp, clinicId, specId, workingTime);
+        //    return success ? "Success" : "Lỗi khi cập nhật hồ sơ bác sĩ!";
         //}
-    }
-} 
+        private void CalculateDoctorStats(DoctorDTO doctor)
+        {
+            if (doctor.Reviews != null && doctor.Reviews.Any())
+            {
+                // Chỉ lấy những đánh giá được phép hiển thị theo file Word 
+                var validReviews = doctor.Reviews.Where(r => r.IsVisible).ToList();
 
+                if (validReviews.Any())
+                {
+                    doctor.TotalReviews = validReviews.Count;
+                    doctor.AverageRating = Math.Round(validReviews.Average(r => r.Rating), 1);
+                }
+                else
+                {
+                    doctor.TotalReviews = 0;
+                    doctor.AverageRating = 5.0; // Mặc định 5 sao cho chuyên nghiệp
+                }
+            }
+        }
+    }
+}

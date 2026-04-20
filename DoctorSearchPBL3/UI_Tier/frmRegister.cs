@@ -1,4 +1,5 @@
-﻿using Bus_Tier;
+﻿using BUS_Tier;
+using DTO_Tier;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -100,27 +101,60 @@ namespace UI_Tier
         #region
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            // 1. Kiểm tra xem người dùng đã chọn vai trò chưa
+            // 1. Kiểm tra vai trò
             if (string.IsNullOrEmpty(currentRole))
             {
-                MessageBox.Show("Vui lòng chọn vai trò là Bệnh nhân hoặc Bác sĩ!");
+                MessageBox.Show("Vui lòng chọn vai trò!");
                 return;
             }
 
-            // 2. Lấy thông tin từ các control
-            string name = txtUsername.Text.Trim();
-            string phone = txtPhoneNumber.Text.Trim();
-            string pass = textBox4.Text.Trim();
-            string confirm = textBox5.Text.Trim();
-            DateTime dob = dtpDOB.Value;
-            string gender = radioButton1.Checked ? "Nam" : "Nữ";
+            // 2. Xử lý gộp địa chỉ "Xã, Tỉnh"
+            string province = cboProvince.Text.Trim();
+            string ward = cboRegion.Text.Trim();
+            string fullAddress = $"{ward}, {province}";
 
-            // 3. Truyền biến currentRole vào hàm Register của BUS
-            string result = _loginBUS.Register(phone, name, pass, confirm, currentRole, dob, gender);
+            // 3. Đóng gói dữ liệu vào DTO
+            UserDTO newUser = new UserDTO
+            {
+                PhoneNumber = txtPhoneNumber.Text.Trim(),
+                FullName = txtUsername.Text.Trim(),
+                Password = textBox4.Text.Trim(),
+                Dob = dtpDOB.Value,
+                Gender = radioButton1.Checked ? "Nam" : "Nữ",
+                Role = currentRole,
+                CCCD = txtCCCD.Text.Trim(),
+                Residential_Address = fullAddress,
+                Picture = "default.jpg",
+                Status = currentRole == "Doctor" ? "Pending" : "Active"
+            };
 
+            string result = "";
+
+            // 4. Gọi hàm BUS tương ứng theo vai trò
+            if (currentRole == "Patient")
+            {
+                string bhyt = textBox7.Text.Trim(); // Mã số BHYT
+                result = _loginBUS.RegisterPatient(newUser, bhyt);
+            }
+            else if (currentRole == "Doctor")
+            {
+                //// Lấy danh sách ID Chuyên khoa (Nếu bạn dùng CheckedListBox)
+                //List<int> specialtyIds = new List<int>();
+                //foreach (var item in clbSpecialties.CheckedItems)
+                //{
+                //    if (item is SpecialtyDTO spec) specialtyIds.Add(spec.Id);
+                //}
+
+                //string clinicName = txtClinicName.Text.Trim(); // Nơi công tác
+                //string certImages = txtCertCode.Text.Trim();   // Mã chứng chỉ
+
+                //result = _loginBUS.RegisterDoctor(newUser, certImages, fullAddress, clinicName, specialtyIds);
+            }
+
+            // 5. Kết quả
             if (result == "Success")
             {
-                MessageBox.Show($"Đăng ký tài khoản {currentRole} thành công!", "Thông báo");
+                MessageBox.Show($"Đăng ký {currentRole} thành công!");
                 this.Close();
             }
             else

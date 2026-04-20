@@ -56,7 +56,7 @@
             picDoctor.BackColor = Color.FromArgb(248, 249, 250);
             picDoctor.Location = new Point(0, 3);
             picDoctor.Name = "picDoctor";
-            picDoctor.Size = new Size(650, 350);
+            picDoctor.Size = new Size(650, 349);
             picDoctor.SizeMode = PictureBoxSizeMode.Zoom;
             picDoctor.TabIndex = 0;
             picDoctor.TabStop = false;
@@ -65,7 +65,7 @@
             // 
             lblFullName.AutoSize = true;
             lblFullName.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
-            lblFullName.Location = new Point(25, 373);
+            lblFullName.Location = new Point(25, 372);
             lblFullName.Margin = new Padding(0, 5, 0, 5);
             lblFullName.Name = "lblFullName";
             lblFullName.Size = new Size(146, 54);
@@ -94,10 +94,10 @@
             btnBook.FlatStyle = FlatStyle.Flat;
             btnBook.Font = new Font("Segoe UI", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnBook.ForeColor = Color.White;
-            btnBook.Location = new Point(10, 830);
+            btnBook.Location = new Point(13, 839);
             btnBook.Name = "btnBook";
             btnBook.Padding = new Padding(5, 3, 5, 3);
-            btnBook.Size = new Size(650, 60);
+            btnBook.Size = new Size(659, 60);
             btnBook.TabIndex = 14;
             btnBook.Text = "Đăng nhập để đặt lịch";
             btnBook.UseVisualStyleBackColor = false;
@@ -106,7 +106,7 @@
             // 
             lblEx.AutoSize = true;
             lblEx.Font = new Font("Segoe UI", 10F);
-            lblEx.Location = new Point(97, 757);
+            lblEx.Location = new Point(98, 756);
             lblEx.Name = "lblEx";
             lblEx.Size = new Size(90, 37);
             lblEx.TabIndex = 16;
@@ -115,7 +115,7 @@
             // lblTotalReviews
             // 
             lblTotalReviews.AutoSize = true;
-            lblTotalReviews.Location = new Point(189, 703);
+            lblTotalReviews.Location = new Point(188, 703);
             lblTotalReviews.Name = "lblTotalReviews";
             lblTotalReviews.Size = new Size(78, 32);
             lblTotalReviews.TabIndex = 17;
@@ -124,12 +124,12 @@
             // pnlContainer
             // 
             pnlContainer.BackColor = Color.White;
-            pnlContainer.Controls.Add(label2);
             pnlContainer.Controls.Add(label7);
             pnlContainer.Controls.Add(label6);
             pnlContainer.Controls.Add(label5);
             pnlContainer.Controls.Add(label4);
             pnlContainer.Controls.Add(label3);
+            pnlContainer.Controls.Add(label2);
             pnlContainer.Controls.Add(label1);
             pnlContainer.Controls.Add(lblRating);
             pnlContainer.Controls.Add(picDoctor);
@@ -141,93 +141,64 @@
             pnlContainer.Controls.Add(lblTotalReviews);
             pnlContainer.Controls.Add(lblEx);
             pnlContainer.Dock = DockStyle.Fill;
-            pnlContainer.Location = new Point(10, 10);
+            pnlContainer.Location = new Point(13, 13);
             pnlContainer.Name = "pnlContainer";
             pnlContainer.Padding = new Padding(10);
-            pnlContainer.Size = new Size(650, 880);
+            pnlContainer.Size = new Size(659, 886);
             pnlContainer.TabIndex = 19;
             // 
             // label7
             // 
-            label7.BackColor = Color.Transparent;
             label7.Font = new Font("Segoe MDL2 Assets", 15F);
             label7.ForeColor = Color.DodgerBlue;
-<<<<<<< Updated upstream
-            label7.Location = new Point(36, 752);
-            label7.Name = "label7";
-            label7.Size = new Size(50, 50);
-=======
-            label7.Location = new Point(25, 756);
+            label7.Location = new Point(47, 963);
             label7.Margin = new Padding(4, 0, 4, 0);
             label7.Name = "label7";
-            label7.Size = new Size(65, 65);
->>>>>>> Stashed changes
+            label7.Size = new Size(65, 64);
             label7.TabIndex = 25;
             label7.Text = "";
             // 
             // label6
             // 
-            label6.BackColor = Color.Transparent;
             label6.Font = new Font("Segoe MDL2 Assets", 15F);
             label6.ForeColor = Color.Gold;
-<<<<<<< Updated upstream
-            label6.Location = new Point(36, 692);
-            label6.Name = "label6";
-            label6.Size = new Size(50, 50);
-=======
-            label6.Location = new Point(25, 697);
+            label6.Location = new Point(47, 886);
             label6.Margin = new Padding(4, 0, 4, 0);
             label6.Name = "label6";
-            label6.Size = new Size(65, 65);
->>>>>>> Stashed changes
+            label6.Size = new Size(65, 64);
             label6.TabIndex = 24;
             label6.Text = "";
             // 
             // label5
             // 
-            label5.BackColor = Color.Transparent;
             label5.Font = new Font("Segoe MDL2 Assets", 15F);
             label5.ForeColor = Color.DodgerBlue;
-            label5.Location = new Point(36, 612);
+            label5.Location = new Point(25, 612);
+            label5.Margin = new Padding(4, 0, 4, 0);
             label5.Name = "label5";
-<<<<<<< Updated upstream
-            label5.Size = new Size(50, 50);
-=======
-            label5.Size = new Size(65, 65);
->>>>>>> Stashed changes
+            label5.Size = new Size(65, 47);
             label5.TabIndex = 23;
             label5.Text = "";
             // 
             // label4
             // 
-            label4.BackColor = Color.Transparent;
             label4.Font = new Font("Segoe MDL2 Assets", 15F);
             label4.ForeColor = Color.DodgerBlue;
-            label4.Location = new Point(36, 553);
+            label4.Location = new Point(25, 550);
+            label4.Margin = new Padding(4, 0, 4, 0);
             label4.Name = "label4";
-<<<<<<< Updated upstream
-            label4.Size = new Size(50, 50);
-=======
-            label4.Size = new Size(65, 65);
->>>>>>> Stashed changes
+            label4.Size = new Size(65, 64);
             label4.TabIndex = 22;
             label4.Text = "";
             // 
             // label3
             // 
-            label3.BackColor = Color.Transparent;
             label3.Font = new Font("Segoe MDL2 Assets", 15F);
             label3.ForeColor = Color.DodgerBlue;
-<<<<<<< Updated upstream
-            label3.Location = new Point(36, 501);
-            label3.Name = "label3";
-            label3.Size = new Size(50, 50);
-=======
-            label3.Location = new Point(25, 497);
+            label3.Location = new Point(30, 487);
             label3.Margin = new Padding(4, 0, 4, 0);
             label3.Name = "label3";
-            label3.Size = new Size(65, 65);
->>>>>>> Stashed changes
+            label3.Size = new Size(65, 64);
             label3.TabIndex = 21;
             label3.Text = "";
             // 
@@ -236,13 +207,13 @@
             label2.BackColor = Color.Gray;
             label2.Location = new Point(10, 669);
             label2.Name = "label2";
-            label2.Size = new Size(650, 2);
+            label2.Size = new Size(650, 3);
             label2.TabIndex = 20;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(88, 615);
+            label1.Location = new Point(88, 614);
             label1.Name = "label1";
             label1.Size = new Size(0, 32);
             label1.TabIndex = 19;
@@ -310,18 +281,16 @@
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(lblSpecialtyTag);
             Controls.Add(btnBook);
             Controls.Add(pnlContainer);
             Name = "UCCardDoctor";
-            Padding = new Padding(10);
-            Size = new Size(670, 900);
+            Padding = new Padding(13);
+            Size = new Size(685, 912);
             Load += UCCardDoctor_Load;
             ((System.ComponentModel.ISupportInitialize)picDoctor).EndInit();
             pnlContainer.ResumeLayout(false);
             pnlContainer.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion

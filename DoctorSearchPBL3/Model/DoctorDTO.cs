@@ -1,4 +1,3 @@
-using System;
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,12 +7,12 @@ namespace DTO_Tier
     [Table("Doctor")] // [cite: 26]
     public class DoctorDTO
     {
-        // --- THÔNG TIN ĐỊNH DANH ---        
         [Key]
         public int Id { get; set; } // 
 
         [Required]
-        public int UserId { get; set; } // Kết nối 1-1 với tài khoản User 
+        // 1. Đảm bảo 1 User chỉ có 1 hồ sơ Bác sĩ
+        public int UserId { get; set; }
 
         [Required]
         public string CertificateImage { get; set; } // Chứng chỉ hành nghề (Unique trong DB) 
@@ -36,7 +35,6 @@ namespace DTO_Tier
 
         public int? LocationId { get; set; } // Liên kết với mã khu vực 
 
-        public int? SpecialtyId { get; set; } // Liên kết với mã chuyên khoa 
 
         [Required]
         public bool IsApproved { get; set; } = false; // 0: Chờ duyệt, 1: Đã duyệt 
@@ -50,9 +48,9 @@ namespace DTO_Tier
         [ForeignKey("LocationId")]
         public virtual LocationDTO Location { get; set; } // 
 
-        [ForeignKey("SpecialtyId")]
-        public virtual SpecialtyDTO Specialty { get; set; } //
-                                                            //
+        // Đây chính là "chìa khóa" để giải quyết quan hệ Nhiều-Nhiều
+        public virtual ICollection<DoctorSpecialtyDTO> DoctorSpecialties { get; set; } = new List<DoctorSpecialtyDTO>();
+        //
         [NotMapped]
         public double AverageRating { get; set; } // Sẽ được BUS tính và gán vào
 
