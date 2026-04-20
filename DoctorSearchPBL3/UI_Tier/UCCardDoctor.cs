@@ -10,21 +10,9 @@ namespace UI_Tier
         public UCCardDoctor()
         {
             InitializeComponent();
+
         }
 
-        private void UCCardDoctor_Load(object sender, EventArgs e)
-        {
-            // Bo góc cho toàn bộ Card (nếu muốn)
-            UIHelper.ApplyRoundedRegion(this, 15);
-
-            // Bo góc cho Button Đăng nhập
-            UIHelper.ApplyRoundedRegion(btnBook, 10);
-
-            // Bo góc cho PictureBox (nếu bạn muốn bo nhẹ 4 góc)
-            UIHelper.ApplyRoundedRegion(picDoctor, 15);
-
-            UIHelper.ApplyRoundedRegion(pnlContainer, 20);
-        }
 
         // Hàm này dùng để "đổ" dữ liệu từ đối tượng Doctor vào các Label
         // Trong UCCardDoctor.cs
@@ -32,27 +20,28 @@ namespace UI_Tier
         public void SetDoctorData(DoctorDTO doctor, bool isGuess)
 
         {
+
+
             lblFullName.Text = doctor.User.FullName;
             lblWorkPlace.Text = doctor.ClinicName;
             // 3. Địa chỉ (Kết hợp địa chỉ chi tiết và tên khu vực)
             lblSpecificAdress.Text = $"{doctor.ClinicAddress}, {doctor.Location.LocationName}";
 
             // 4. Thời gian làm việc (Nếu trong DTO bạn có trường Status hoặc WorkingTime)
-            // Giả sử Status chứa chuỗi "Thứ 2 - Thứ 6, 8:00 - 16:00"
-            lblWorkingTime.Text = doctor.User.Status;
+            lblWorkingTime.Text = $"Lịch: {doctor.WorkingTime}";
 
             // 5. Giá tiền (Định dạng tiền tệ VNĐ: 500.000đ)
             lblPrice.Text = UIHelper.FormatVND(doctor.Price);
 
             // 6. Đánh giá (Số sao và tổng lượt review)
-            lblRating.Text = $"{doctor.AverageRating}";
-            lblTotalReviews.Text = $"({doctor.TotalReviews} đánh giá)";
+            lblRating.Text = doctor.AverageRating.ToString("0.0"); // Ví dụ: 4.5
+            lblTotalReviews.Text = $"{doctor.TotalReviews} đánh giá";
 
             // 7. Kinh nghiệm
             lblEx.Text = $"{doctor.Experience_Years} năm kinh nghiệm";
 
             // 8. Chuyên khoa (Cái nhãn màu xanh góc trên cùng bên phải)
-            BindData(doctor);
+            lblSpecialtyTag.Text = doctor.Specialty.SpecialtyName;
 
             // 9. Hình ảnh (Nếu có đường dẫn hoặc Image)
             // 9. Hình ảnh
@@ -85,7 +74,7 @@ namespace UI_Tier
             }
 
             // 10. Button
-            if(isGuess)
+            if (isGuess)
                 btnBook.Text = "Đăng nhập để đặt lịch";
             else
                 btnBook.Text = "Đặt lịch";
@@ -110,33 +99,22 @@ namespace UI_Tier
                 }
             }
         }
-        public void BindData(DoctorDTO doctor)
+
+        private void UCCardDoctor_Load(object sender, EventArgs e)
         {
-            // 1. Dọn dẹp các ô cũ (tránh bị hiện trùng lặp khi load lại)
-            flpSpecialties.Controls.Clear();
+            // Bo góc cho toàn bộ Card (nếu muốn)
+            UIHelper.ApplyRoundedRegion(this, 15);
 
-            // 2. Duyệt qua danh sách chuyên khoa N-N đã chốt ở DAL/BUS
-            foreach (var ds in doctor.DoctorSpecialties)
-            {
-                // Tạo một Label mới "tại chỗ"
-                Label lblTag = new Label();
+            // Bo góc cho Label chuyên khoa ở góc phải
+            UIHelper.ApplyRoundedRegion(lblSpecialtyTag, 8);
 
-                // Thiết lập nội dung và kích thước
-                lblTag.Text = ds.Specialty.SpecialtyName;
-                lblTag.AutoSize = true; // Để ô tự dài ra theo tên chuyên khoa
+            // Bo góc cho Button Đăng nhập
+            UIHelper.ApplyRoundedRegion(btnBook, 10);
 
-                // --- Trang trí cho giống cái "label1" màu xanh của bạn ---
-                lblTag.BackColor = Color.FromArgb(0, 120, 215); // Màu xanh dương đậm
-                lblTag.ForeColor = Color.White;                // Chữ trắng
-                lblTag.Font = new Font("Segoe UI", 8, FontStyle.Bold);
-                lblTag.Padding = new Padding(5, 2, 5, 2);      // Tạo khoảng cách chữ với viền cho đẹp
-                lblTag.Margin = new Padding(3, 0, 0, 0);       // Khoảng cách giữa các ô
-                lblTag.TextAlign = ContentAlignment.MiddleCenter;
+            // Bo góc cho PictureBox (nếu bạn muốn bo nhẹ 4 góc)
+            UIHelper.ApplyRoundedRegion(picDoctor, 15);
 
-                // 3. Vứt ô này vào khay chứa FlowLayoutPanel
-                flpSpecialties.Controls.Add(lblTag);
-            }
+            UIHelper.ApplyRoundedRegion(pnlContainer, 20);
         }
-
     }
 }

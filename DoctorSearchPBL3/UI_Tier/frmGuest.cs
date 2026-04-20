@@ -13,13 +13,8 @@ namespace UI_Tier
 {
     public partial class frmGuest : Form
     {
-        // 1. Khai báo BUS để tìm kiếm tổng hợp (Cái này Trang mới viết này)
-        private SearchBUS _searchBUS = new SearchBUS();
-
         // Khai báo một lần ở cấp độ class để tái sử dụng
         private DoctorBUS _bus = new DoctorBUS();
-
-        private ArticleBUS _articleBus = new ArticleBUS();
 
         private List<DoctorDTO> _allDoctors = new List<DoctorDTO>();
         private int _pageSize = 8;     // Số lượng 1 trang
@@ -56,37 +51,27 @@ namespace UI_Tier
         {
             try
             {
-                // 1. Nạp Bác sĩ (Trang làm rồi)
                 _allDoctors = _bus.GetListDoctors();
+                _currentPage = 1; // Reset về trang 1
                 DisplayPage(_currentPage);
-
-                // 2. Nạp Bài viết (Mới thêm nè)
-                // Gọi ArticleBUS để lấy dữ liệu ban đầu
-                var initialArticles = _articleBus.GetInitialArticles();
-
-                flpArticles.Controls.Clear();
-                foreach (var art in initialArticles)
-                {
-                    UCCardArticle ucArt = new UCCardArticle();
-                    ucArt.SetData(art);
-                    // Gán Margin cho đẹp, đồng bộ với Card Bác sĩ
-                    ucArt.Margin = new Padding(15);
-                    flpArticles.Controls.Add(ucArt);
-                }
-
-                // Cập nhật số lượng lên tab cho chuyên nghiệp
-                tabPage2.Text = $"Bài viết ({initialArticles.Count})";
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi load dữ liệu: " + ex.Message);
+                MessageBox.Show("Lỗi: " + ex.Message);
             }
         }
 
         // Hàm này dùng để vẽ 8 ông bác sĩ lên FlowLayoutPanel dựa vào số trang
         public void DisplayPage(int pageNumber)
         {
-            flpDoctors.Controls.Clear();
+            flpDoctors.SuspendLayout(); // Tạm dừng vẽ giao diện
+
+            while (flpDoctors.Controls.Count > 0)
+            {
+                var control = flpDoctors.Controls[0];
+                flpDoctors.Controls.RemoveAt(0);
+                control.Dispose(); // Xóa hẳn khỏi bộ nhớ
+            }
 
             if (_allDoctors == null || _allDoctors.Count == 0) return;
 
@@ -102,13 +87,15 @@ namespace UI_Tier
             {
                 UCCardDoctor card = new UCCardDoctor();
                 card.SetDoctorData(doc, true);
-                card.Margin = new Padding(15);
+                card.Margin = new Padding(25);
                 flpDoctors.Controls.Add(card);
             }
 
             // Cập nhật cái nhãn hiển thị số trang (ví dụ: Trang 1 / 10)
             int totalPages = (int)Math.Ceiling((double)_allDoctors.Count / _pageSize);
             lblPageStatus.Text = $"Trang {_currentPage} / {totalPages}";
+
+            flpDoctors.ResumeLayout(); // Cho phép vẽ lại giao diện
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -151,77 +138,5 @@ namespace UI_Tier
                 DisplayPage(_currentPage);
             }
         }
-
-        private void txtSearchBar_TextChanged(object sender, EventArgs e)
-        {
-            // 1. Kiểm tra độ dài từ khóa
-            if (txtSearchBar.Text.Trim().Length > 0 && txtSearchBar.Text.Trim().Length < 2)
-            {
-                // Hiện dấu chấm than đỏ báo lỗi
-                errorProvider1.SetError(txtSearchBar, "Vui lòng nhập ít nhất 2 ký tự để tìm kiếm!");
-                return; // Dừng lại không tìm kiếm
-            }
-            else
-            {
-                // Xóa dấu báo lỗi nếu đã nhập đủ hoặc để trống
-                errorProvider1.SetError(txtSearchBar, "");
-            }
-        }
-
-        private void txtSearchBar_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                e.SuppressKeyPress = true;
-                string keyword = txtSearchBar.Text.Trim();
-
-                if (keyword.Length < 2 && keyword.Length > 0)
-                {
-                    errorProvider1.SetError(txtSearchBar, "Vui lòng nhập ít nhất 2 ký tự!");
-                    return;
-                }
-
-                List<string> selectedSpecs = new List<string>();
-                string location = null;
-                string gender = null;
-                string sortDoc = "Rating";
-                string sortArt = "Newest";
-
-                ExecuteUI_Search(keyword, selectedSpecs, location, gender, sortDoc, sortArt);
-            }
-        } // <--- DẤU NGOẶC NÀY CỰC KỲ QUAN TRỌNG, PHẢI ĐÓNG Ở ĐÂY!
-
-        // Bây giờ mới viết hàm ExecuteUI_Search nằm RIÊNG BIỆT ra ngoài
-        private void ExecuteUI_Search(string key, List<string> specs, string loc, string gen, string sDoc, string sArt)
-        {
-            var result = _searchBUS.ExecuteIntegratedSearch(key, specs, loc, gen, sDoc, sArt);
-
-            List<DoctorDTO> doctors = result.doctors;
-            List<ArticlesDTO> articles = result.articles;
-
-            // Đổ Bác sĩ
-            flpDoctors.Controls.Clear();
-            foreach (var doc in doctors)
-            {
-                UCCardDoctor uc = new UCCardDoctor();
-                uc.SetDoctorData(doc, true); // Dùng đúng tên hàm SetDoctorData của Trang nhé
-                flpDoctors.Controls.Add(uc);
-            }
-
-            // Đổ Bài viết
-            flpArticles.Controls.Clear();
-            foreach (var art in articles)
-            {
-                UCCardArticle ucArt = new UCCardArticle();
-                ucArt.SetData(art);
-                flpArticles.Controls.Add(ucArt);
-            }
-
-            // Cập nhật Tab (Nhớ kiểm tra tên tabPage1, tabPage2 của Trang nhé)
-            tabPage1.Text = $"Bác sĩ ({doctors.Count})";
-            tabPage2.Text = $"Bài viết ({articles.Count})";
-        }
-
-
     }
 }
