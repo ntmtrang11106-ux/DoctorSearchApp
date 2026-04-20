@@ -12,8 +12,6 @@ namespace UI_Tier
             InitializeComponent();
 
             UIHelper.SetDoubleBuffered(this); // Kích hoạt Double Buffering cho UserControl để giảm nhấp nháy
-
-            this.Paint+=(sender, e) => UIHelper.uc_Paint(sender, e, 20, Color.FromArgb(224, 224, 224), 2);
         }
 
 
@@ -86,6 +84,9 @@ namespace UI_Tier
 
             // Bo góc cho PictureBox (nếu bạn muốn bo nhẹ 4 góc)
             UIHelper.ApplyRoundedRegion(picDoctor, 15);
+
+            // Vẽ border cho Card (nếu muốn)
+            this.Paint += (sender, e) => UIHelper.uc_Paint(sender, e, 20, Color.FromArgb(224, 224, 224), 2);
         }
     }
 }

@@ -11,22 +11,11 @@ namespace UI_Tier
 {
     public partial class ucAppItem : UserControl
     {
-        
+
         public ucAppItem()
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
-
-            UIHelper.ApplyRoundedRegion(btnStatus, 10);
-            UIHelper.ApplyRoundedRegion(btnAccept, 40);
-            UIHelper.ApplyRoundedRegion(btnCancel, 40);
-            UIHelper.ApplyRoundedRegion(btnRemove, 40);
-            UIHelper.ApplyRoundedRegion(btnBook, 40);
-
-            this.Paint += (sender, e) =>
-            {
-                UIHelper.uc_Paint(this, e, 10, Color.LightGray, 2);
-            };
         }
 
         // Trong file UC_AppItem.cs
@@ -79,6 +68,20 @@ namespace UI_Tier
                 btnStatus.BackColor = Color.FromArgb(255, 200, 200); // Màu đỏ nhạt
                 btnStatus.ForeColor = Color.Red;
             }
+        }
+
+        private void ucAppItem_Load(object sender, EventArgs e)
+        {
+            UIHelper.ApplyRoundedRegion(btnStatus, 10);
+            UIHelper.ApplyRoundedRegion(btnAccept, 40);
+            UIHelper.ApplyRoundedRegion(btnCancel, 40);
+            UIHelper.ApplyRoundedRegion(btnRemove, 40);
+            UIHelper.ApplyRoundedRegion(btnBook, 40);
+
+            this.Paint += (sender, e) =>
+            {
+                UIHelper.uc_Paint(this, e, 10, Color.LightGray, 2);
+            };
         }
     }
 }

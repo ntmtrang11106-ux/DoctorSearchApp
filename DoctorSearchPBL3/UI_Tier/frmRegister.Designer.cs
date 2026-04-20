@@ -37,32 +37,14 @@
             panel28 = new Panel();
             textBox7 = new TextBox();
             label23 = new Label();
-            panel12 = new Panel();
-            label12 = new Label();
-            panel9 = new Panel();
-            textBox4 = new TextBox();
-            panel13 = new Panel();
-            label13 = new Label();
-            panel10 = new Panel();
-            textBox5 = new TextBox();
-            panel14 = new Panel();
-            comboBox3 = new ComboBox();
-            label17 = new Label();
-            panel22 = new Panel();
-            label18 = new Label();
-            panel23 = new Panel();
-            textBox6 = new TextBox();
-            panel25 = new Panel();
-            comboBox4 = new ComboBox();
-            label21 = new Label();
-            panel26 = new Panel();
-            panel29 = new Panel();
-            label24 = new Label();
-            label22 = new Label();
             panel15 = new Panel();
             panel24 = new Panel();
             textBox3 = new TextBox();
             label20 = new Label();
+            panel14 = new Panel();
+            btnNew = new Button();
+            label17 = new Label();
+            flpCertificate = new FlowLayoutPanel();
             label7 = new Label();
             label8 = new Label();
             btnLogin = new Button();
@@ -93,6 +75,14 @@
             label16 = new Label();
             cboRegion = new ComboBox();
             label19 = new Label();
+            panel12 = new Panel();
+            label12 = new Label();
+            panel9 = new Panel();
+            textBox4 = new TextBox();
+            panel13 = new Panel();
+            label13 = new Label();
+            panel10 = new Panel();
+            textBox5 = new TextBox();
             panel8 = new Panel();
             label5 = new Label();
             label4 = new Label();
@@ -101,24 +91,16 @@
             label2 = new Label();
             label1 = new Label();
             ofdCCHN = new OpenFileDialog();
+            panel1.SuspendLayout();
             panel2.SuspendLayout();
             panel3.SuspendLayout();
             panel4.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
             panel27.SuspendLayout();
             panel28.SuspendLayout();
-            panel12.SuspendLayout();
-            panel9.SuspendLayout();
-            panel13.SuspendLayout();
-            panel10.SuspendLayout();
-            panel14.SuspendLayout();
-            panel22.SuspendLayout();
-            panel23.SuspendLayout();
-            panel25.SuspendLayout();
-            panel26.SuspendLayout();
-            panel29.SuspendLayout();
             panel15.SuspendLayout();
             panel24.SuspendLayout();
+            panel14.SuspendLayout();
             flowLayoutPanel3.SuspendLayout();
             panel16.SuspendLayout();
             panel5.SuspendLayout();
@@ -130,16 +112,21 @@
             panel20.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             panel21.SuspendLayout();
+            panel12.SuspendLayout();
+            panel9.SuspendLayout();
+            panel13.SuspendLayout();
+            panel10.SuspendLayout();
             panel8.SuspendLayout();
             panel7.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
             // 
+            panel1.Controls.Add(panel2);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(2584, 1724);
+            panel1.Size = new Size(2584, 1879);
             panel1.TabIndex = 0;
             // 
             // panel2
@@ -148,9 +135,9 @@
             panel2.BackColor = Color.FromArgb(24, 112, 255);
             panel2.Controls.Add(panel3);
             panel2.Controls.Add(label1);
-            panel2.Location = new Point(288, 109);
+            panel2.Location = new Point(277, 111);
             panel2.Name = "panel2";
-            panel2.Size = new Size(2111, 1500);
+            panel2.Size = new Size(2111, 1650);
             panel2.TabIndex = 4;
             // 
             // panel3
@@ -161,7 +148,7 @@
             panel3.Controls.Add(panel7);
             panel3.Location = new Point(16, 22);
             panel3.Name = "panel3";
-            panel3.Size = new Size(2076, 1459);
+            panel3.Size = new Size(2076, 1607);
             panel3.TabIndex = 3;
             // 
             // panel4
@@ -174,24 +161,20 @@
             panel4.Location = new Point(0, 125);
             panel4.Margin = new Padding(0);
             panel4.Name = "panel4";
-            panel4.Size = new Size(2076, 1334);
+            panel4.Size = new Size(2076, 1482);
             panel4.TabIndex = 2;
             // 
             // flowLayoutPanel2
             // 
             flowLayoutPanel2.BackColor = Color.Transparent;
             flowLayoutPanel2.Controls.Add(panel27);
-            flowLayoutPanel2.Controls.Add(panel12);
-            flowLayoutPanel2.Controls.Add(panel13);
-            flowLayoutPanel2.Controls.Add(panel14);
-            flowLayoutPanel2.Controls.Add(panel22);
-            flowLayoutPanel2.Controls.Add(panel25);
-            flowLayoutPanel2.Controls.Add(panel26);
             flowLayoutPanel2.Controls.Add(panel15);
-            flowLayoutPanel2.Location = new Point(1108, 38);
+            flowLayoutPanel2.Controls.Add(panel14);
+            flowLayoutPanel2.Controls.Add(flpCertificate);
+            flowLayoutPanel2.Location = new Point(1121, 38);
             flowLayoutPanel2.Margin = new Padding(0);
             flowLayoutPanel2.Name = "flowLayoutPanel2";
-            flowLayoutPanel2.Size = new Size(907, 1116);
+            flowLayoutPanel2.Size = new Size(894, 1262);
             flowLayoutPanel2.TabIndex = 27;
             // 
             // panel27
@@ -207,7 +190,7 @@
             // 
             panel28.BorderStyle = BorderStyle.FixedSingle;
             panel28.Controls.Add(textBox7);
-            panel28.Location = new Point(12, 57);
+            panel28.Location = new Point(32, 57);
             panel28.Name = "panel28";
             panel28.Size = new Size(732, 75);
             panel28.TabIndex = 23;
@@ -234,230 +217,11 @@
             label23.TabIndex = 21;
             label23.Text = "Mã số BHYT";
             // 
-            // panel12
-            // 
-            panel12.Controls.Add(label12);
-            panel12.Controls.Add(panel9);
-            panel12.Location = new Point(3, 160);
-            panel12.Name = "panel12";
-            panel12.Size = new Size(788, 151);
-            panel12.TabIndex = 28;
-            // 
-            // label12
-            // 
-            label12.AutoSize = true;
-            label12.Font = new Font("Segoe UI", 12F);
-            label12.Location = new Point(3, 0);
-            label12.Name = "label12";
-            label12.Size = new Size(153, 45);
-            label12.TabIndex = 19;
-            label12.Text = "Mật khẩu";
-            // 
-            // panel9
-            // 
-            panel9.BorderStyle = BorderStyle.FixedSingle;
-            panel9.Controls.Add(textBox4);
-            panel9.Location = new Point(12, 48);
-            panel9.Name = "panel9";
-            panel9.Size = new Size(732, 75);
-            panel9.TabIndex = 20;
-            // 
-            // textBox4
-            // 
-            textBox4.BackColor = SystemColors.Window;
-            textBox4.BorderStyle = BorderStyle.None;
-            textBox4.CausesValidation = false;
-            textBox4.Font = new Font("Segoe UI", 12F);
-            textBox4.Location = new Point(15, 13);
-            textBox4.Name = "textBox4";
-            textBox4.Size = new Size(704, 43);
-            textBox4.TabIndex = 2;
-            textBox4.UseSystemPasswordChar = true;
-            // 
-            // panel13
-            // 
-            panel13.Controls.Add(label13);
-            panel13.Controls.Add(panel10);
-            panel13.Location = new Point(3, 317);
-            panel13.Name = "panel13";
-            panel13.Size = new Size(788, 151);
-            panel13.TabIndex = 28;
-            // 
-            // label13
-            // 
-            label13.AutoSize = true;
-            label13.Font = new Font("Segoe UI", 12F);
-            label13.Location = new Point(3, 8);
-            label13.Name = "label13";
-            label13.Size = new Size(279, 45);
-            label13.TabIndex = 21;
-            label13.Text = "Nhập lại mật khẩu";
-            // 
-            // panel10
-            // 
-            panel10.BorderStyle = BorderStyle.FixedSingle;
-            panel10.Controls.Add(textBox5);
-            panel10.Location = new Point(12, 56);
-            panel10.Name = "panel10";
-            panel10.Size = new Size(732, 75);
-            panel10.TabIndex = 22;
-            // 
-            // textBox5
-            // 
-            textBox5.BackColor = SystemColors.Window;
-            textBox5.BorderStyle = BorderStyle.None;
-            textBox5.CausesValidation = false;
-            textBox5.Font = new Font("Segoe UI", 12F);
-            textBox5.Location = new Point(15, 13);
-            textBox5.Name = "textBox5";
-            textBox5.Size = new Size(704, 43);
-            textBox5.TabIndex = 2;
-            textBox5.UseSystemPasswordChar = true;
-            // 
-            // panel14
-            // 
-            panel14.Controls.Add(comboBox3);
-            panel14.Controls.Add(label17);
-            panel14.Location = new Point(3, 474);
-            panel14.Name = "panel14";
-            panel14.Size = new Size(788, 151);
-            panel14.TabIndex = 29;
-            // 
-            // comboBox3
-            // 
-            comboBox3.Font = new Font("Segoe UI", 12F);
-            comboBox3.FormattingEnabled = true;
-            comboBox3.Location = new Point(12, 69);
-            comboBox3.Name = "comboBox3";
-            comboBox3.Size = new Size(732, 53);
-            comboBox3.TabIndex = 22;
-            // 
-            // label17
-            // 
-            label17.AutoSize = true;
-            label17.Font = new Font("Segoe UI", 12F);
-            label17.ForeColor = SystemColors.ControlText;
-            label17.Location = new Point(3, 8);
-            label17.Name = "label17";
-            label17.Size = new Size(204, 45);
-            label17.TabIndex = 21;
-            label17.Text = "Chuyên khoa";
-            // 
-            // panel22
-            // 
-            panel22.Controls.Add(label18);
-            panel22.Controls.Add(panel23);
-            panel22.Location = new Point(3, 631);
-            panel22.Name = "panel22";
-            panel22.Size = new Size(788, 151);
-            panel22.TabIndex = 30;
-            // 
-            // label18
-            // 
-            label18.AutoSize = true;
-            label18.Font = new Font("Segoe UI", 12F);
-            label18.Location = new Point(3, 8);
-            label18.Name = "label18";
-            label18.Size = new Size(378, 45);
-            label18.TabIndex = 21;
-            label18.Text = "Mã Chứng chỉ hành nghề";
-            // 
-            // panel23
-            // 
-            panel23.BorderStyle = BorderStyle.FixedSingle;
-            panel23.Controls.Add(textBox6);
-            panel23.Location = new Point(12, 56);
-            panel23.Name = "panel23";
-            panel23.Size = new Size(732, 75);
-            panel23.TabIndex = 22;
-            // 
-            // textBox6
-            // 
-            textBox6.BackColor = SystemColors.Window;
-            textBox6.BorderStyle = BorderStyle.None;
-            textBox6.CausesValidation = false;
-            textBox6.Font = new Font("Segoe UI", 12F);
-            textBox6.Location = new Point(15, 13);
-            textBox6.Name = "textBox6";
-            textBox6.Size = new Size(704, 43);
-            textBox6.TabIndex = 2;
-            // 
-            // panel25
-            // 
-            panel25.Controls.Add(comboBox4);
-            panel25.Controls.Add(label21);
-            panel25.Location = new Point(3, 788);
-            panel25.Name = "panel25";
-            panel25.Size = new Size(788, 151);
-            panel25.TabIndex = 32;
-            // 
-            // comboBox4
-            // 
-            comboBox4.Font = new Font("Segoe UI", 12F);
-            comboBox4.FormattingEnabled = true;
-            comboBox4.Location = new Point(12, 69);
-            comboBox4.Name = "comboBox4";
-            comboBox4.Size = new Size(732, 53);
-            comboBox4.TabIndex = 22;
-            // 
-            // label21
-            // 
-            label21.AutoSize = true;
-            label21.Font = new Font("Segoe UI", 12F);
-            label21.ForeColor = SystemColors.ControlText;
-            label21.Location = new Point(3, 8);
-            label21.Name = "label21";
-            label21.Size = new Size(295, 45);
-            label21.TabIndex = 21;
-            label21.Text = "Năm cấp chứng chỉ";
-            // 
-            // panel26
-            // 
-            panel26.Controls.Add(panel29);
-            panel26.Controls.Add(label22);
-            panel26.Location = new Point(3, 945);
-            panel26.Name = "panel26";
-            panel26.Size = new Size(788, 151);
-            panel26.TabIndex = 33;
-            // 
-            // panel29
-            // 
-            panel29.BorderStyle = BorderStyle.FixedSingle;
-            panel29.Controls.Add(label24);
-            panel29.Location = new Point(107, 56);
-            panel29.Name = "panel29";
-            panel29.Size = new Size(564, 73);
-            panel29.TabIndex = 23;
-            panel29.MouseClick += panel29_MouseClick;
-            // 
-            // label24
-            // 
-            label24.AutoSize = true;
-            label24.Font = new Font("Segoe UI", 12F);
-            label24.ForeColor = SystemColors.ControlDarkDark;
-            label24.Location = new Point(62, 14);
-            label24.Name = "label24";
-            label24.Size = new Size(402, 45);
-            label24.TabIndex = 22;
-            label24.Text = "Bấm vào đây để tải ảnh lên";
-            label24.MouseClick += panel29_MouseClick;
-            // 
-            // label22
-            // 
-            label22.AutoSize = true;
-            label22.Font = new Font("Segoe UI", 12F);
-            label22.ForeColor = SystemColors.ControlText;
-            label22.Location = new Point(3, 8);
-            label22.Name = "label22";
-            label22.Size = new Size(296, 45);
-            label22.TabIndex = 21;
-            label22.Text = "Hình ảnh chứng chỉ";
-            // 
             // panel15
             // 
             panel15.Controls.Add(panel24);
             panel15.Controls.Add(label20);
-            panel15.Location = new Point(3, 1102);
+            panel15.Location = new Point(3, 160);
             panel15.Name = "panel15";
             panel15.Size = new Size(788, 151);
             panel15.TabIndex = 31;
@@ -466,7 +230,7 @@
             // 
             panel24.BorderStyle = BorderStyle.FixedSingle;
             panel24.Controls.Add(textBox3);
-            panel24.Location = new Point(12, 57);
+            panel24.Location = new Point(32, 57);
             panel24.Name = "panel24";
             panel24.Size = new Size(732, 75);
             panel24.TabIndex = 23;
@@ -493,13 +257,55 @@
             label20.TabIndex = 21;
             label20.Text = "Nơi công tác hiện tại";
             // 
+            // panel14
+            // 
+            panel14.Controls.Add(btnNew);
+            panel14.Controls.Add(label17);
+            panel14.Location = new Point(3, 317);
+            panel14.Name = "panel14";
+            panel14.Size = new Size(888, 71);
+            panel14.TabIndex = 0;
+            // 
+            // btnNew
+            // 
+            btnNew.BackColor = Color.Azure;
+            btnNew.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnNew.Location = new Point(390, 9);
+            btnNew.Name = "btnNew";
+            btnNew.Size = new Size(247, 46);
+            btnNew.TabIndex = 23;
+            btnNew.Text = "+ Thêm chứng chỉ";
+            btnNew.UseVisualStyleBackColor = false;
+            btnNew.Click += btnNew_Click;
+            // 
+            // label17
+            // 
+            label17.AutoSize = true;
+            label17.Font = new Font("Segoe UI", 12F);
+            label17.ForeColor = SystemColors.ControlText;
+            label17.Location = new Point(10, 6);
+            label17.Name = "label17";
+            label17.Size = new Size(324, 45);
+            label17.TabIndex = 22;
+            label17.Text = "Chứng chỉ hành nghề";
+            // 
+            // flpCertificate
+            // 
+            flpCertificate.AutoScroll = true;
+            flpCertificate.FlowDirection = FlowDirection.TopDown;
+            flpCertificate.Location = new Point(3, 394);
+            flpCertificate.Name = "flpCertificate";
+            flpCertificate.Size = new Size(891, 975);
+            flpCertificate.TabIndex = 35;
+            flpCertificate.WrapContents = false;
+            // 
             // label7
             // 
             label7.AutoSize = true;
             label7.BackColor = Color.Transparent;
             label7.Font = new Font("Segoe UI", 10.125F, FontStyle.Underline, GraphicsUnit.Point, 0);
             label7.ForeColor = Color.Blue;
-            label7.Location = new Point(1341, 1270);
+            label7.Location = new Point(1341, 1422);
             label7.Name = "label7";
             label7.Size = new Size(148, 37);
             label7.TabIndex = 11;
@@ -510,7 +316,7 @@
             // 
             label8.AutoSize = true;
             label8.Font = new Font("Segoe UI", 10F);
-            label8.Location = new Point(1121, 1270);
+            label8.Location = new Point(1121, 1422);
             label8.Name = "label8";
             label8.Size = new Size(214, 37);
             label8.TabIndex = 10;
@@ -523,7 +329,7 @@
             btnLogin.FlatStyle = FlatStyle.Flat;
             btnLogin.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
             btnLogin.ForeColor = Color.White;
-            btnLogin.Location = new Point(1170, 1160);
+            btnLogin.Location = new Point(1170, 1322);
             btnLogin.Name = "btnLogin";
             btnLogin.Size = new Size(732, 85);
             btnLogin.TabIndex = 9;
@@ -540,9 +346,11 @@
             flowLayoutPanel3.Controls.Add(panel18);
             flowLayoutPanel3.Controls.Add(panel20);
             flowLayoutPanel3.Controls.Add(panel21);
+            flowLayoutPanel3.Controls.Add(panel12);
+            flowLayoutPanel3.Controls.Add(panel13);
             flowLayoutPanel3.Location = new Point(91, 35);
             flowLayoutPanel3.Name = "flowLayoutPanel3";
-            flowLayoutPanel3.Size = new Size(901, 1119);
+            flowLayoutPanel3.Size = new Size(901, 1291);
             flowLayoutPanel3.TabIndex = 38;
             // 
             // panel16
@@ -558,7 +366,7 @@
             // 
             panel5.BorderStyle = BorderStyle.FixedSingle;
             panel5.Controls.Add(txtUsername);
-            panel5.Location = new Point(19, 55);
+            panel5.Location = new Point(36, 55);
             panel5.Name = "panel5";
             panel5.Size = new Size(732, 75);
             panel5.TabIndex = 12;
@@ -597,7 +405,7 @@
             // 
             panel6.BorderStyle = BorderStyle.FixedSingle;
             panel6.Controls.Add(txtPhoneNumber);
-            panel6.Location = new Point(28, 49);
+            panel6.Location = new Point(36, 49);
             panel6.Name = "panel6";
             panel6.Size = new Size(732, 75);
             panel6.TabIndex = 14;
@@ -617,7 +425,7 @@
             // 
             label9.AutoSize = true;
             label9.Font = new Font("Segoe UI", 12F);
-            label9.Location = new Point(19, 1);
+            label9.Location = new Point(10, 1);
             label9.Name = "label9";
             label9.Size = new Size(208, 45);
             label9.TabIndex = 13;
@@ -638,7 +446,7 @@
             dtpDOB.CustomFormat = "  dd / MM / yyyy";
             dtpDOB.Font = new Font("Segoe UI", 12F);
             dtpDOB.Format = DateTimePickerFormat.Custom;
-            dtpDOB.Location = new Point(28, 67);
+            dtpDOB.Location = new Point(36, 67);
             dtpDOB.Name = "dtpDOB";
             dtpDOB.Size = new Size(732, 50);
             dtpDOB.TabIndex = 24;
@@ -647,7 +455,7 @@
             // 
             label10.AutoSize = true;
             label10.Font = new Font("Segoe UI", 12F);
-            label10.Location = new Point(19, 2);
+            label10.Location = new Point(10, 2);
             label10.Name = "label10";
             label10.Size = new Size(161, 45);
             label10.TabIndex = 15;
@@ -666,7 +474,7 @@
             // 
             panel11.BorderStyle = BorderStyle.FixedSingle;
             panel11.Controls.Add(txtCCCD);
-            panel11.Location = new Point(28, 50);
+            panel11.Location = new Point(36, 50);
             panel11.Name = "panel11";
             panel11.Size = new Size(732, 75);
             panel11.TabIndex = 26;
@@ -686,7 +494,7 @@
             // 
             label14.AutoSize = true;
             label14.Font = new Font("Segoe UI", 12F);
-            label14.Location = new Point(19, 2);
+            label14.Location = new Point(10, 2);
             label14.Name = "label14";
             label14.Size = new Size(100, 45);
             label14.TabIndex = 25;
@@ -698,7 +506,7 @@
             panel20.Controls.Add(label11);
             panel20.Location = new Point(3, 631);
             panel20.Name = "panel20";
-            panel20.Size = new Size(788, 151);
+            panel20.Size = new Size(788, 116);
             panel20.TabIndex = 36;
             // 
             // flowLayoutPanel1
@@ -739,7 +547,7 @@
             // 
             label11.AutoSize = true;
             label11.Font = new Font("Segoe UI", 12F);
-            label11.Location = new Point(18, 6);
+            label11.Location = new Point(10, 6);
             label11.Name = "label11";
             label11.Size = new Size(141, 45);
             label11.TabIndex = 17;
@@ -752,16 +560,16 @@
             panel21.Controls.Add(label16);
             panel21.Controls.Add(cboRegion);
             panel21.Controls.Add(label19);
-            panel21.Location = new Point(3, 788);
+            panel21.Location = new Point(3, 753);
             panel21.Name = "panel21";
-            panel21.Size = new Size(788, 232);
+            panel21.Size = new Size(788, 218);
             panel21.TabIndex = 37;
             // 
             // label15
             // 
             label15.AutoSize = true;
             label15.Font = new Font("Segoe UI", 12F);
-            label15.Location = new Point(18, 97);
+            label15.Location = new Point(18, 80);
             label15.Name = "label15";
             label15.Size = new Size(263, 45);
             label15.TabIndex = 28;
@@ -772,7 +580,7 @@
             cboProvince.Font = new Font("Segoe UI", 12F);
             cboProvince.FormattingEnabled = true;
             cboProvince.Items.AddRange(new object[] { "Đà Nẵng", "Quảng Trị", "Huế" });
-            cboProvince.Location = new Point(290, 92);
+            cboProvince.Location = new Point(290, 75);
             cboProvince.Name = "cboProvince";
             cboProvince.Size = new Size(470, 53);
             cboProvince.TabIndex = 29;
@@ -781,7 +589,7 @@
             // 
             label16.AutoSize = true;
             label16.Font = new Font("Segoe UI", 12F);
-            label16.Location = new Point(18, 163);
+            label16.Location = new Point(18, 146);
             label16.Name = "label16";
             label16.Size = new Size(196, 45);
             label16.TabIndex = 28;
@@ -792,7 +600,7 @@
             cboRegion.Font = new Font("Segoe UI", 12F);
             cboRegion.FormattingEnabled = true;
             cboRegion.Items.AddRange(new object[] { "Xã Hiếu Giang" });
-            cboRegion.Location = new Point(289, 163);
+            cboRegion.Location = new Point(289, 146);
             cboRegion.Name = "cboRegion";
             cboRegion.Size = new Size(470, 53);
             cboRegion.TabIndex = 30;
@@ -801,11 +609,91 @@
             // 
             label19.AutoSize = true;
             label19.Font = new Font("Segoe UI", 12F);
-            label19.Location = new Point(28, 19);
+            label19.Location = new Point(15, 19);
             label19.Name = "label19";
             label19.Size = new Size(261, 45);
             label19.TabIndex = 38;
             label19.Text = "Nơi ở thường trú";
+            // 
+            // panel12
+            // 
+            panel12.Controls.Add(label12);
+            panel12.Controls.Add(panel9);
+            panel12.Location = new Point(3, 977);
+            panel12.Name = "panel12";
+            panel12.Size = new Size(788, 151);
+            panel12.TabIndex = 28;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Font = new Font("Segoe UI", 12F);
+            label12.Location = new Point(10, 0);
+            label12.Name = "label12";
+            label12.Size = new Size(153, 45);
+            label12.TabIndex = 19;
+            label12.Text = "Mật khẩu";
+            // 
+            // panel9
+            // 
+            panel9.BorderStyle = BorderStyle.FixedSingle;
+            panel9.Controls.Add(textBox4);
+            panel9.Location = new Point(36, 48);
+            panel9.Name = "panel9";
+            panel9.Size = new Size(732, 75);
+            panel9.TabIndex = 20;
+            // 
+            // textBox4
+            // 
+            textBox4.BackColor = SystemColors.Window;
+            textBox4.BorderStyle = BorderStyle.None;
+            textBox4.CausesValidation = false;
+            textBox4.Font = new Font("Segoe UI", 12F);
+            textBox4.Location = new Point(15, 13);
+            textBox4.Name = "textBox4";
+            textBox4.Size = new Size(704, 43);
+            textBox4.TabIndex = 2;
+            textBox4.UseSystemPasswordChar = true;
+            // 
+            // panel13
+            // 
+            panel13.Controls.Add(label13);
+            panel13.Controls.Add(panel10);
+            panel13.Location = new Point(3, 1134);
+            panel13.Name = "panel13";
+            panel13.Size = new Size(788, 151);
+            panel13.TabIndex = 28;
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Font = new Font("Segoe UI", 12F);
+            label13.Location = new Point(10, 8);
+            label13.Name = "label13";
+            label13.Size = new Size(279, 45);
+            label13.TabIndex = 21;
+            label13.Text = "Nhập lại mật khẩu";
+            // 
+            // panel10
+            // 
+            panel10.BorderStyle = BorderStyle.FixedSingle;
+            panel10.Controls.Add(textBox5);
+            panel10.Location = new Point(36, 56);
+            panel10.Name = "panel10";
+            panel10.Size = new Size(732, 75);
+            panel10.TabIndex = 22;
+            // 
+            // textBox5
+            // 
+            textBox5.BackColor = SystemColors.Window;
+            textBox5.BorderStyle = BorderStyle.None;
+            textBox5.CausesValidation = false;
+            textBox5.Font = new Font("Segoe UI", 12F);
+            textBox5.Location = new Point(15, 13);
+            textBox5.Name = "textBox5";
+            textBox5.Size = new Size(704, 43);
+            textBox5.TabIndex = 2;
+            textBox5.UseSystemPasswordChar = true;
             // 
             // panel8
             // 
@@ -898,12 +786,13 @@
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(2584, 1724);
-            Controls.Add(panel2);
+            ClientSize = new Size(2584, 1879);
             Controls.Add(panel1);
             Name = "frmRegister";
             Text = "DoctorSearch";
             WindowState = FormWindowState.Maximized;
+            Load += frmRegister_Load;
+            panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             panel3.ResumeLayout(false);
@@ -914,30 +803,12 @@
             panel27.PerformLayout();
             panel28.ResumeLayout(false);
             panel28.PerformLayout();
-            panel12.ResumeLayout(false);
-            panel12.PerformLayout();
-            panel9.ResumeLayout(false);
-            panel9.PerformLayout();
-            panel13.ResumeLayout(false);
-            panel13.PerformLayout();
-            panel10.ResumeLayout(false);
-            panel10.PerformLayout();
-            panel14.ResumeLayout(false);
-            panel14.PerformLayout();
-            panel22.ResumeLayout(false);
-            panel22.PerformLayout();
-            panel23.ResumeLayout(false);
-            panel23.PerformLayout();
-            panel25.ResumeLayout(false);
-            panel25.PerformLayout();
-            panel26.ResumeLayout(false);
-            panel26.PerformLayout();
-            panel29.ResumeLayout(false);
-            panel29.PerformLayout();
             panel15.ResumeLayout(false);
             panel15.PerformLayout();
             panel24.ResumeLayout(false);
             panel24.PerformLayout();
+            panel14.ResumeLayout(false);
+            panel14.PerformLayout();
             flowLayoutPanel3.ResumeLayout(false);
             panel16.ResumeLayout(false);
             panel16.PerformLayout();
@@ -959,6 +830,14 @@
             flowLayoutPanel1.PerformLayout();
             panel21.ResumeLayout(false);
             panel21.PerformLayout();
+            panel12.ResumeLayout(false);
+            panel12.PerformLayout();
+            panel9.ResumeLayout(false);
+            panel9.PerformLayout();
+            panel13.ResumeLayout(false);
+            panel13.PerformLayout();
+            panel10.ResumeLayout(false);
+            panel10.PerformLayout();
             panel8.ResumeLayout(false);
             panel8.PerformLayout();
             panel7.ResumeLayout(false);
@@ -1014,32 +893,22 @@
         private Label label13;
         private Panel panel10;
         private TextBox textBox5;
-        private Panel panel14;
-        private Label label17;
         private Label label7;
         private Label label8;
         private Button btnLogin;
-        private Panel panel22;
-        private Label label18;
-        private Panel panel23;
-        private TextBox textBox6;
         private Label label19;
-        private ComboBox comboBox3;
         private Panel panel15;
         private Panel panel24;
         private TextBox textBox3;
         private Label label20;
-        private Panel panel25;
-        private ComboBox comboBox4;
-        private Label label21;
-        private Panel panel26;
-        private Label label22;
         private Panel panel27;
         private Panel panel28;
         private TextBox textBox7;
         private Label label23;
-        private Panel panel29;
         private OpenFileDialog ofdCCHN;
-        private Label label24;
+        private FlowLayoutPanel flpCertificate;
+        private Panel panel14;
+        private Button btnNew;
+        private Label label17;
     }
 }

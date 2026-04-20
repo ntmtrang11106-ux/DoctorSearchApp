@@ -65,7 +65,6 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             tabControl1.SuspendLayout();
-            tabPage1.SuspendLayout();
             tabPage2.SuspendLayout();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -102,7 +101,7 @@
             txtSearchBar.Location = new Point(144, 21);
             txtSearchBar.Name = "txtSearchBar";
             txtSearchBar.PlaceholderText = "Tìm kiếm tên bác sĩ ...";
-            txtSearchBar.Size = new Size(1653, 44);
+            txtSearchBar.Size = new Size(1653, 57);
             txtSearchBar.TabIndex = 1;
             txtSearchBar.TextChanged += txtSearchBar_TextChanged;
             txtSearchBar.KeyDown += txtSearchBar_KeyDown;
@@ -141,7 +140,7 @@
             lblPageStatus.Location = new Point(1379, 14);
             lblPageStatus.Name = "lblPageStatus";
             lblPageStatus.RightToLeft = RightToLeft.No;
-            lblPageStatus.Size = new Size(49, 30);
+            lblPageStatus.Size = new Size(67, 41);
             lblPageStatus.TabIndex = 2;
             lblPageStatus.Text = "1/...";
             // 
@@ -152,7 +151,7 @@
             lblPrev.Font = new Font("Segoe UI", 11F);
             lblPrev.Location = new Point(1140, 14);
             lblPrev.Name = "lblPrev";
-            lblPrev.Size = new Size(160, 30);
+            lblPrev.Size = new Size(219, 41);
             lblPrev.TabIndex = 1;
             lblPrev.Text = "Trang trước <<";
             lblPrev.Click += lblPrev_Click;
@@ -164,7 +163,7 @@
             lblNext.Font = new Font("Segoe UI", 11F);
             lblNext.Location = new Point(1554, 14);
             lblNext.Name = "lblNext";
-            lblNext.Size = new Size(141, 30);
+            lblNext.Size = new Size(194, 41);
             lblNext.TabIndex = 0;
             lblNext.Text = ">> Trang sau";
             lblNext.Click += lblNext_Click;
@@ -311,7 +310,6 @@
             // 
             // tabPage1
             // 
-            tabPage1.Controls.Add(flpDoctors);
             tabPage1.Location = new Point(4, 37);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
@@ -322,12 +320,12 @@
             // 
             // flpDoctors
             // 
+            flpDoctors.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             flpDoctors.AutoScroll = true;
-            flpDoctors.Dock = DockStyle.Fill;
-            flpDoctors.Location = new Point(3, 3);
+            flpDoctors.Location = new Point(0, 617);
             flpDoctors.Name = "flpDoctors";
-            flpDoctors.Size = new Size(1849, 394);
-            flpDoctors.TabIndex = 5;
+            flpDoctors.Size = new Size(1845, 359);
+            flpDoctors.TabIndex = 4;
             // 
             // tabPage2
             // 
@@ -350,11 +348,11 @@
             // 
             // panel3
             // 
+            panel3.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             panel3.BackColor = Color.White;
             panel3.BackgroundImageLayout = ImageLayout.Center;
             panel3.Controls.Add(label2);
             panel3.Controls.Add(label1);
-            panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 115);
             panel3.Name = "panel3";
             panel3.Size = new Size(1845, 212);
@@ -366,7 +364,7 @@
             label2.Font = new Font("Segoe UI", 13F, FontStyle.Italic);
             label2.Location = new Point(56, 84);
             label2.Name = "label2";
-            label2.Size = new Size(645, 36);
+            label2.Size = new Size(880, 47);
             label2.TabIndex = 1;
             label2.Text = "Đặt lịch khám nhanh chóng, tư vấn chuyên khoa tiện lợi";
             // 
@@ -376,26 +374,20 @@
             label1.Font = new Font("Segoe UI", 17F, FontStyle.Bold);
             label1.Location = new Point(43, 12);
             label1.Name = "label1";
-            label1.Size = new Size(535, 46);
+            label1.Size = new Size(735, 62);
             label1.TabIndex = 0;
             label1.Text = "Tìm kiếm bác sĩ phù hợp với bạn";
             // 
             // errorProvider1
             // 
-            flpDoctors.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            flpDoctors.AutoScroll = true;
-            flpDoctors.Location = new Point(0, 617);
-            flpDoctors.Name = "flpDoctors";
-            flpDoctors.Size = new Size(1845, 359);
-            flpDoctors.TabIndex = 4;
+            errorProvider1.ContainerControl = this;
             // 
             // frmGuest
             // 
-            AutoScaleDimensions = new SizeF(11F, 28F);
+            AutoScaleDimensions = new SizeF(15F, 37F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(1845, 977);
-            Controls.Add(flpDoctors);
             Controls.Add(panel3);
             Controls.Add(pnlSearch);
             Controls.Add(panel1);
@@ -415,7 +407,6 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             tabControl1.ResumeLayout(false);
-            tabPage1.ResumeLayout(false);
             tabPage2.ResumeLayout(false);
             panel3.ResumeLayout(false);
             panel3.PerformLayout();

@@ -151,7 +151,7 @@
             // 
             label7.Font = new Font("Segoe MDL2 Assets", 15F);
             label7.ForeColor = Color.DodgerBlue;
-            label7.Location = new Point(47, 963);
+            label7.Location = new Point(25, 756);
             label7.Margin = new Padding(4, 0, 4, 0);
             label7.Name = "label7";
             label7.Size = new Size(65, 64);
@@ -162,7 +162,7 @@
             // 
             label6.Font = new Font("Segoe MDL2 Assets", 15F);
             label6.ForeColor = Color.Gold;
-            label6.Location = new Point(47, 886);
+            label6.Location = new Point(30, 692);
             label6.Margin = new Padding(4, 0, 4, 0);
             label6.Name = "label6";
             label6.Size = new Size(65, 64);

@@ -48,11 +48,9 @@ namespace UI_Tier
                 label5.ForeColor = Color.White;
 
                 // Ẩn các thông tin chỉ dành cho bác sĩ nếu có (ví dụ: Chuyên khoa, Số năm kinh nghiệm...)
-                panel14.Hide();
-                panel22.Hide();
-                panel25.Hide();
-                panel26.Hide();
                 panel15.Hide();
+                panel14.Hide();
+                flpCertificate.Hide();
 
                 // Hiển thị các thông tin chỉ dành cho bệnh nhân nếu có (ví dụ: BHYT...)
                 panel27.Show();
@@ -73,11 +71,9 @@ namespace UI_Tier
                 panel27.Hide();
 
                 // Hiển thị các thông tin chỉ dành cho bác sĩ nếu có (ví dụ: Chuyên khoa, Số năm kinh nghiệm...)
-                panel14.Show();
-                panel22.Show();
-                panel25.Show();
-                panel26.Show();
                 panel15.Show();
+                panel14.Show();
+                flpCertificate.Show();
             }
             this.ResumeLayout();
         }
@@ -167,6 +163,45 @@ namespace UI_Tier
         private void panel29_MouseClick(object sender, MouseEventArgs e)
         {
             ofdCCHN.ShowDialog();
+        }
+
+        int certCount = 0; // Biến đếm số chứng chỉ đã thêm
+
+        // Xử lý sự kiện thêm CCHN mới
+        private void btnNew_Click(object sender, EventArgs e)
+        {
+            // 1. Khởi tạo UC mới
+            ucDoctorCertificate newUC = new ucDoctorCertificate();
+
+            // 2. Đăng ký lắng nghe cái "loa" của nó
+            newUC.OnRemoveRequested += Uc_OnRemoveRequested;
+
+            certCount++;
+            newUC.lblCertIndex.Text = $"Chứng chỉ #{certCount}";
+
+            // 3. Quẳng nó vào panel
+            flpCertificate.Controls.Add(newUC);
+        }
+
+        // 3. Hàm xử lý khi thằng con "đòi cook"
+        private void Uc_OnRemoveRequested(object sender, EventArgs e)
+        {
+            // Xác định thằng con nào vừa hét (sender chính là cái UC đó)
+            ucDoctorCertificate ucToCook = sender as ucDoctorCertificate;
+
+            if (ucToCook != null)
+            {
+                // Xóa nó khỏi giao diện
+                flpCertificate.Controls.Remove(ucToCook);
+
+                // CỰC KỲ QUAN TRỌNG: Giải phóng bộ nhớ (Dispose)
+                ucToCook.Dispose();
+            }
+        }
+
+        private void frmRegister_Load(object sender, EventArgs e)
+        {
+            btnNew_Click(null, null); // Tự động thêm 1 UC chứng chỉ khi mở form (tùy chọn)
         }
     }
 }

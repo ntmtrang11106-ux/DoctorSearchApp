@@ -148,6 +148,7 @@
             btnAccept.TabIndex = 14;
             btnAccept.Text = "";
             btnAccept.TextAlign = ContentAlignment.MiddleLeft;
+            ttAction.SetToolTip(btnAccept, "Chấp nhận");
             btnAccept.UseVisualStyleBackColor = false;
             // 
             // flpAction
@@ -178,6 +179,7 @@
             btnCancel.TabIndex = 15;
             btnCancel.Text = "";
             btnCancel.TextAlign = ContentAlignment.MiddleLeft;
+            ttAction.SetToolTip(btnCancel, "Từ chối");
             btnCancel.UseVisualStyleBackColor = false;
             // 
             // btnRemove
@@ -195,6 +197,7 @@
             btnRemove.TabIndex = 16;
             btnRemove.Text = "";
             btnRemove.TextAlign = ContentAlignment.MiddleRight;
+            ttAction.SetToolTip(btnRemove, "Xóa lịch hẹn");
             btnRemove.UseVisualStyleBackColor = false;
             // 
             // btnBook
@@ -212,7 +215,15 @@
             btnBook.TabIndex = 17;
             btnBook.Text = "";
             btnBook.TextAlign = ContentAlignment.MiddleRight;
+            ttAction.SetToolTip(btnBook, "Đặt lịch ngay");
             btnBook.UseVisualStyleBackColor = false;
+            // 
+            // ttAction
+            // 
+            ttAction.AutoPopDelay = 5000;
+            ttAction.InitialDelay = 500;
+            ttAction.ReshowDelay = 100;
+            ttAction.ShowAlways = true;
             // 
             // ucAppItem
             // 
@@ -230,21 +241,10 @@
             Controls.Add(lblPatientName);
             Name = "ucAppItem";
             Size = new Size(2297, 252);
+            Load += ucAppItem_Load;
             flpAction.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
-            //
-            // ttAction
-            //
-            ttAction.InitialDelay = 500; // Sau 0.5s mới hiện (tránh việc di chuột qua là hiện liên tục gây ngứa mắt)
-            ttAction.AutoPopDelay = 5000; // Hiện trong 5s rồi tự tắt
-            ttAction.ReshowDelay = 100;   // Di chuyển giữa các nút thì hiện lại ngay
-            ttAction.ShowAlways = true;
-            //ttAction.IsBalloon = true;     // Để true nhìn nó sẽ có cái đuôi bo tròn giống bong bóng chat, nhìn hiện đại hơn
-            ttAction.SetToolTip(btnAccept, "Chấp nhận");
-            ttAction.SetToolTip(btnCancel, "Từ chối");
-            ttAction.SetToolTip(btnRemove, "Xóa lịch hẹn");
-            ttAction.SetToolTip(btnBook, "Đặt lịch ngay");
         }
 
         #endregion
