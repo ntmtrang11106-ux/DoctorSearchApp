@@ -15,12 +15,18 @@ namespace UI_Tier
         public ucAppItem()
         {
             InitializeComponent();
+            UIHelper.SetDoubleBuffered(this);
 
             UIHelper.ApplyRoundedRegion(btnStatus, 10);
             UIHelper.ApplyRoundedRegion(btnAccept, 40);
             UIHelper.ApplyRoundedRegion(btnCancel, 40);
             UIHelper.ApplyRoundedRegion(btnRemove, 40);
             UIHelper.ApplyRoundedRegion(btnBook, 40);
+
+            this.Paint += (sender, e) =>
+            {
+                UIHelper.uc_Paint(this, e, 10, Color.LightGray, 2);
+            };
         }
 
         // Trong file UC_AppItem.cs

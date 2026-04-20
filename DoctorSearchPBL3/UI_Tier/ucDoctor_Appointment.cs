@@ -66,12 +66,7 @@ namespace UI_Tier
                 card.SetAppItemData(ap);
                 card.Margin = new Padding(20, 10, 20, 10);
                 // Ép chiều ngang UC = Chiều ngang Panel - (trừ đi 25~30 để chừa chỗ cho thanh cuộn)
-                card.Width = flpAppItem.Width - 70;
-
-                card.Paint += (sender, e) =>
-                {
-                    UIHelper.uc_Paint(card, e, 10, Color.LightGray, 2);
-                };
+                card.Width = flpAppItem.Width - 80;
                 // Thêm dòng này để nếu resize Form thì UC nó cũng co giãn theo (tùy chọn)
                 //card.Anchor = AnchorStyles.Left | AnchorStyles.Right;
                 
