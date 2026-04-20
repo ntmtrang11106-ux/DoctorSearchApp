@@ -12,7 +12,10 @@ namespace BUS_Tier
 
         public List<DoctorDTO> GetListDoctors()
         {
-            return doctorDAL.GetAllDoctors();
+            var list = doctorDAL.GetAllDoctors();
+            foreach (var d in list)
+                CalculateDoctorStats(d);   // Gọi vào đây
+            return list;
         }
 
         //// Logic tìm kiếm theo tên

@@ -13,7 +13,7 @@ namespace DAL_Tier
         public DataTable CheckLogin(string phone, string password)
         {
             // Sử dụng [User] và PhoneNumber theo thiết kế mới
-            string query = "SELECT * FROM [User] WHERE PhoneNumber = @phone AND Password = @pass AND Status = N'Hoạt động'";
+            string query = "SELECT * FROM [User] WHERE PhoneNumber = @phone AND Password = @pass AND Status = N'Active'";
 
             SqlParameter[] parameters = {
                 new SqlParameter("@phone", phone),

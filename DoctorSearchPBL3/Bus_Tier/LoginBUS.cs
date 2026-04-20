@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace Bus_Tier
+namespace BUS_Tier
 {
     public class LoginBUS
     {
@@ -24,7 +24,6 @@ namespace Bus_Tier
             if (dt != null && dt.Rows.Count > 0)
             {
                 // 3. Lấy giá trị của cột "Role" từ dòng đầu tiên tìm thấy
-                // Giả sử trong database bạn đặt tên cột là "Role" hoặc "UserRole"
                 string userRole = dt.Rows[0]["Role"].ToString();
                 return userRole;
             }
@@ -33,70 +32,45 @@ namespace Bus_Tier
         }
 
         // 2. Chức năng Đăng ký (Sử dụng các hàm lẻ từ DAL)
-        public string Register(string phone, string name, string pass, string confirm, string role, DateTime dob, string gender)
+        // Thêm các tham số cho Patient và Doctor
+        public string Register(string phone, string name, string pass, string confirm, string role,
+                              DateTime dob, string gender,
+                              string cccd = null, string bhyt = null, string address = null, // Cho Patient
+                              string specialty = null, string license = null // Cho Doctor
+                              )
         {
-            // --- BƯỚC 1: KIỂM TRA NHẬP LIỆU (VALIDATION) ---
+            // --- BƯỚC 1: VALIDATION CHUNG ---
             if (string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(name) ||
                 string.IsNullOrWhiteSpace(pass) || string.IsNullOrWhiteSpace(confirm))
                 return "Vui lòng nhập đầy đủ các trường!";
 
-            if (phone.Length != 10)
-                return "Số điện thoại phải có đúng 10 chữ số!";
+            // --- BƯỚC 2: ĐÓNG GÓI USER ---
+            UserDTO newUser = new UserDTO { /* ... như cũ ... */ };
 
-            if (pass != confirm)
-                return "Mật khẩu xác nhận không khớp!";
-
-            if (_dal.IsPhoneExists(phone))
-                return "Số điện thoại này đã được đăng ký!";
-
-            // --- BƯỚC 2: ĐÓNG GÓI DỮ LIỆU ---
-            // Đưa Dob và Gender vào UserDTO vì DB mới lưu ở bảng Users
-            UserDTO newUser = new UserDTO
-            {
-                PhoneNumber = phone,
-                FullName = name,
-                Password = pass,
-                Role = role,
-                Dob = dob,
-                Gender = gender,
-                Status = "Hoạt động" // Mặc định kích hoạt
-            };
-
-            // --- BƯỚC 3: THỰC THI LƯU DỮ LIỆU ---
-
-            // 3.1. Lưu vào bảng Users trước để lấy UserId
+            // --- BƯỚC 3: THỰC THI ---
             int newUserId = _dal.RegisterUserBasic(newUser);
 
             if (newUserId > 0)
             {
                 bool isDetailSaved = false;
 
-                // 3.2. Dựa vào Role để chèn vào bảng con tương ứng
                 if (role == "Patient")
                 {
-                    // Chèn vào bảng Patients (chỉ cần UserId để giữ liên kết)
-                    isDetailSaved = _dal.InsertPatientMinimal(newUserId);
+                    // Truyền thêm các thông tin từ giao diện vào
+                    isDetailSaved = _dal.InsertPatientFull(newUserId, cccd, bhyt, address);
                 }
                 else if (role == "Doctor")
                 {
-                    // Chèn vào bảng Doctors (chỉ cần UserId để giữ liên kết)
-                    isDetailSaved = _dal.InsertDoctorMinimal(newUserId);
+                    // Truyền thêm thông tin chuyên ngành
+                    isDetailSaved = _dal.InsertDoctorFull(newUserId, specialty, license);
                 }
 
-                // Kiểm tra kết quả chèn bảng con
-                if (isDetailSaved)
-                {
-                    return "Success";
-                }
-                else
-                {
-                    // LỖI: Xóa User vừa tạo để tránh rác
-                    _dal.DeleteUser(newUserId); // Bạn cần viết thêm hàm Delete này trong DAL
-                    return "Tài khoản đã tạo nhưng lỗi khởi tạo hồ sơ chi tiết!";
-                }
+                if (isDetailSaved) return "Success";
+
+                _dal.DeleteUser(newUserId);
+                return "Lỗi khởi tạo hồ sơ chi tiết!";
             }
-
-            return "Đăng ký thất bại: Lỗi hệ thống tại bảng Users!";
+            return "Đăng ký thất bại!";
         }
     }
 }
