@@ -7,7 +7,7 @@ using DTO_Tier;
 
 namespace BUS_Tier
 {
-    internal class SearchBUS
+    public class SearchBUS
     {
         private DoctorDAL _doctorDAL = new DoctorDAL();
         private ArticleDAL _articleDAL = new ArticleDAL();

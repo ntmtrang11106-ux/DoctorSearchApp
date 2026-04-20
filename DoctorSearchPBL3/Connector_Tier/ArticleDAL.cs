@@ -16,6 +16,7 @@ namespace DAL_Tier
             {
                 // 1. Khởi tạo truy vấn kèm theo bảng nối Chuyên khoa
                 var query = context.Articles
+                    .Include(a => a.Author)
                     .Include(a => a.ArticleSpecialties)
                         .ThenInclude(aspec => aspec.Specialty)
                     .AsQueryable();
@@ -56,6 +57,7 @@ namespace DAL_Tier
             using (var context = new AppDbContext())
             {
                 return context.Articles
+                    .Include(a => a.Author)
                     .Include(a => a.ArticleSpecialties) // Bốc bảng nối
                         .ThenInclude(aspec => aspec.Specialty) // Bốc tên chuyên khoa từ bảng nối đó
                     .ToList();

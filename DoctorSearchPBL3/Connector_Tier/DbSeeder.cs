@@ -126,6 +126,25 @@ namespace DAL_Tier
 
                 context.SaveChanges();
                 Debug.WriteLine("=== SEED DATA HOÀN TẤT: 7 Bác sĩ, 5 Bài viết sẵn sàng! ===");
+
+
+                // 8. LIÊN KẾT BÀI VIẾT - CHUYÊN KHOA
+                // Phải có cái này thì lúc bấm nút Filter trên UI nó mới ra bài viết nhé Trang!
+                var artSpecs = new List<ArticleSpecialtyDTO> {
+                // Bài 1: Cẩm nang phòng dịch -> Chuyên khoa Nội (specs[1])
+                new ArticleSpecialtyDTO { ArticleId = articles[0].Id, SpecialtyId = specs[1].Id },
+    
+                // Bài 2: Dinh dưỡng trẻ em -> Chuyên khoa Nhi (specs[0])
+                new ArticleSpecialtyDTO { ArticleId = articles[1].Id, SpecialtyId = specs[0].Id },
+    
+                // Bài 3: Bệnh về mắt -> Chuyên khoa Mắt (specs[3])
+                new ArticleSpecialtyDTO { ArticleId = articles[2].Id, SpecialtyId = specs[3].Id },
+    
+                // Bài 5: Trái tim khỏe mạnh -> Chuyên khoa Tim mạch (specs[2])
+                new ArticleSpecialtyDTO { ArticleId = articles[4].Id, SpecialtyId = specs[2].Id }   
+                };
+                context.ArticleSpecialties.AddRange(artSpecs);
+                context.SaveChanges(); // Chốt hạ lần cuối
             }
             catch (Exception ex)
             {
