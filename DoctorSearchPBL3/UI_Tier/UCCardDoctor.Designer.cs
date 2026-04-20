@@ -287,7 +287,6 @@
             Name = "UCCardDoctor";
             Padding = new Padding(10);
             Size = new Size(670, 900);
-            Load += UCCardDoctor_Load;
             Paint += UCCardDoctor_Paint;
             ((System.ComponentModel.ISupportInitialize)picDoctor).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
