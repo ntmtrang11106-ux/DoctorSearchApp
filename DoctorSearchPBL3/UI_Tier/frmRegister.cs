@@ -1,4 +1,7 @@
-﻿using Bus_Tier;
+﻿using BUS_Tier;
+using DAL_Tier;
+using DTO_Tier;
+using DTO_Tier;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,6 +9,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace UI_Tier
 {
@@ -43,6 +47,14 @@ namespace UI_Tier
                 panel8.BackColor = Color.FromArgb(24, 112, 255); // Hoặc màu xanh bạn thích
                 label4.ForeColor = Color.White;
                 label5.ForeColor = Color.White;
+
+                // Ẩn các thông tin chỉ dành cho bác sĩ nếu có (ví dụ: Chuyên khoa, Số năm kinh nghiệm...)
+                panel15.Hide();
+                panel14.Hide();
+                flpCertificate.Hide();
+
+                // Hiển thị các thông tin chỉ dành cho bệnh nhân nếu có (ví dụ: BHYT...)
+                panel27.Show();
             }
             else
             {
@@ -55,6 +67,14 @@ namespace UI_Tier
                 panel7.BackColor = Color.FromArgb(24, 112, 255);
                 label2.ForeColor = Color.White;
                 label3.ForeColor = Color.White;
+
+                // Ẩn các thông tin chỉ dành cho bệnh nhân nếu có (ví dụ: BHYT...)
+                panel27.Hide();
+
+                // Hiển thị các thông tin chỉ dành cho bác sĩ nếu có (ví dụ: Chuyên khoa, Số năm kinh nghiệm...)
+                panel15.Show();
+                panel14.Show();
+                flpCertificate.Show();
             }
             this.ResumeLayout();
         }
@@ -75,30 +95,102 @@ namespace UI_Tier
         // vào các hàm panel_MouseClick tương ứng để bấm vào chữ cũng đổi được luồng.
         #endregion
 
-        #region
+        #region Đăng ký
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            // 1. Kiểm tra xem người dùng đã chọn vai trò chưa
+            // 1. Kiểm tra vai trò
             if (string.IsNullOrEmpty(currentRole))
             {
-                MessageBox.Show("Vui lòng chọn vai trò là Bệnh nhân hoặc Bác sĩ!");
+                MessageBox.Show("Vui lòng chọn vai trò!");
                 return;
             }
 
-            // 2. Lấy thông tin từ các control
-            string name = txtUsername.Text.Trim();
-            string phone = textBox1.Text.Trim();
-            string pass = textBox4.Text.Trim();
-            string confirm = textBox5.Text.Trim();
-            DateTime dob = dtpDOB.Value;
-            string gender = radioButton1.Checked ? "Nam" : "Nữ";
+            // 2. Xử lý gộp địa chỉ "Xã, Tỉnh"
+            string province = cboProvince.Text.Trim();
+            string ward = cboRegion.Text.Trim();
+            string fullAddress = $"{ward}, {province}";
 
-            // 3. Truyền biến currentRole vào hàm Register của BUS
-            string result = _loginBUS.Register(phone, name, pass, confirm, currentRole, dob, gender);
+            // Lấy LocationId(ID Tỉnh / Thành) - Trả về null nếu chưa chọn
+            int? locationId = cboProvince.SelectedValue as int?;
 
+            // Lấy Password và Confirm Password
+            string password = textBox4.Text.Trim();
+            string confirmPass = textBox5.Text.Trim();
+
+            // 3. Đóng gói dữ liệu vào DTO (Chỉ mang tính chất vận chuyển dữ liệu)
+            UserDTO newUser = new UserDTO
+            {
+                PhoneNumber = txtPhoneNumber.Text.Trim(),
+                FullName = txtUsername.Text.Trim(),
+                Password = password,
+                Dob = dtpDOB.Value,
+                Gender = radioButton1.Checked ? "Nam" : "Nữ",
+                Role = currentRole,
+                CCCD = txtCCCD.Text.Trim(),
+                Residential_Address = fullAddress,
+                Picture = "default.jpg",
+                Status = currentRole == "Doctor" ? "Pending" : "Active"
+            };
+
+            string result = "";
+
+            // 4. Gọi hàm BUS tương ứng theo vai trò
+            if (currentRole == "Patient")
+            {
+                string bhyt = textBox7.Text.Trim(); // Mã số BHYT
+                result = _loginBUS.RegisterPatient(newUser, confirmPass, bhyt);
+            }
+            else if (currentRole == "Doctor")
+            {
+                List<int> specialtyIds = new List<int>();
+                List<string> certCodes = new List<string>();
+                List<string> certImages = new List<string>(); // Thêm danh sách để chứa nhiều ảnh
+
+                foreach (Control ctrl in flpCertificate.Controls)
+                {
+                    if (ctrl is ucDoctorCertificate uc)
+                    {
+                        // 1. Lấy chuyên khoa
+                        int specId = uc.GetSelectedSpecialtyId();
+                        if (specId > 0 && !specialtyIds.Contains(specId))
+                            specialtyIds.Add(specId);
+
+                        // 2. Lấy mã chứng chỉ
+                        string cCode = uc.GetCertificateId();
+                        if (!string.IsNullOrWhiteSpace(cCode))
+                            certCodes.Add(cCode);
+
+                        // 3. Lấy tên file ảnh và thêm vào danh sách (SỬA Ở ĐÂY)
+                        string imgName = uc.GetCertificateImageName();
+                        if (!string.IsNullOrWhiteSpace(imgName))
+                            certImages.Add(imgName);
+                    }
+                }
+
+                // Gộp danh sách thành chuỗi cách nhau bởi dấu phẩy
+                string allCertCodes = string.Join(", ", certCodes);
+                string allCertImages = string.Join(", ", certImages); // Kết quả: "anh1.jpg, anh2.jpg"
+
+                string clinicName = textBox3.Text.Trim();
+                string clinicAddr = fullAddress;
+
+                // Gọi BUS với chuỗi ảnh đã gộp
+                result = _loginBUS.RegisterDoctor(
+                    newUser,
+                    confirmPass,
+                    allCertCodes,
+                    allCertImages, // Truyền chuỗi đầy đủ xuống
+                    clinicAddr,
+                    clinicName,
+                    locationId,
+                    specialtyIds
+                );
+            }
+
+            // 5. Kết quả
             if (result == "Success")
             {
-                MessageBox.Show($"Đăng ký tài khoản {currentRole} thành công!", "Thông báo");
+                MessageBox.Show($"Đăng ký {currentRole} thành công!");
                 this.Close();
             }
             else
@@ -107,5 +199,59 @@ namespace UI_Tier
             }
         }
         #endregion
+
+        int certCount = 0; // Biến đếm số chứng chỉ đã thêm
+
+        // Hàm cập nhật lại số thứ tự hiển thị (1, 2, 3...)
+        private void UpdateCertIndexes()
+        {
+            // Lấy danh sách các UC hiện có và ép kiểu
+            var certList = flpCertificate.Controls.OfType<ucDoctorCertificate>().ToList();
+
+            // Dùng vòng lặp for để gán lại số thứ tự dựa trên vị trí trong danh sách
+            for (int i = 0; i < certList.Count; i++)
+            {
+                certList[i].lblCertIndex.Text = $"Chứng chỉ #{i + 1}";
+            }
+
+            // Cập nhật lại biến đếm để lần sau thêm mới sẽ là (tổng số + 1)
+            certCount = certList.Count;
+        }
+
+        private void btnNew_Click(object sender, EventArgs e)
+        {
+            ucDoctorCertificate newUC = new ucDoctorCertificate();
+            newUC.OnRemoveRequested += Uc_OnRemoveRequested;
+
+            flpCertificate.Controls.Add(newUC);
+
+            // Cập nhật số thứ tự ngay sau khi thêm
+            UpdateCertIndexes();
+        }
+
+        // 3. Hàm xử lý khi thằng con "đòi cook"
+        private void Uc_OnRemoveRequested(object sender, EventArgs e)
+        {
+            // Xác định thằng con nào vừa hét (sender chính là cái UC đó)
+            ucDoctorCertificate ucToCook = sender as ucDoctorCertificate;
+
+            if (ucToCook != null)
+            {
+                // Xóa nó khỏi giao diện
+                flpCertificate.Controls.Remove(ucToCook);
+
+                // CỰC KỲ QUAN TRỌNG: Giải phóng bộ nhớ (Dispose)
+                ucToCook.Dispose();
+
+                // Cập nhật lại số thứ tự sau khi xóa để các chứng chỉ sau đôn lên đúng số
+                UpdateCertIndexes();
+            }
+        }
+
+        private void frmRegister_Load(object sender, EventArgs e)
+        {
+            btnNew_Click(null, null); // Tự động thêm 1 UC chứng chỉ khi mở form (tùy chọn)
+        }
+        
     }
 }

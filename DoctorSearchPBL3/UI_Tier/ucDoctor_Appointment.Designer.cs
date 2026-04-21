@@ -272,6 +272,7 @@
             lblPrev.Size = new Size(219, 41);
             lblPrev.TabIndex = 1;
             lblPrev.Text = "Trang trước <<";
+            lblPrev.Click += lblPrev_Click;
             // 
             // lblNext
             // 
@@ -283,15 +284,19 @@
             lblNext.Size = new Size(194, 41);
             lblNext.TabIndex = 0;
             lblNext.Text = ">> Trang sau";
+            lblNext.Click += lblNext_Click;
             // 
             // flpAppItem
             // 
-            flpAppItem.Dock = DockStyle.Fill;
+            flpAppItem.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            flpAppItem.AutoScroll = true;
             flpAppItem.FlowDirection = FlowDirection.TopDown;
             flpAppItem.Location = new Point(0, 528);
+            flpAppItem.Margin = new Padding(0);
             flpAppItem.Name = "flpAppItem";
             flpAppItem.Size = new Size(1845, 334);
             flpAppItem.TabIndex = 7;
+            flpAppItem.WrapContents = false;
             // 
             // ucDoctor_Appointment
             // 

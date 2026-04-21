@@ -25,6 +25,7 @@ namespace DTO_Tier
         public int Views { get; set; } = 0; // 
 
         public DateTime CreatedAt { get; set; } = DateTime.Now; // 
+        public virtual ICollection<ArticleSpecialtyDTO> ArticleSpecialties { get; set; } = new List<ArticleSpecialtyDTO>();
 
         // --- Liên kết Navigation ---
         [ForeignKey("AdminID")]

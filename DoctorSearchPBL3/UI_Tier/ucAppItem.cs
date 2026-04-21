@@ -11,11 +11,11 @@ namespace UI_Tier
 {
     public partial class ucAppItem : UserControl
     {
+
         public ucAppItem()
         {
             InitializeComponent();
-
-            UIHelper.ApplyRoundedRegion(btnStatus, 10);
+            UIHelper.SetDoubleBuffered(this);
         }
 
         // Trong file UC_AppItem.cs
@@ -47,7 +47,7 @@ namespace UI_Tier
             }
             btnStatus.Text = data.Status ?? "Chờ duyệt";
             //
-            
+
 
             // 2. Xử lý hiển thị cho trạng thái (Status)
             btnStatus.Text = data.Status;
@@ -68,6 +68,20 @@ namespace UI_Tier
                 btnStatus.BackColor = Color.FromArgb(255, 200, 200); // Màu đỏ nhạt
                 btnStatus.ForeColor = Color.Red;
             }
+        }
+
+        private void ucAppItem_Load(object sender, EventArgs e)
+        {
+            UIHelper.ApplyRoundedRegion(btnStatus, 10);
+            UIHelper.ApplyRoundedRegion(btnAccept, 40);
+            UIHelper.ApplyRoundedRegion(btnCancel, 40);
+            UIHelper.ApplyRoundedRegion(btnRemove, 40);
+            UIHelper.ApplyRoundedRegion(btnBook, 40);
+
+            this.Paint += (sender, e) =>
+            {
+                UIHelper.uc_Paint(this, e, 10, Color.LightGray, 2);
+            };
         }
     }
 }
