@@ -60,37 +60,34 @@ namespace BUS_Tier
         }
 
         // 3. Logic Đăng ký Bác sĩ
-        public string RegisterDoctor(UserDTO user, string confirmPass, string certImages,
-                                    string clinicAddr, string clinicName, int? locationId, List<int> specialtyIds)
+        public string RegisterDoctor(UserDTO user, string confirmPass, string allCertCodes, string allCertImages,
+                            string clinicAddr, string clinicName, int? locationId, List<int> specialtyIds)
         {
-            // Kiểm tra mật khẩu khớp
+            // 1. Kiểm tra mật khẩu khớp
             if (user.Password != confirmPass) return "Mật khẩu xác nhận không khớp!";
 
-            // Kiểm tra chung
-            string validateMsg = ValidateCommon(user);
-            if (validateMsg != "OK") return validateMsg;
+            // 2. Kiểm tra nghiệp vụ bác sĩ
+            if (string.IsNullOrWhiteSpace(allCertCodes))
+                return "Vui lòng nhập ít nhất một mã chứng chỉ!";
 
-            // Kiểm tra nghiệp vụ riêng cho bác sĩ
-            if (string.IsNullOrWhiteSpace(certImages))
-                return "Vui lòng cung cấp ít nhất một mã số chứng chỉ hành nghề!";
+            if (string.IsNullOrWhiteSpace(allCertImages))
+                return "Vui lòng tải lên hình ảnh chứng chỉ!";
 
             if (specialtyIds == null || specialtyIds.Count == 0)
                 return "Vui lòng chọn ít nhất một chuyên khoa!";
 
-            if (string.IsNullOrWhiteSpace(clinicName))
-                return "Vui lòng nhập tên bệnh viện/phòng khám hiện đang công tác!";
-
-            // Bước 1: Lưu User
+            // 3. Thực hiện lưu dữ liệu
             int newUserId = _dal.RegisterUserBasic(user);
             if (newUserId > 0)
             {
-                // Bước 2: Lưu Doctor (Truyền thêm locationId và giá trị Bio rỗng)
-                bool isDetailSaved = _dal.InsertDoctorFull(newUserId, certImages, clinicAddr, clinicName, "", locationId, specialtyIds);
+                // Truyền chuỗi đã gộp (cách nhau bởi dấu phẩy) xuống DAL
+                bool isDetailSaved = _dal.InsertDoctorFull(newUserId, allCertCodes, allCertImages, clinicAddr, clinicName, "", locationId, specialtyIds);
 
                 if (isDetailSaved) return "Success";
 
-                _dal.DeleteUser(newUserId); // Rollback
-                return "Lỗi khi lưu hồ sơ bác sĩ!";
+                // Nếu thất bại ở bước lưu chi tiết, thực hiện Rollback xóa User
+                _dal.DeleteUser(newUserId);
+                return "Lỗi khi lưu hồ sơ chi tiết bác sĩ!";
             }
             return "Đăng ký tài khoản bác sĩ thất bại!";
         }

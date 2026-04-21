@@ -142,34 +142,49 @@ namespace UI_Tier
             }
             else if (currentRole == "Doctor")
             {
-                // Thu thập thông tin từ các UserControl (UC) chứng chỉ
                 List<int> specialtyIds = new List<int>();
                 List<string> certCodes = new List<string>();
+                List<string> certImages = new List<string>(); // Thêm danh sách để chứa nhiều ảnh
 
                 foreach (Control ctrl in flpCertificate.Controls)
                 {
                     if (ctrl is ucDoctorCertificate uc)
                     {
-                        // Lấy ID chuyên khoa (để đổ vào bảng trung gian ở DAL)
+                        // 1. Lấy chuyên khoa
                         int specId = uc.GetSelectedSpecialtyId();
                         if (specId > 0 && !specialtyIds.Contains(specId))
                             specialtyIds.Add(specId);
 
-                        // Lấy mã chứng chỉ
+                        // 2. Lấy mã chứng chỉ
                         string cCode = uc.GetCertificateId();
                         if (!string.IsNullOrWhiteSpace(cCode))
                             certCodes.Add(cCode);
+
+                        // 3. Lấy tên file ảnh và thêm vào danh sách (SỬA Ở ĐÂY)
+                        string imgName = uc.GetCertificateImageName();
+                        if (!string.IsNullOrWhiteSpace(imgName))
+                            certImages.Add(imgName);
                     }
                 }
 
+                // Gộp danh sách thành chuỗi cách nhau bởi dấu phẩy
+                string allCertCodes = string.Join(", ", certCodes);
+                string allCertImages = string.Join(", ", certImages); // Kết quả: "anh1.jpg, anh2.jpg"
 
                 string clinicName = textBox3.Text.Trim();
+                string clinicAddr = fullAddress;
 
-                // Gộp các mã chứng chỉ thành chuỗi (ví dụ: "CCHN01, CCHN02")
-                string allCertificates = string.Join(", ", certCodes);
-
-                // Gọi BUS: BUS sẽ kiểm tra ClinicName trống, specialtyIds trống, v.v.
-                result = _loginBUS.RegisterDoctor(newUser, confirmPass, allCertificates, fullAddress, clinicName, locationId, specialtyIds);
+                // Gọi BUS với chuỗi ảnh đã gộp
+                result = _loginBUS.RegisterDoctor(
+                    newUser,
+                    confirmPass,
+                    allCertCodes,
+                    allCertImages, // Truyền chuỗi đầy đủ xuống
+                    clinicAddr,
+                    clinicName,
+                    locationId,
+                    specialtyIds
+                );
             }
 
             // 5. Kết quả

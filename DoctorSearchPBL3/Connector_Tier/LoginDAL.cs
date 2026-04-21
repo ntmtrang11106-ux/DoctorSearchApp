@@ -80,29 +80,34 @@ namespace DAL_Tier
         }
 
         // 5. Đăng ký chi tiết Bác sĩ và Chuyên khoa (Hàm bạn đang thiếu trong BUS)
-        public bool InsertDoctorFull(int userId, string certImages, string clinicAddr, string clinicName, string bio, int? locationId, List<int> specialtyIds)
+        public bool InsertDoctorFull(int userId, string allCertCodes, string allCertImages, string clinicAddr, string clinicName, string bio, int? locationId, List<int> specialtyIds)
         {
-            // Bước 1: Chèn vào bảng Doctor
-            string queryDoc = @"INSERT INTO Doctor (UserId, CertificateImage, ClinicAddress, ClinicName, Experience_Years, Bio, Price, WorkingTime, LocationId, IsApproved) 
-                        VALUES (@uid, @cert, @addr, @name, 0, @bio, 0, N'Chưa cập nhật', @locId, 0);
+            // Sử dụng câu lệnh INSERT cho CSDL DoctorSearchDB_CodeFirst
+            string queryDoc = @"INSERT INTO Doctor 
+                        (UserId, CertificateCode, CertificateImage, ClinicAddress, ClinicName, 
+                         Experience_Years, Bio, Price, WorkingTime, LocationId, IsApproved) 
+                        VALUES 
+                        (@uid, @codes, @images, @addr, @name, 0, @bio, 0, N'Chưa cập nhật', @locId, 0);
                         SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
             SqlParameter[] parameters = {
             new SqlParameter("@uid", userId),
-            new SqlParameter("@cert", certImages), // Đây là nơi lưu đường dẫn ảnh hoặc mã CCHN
+            new SqlParameter("@codes", allCertCodes ?? ""), // Lưu chuỗi "T123, T456"
+            new SqlParameter("@images", allCertImages ?? "default.jpg"), // Lưu chuỗi "img1.jpg, img2.jpg"
             new SqlParameter("@addr", clinicAddr),
             new SqlParameter("@name", clinicName),
             new SqlParameter("@bio", bio ?? ""),
             new SqlParameter("@locId", (object)locationId ?? DBNull.Value)
-    };
+         };
 
             try
             {
+                // Sử dụng Microsoft.Data.SqlClient cho .NET development
                 object result = DBHelper.ExecuteScalar(queryDoc, parameters);
                 if (result == null) return false;
                 int doctorTableId = Convert.ToInt32(result);
 
-                // Bước 2: CHÈN VÀO BẢNG TRUNG GIAN Doctor_Specialty
+                // Chèn vào bảng trung gian Doctor_Specialty
                 if (specialtyIds != null && specialtyIds.Count > 0)
                 {
                     foreach (int specId in specialtyIds)
@@ -119,6 +124,7 @@ namespace DAL_Tier
             }
             catch (Exception ex)
             {
+                // Nếu có lỗi SQL, hàm sẽ trả về false và kích hoạt thông báo lỗi ở UI
                 return false;
             }
         }
