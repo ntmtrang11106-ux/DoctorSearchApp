@@ -36,16 +36,20 @@ namespace DAL_Tier
 
             // 1. Ràng buộc UNIQUE
             modelBuilder.Entity<UserDTO>().HasIndex(u => u.PhoneNumber).IsUnique();
-            modelBuilder.Entity<DoctorDTO>().HasIndex(d => d.CertificateImage).IsUnique();
+            // Chứng chỉ đã được di chuyển sang DoctorSpecialtyDTO, không còn index UNIQUE ở DoctorDTO
 
             // 2. Thiết lập quan hệ 1-1 MỘT CHIỀU
             modelBuilder.Entity<DoctorDTO>().HasOne(d => d.User).WithOne().HasForeignKey<DoctorDTO>(d => d.UserId);
             modelBuilder.Entity<PatientDTO>().HasOne(p => p.User).WithOne().HasForeignKey<PatientDTO>(p => p.UserId);
             modelBuilder.Entity<AdminDTO>().HasOne(a => a.User).WithOne().HasForeignKey<AdminDTO>(a => a.UserId);
             // --- 2. CẤU HÌNH QUAN HỆ NHIỀU-NHIỀU (BÁC SĨ - CHUYÊN KHOA) ---
-            // Thiết lập khóa chính cho bảng nối (Gồm 2 ID cộng lại)
+            // Thiết lập khóa chính cho bảng DoctorSpecialtyDTO
             modelBuilder.Entity<DoctorSpecialtyDTO>()
-                .HasKey(ds => new { ds.DoctorId, ds.SpecialtyId });
+                .HasKey(ds => ds.Id);
+
+            // Đồng thời đảm bảo một Doctor không duplicate cùng một Specialty
+            modelBuilder.Entity<DoctorSpecialtyDTO>()
+                .HasIndex(ds => new { ds.DoctorId, ds.SpecialtyId }).IsUnique();
 
             modelBuilder.Entity<DoctorSpecialtyDTO>()
                 .HasOne(ds => ds.Doctor)
@@ -81,6 +85,13 @@ namespace DAL_Tier
             // 4. Giá trị mặc định
             modelBuilder.Entity<TimeSlotsDTO>().Property(t => t.Status).HasDefaultValue("Trống");
             modelBuilder.Entity<AppointmentsDTO>().Property(a => a.Status).HasDefaultValue("Chờ duyệt");
+
+            // Indexes to speed up location-based filtering
+            modelBuilder.Entity<LocationDTO>().HasIndex(l => l.Province);
+            modelBuilder.Entity<LocationDTO>().HasIndex(l => new { l.Province, l.LocationName });
+
+            // Index to speed up sorting by experience summary on doctors
+            modelBuilder.Entity<DoctorDTO>().HasIndex(d => d.ExperienceSummary);
         }
     }
 }

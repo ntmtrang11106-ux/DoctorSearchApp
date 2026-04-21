@@ -215,10 +215,6 @@ namespace DAL_Tier.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CertificateImage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("ClinicAddress")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -228,7 +224,7 @@ namespace DAL_Tier.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Experience_Years")
+                    b.Property<int?>("ExperienceSummary")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsApproved")
@@ -249,8 +245,7 @@ namespace DAL_Tier.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CertificateImage")
-                        .IsUnique();
+                    b.HasIndex("ExperienceSummary");
 
                     b.HasIndex("LocationId");
 
@@ -262,15 +257,37 @@ namespace DAL_Tier.Migrations
 
             modelBuilder.Entity("DTO_Tier.DoctorSpecialtyDTO", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CertificateCode")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("CertificateImage")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Experience_Years")
                         .HasColumnType("int");
 
                     b.Property<int>("SpecialtyId")
                         .HasColumnType("int");
 
-                    b.HasKey("DoctorId", "SpecialtyId");
+                    b.HasKey("Id");
 
                     b.HasIndex("SpecialtyId");
+
+                    b.HasIndex("DoctorId", "SpecialtyId")
+                        .IsUnique();
 
                     b.ToTable("Doctor_Specialty");
                 });
@@ -288,7 +305,16 @@ namespace DAL_Tier.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Province")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Province");
+
+                    b.HasIndex("Province", "LocationName");
 
                     b.ToTable("Location");
                 });

@@ -26,7 +26,8 @@ namespace UI_Tier
 
                 try
                 {
-                    DAL_Tier.DbSeeder.Seed(context);
+                    // If you want to force re-seed, pass true. Be careful in production.
+                    DAL_Tier.DbSeeder.Seed(context, false);
                 }
                 catch (Exception ex)
                 {
@@ -36,6 +37,22 @@ namespace UI_Tier
 
                     MessageBox.Show("LỖI SQL THẬT SỰ ĐÂY NÈ TRANG:\n" + (inner?.Message ?? ex.Message));
                 }
+            // Diagnostic: show counts of key tables so we can confirm seeding
+            try
+            {
+                int users = context.Users.Count();
+                int doctors = context.Doctors.Count();
+                int specs = context.Specialties.Count();
+                int locs = context.Locations.Count();
+                int ds = context.DoctorSpecialties.Count();
+                int arts = context.Articles.Count();
+
+                MessageBox.Show($"Seed check:\nUsers: {users}\nDoctors: {doctors}\nSpecialties: {specs}\nLocations: {locs}\nDoctorSpecialty: {ds}\nArticles: {arts}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi kiểm tra dữ liệu: " + ex.Message);
+            }
             }
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.

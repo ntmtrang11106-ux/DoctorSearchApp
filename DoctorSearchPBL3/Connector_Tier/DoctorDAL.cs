@@ -35,6 +35,72 @@ namespace DAL_Tier
             }
         }
 
+        // 4. QUẢN LÝ DoctorSpecialty và duy trì ExperienceSummary trên Doctor
+        public bool AddDoctorSpecialty(DoctorSpecialtyDTO ds)
+        {
+            try
+            {
+                _context.DoctorSpecialties.Add(ds);
+                _context.SaveChanges();
+                RecalculateExperienceSummary(ds.DoctorId);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool UpdateDoctorSpecialty(DoctorSpecialtyDTO ds)
+        {
+            try
+            {
+                _context.DoctorSpecialties.Update(ds);
+                _context.SaveChanges();
+                RecalculateExperienceSummary(ds.DoctorId);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool RemoveDoctorSpecialty(int id)
+        {
+            try
+            {
+                var ds = _context.DoctorSpecialties.Find(id);
+                if (ds == null) return false;
+                int doctorId = ds.DoctorId;
+                _context.DoctorSpecialties.Remove(ds);
+                _context.SaveChanges();
+                RecalculateExperienceSummary(doctorId);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void RecalculateExperienceSummary(int doctorId)
+        {
+            var maxExp = _context.DoctorSpecialties
+                .Where(ds => ds.DoctorId == doctorId && ds.Experience_Years.HasValue)
+                .Select(ds => ds.Experience_Years.Value)
+                .DefaultIfEmpty(0)
+                .Max();
+
+            var doctor = _context.Doctors.Find(doctorId);
+            if (doctor != null)
+            {
+                doctor.ExperienceSummary = maxExp > 0 ? (int?)maxExp : null;
+                _context.Doctors.Update(doctor);
+                _context.SaveChanges();
+            }
+        }
+
         // 3. Tìm kiếm và Lọc (Xử lý Đa chuyên khoa và Sắp xếp Sao)
         public List<DoctorDTO> SearchDoctors(string keyword, List<string> selectedSpecs, string loc, string gender, string sortType)
         {
@@ -74,7 +140,20 @@ namespace DAL_Tier
                 switch (sortType)
                 {
                     case "Kinh nghiệm: Nhiều đến Ít":
-                        return result.OrderByDescending(d => d.Experience_Years).ToList();
+                        // Nếu đang lọc theo chuyên khoa cụ thể(s), sắp xếp theo kinh nghiệm của bác sĩ trong
+                        // chính chuyên khoa đó (nếu có). Nếu bác sĩ không có kinh nghiệm trong chuyên khoa
+                        // đã chọn, fallback về kinh nghiệm lớn nhất của bác sĩ.
+                        if (selectedSpecs != null && selectedSpecs.Any() && !selectedSpecs.Contains("Tất cả"))
+                        {
+                            return result.OrderByDescending(d =>
+                                (d.DoctorSpecialties != null && d.DoctorSpecialties.Any(ds => selectedSpecs.Contains(ds.Specialty.SpecialtyName)))
+                                    ? d.DoctorSpecialties.Where(ds => selectedSpecs.Contains(ds.Specialty.SpecialtyName)).Max(ds => ds.Experience_Years ?? 0)
+                                    : (d.DoctorSpecialties != null && d.DoctorSpecialties.Any() ? d.DoctorSpecialties.Max(ds => ds.Experience_Years ?? 0) : 0)
+                            ).ToList();
+                        }
+
+                        // Không lọc theo chuyên khoa -> sắp xếp theo kinh nghiệm dài nhất của bác sĩ
+                        return result.OrderByDescending(d => d.Experience_Years ?? 0).ToList();
                     case "Đánh giá: Cao đến Thấp":
                         // AverageRating là [NotMapped], nên phải tính toán trước khi sắp xếp
                         return result.OrderByDescending(d => d.AverageRating).ToList();
