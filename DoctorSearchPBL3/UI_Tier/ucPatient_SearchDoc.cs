@@ -75,7 +75,7 @@ namespace UI_Tier
             foreach (var doc in pageItems)
             {
                 UCCardDoctor card = new UCCardDoctor();
-                card.SetDoctorData(doc, true);
+                card.SetDoctorData(doc);
                 card.Margin = new Padding(25);
                 flpDoctors.Controls.Add(card);
             }

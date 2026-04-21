@@ -18,7 +18,7 @@ namespace UI_Tier
         // Hàm này dùng để "đổ" dữ liệu từ đối tượng Doctor vào các Label
         // Trong UCCardDoctor.cs
 
-        public void SetDoctorData(DoctorDTO doctor, bool isGuess)
+        public void SetDoctorData(DoctorDTO doctor)
 
         {
             lblFullName.Text = doctor.User.FullName;
@@ -39,7 +39,7 @@ namespace UI_Tier
             // 7. Kinh nghiệm
             lblEx.Text = $"{doctor.Experience_Years} năm kinh nghiệm";
 
-            // 8. Chuyên khoa (Cái nhãn màu xanh góc trên cùng bên phải)
+            // 8. Chuyên khoa
             // --- XỬ LÝ CHUYÊN KHOA (CÁCH 2) ---
 
             // 9. Hình ảnh
@@ -62,12 +62,6 @@ namespace UI_Tier
                     }
                 }
                 catch (Exception ex) { }
-
-                // 10. Button
-                if (isGuess)
-                    btnBook.Text = "Đăng nhập để đặt lịch";
-                else
-                    btnBook.Text = "Đặt lịch";
             }
         }
 
@@ -78,9 +72,6 @@ namespace UI_Tier
 
             // Bo góc cho Label chuyên khoa ở góc phải
             UIHelper.ApplyRoundedRegion(lblSpecialtyTag, 8);
-
-            // Bo góc cho Button Đăng nhập
-            UIHelper.ApplyRoundedRegion(btnBook, 10);
 
             // Bo góc cho PictureBox (nếu bạn muốn bo nhẹ 4 góc)
             UIHelper.ApplyRoundedRegion(picDoctor, 15);
