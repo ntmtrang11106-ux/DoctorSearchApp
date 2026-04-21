@@ -56,5 +56,10 @@ namespace UI_Tier
         {
             this.Close();
         }
+
+        private void frmDoctor_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

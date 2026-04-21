@@ -42,6 +42,7 @@
             btnCancel = new Button();
             btnRemove = new Button();
             btnBook = new Button();
+            btnRate = new Button();
             ttAction = new ToolTip(components);
             flpAction.SuspendLayout();
             SuspendLayout();
@@ -158,9 +159,10 @@
             flpAction.Controls.Add(btnCancel);
             flpAction.Controls.Add(btnRemove);
             flpAction.Controls.Add(btnBook);
-            flpAction.Location = new Point(1629, 75);
+            flpAction.Controls.Add(btnRate);
+            flpAction.Location = new Point(1549, 75);
             flpAction.Name = "flpAction";
-            flpAction.Size = new Size(608, 100);
+            flpAction.Size = new Size(688, 100);
             flpAction.TabIndex = 15;
             flpAction.WrapContents = false;
             // 
@@ -218,6 +220,24 @@
             ttAction.SetToolTip(btnBook, "Đặt lịch ngay");
             btnBook.UseVisualStyleBackColor = false;
             // 
+            // btnRate
+            // 
+            btnRate.Anchor = AnchorStyles.None;
+            btnRate.BackColor = Color.LightGoldenrodYellow;
+            btnRate.FlatAppearance.BorderSize = 0;
+            btnRate.FlatStyle = FlatStyle.Flat;
+            btnRate.Font = new Font("Segoe MDL2 Assets", 18F);
+            btnRate.ForeColor = Color.Goldenrod;
+            btnRate.Location = new Point(600, 5);
+            btnRate.Margin = new Padding(0, 5, 70, 0);
+            btnRate.Name = "btnRate";
+            btnRate.Size = new Size(80, 80);
+            btnRate.TabIndex = 18;
+            btnRate.Text = "";
+            btnRate.TextAlign = ContentAlignment.MiddleRight;
+            ttAction.SetToolTip(btnRate, "Đặt lịch ngay");
+            btnRate.UseVisualStyleBackColor = false;
+            // 
             // ttAction
             // 
             ttAction.AutoPopDelay = 5000;
@@ -263,5 +283,6 @@
         private Button btnRemove;
         private Button btnBook;
         private ToolTip ttAction;
+        private Button btnRate;
     }
 }
