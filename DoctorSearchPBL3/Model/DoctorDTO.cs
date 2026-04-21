@@ -58,5 +58,9 @@ namespace DTO_Tier
         public int TotalReviews { get; set; } // Sẽ được BUS đếm và gán vào
 
         public virtual ICollection<ReviewsDTO> Reviews { get; set; } = new List<ReviewsDTO>();
+
+        [Required]
+        [StringLength(50)]
+        public string CertificateCode { get; set; }
     }
 }

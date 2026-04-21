@@ -82,6 +82,7 @@ namespace DAL_Tier
                     {
                         UserId = users[i].Id,
                         CertificateImage = "CERT_" + i,
+                        CertificateCode = "CCHN-00" + i,
                         ClinicName = "Phòng khám " + users[i].FullName,
                         ClinicAddress = (10 + i) + " Hàm Nghi, Đà Nẵng",
                         Bio = "Bác sĩ giàu kinh nghiệm, tận tâm với nghề.",
