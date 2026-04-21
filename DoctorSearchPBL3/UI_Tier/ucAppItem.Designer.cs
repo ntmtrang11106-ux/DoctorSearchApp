@@ -151,6 +151,7 @@
             btnAccept.TextAlign = ContentAlignment.MiddleLeft;
             ttAction.SetToolTip(btnAccept, "Chấp nhận");
             btnAccept.UseVisualStyleBackColor = false;
+            btnAccept.Click += btnAccept_Click;
             // 
             // flpAction
             // 
@@ -183,6 +184,7 @@
             btnCancel.TextAlign = ContentAlignment.MiddleLeft;
             ttAction.SetToolTip(btnCancel, "Từ chối");
             btnCancel.UseVisualStyleBackColor = false;
+            btnCancel.Click += btnCancel_Click;
             // 
             // btnRemove
             // 

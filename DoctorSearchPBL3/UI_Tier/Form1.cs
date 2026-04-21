@@ -41,7 +41,7 @@ namespace UI_Tier
                     UCCardDoctor card = new UCCardDoctor();
 
                     // Truyền dữ liệu vào Card (Hàm này bạn đã viết ở UCCardDoctor)
-                    card.SetDoctorData(doc, true);
+                    card.SetDoctorData(doc);
 
                     // Chỉnh khoảng cách giữa các card cho đẹp
                     card.Margin = new Padding(15);

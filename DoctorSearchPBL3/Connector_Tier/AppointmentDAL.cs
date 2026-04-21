@@ -10,68 +10,6 @@ namespace DAL_Tier
 {
     public class AppointmentDAL
     {
-        //public List<AppointmentDTO> GetAllAppointments()
-        //{
-        //    List<AppointmentDTO> list = new List<AppointmentDTO>();
-
-        //    string query = @"SELECT 
-        //                        a.Id AS Id,
-        //                        u.FullName AS FullName, 
-        //                        u.phone_number AS phone_number, 
-        //                        t.Date AS AppointmentDate, 
-        //                        t.StartTime, 
-        //                        t.EndTime, 
-        //                        a.Symptoms, 
-        //                        a.Status,
-        //                        a.CreatedAt 
-        //                    FROM Appointments a 
-        //                    LEFT JOIN Patients p ON a.PatientId = p.Id 
-        //                    LEFT JOIN Users u ON p.UserId = u.Id 
-        //                    LEFT JOIN TimeSlots t ON a.TimeSlotId = t.Id
-        //                    ORDER BY t.Date DESC;"; // Sắp xếp theo ngày mới nhất
-        //    DataTable dt = DBHelper.GetDataTable(query);
-
-        //    foreach (DataRow row in dt.Rows)
-        //    {
-        //        // Giả sử row là DataRow từ DataTable
-        //        list.Add(new AppointmentDTO
-        //        {
-        //            // 1. Lấy ID để sau này còn bấm Duyệt/Hủy
-        //            Id = Convert.ToInt32(row["Id"]),
-
-        //            // 2. Thông tin Patient (JOIN từ bảng Patients)
-        //            PatientName = row["FullName"].ToString(),
-
-        //            // 3. Số điện thoại (JOIN từ bảng Users)
-        //            PhoneNumber = row["PhoneNumber"].ToString(),
-
-        //            // Sử dụng Symptoms từ bảng Appointments
-        //            // 4. Triệu chứng (Check NULL cho chắc ăn)
-        //            Symptoms = row["Symptoms"] != DBNull.Value ? row["Symptoms"].ToString() : "Không có triệu chứng",
-
-        //            // 5. Trạng thái (Thành công, Chờ duyệt...)
-        //            Status = row["Status"].ToString(),
-
-        //            // Format ngày theo dd/MM/yyyy từ bảng TimeSlots
-        //            // 6. Ngày tháng (Convert sang dd/MM/yyyy cho đẹp)
-        //            AppointmentDate = row["AppointmentDate"] != DBNull.Value
-        //                ? Convert.ToDateTime(row["AppointmentDate"]).ToString("dd/MM/yyyy")
-        //                : "Chưa xác định",
-
-        //            // 7. Khung giờ (Ghép StartTime và EndTime)
-        //            TimeRange = $"{Convert.ToDateTime(row["StartTime"].ToString()).ToString("HH'h':mm")} - {Convert.ToDateTime(row["EndTime"].ToString()).ToString("HH'h':mm")}",
-        //            // Kết quả sẽ ra: 08h:30 - 09h:15
-
-        //            // 8. Ngày tạo (Để biết ai đặt trước)
-        //            CreatedAt = Convert.ToDateTime(row["CreatedAt"])
-        //        });
-        //    }
-
-
-        //    return list;
-        //}
-
-
         public List<AppointmentsDTO> GetAllAppointments()
         {
             List<AppointmentsDTO> list = new List<AppointmentsDTO>();
@@ -145,8 +83,8 @@ namespace DAL_Tier
             INSERT INTO Appointments (PatientId, DoctorId, TimeSlotId, Symptoms, Status, CreatedAt)
             VALUES (@PatientId, @DoctorId, @TimeSlotId, @Symptoms, @Status, @CreatedAt)";
 
-                SqlParameter[] parameters = new SqlParameter[]
-                {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
                     new SqlParameter("@PatientId", app.PatientId),
                     new SqlParameter("@DoctorId", app.DoctorId),
                     new SqlParameter("@TimeSlotId", app.TimeSlotId),
@@ -156,18 +94,78 @@ namespace DAL_Tier
                     new SqlParameter("@Status", string.IsNullOrEmpty(app.Status) ? "Chờ duyệt" : app.Status),
                     // Luôn lấy thời điểm hiện tại của hệ thống để làm thời gian tạo
                     new SqlParameter("@CreatedAt", DateTime.Now)
-                };
+            };
 
-                try
-                {
-                    return DBHelper.ExecuteNonQuery(query, parameters);
-                }
-                catch (Exception ex)
-                {
-                    // Debug nhẹ nếu có lỗi xảy ra (ví dụ lỗi khóa ngoại)
-                    Console.WriteLine("Lỗi khi tạo Appointment: " + ex.Message);
-                    return false;
-                }
+            try
+            {
+                return DBHelper.ExecuteNonQuery(query, parameters);
+            }
+            catch (Exception ex)
+            {
+                // Debug nhẹ nếu có lỗi xảy ra (ví dụ lỗi khóa ngoại)
+                Console.WriteLine("Lỗi khi tạo Appointment: " + ex.Message);
+                return false;
+            }
+        }
+
+        // Hàm cập nhật trạng thái Chấp nhận
+        public bool UpdateStatusToAccept(int appointmentId)
+        {
+            // 1. Lấy TimeSlotId của lịch hẹn này trước để cập nhật bảng TimeSlots
+            string getSlotQuery = "SELECT TimeSlotId FROM Appointments WHERE Id = @id";
+            SqlParameter[] getParams = { new SqlParameter("@id", appointmentId) };
+            object result = DBHelper.ExecuteScalar(getSlotQuery, getParams);
+
+            if (result == null) return false;
+            int timeSlotId = Convert.ToInt32(result);
+
+            // 2. Tạo danh sách các lệnh thực thi trong một Transaction
+            List<SqlCommand> commands = new List<SqlCommand>();
+
+            // Lệnh 1: Cập nhật trạng thái lịch hẹn
+            SqlCommand cmd1 = new SqlCommand("UPDATE Appointments SET Status = @status WHERE Id = @id");
+            cmd1.Parameters.AddWithValue("@status", "Đã duyệt");
+            cmd1.Parameters.AddWithValue("@id", appointmentId);
+            commands.Add(cmd1);
+
+            // Lệnh 2: Cập nhật trạng thái khung giờ thành 'Đã đặt'
+            SqlCommand cmd2 = new SqlCommand("UPDATE TimeSlots SET Status = @status WHERE Id = @slotId");
+            cmd2.Parameters.AddWithValue("@status", "Đã đặt");
+            cmd2.Parameters.AddWithValue("@slotId", timeSlotId);
+            commands.Add(cmd2);
+
+            // 3. Gọi DBHelper thực thi transaction
+            return DBHelper.ExecuteTransaction(commands);
+        }
+
+        // Hàm cập nhật trạng thái Từ chối (Nút X đỏ)
+        public bool UpdateStatusToReject(int appointmentId)
+        {
+            // 1. Lấy TimeSlotId của lịch hẹn này trước để giải phóng khung giờ
+            string getSlotQuery = "SELECT TimeSlotId FROM Appointments WHERE Id = @id";
+            SqlParameter[] getParams = { new SqlParameter("@id", appointmentId) };
+            object result = DBHelper.ExecuteScalar(getSlotQuery, getParams);
+
+            if (result == null) return false;
+            int timeSlotId = Convert.ToInt32(result);
+
+            // 2. Tạo danh sách các lệnh thực thi trong một Transaction để đảm bảo tính toàn vẹn
+            List<SqlCommand> commands = new List<SqlCommand>();
+
+            // Lệnh 1: Cập nhật trạng thái lịch hẹn sang 'Đã từ chối'
+            SqlCommand cmd1 = new SqlCommand("UPDATE Appointments SET Status = @status WHERE Id = @id");
+            cmd1.Parameters.AddWithValue("@status", "Đã từ chối"); // Khớp với nvarchar(20) trong SQL
+            cmd1.Parameters.AddWithValue("@id", appointmentId);
+            commands.Add(cmd1);
+
+            // Lệnh 2: Cập nhật trạng thái khung giờ quay về lại 'Trống'
+            SqlCommand cmd2 = new SqlCommand("UPDATE TimeSlots SET Status = @status WHERE Id = @slotId");
+            cmd2.Parameters.AddWithValue("@status", "Trống"); // Giải phóng khung giờ
+            cmd2.Parameters.AddWithValue("@slotId", timeSlotId);
+            commands.Add(cmd2);
+
+            // 3. Thực thi transaction qua DBHelper
+            return DBHelper.ExecuteTransaction(commands);
         }
     }
 }

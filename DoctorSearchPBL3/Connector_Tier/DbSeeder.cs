@@ -142,7 +142,7 @@
 //                new ArticleSpecialtyDTO { ArticleId = articles[2].Id, SpecialtyId = specs[3].Id },
 
 //                // Bài 5: Trái tim khỏe mạnh -> Chuyên khoa Tim mạch (specs[2])
-//                new ArticleSpecialtyDTO { ArticleId = articles[4].Id, SpecialtyId = specs[2].Id }   
+//                new ArticleSpecialtyDTO { ArticleId = articles[4].Id, SpecialtyId = specs[2].Id }
 //                };
 //                context.ArticleSpecialties.AddRange(artSpecs);
 //                context.SaveChanges(); // Chốt hạ lần cuối
@@ -174,154 +174,113 @@ namespace DAL_Tier
         {
             try
             {
-                // Nếu đã có dữ liệu thì không seed lại
                 if (context.Users.Any()) return;
 
-                // 1. NẠP KHU VỰC (Location)
+                // 1. NẠP KHU VỰC
                 var locs = new List<LocationDTO> {
                     new LocationDTO { LocationName = "Hải Châu" },
                     new LocationDTO { LocationName = "Liên Chiểu" },
-                    new LocationDTO { LocationName = "Thanh Khê" },
-                    new LocationDTO { LocationName = "Sơn Trà" },
-                    new LocationDTO { LocationName = "Cẩm Lệ" },
-                    new LocationDTO { LocationName = "Ngũ Hành Sơn" }
+                    new LocationDTO { LocationName = "Thanh Khê" }
                 };
                 context.Locations.AddRange(locs);
-                context.SaveChanges(); // Lưu để lấy ID cho Doctor
+                context.SaveChanges();
 
-                // 2. NẠP CHUYÊN KHOA (Specialty)
+                // 2. NẠP CHUYÊN KHOA
                 var specs = new List<SpecialtyDTO> {
-                    new SpecialtyDTO { SpecialtyName = "Nhi khoa", Description = "Chăm sóc sức khỏe trẻ em" },
-                    new SpecialtyDTO { SpecialtyName = "Nội khoa", Description = "Khám bệnh nội khoa tổng quát" },
-                    new SpecialtyDTO { SpecialtyName = "Tim mạch", Description = "Chẩn đoán bệnh lý tim mạch" },
-                    new SpecialtyDTO { SpecialtyName = "Mắt", Description = "Chuyên khoa mắt" },
-                    new SpecialtyDTO { SpecialtyName = "Da liễu", Description = "Điều trị các bệnh về da" },
-                    new SpecialtyDTO { SpecialtyName = "Tai mũi họng", Description = "Chuyên khoa Tai Mũi Họng" },
-                    new SpecialtyDTO { SpecialtyName = "Sản khoa", Description = "Sức khỏe sinh sản" },
-                    new SpecialtyDTO { SpecialtyName = "Ngoại khoa", Description = "Phẫu thuật và chấn thương" }
+                    new SpecialtyDTO { SpecialtyName = "Nhi khoa", Description = "Chăm sóc trẻ em" },
+                    new SpecialtyDTO { SpecialtyName = "Nội khoa", Description = "Khám nội tổng quát" }
                 };
                 context.Specialties.AddRange(specs);
                 context.SaveChanges();
 
-                // 3. NẠP USERS (Cần thiết cho Admin, Doctor, Patient)
+                // 3. NẠP USERS (1 Admin, 2 Bác sĩ, 2 Bệnh nhân)
                 var users = new List<UserDTO>();
+                var admin = new UserDTO { FullName = "Admin Hệ Thống", Role = "Admin", PhoneNumber = "000", Password = "123", Gender = "Nam", Status = "Active", CCCD = "999", Residential_Address = "Đà Nẵng", Picture = "admin.png", Created_At = DateTime.Now };
+                users.Add(admin);
 
-                // Admin
-                var adminUser = new UserDTO { FullName = "Admin Hệ Thống", Role = "Admin", PhoneNumber = "000", Password = "123", Gender = "Nam", Status = "Active", CCCD = "999", Residential_Address = "Đà Nẵng", Picture = "admin.png", Created_At = DateTime.Now };
-                users.Add(adminUser);
+                // BS An (Bác sĩ 1), BS Hạnh (Bác sĩ 2)
+                users.Add(new UserDTO { FullName = "BS. Nguyễn Văn An", Role = "Doctor", PhoneNumber = "0901", Password = "123", Gender = "Nam", Status = "Active", CCCD = "101", Residential_Address = "Đà Nẵng", Picture = "doc1.png", Created_At = DateTime.Now });
+                users.Add(new UserDTO { FullName = "BS. Lê Thị Mỹ Hạnh", Role = "Doctor", PhoneNumber = "0902", Password = "123", Gender = "Nữ", Status = "Active", CCCD = "102", Residential_Address = "Đà Nẵng", Picture = "doc2.png", Created_At = DateTime.Now });
 
-                // Doctors
-                string[] docNames = { "Nguyễn Văn An", "Lê Thị Mỹ Hạnh", "Trần Thành Nhân", "Phạm Minh Tuấn", "Võ Thị Tiến" };
-                for (int i = 0; i < docNames.Length; i++)
-                {
-                    users.Add(new UserDTO
-                    {
-                        FullName = "BS. " + docNames[i],
-                        Role = "Doctor",
-                        PhoneNumber = "090" + i,
-                        Password = "123",
-                        Gender = (i % 2 == 0 ? "Nam" : "Nữ"),
-                        Status = "Active",
-                        CCCD = "100" + i,
-                        Residential_Address = "Đà Nẵng",
-                        Picture = $"doc{i + 1}.png",
-                        Created_At = DateTime.Now
-                    });
-                }
-
-                // Patients
-                var patUser1 = new UserDTO { FullName = "Nguyễn Thị Mai Trang", Role = "Patient", PhoneNumber = "070", Password = "123", Gender = "Nữ", Status = "Active", CCCD = "2001", Residential_Address = "Đà Nẵng", Picture = "trang.png", Created_At = DateTime.Now };
-                var patUser2 = new UserDTO { FullName = "Lê Văn Tiến", Role = "Patient", PhoneNumber = "077", Password = "123", Gender = "Nam", Status = "Active", CCCD = "2002", Residential_Address = "Quảng Nam", Picture = "tien.png", Created_At = DateTime.Now };
-                users.Add(patUser1); users.Add(patUser2);
+                // Bệnh nhân Trang, Bệnh nhân Tiến
+                var uTrang = new UserDTO { FullName = "Nguyễn Thị Mai Trang", Role = "Patient", PhoneNumber = "070", Password = "123", Gender = "Nữ", Status = "Active", CCCD = "201", Residential_Address = "Đà Nẵng", Picture = "trang.png", Created_At = DateTime.Now };
+                var uTien = new UserDTO { FullName = "Hoàng Diệp Tiến", Role = "Patient", PhoneNumber = "077", Password = "123", Gender = "Nam", Status = "Active", CCCD = "202", Residential_Address = "Đà Nẵng", Picture = "tien.png", Created_At = DateTime.Now };
+                users.Add(uTrang); users.Add(uTien);
 
                 context.Users.AddRange(users);
                 context.SaveChanges();
 
-                // 4. NẠP CHI TIẾT BÁC SĨ (Doctor)
-                var doctors = new List<DoctorDTO>();
-                var userList = context.Users.Where(u => u.Role == "Doctor").ToList();
-                for (int i = 0; i < userList.Count; i++)
-                {
-                    doctors.Add(new DoctorDTO
-                    {
-                        UserId = userList[i].Id,
-                        CertificateImage = "CERT_" + i,
-                        CertificateCode = "CCHN-00" + i,
-                        ClinicName = "Phòng khám " + userList[i].FullName,
-                        ClinicAddress = (10 + i) + " Hàm Nghi, Đà Nẵng",
-                        Bio = "Bác sĩ chuyên khoa giàu kinh nghiệm.",
-                        WorkingTime = "08:00 - 17:00",
-                        Experience_Years = 5 + i,
-                        Price = 150000 + (i * 10000),
-                        IsApproved = true,
-                        LocationId = locs[i % locs.Count].Id
-                    });
-                }
+                // 4. CHI TIẾT BÁC SĨ
+                var doctors = new List<DoctorDTO> {
+                    new DoctorDTO { UserId = users[1].Id, CertificateCode = "CCHN-01", ClinicName = "Phòng khám BS An", ClinicAddress = "Hải Châu", Bio = "Kinh nghiệm 10 năm", WorkingTime = "08:00-17:00", Price = 200000, IsApproved = true, LocationId = locs[0].Id, CertificateImage = "c1.jpg" },
+                    new DoctorDTO { UserId = users[2].Id, CertificateCode = "CCHN-02", ClinicName = "Phòng khám BS Hạnh", ClinicAddress = "Liên Chiểu", Bio = "Kinh nghiệm 5 năm", WorkingTime = "08:00-17:00", Price = 150000, IsApproved = true, LocationId = locs[1].Id, CertificateImage = "c2.jpg" }
+                };
                 context.Doctors.AddRange(doctors);
                 context.SaveChanges();
 
-                // 5. NẠP CHI TIẾT BỆNH NHÂN (Patient)
-                var p1 = new PatientDTO { UserId = patUser1.Id, BHYT = "BH001", Blood_Type = "O", Medical_History = "Không" };
-                var p2 = new PatientDTO { UserId = patUser2.Id, BHYT = "BH002", Blood_Type = "A", Medical_History = "Viêm xoang" };
-                context.Patients.AddRange(p1, p2);
+                // 5. CHI TIẾT BỆNH NHÂN
+                var pTrang = new PatientDTO { UserId = uTrang.Id, BHYT = "BH01", Blood_Type = "O", Medical_History = "Dị ứng" };
+                var pTien = new PatientDTO { UserId = uTien.Id, BHYT = "BH02", Blood_Type = "A", Medical_History = "Bình thường" };
+                context.Patients.AddRange(pTrang, pTien);
                 context.SaveChanges();
 
                 // 6. NẠP KHUNG GIỜ (TimeSlots)
-                var timeSlots = new List<TimeSlotsDTO>();
-                foreach (var d in doctors)
+                var slots = new List<TimeSlotsDTO>();
+                for (int h = 8; h <= 12; h++)
                 {
-                    timeSlots.Add(new TimeSlotsDTO { DoctorId = d.Id, Date = DateTime.Today, StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(9, 0, 0), Status = "Trống" });
-                    timeSlots.Add(new TimeSlotsDTO { DoctorId = d.Id, Date = DateTime.Today, StartTime = new TimeSpan(9, 0, 0), EndTime = new TimeSpan(10, 0, 0), Status = "Đã đặt" });
+                    slots.Add(new TimeSlotsDTO { DoctorId = doctors[0].Id, Date = DateTime.Today, StartTime = new TimeSpan(h, 0, 0), EndTime = new TimeSpan(h, 45, 0), Status = "Trống" });
+                    slots.Add(new TimeSlotsDTO { DoctorId = doctors[1].Id, Date = DateTime.Today, StartTime = new TimeSpan(h, 0, 0), EndTime = new TimeSpan(h, 45, 0), Status = "Trống" });
                 }
-                context.TimeSlots.AddRange(timeSlots);
+                context.TimeSlots.AddRange(slots);
                 context.SaveChanges();
 
-                // 7. NẠP LỊCH HẸN (Appointments)
-                var app = new AppointmentsDTO
-                {
-                    PatientId = p1.Id,
-                    DoctorId = doctors[0].Id,
-                    TimeSlotId = timeSlots.First(t => t.DoctorId == doctors[0].Id && t.Status == "Đã đặt").Id,
-                    Symptoms = "Đau họng kéo dài",
-                    Status = "Hoàn thành",
-                    CreatedAt = DateTime.Now
+                // 7. NẠP LỊCH HẸN (Appointments) - TEST CÁC TRƯỜNG HỢP
+                var apps = new List<AppointmentsDTO> {
+                    // Ca 1: Chờ duyệt (Patient Trang đặt BS An)
+                    new AppointmentsDTO { PatientId = pTrang.Id, DoctorId = doctors[0].Id, TimeSlotId = slots[0].Id, Symptoms = "Đau bụng", Status = "Chờ duyệt", CreatedAt = DateTime.Now },
+                    
+                    // Ca 2: Đã duyệt (Patient Tiến đặt BS Hạnh)
+                    new AppointmentsDTO { PatientId = pTien.Id, DoctorId = doctors[1].Id, TimeSlotId = slots[3].Id, Symptoms = "Sốt nhẹ", Status = "Đã duyệt", CreatedAt = DateTime.Now },
+
+                    // Ca 3: Đã hủy/Từ chối (Test trạng thái Reject nếu nhóm có làm)
+                    new AppointmentsDTO { PatientId = pTrang.Id, DoctorId = doctors[1].Id, TimeSlotId = slots[5].Id, Symptoms = "Khám định kỳ", Status = "Đã hủy", CreatedAt = DateTime.Now.AddDays(-1) },
+
+                    // Ca 4: Đã hoàn thành (Để hiện trong Medical History)
+                    new AppointmentsDTO { PatientId = pTien.Id, DoctorId = doctors[0].Id, TimeSlotId = slots[2].Id, Symptoms = "Ho khan", Status = "Đã duyệt", CreatedAt = DateTime.Now.AddDays(-5) }
                 };
-                context.Appointments.Add(app);
+                context.Appointments.AddRange(apps);
                 context.SaveChanges();
 
-                // 8. NẠP ĐÁNH GIÁ & BỆNH ÁN (Reviews & Medical Records)
+                // 8. NẠP BỆNH ÁN (MedicalRecords) - Chỉ dành cho ca đã khám (Ca 4)
+                var record = new MedicalRecordsDTO
+                {
+                    PatientId = pTien.Id,
+                    DoctorId = doctors[0].Id,
+                    AppointmentID = apps[3].Id,
+                    Visit_Date = DateTime.Now.AddDays(-5),
+                    Diagnosis = "Viêm họng cấp",
+                    Treatment = "Súc miệng nước muối, uống siro ho."
+                };
+                context.MedicalRecords.Add(record);
+
+                // 9. NẠP ĐÁNH GIÁ (Reviews)
                 context.Reviews.Add(new ReviewsDTO
                 {
-                    AppointmentId = app.Id,
-                    PatientID = p1.Id,
+                    AppointmentId = apps[3].Id,
+                    PatientID = pTien.Id,
                     DoctorID = doctors[0].Id,
                     Rating = 5,
-                    Comment = "Bác sĩ rất tận tâm!",
+                    Comment = "Bác sĩ rất nhiệt tình",
                     IsVisible = true,
                     CreatedAt = DateTime.Now
                 });
 
-                context.MedicalRecords.Add(new MedicalRecordsDTO
-                {
-                    AppointmentID = app.Id,
-                    PatientId = p1.Id,
-                    DoctorId = doctors[0].Id,
-                    Visit_Date = DateTime.Now,
-                    Diagnosis = "Viêm họng cấp",
-                    Treatment = "Uống thuốc đúng liều và súc miệng nước muối"
-                });
-
-                // 9. LIÊN KẾT CHUYÊN KHOA (Doctor_Specialty)
-                context.DoctorSpecialties.Add(new DoctorSpecialtyDTO { DoctorId = doctors[0].Id, SpecialtyId = specs[1].Id });
-
                 context.SaveChanges();
-                Debug.WriteLine("=== SEED DATA HOÀN TẤT ===");
+                Debug.WriteLine("=== SEED DATA HOÀN TẤT: Đã đủ các case Chờ duyệt/Đã duyệt! ===");
             }
             catch (Exception ex)
             {
-                var inner = ex.InnerException;
-                while (inner?.InnerException != null) inner = inner.InnerException;
-                Debug.WriteLine("=== LỖI SEED: " + (inner?.Message ?? ex.Message));
+                Debug.WriteLine("=== LỖI SEED: " + ex.Message);
                 throw;
             }
         }
