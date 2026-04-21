@@ -179,6 +179,7 @@
             label24.Size = new Size(374, 41);
             label24.TabIndex = 22;
             label24.Text = "Bấm vào đây để tải ảnh lên";
+            label24.Click += label24_Click;
             // 
             // label22
             // 

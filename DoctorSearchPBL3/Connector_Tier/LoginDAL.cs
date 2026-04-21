@@ -80,20 +80,21 @@ namespace DAL_Tier
         }
 
         // 5. Đăng ký chi tiết Bác sĩ và Chuyên khoa (Hàm bạn đang thiếu trong BUS)
-        public bool InsertDoctorFull(int userId, string certImages, string clinicAddr, string clinicName, string bio, List<int> specialtyIds)
+        public bool InsertDoctorFull(int userId, string certImages, string clinicAddr, string clinicName, string bio, int? locationId, List<int> specialtyIds)
         {
-            // B1: Chèn vào bảng Doctor
-            string queryDoc = @"INSERT INTO Doctor (UserId, CertificateImage, ClinicAddress, ClinicName, Experience_Years, Bio, Price, IsApproved) 
-                                VALUES (@uid, @cert, @addr, @name, 0, @bio, 0, 0);
-                                SELECT CAST(SCOPE_IDENTITY() AS INT);";
+            // Bước 1: Chèn vào bảng Doctor
+            string queryDoc = @"INSERT INTO Doctor (UserId, CertificateImage, ClinicAddress, ClinicName, Experience_Years, Bio, Price, WorkingTime, LocationId, IsApproved) 
+                        VALUES (@uid, @cert, @addr, @name, 0, @bio, 0, N'Chưa cập nhật', @locId, 0);
+                        SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
             SqlParameter[] parameters = {
-                new SqlParameter("@uid", userId),
-                new SqlParameter("@cert", certImages),
-                new SqlParameter("@addr", clinicAddr),
-                new SqlParameter("@name", clinicName),
-                new SqlParameter("@bio", bio ?? "")
-            };
+            new SqlParameter("@uid", userId),
+            new SqlParameter("@cert", certImages), // Đây là nơi lưu đường dẫn ảnh hoặc mã CCHN
+            new SqlParameter("@addr", clinicAddr),
+            new SqlParameter("@name", clinicName),
+            new SqlParameter("@bio", bio ?? ""),
+            new SqlParameter("@locId", (object)locationId ?? DBNull.Value)
+    };
 
             try
             {
@@ -101,23 +102,23 @@ namespace DAL_Tier
                 if (result == null) return false;
                 int doctorTableId = Convert.ToInt32(result);
 
-                // B2: Chèn các chuyên khoa được chọn từ UI
+                // Bước 2: CHÈN VÀO BẢNG TRUNG GIAN Doctor_Specialty
                 if (specialtyIds != null && specialtyIds.Count > 0)
                 {
                     foreach (int specId in specialtyIds)
                     {
                         string querySpec = "INSERT INTO Doctor_Specialty (DoctorId, SpecialtyId) VALUES (@did, @sid)";
-                        DBHelper.ExecuteNonQuery(querySpec, new SqlParameter[] {
-                            new SqlParameter("@did", doctorTableId),
-                            new SqlParameter("@sid", specId)
-                        });
+                        SqlParameter[] specParams = {
+                    new SqlParameter("@did", doctorTableId),
+                    new SqlParameter("@sid", specId)
+                };
+                        DBHelper.ExecuteNonQuery(querySpec, specParams);
                     }
                 }
                 return true;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("Lỗi InsertDoctorFull: " + ex.Message);
                 return false;
             }
         }

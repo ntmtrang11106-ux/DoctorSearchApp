@@ -29,64 +29,70 @@ namespace BUS_Tier
         }
 
         // 2. Logic Đăng ký Bệnh nhân
-        public string RegisterPatient(UserDTO user, string bhyt)
+        public string RegisterPatient(UserDTO user, string confirmPass, string bhyt)
         {
-            // Kiểm tra chung (SĐT, Họ tên, Pass, CCCD 12 số)
+            // Kiểm tra khớp mật khẩu (Mới thêm)
+            if (user.Password != confirmPass)
+                return "Mật khẩu xác nhận không khớp!";
+
+            // Kiểm tra các thông tin chung
             string validateMsg = ValidateCommon(user);
             if (validateMsg != "OK") return validateMsg;
 
-            // Kiểm tra mã BHYT theo định dạng ảnh mẫu
-            // Định dạng: 2 chữ cái đầu (VD: TE) + 13 chữ số tiếp theo
+            // Kiểm tra nghiệp vụ BHYT
             if (string.IsNullOrWhiteSpace(bhyt))
                 return "Vui lòng nhập mã số Bảo hiểm y tế!";
 
             if (!Regex.IsMatch(bhyt, @"^[A-Z]{2}\d{13}$"))
                 return "Mã BHYT không đúng định dạng chuẩn (Ví dụ: TE15100...)!";
 
-            // Bước 1: Lưu bảng [User]
+            // Thực hiện lưu dữ liệu
             int newUserId = _dal.RegisterUserBasic(user);
             if (newUserId > 0)
             {
-                // Bước 2: Lưu bảng Patient (Gọi đúng hàm InsertPatientFull vừa sửa ở DAL)
                 bool isDetailSaved = _dal.InsertPatientFull(newUserId, bhyt);
-
                 if (isDetailSaved) return "Success";
 
-                // Nếu lỗi bảng con thì xóa bảng cha để tránh rác dữ liệu
-                _dal.DeleteUser(newUserId);
+                _dal.DeleteUser(newUserId); // Rollback
                 return "Lỗi khi lưu thông tin chi tiết bệnh nhân!";
             }
             return "Đăng ký tài khoản thất bại!";
         }
 
         // 3. Logic Đăng ký Bác sĩ
-        public string RegisterDoctor(UserDTO user, string certImages, string clinicAddr, string clinicName, List<int> specialtyIds)
+        public string RegisterDoctor(UserDTO user, string confirmPass, string certImages,
+                                    string clinicAddr, string clinicName, int? locationId, List<int> specialtyIds)
         {
+            // Kiểm tra mật khẩu khớp
+            if (user.Password != confirmPass) return "Mật khẩu xác nhận không khớp!";
+
             // Kiểm tra chung
             string validateMsg = ValidateCommon(user);
             if (validateMsg != "OK") return validateMsg;
 
-            // Kiểm tra nghiệp vụ bác sĩ
+            // Kiểm tra nghiệp vụ riêng cho bác sĩ
+            if (string.IsNullOrWhiteSpace(certImages))
+                return "Vui lòng cung cấp ít nhất một mã số chứng chỉ hành nghề!";
+
             if (specialtyIds == null || specialtyIds.Count == 0)
                 return "Vui lòng chọn ít nhất một chuyên khoa!";
-            if (string.IsNullOrWhiteSpace(certImages))
-                return "Vui lòng cung cấp mã số chứng chỉ hành nghề!";
-            if (string.IsNullOrWhiteSpace(clinicName))
-                return "Vui lòng nhập tên bệnh viện/phòng khám công tác!";
 
-            // Bước 1: Lưu bảng [User]
+            if (string.IsNullOrWhiteSpace(clinicName))
+                return "Vui lòng nhập tên bệnh viện/phòng khám hiện đang công tác!";
+
+            // Bước 1: Lưu User
             int newUserId = _dal.RegisterUserBasic(user);
             if (newUserId > 0)
             {
-                // Bước 2: Lưu bảng Doctor & Chuyên khoa (Hàm InsertDoctorFull đã sửa ở DAL)
-                bool isDetailSaved = _dal.InsertDoctorFull(newUserId, certImages, clinicAddr, clinicName, "", specialtyIds);
+                // Bước 2: Lưu Doctor (Truyền thêm locationId và giá trị Bio rỗng)
+                bool isDetailSaved = _dal.InsertDoctorFull(newUserId, certImages, clinicAddr, clinicName, "", locationId, specialtyIds);
 
                 if (isDetailSaved) return "Success";
 
-                _dal.DeleteUser(newUserId);
+                _dal.DeleteUser(newUserId); // Rollback
                 return "Lỗi khi lưu hồ sơ bác sĩ!";
             }
-            return "Đăng ký tài khoản thất bại!";
+            return "Đăng ký tài khoản bác sĩ thất bại!";
         }
 
         // 4. Hàm kiểm tra hợp lệ chung (Tối ưu cho 24T_DT1)

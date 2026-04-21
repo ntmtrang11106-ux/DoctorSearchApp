@@ -1,4 +1,6 @@
 ﻿using BUS_Tier;
+using DAL_Tier;
+using DTO_Tier;
 using DTO_Tier;
 using System;
 using System.Collections.Generic;
@@ -7,8 +9,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using DTO_Tier;
-using DAL_Tier;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace UI_Tier
 {
@@ -94,7 +95,7 @@ namespace UI_Tier
         // vào các hàm panel_MouseClick tương ứng để bấm vào chữ cũng đổi được luồng.
         #endregion
 
-        #region
+        #region Đăng ký
         private void btnLogin_Click(object sender, EventArgs e)
         {
             // 1. Kiểm tra vai trò
@@ -109,12 +110,19 @@ namespace UI_Tier
             string ward = cboRegion.Text.Trim();
             string fullAddress = $"{ward}, {province}";
 
-            // 3. Đóng gói dữ liệu vào DTO
+            // Lấy LocationId(ID Tỉnh / Thành) - Trả về null nếu chưa chọn
+            int? locationId = cboProvince.SelectedValue as int?;
+
+            // Lấy Password và Confirm Password
+            string password = textBox4.Text.Trim();
+            string confirmPass = textBox5.Text.Trim();
+
+            // 3. Đóng gói dữ liệu vào DTO (Chỉ mang tính chất vận chuyển dữ liệu)
             UserDTO newUser = new UserDTO
             {
                 PhoneNumber = txtPhoneNumber.Text.Trim(),
                 FullName = txtUsername.Text.Trim(),
-                Password = textBox4.Text.Trim(),
+                Password = password,
                 Dob = dtpDOB.Value,
                 Gender = radioButton1.Checked ? "Nam" : "Nữ",
                 Role = currentRole,
@@ -130,21 +138,38 @@ namespace UI_Tier
             if (currentRole == "Patient")
             {
                 string bhyt = textBox7.Text.Trim(); // Mã số BHYT
-                result = _loginBUS.RegisterPatient(newUser, bhyt);
+                result = _loginBUS.RegisterPatient(newUser, confirmPass, bhyt);
             }
             else if (currentRole == "Doctor")
             {
-                //// Lấy danh sách ID Chuyên khoa (Nếu bạn dùng CheckedListBox)
-                //List<int> specialtyIds = new List<int>();
-                //foreach (var item in clbSpecialties.CheckedItems)
-                //{
-                //    if (item is SpecialtyDTO spec) specialtyIds.Add(spec.Id);
-                //}
+                // Thu thập thông tin từ các UserControl (UC) chứng chỉ
+                List<int> specialtyIds = new List<int>();
+                List<string> certCodes = new List<string>();
 
-                //string clinicName = txtClinicName.Text.Trim(); // Nơi công tác
-                //string certImages = txtCertCode.Text.Trim();   // Mã chứng chỉ
+                foreach (Control ctrl in flpCertificate.Controls)
+                {
+                    if (ctrl is ucDoctorCertificate uc)
+                    {
+                        // Lấy ID chuyên khoa (để đổ vào bảng trung gian ở DAL)
+                        int specId = uc.GetSelectedSpecialtyId();
+                        if (specId > 0 && !specialtyIds.Contains(specId))
+                            specialtyIds.Add(specId);
 
-                //result = _loginBUS.RegisterDoctor(newUser, certImages, fullAddress, clinicName, specialtyIds);
+                        // Lấy mã chứng chỉ
+                        string cCode = uc.GetCertificateId();
+                        if (!string.IsNullOrWhiteSpace(cCode))
+                            certCodes.Add(cCode);
+                    }
+                }
+
+
+                string clinicName = textBox3.Text.Trim();
+
+                // Gộp các mã chứng chỉ thành chuỗi (ví dụ: "CCHN01, CCHN02")
+                string allCertificates = string.Join(", ", certCodes);
+
+                // Gọi BUS: BUS sẽ kiểm tra ClinicName trống, specialtyIds trống, v.v.
+                result = _loginBUS.RegisterDoctor(newUser, confirmPass, allCertificates, fullAddress, clinicName, locationId, specialtyIds);
             }
 
             // 5. Kết quả
@@ -160,27 +185,33 @@ namespace UI_Tier
         }
         #endregion
 
-        private void panel29_MouseClick(object sender, MouseEventArgs e)
-        {
-            ofdCCHN.ShowDialog();
-        }
-
         int certCount = 0; // Biến đếm số chứng chỉ đã thêm
 
-        // Xử lý sự kiện thêm CCHN mới
+        // Hàm cập nhật lại số thứ tự hiển thị (1, 2, 3...)
+        private void UpdateCertIndexes()
+        {
+            // Lấy danh sách các UC hiện có và ép kiểu
+            var certList = flpCertificate.Controls.OfType<ucDoctorCertificate>().ToList();
+
+            // Dùng vòng lặp for để gán lại số thứ tự dựa trên vị trí trong danh sách
+            for (int i = 0; i < certList.Count; i++)
+            {
+                certList[i].lblCertIndex.Text = $"Chứng chỉ #{i + 1}";
+            }
+
+            // Cập nhật lại biến đếm để lần sau thêm mới sẽ là (tổng số + 1)
+            certCount = certList.Count;
+        }
+
         private void btnNew_Click(object sender, EventArgs e)
         {
-            // 1. Khởi tạo UC mới
             ucDoctorCertificate newUC = new ucDoctorCertificate();
-
-            // 2. Đăng ký lắng nghe cái "loa" của nó
             newUC.OnRemoveRequested += Uc_OnRemoveRequested;
 
-            certCount++;
-            newUC.lblCertIndex.Text = $"Chứng chỉ #{certCount}";
-
-            // 3. Quẳng nó vào panel
             flpCertificate.Controls.Add(newUC);
+
+            // Cập nhật số thứ tự ngay sau khi thêm
+            UpdateCertIndexes();
         }
 
         // 3. Hàm xử lý khi thằng con "đòi cook"
@@ -196,6 +227,9 @@ namespace UI_Tier
 
                 // CỰC KỲ QUAN TRỌNG: Giải phóng bộ nhớ (Dispose)
                 ucToCook.Dispose();
+
+                // Cập nhật lại số thứ tự sau khi xóa để các chứng chỉ sau đôn lên đúng số
+                UpdateCertIndexes();
             }
         }
 
@@ -203,5 +237,6 @@ namespace UI_Tier
         {
             btnNew_Click(null, null); // Tự động thêm 1 UC chứng chỉ khi mở form (tùy chọn)
         }
+        
     }
 }
