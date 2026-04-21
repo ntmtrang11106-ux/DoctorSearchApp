@@ -65,7 +65,7 @@ namespace DAL_Tier
         }
 
         // 4. Đăng ký chi tiết Bệnh nhân (Hàm bạn đang thiếu trong BUS)
-        public bool InsertPatientFull(int userId, string bhyt, string bloodType = "N/A", string medicalHistory = "None")
+        public bool InsertPatientFull(int userId, string bhyt, string bloodType = "Chưa cập nhật", string medicalHistory = "None")
         {
             // BHYT lấy từ ảnh mẫu Nhân gửi
             string query = @"INSERT INTO Patient (UserId, BHYT, Blood_Type, Medical_History) 
@@ -79,44 +79,53 @@ namespace DAL_Tier
             return DBHelper.ExecuteNonQuery(query, parameters);
         }
 
-        // 5. Đăng ký chi tiết Bác sĩ và Chuyên khoa (Hàm bạn đang thiếu trong BUS)
+        // 5. Đăng ký chi tiết Bác sĩ và Chuyên khoa(Hàm bạn đang thiếu trong BUS)
         public bool InsertDoctorFull(int userId, string allCertCodes, string allCertImages, string clinicAddr, string clinicName, string bio, int? locationId, List<int> specialtyIds)
         {
-            // Sử dụng câu lệnh INSERT cho CSDL DoctorSearchDB_CodeFirst
+            // Câu lệnh SQL: Dựa trên schema NOT NULL của bạn
+            // Cột Experience_Years, Price, LocationId cho phép NULL nên dùng giá trị mặc định hoặc null
+            // Các cột khác là NOT NULL nên phải đảm bảo có giá trị (dùng N'' nếu trống)
             string queryDoc = @"INSERT INTO Doctor 
-                        (UserId, CertificateCode, CertificateImage, ClinicAddress, ClinicName, 
-                         Experience_Years, Bio, Price, WorkingTime, LocationId, IsApproved) 
-                        VALUES 
-                        (@uid, @codes, @images, @addr, @name, 0, @bio, 0, N'Chưa cập nhật', @locId, 0);
-                        SELECT CAST(SCOPE_IDENTITY() AS INT);";
+                            (UserId, CertificateCode, CertificateImage, ClinicAddress, ClinicName, 
+                             Experience_Years, Bio, Price, WorkingTime, LocationId, IsApproved) 
+                            VALUES 
+                            (@uid, @codes, @images, @addr, @name, @exp, @bio, @price, @workTime, @locId, @approved);
+                            SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
             SqlParameter[] parameters = {
-            new SqlParameter("@uid", userId),
-            new SqlParameter("@codes", allCertCodes ?? ""), // Lưu chuỗi "T123, T456"
-            new SqlParameter("@images", allCertImages ?? "default.jpg"), // Lưu chuỗi "img1.jpg, img2.jpg"
-            new SqlParameter("@addr", clinicAddr),
-            new SqlParameter("@name", clinicName),
-            new SqlParameter("@bio", bio ?? ""),
-            new SqlParameter("@locId", (object)locationId ?? DBNull.Value)
-         };
+                new SqlParameter("@uid", userId),
+                // CertificateCode: NOT NULL -> nếu trống để chuỗi rỗng
+                new SqlParameter("@codes", string.IsNullOrEmpty(allCertCodes) ? "" : allCertCodes), 
+                // CertificateImage: NOT NULL -> nếu trống để ảnh mặc định
+                new SqlParameter("@images", string.IsNullOrEmpty(allCertImages) ? "" : allCertImages),
+                new SqlParameter("@addr", string.IsNullOrEmpty(clinicAddr) ? "Chưa cập nhật" : clinicAddr),
+                new SqlParameter("@name", string.IsNullOrEmpty(clinicName) ? "Phòng khám tư nhân" : clinicName),
+                new SqlParameter("@exp", DBNull.Value), // Cho phép NULL trong DB
+                new SqlParameter("@bio", string.IsNullOrEmpty(bio) ? "Chưa có thông tin giới thiệu" : bio),
+                new SqlParameter("@price", DBNull.Value), // Cho phép NULL trong DB
+                new SqlParameter("@workTime", "Chưa cập nhật"), // NOT NULL nên cần giá trị mặc định
+                new SqlParameter("@locId", (object)locationId ?? DBNull.Value),
+                new SqlParameter("@approved", false) // Mặc định là chưa duyệt (bit -> false)
+        };
 
             try
             {
-                // Sử dụng Microsoft.Data.SqlClient cho .NET development
+                // Thực thi lấy ID của Doctor vừa chèn
                 object result = DBHelper.ExecuteScalar(queryDoc, parameters);
                 if (result == null) return false;
+
                 int doctorTableId = Convert.ToInt32(result);
 
-                // Chèn vào bảng trung gian Doctor_Specialty
+                // Chèn vào bảng trung gian Doctor_Specialty (Nếu có chọn chuyên khoa)
                 if (specialtyIds != null && specialtyIds.Count > 0)
                 {
                     foreach (int specId in specialtyIds)
                     {
                         string querySpec = "INSERT INTO Doctor_Specialty (DoctorId, SpecialtyId) VALUES (@did, @sid)";
                         SqlParameter[] specParams = {
-                    new SqlParameter("@did", doctorTableId),
-                    new SqlParameter("@sid", specId)
-                };
+                        new SqlParameter("@did", doctorTableId),
+                        new SqlParameter("@sid", specId)
+                    };
                         DBHelper.ExecuteNonQuery(querySpec, specParams);
                     }
                 }
@@ -124,7 +133,7 @@ namespace DAL_Tier
             }
             catch (Exception ex)
             {
-                // Nếu có lỗi SQL, hàm sẽ trả về false và kích hoạt thông báo lỗi ở UI
+                System.Diagnostics.Debug.WriteLine("Lỗi InsertDoctorFull: " + ex.Message);
                 return false;
             }
         }

@@ -61,36 +61,84 @@ namespace BUS_Tier
 
         // 3. Logic Đăng ký Bác sĩ
         public string RegisterDoctor(UserDTO user, string confirmPass, string allCertCodes, string allCertImages,
-                            string clinicAddr, string clinicName, int? locationId, List<int> specialtyIds)
+            string clinicAddr, string clinicName, int? locationId, List<int> specialtyIds)
         {
-            // 1. Kiểm tra mật khẩu khớp
+            // --- BƯỚC 1: KIỂM TRA THÔNG TIN CHUNG (SĐT, CCCD, TRỐNG TRƯỜNG) ---
+            string validateMsg = ValidateCommon(user);
+            if (validateMsg != "OK") return validateMsg;
+
             if (user.Password != confirmPass) return "Mật khẩu xác nhận không khớp!";
 
-            // 2. Kiểm tra nghiệp vụ bác sĩ
+            // --- BƯỚC 2: KIỂM TRA NGHIỆP VỤ PHÒNG KHÁM ---
+            // Theo ảnh giao diện, textbox nơi công tác là bắt buộc
+            if (string.IsNullOrWhiteSpace(clinicName)) return "Vui lòng nhập nơi công tác hiện tại!";
+
+            // Nếu địa chỉ truyền xuống rỗng, ta gán giá trị mặc định thay vì để NULL
+            string finalClinicAddr = string.IsNullOrWhiteSpace(clinicAddr) ? "Chưa cập nhật địa chỉ" : clinicAddr;
+
+            // --- BƯỚC 3: KIỂM TRA DANH SÁCH CHỨNG CHỈ ---
             if (string.IsNullOrWhiteSpace(allCertCodes))
                 return "Vui lòng nhập ít nhất một mã chứng chỉ!";
 
-            if (string.IsNullOrWhiteSpace(allCertImages))
-                return "Vui lòng tải lên hình ảnh chứng chỉ!";
+            // Sử dụng StringSplitOptions.None để giữ nguyên số lượng phần tử nếu cần so khớp với mảng ảnh
+            var codesArray = allCertCodes.Split(new[] { ',' }, StringSplitOptions.TrimEntries);
+            var imagesArray = (allCertImages ?? "").Split(new[] { ',' }, StringSplitOptions.TrimEntries);
+
+            for (int i = 0; i < codesArray.Length; i++)
+            {
+                if (string.IsNullOrWhiteSpace(codesArray[i]))
+                    return $"Mã chứng chỉ hành nghề thứ {i + 1} không được để trống!";
+
+                // Kiểm tra ảnh: Nếu rỗng hoặc là default.jpg thì yêu cầu tải ảnh thật
+                if (i >= imagesArray.Length || string.IsNullOrWhiteSpace(imagesArray[i]))
+                    return $"Chứng chỉ số {codesArray[i]} chưa được tải hình ảnh minh họa!";
+            }
 
             if (specialtyIds == null || specialtyIds.Count == 0)
-                return "Vui lòng chọn ít nhất một chuyên khoa!";
+                return "Vui lòng chọn ít nhất một chuyên khoa cho bác sĩ!";
 
-            // 3. Thực hiện lưu dữ liệu
-            int newUserId = _dal.RegisterUserBasic(user);
-            if (newUserId > 0)
+            // --- BƯỚC 4: THỰC THI LƯU DỮ LIỆU ---
+            try
             {
-                // Truyền chuỗi đã gộp (cách nhau bởi dấu phẩy) xuống DAL
-                bool isDetailSaved = _dal.InsertDoctorFull(newUserId, allCertCodes, allCertImages, clinicAddr, clinicName, "", locationId, specialtyIds);
+                // 1. Tạo User trước (Trả về ID mới)
+                int newUserId = _dal.RegisterUserBasic(user);
 
-                if (isDetailSaved) return "Success";
+                if (newUserId > 0)
+                {
+                    // Các giá trị mặc định để tránh lỗi NOT NULL trong SQL (Bio, WorkingTime, Price, Exp)
+                    string defaultBio = "Chưa có thông tin giới thiệu.";
 
-                // Nếu thất bại ở bước lưu chi tiết, thực hiện Rollback xóa User
-                _dal.DeleteUser(newUserId);
-                return "Lỗi khi lưu hồ sơ chi tiết bác sĩ!";
+                    // 2. Lưu chi tiết Doctor
+                    // Đảm bảo tầng DAL truyền các giá trị mặc định (0 cho Price/Exp) vào câu lệnh INSERT
+                    bool isDetailSaved = _dal.InsertDoctorFull(
+                        newUserId,
+                        allCertCodes,
+                        allCertImages,
+                        finalClinicAddr,
+                        clinicName,
+                        defaultBio,
+                        locationId,
+                        specialtyIds
+                    );
+
+                    if (isDetailSaved) return "Success";
+
+                    // Nếu lưu thông tin chi tiết lỗi -> Rollback xóa User để sạch Database
+                    _dal.DeleteUser(newUserId);
+                    return "Lỗi: Không thể lưu hồ sơ chi tiết bác sĩ. Hãy đảm bảo các thông tin chứng chỉ và nơi công tác đã đầy đủ!";
+                }
+                else
+                {
+                    return "Đăng ký tài khoản cơ bản thất bại (Có thể do lỗi kết nối hoặc dữ liệu không hợp lệ)!";
+                }
             }
-            return "Đăng ký tài khoản bác sĩ thất bại!";
+            catch (Exception ex)
+            {
+                // Trả về lỗi chi tiết từ hệ thống để biết chính xác cột nào trong SQL đang bị lỗi
+                return "Lỗi hệ thống: " + ex.Message;
+            }
         }
+
 
         // 4. Hàm kiểm tra hợp lệ chung (Tối ưu cho 24T_DT1)
         private string ValidateCommon(UserDTO user)
