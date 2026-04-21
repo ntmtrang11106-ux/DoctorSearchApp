@@ -122,16 +122,17 @@
             // 
             // panel1
             // 
+            panel1.AutoScroll = true;
             panel1.Controls.Add(panel2);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(2584, 1879);
+            panel1.Size = new Size(2584, 1704);
             panel1.TabIndex = 0;
             // 
             // panel2
             // 
-            panel2.Anchor = AnchorStyles.None;
+            panel2.Anchor = AnchorStyles.Top;
             panel2.BackColor = Color.FromArgb(24, 112, 255);
             panel2.Controls.Add(panel3);
             panel2.Controls.Add(label1);
@@ -786,7 +787,7 @@
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(2584, 1879);
+            ClientSize = new Size(2584, 1704);
             Controls.Add(panel1);
             Name = "frmRegister";
             Text = "DoctorSearch";
