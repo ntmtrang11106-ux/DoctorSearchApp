@@ -84,6 +84,21 @@ namespace DAL_Tier.Migrations
                     b.ToTable("Appointments");
                 });
 
+            modelBuilder.Entity("DTO_Tier.ArticleSpecialtyDTO", b =>
+                {
+                    b.Property<int>("ArticleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SpecialtyId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ArticleId", "SpecialtyId");
+
+                    b.HasIndex("SpecialtyId");
+
+                    b.ToTable("Article_Specialty");
+                });
+
             modelBuilder.Entity("DTO_Tier.ArticlesDTO", b =>
                 {
                     b.Property<int>("Id")
@@ -225,9 +240,6 @@ namespace DAL_Tier.Migrations
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("SpecialtyId")
-                        .HasColumnType("int");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -242,12 +254,25 @@ namespace DAL_Tier.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.HasIndex("SpecialtyId");
-
                     b.HasIndex("UserId")
                         .IsUnique();
 
                     b.ToTable("Doctor");
+                });
+
+            modelBuilder.Entity("DTO_Tier.DoctorSpecialtyDTO", b =>
+                {
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SpecialtyId")
+                        .HasColumnType("int");
+
+                    b.HasKey("DoctorId", "SpecialtyId");
+
+                    b.HasIndex("SpecialtyId");
+
+                    b.ToTable("Doctor_Specialty");
                 });
 
             modelBuilder.Entity("DTO_Tier.LocationDTO", b =>
@@ -568,6 +593,25 @@ namespace DAL_Tier.Migrations
                     b.Navigation("TimeSlot");
                 });
 
+            modelBuilder.Entity("DTO_Tier.ArticleSpecialtyDTO", b =>
+                {
+                    b.HasOne("DTO_Tier.ArticlesDTO", "Article")
+                        .WithMany("ArticleSpecialties")
+                        .HasForeignKey("ArticleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DTO_Tier.SpecialtyDTO", "Specialty")
+                        .WithMany()
+                        .HasForeignKey("SpecialtyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Article");
+
+                    b.Navigation("Specialty");
+                });
+
             modelBuilder.Entity("DTO_Tier.ArticlesDTO", b =>
                 {
                     b.HasOne("DTO_Tier.UserDTO", "Author")
@@ -624,11 +668,6 @@ namespace DAL_Tier.Migrations
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("DTO_Tier.SpecialtyDTO", "Specialty")
-                        .WithMany()
-                        .HasForeignKey("SpecialtyId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("DTO_Tier.UserDTO", "User")
                         .WithOne()
                         .HasForeignKey("DTO_Tier.DoctorDTO", "UserId")
@@ -637,9 +676,26 @@ namespace DAL_Tier.Migrations
 
                     b.Navigation("Location");
 
-                    b.Navigation("Specialty");
-
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DTO_Tier.DoctorSpecialtyDTO", b =>
+                {
+                    b.HasOne("DTO_Tier.DoctorDTO", "Doctor")
+                        .WithMany("DoctorSpecialties")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DTO_Tier.SpecialtyDTO", "Specialty")
+                        .WithMany()
+                        .HasForeignKey("SpecialtyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Specialty");
                 });
 
             modelBuilder.Entity("DTO_Tier.MedicalRecordsDTO", b =>
@@ -697,7 +753,7 @@ namespace DAL_Tier.Migrations
                         .IsRequired();
 
                     b.HasOne("DTO_Tier.DoctorDTO", "Doctor")
-                        .WithMany()
+                        .WithMany("Reviews")
                         .HasForeignKey("DoctorID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -735,6 +791,18 @@ namespace DAL_Tier.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DTO_Tier.ArticlesDTO", b =>
+                {
+                    b.Navigation("ArticleSpecialties");
+                });
+
+            modelBuilder.Entity("DTO_Tier.DoctorDTO", b =>
+                {
+                    b.Navigation("DoctorSpecialties");
+
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }
