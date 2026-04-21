@@ -28,6 +28,7 @@ namespace UI_Tier
         public frmGuest()
         {
             InitializeComponent();
+            UIHelper.SetDoubleBuffered(this);
 
             // Bo góc cho Button Đăng nhập
             UIHelper.ApplyRoundedRegion(btnLogin, 15);
