@@ -14,6 +14,7 @@ namespace UI_Tier
         public UCCardArticle()
         {
             InitializeComponent();
+            UIHelper.SetDoubleBuffered(this);
         }
         public void SetData(ArticlesDTO article)
         {
@@ -22,25 +23,25 @@ namespace UI_Tier
             try
             {
                 // 1. Tiêu đề - Luôn đưa lên trên cùng (BringToFront) để không bị Panel đè
-                lblTitle.Text = article.Title ?? "Tiêu đề trống";
+                lblTitle.Text = article.Title ?? "Không có tiêu đề";
                 lblTitle.BringToFront();
 
                 // 2. Tóm tắt nội dung
                 if (!string.IsNullOrEmpty(article.Content))
                 {
                     lblSummary.Text = article.Content.Length > 100
-                        ? article.Content.Substring(0, 100) + "..."
+                        ? article.Content.Substring(0, 100) + "...Xem thêm"
                         : article.Content;
                 }
-                else { lblSummary.Text = "Không có nội dung tóm tắt"; }
+                else { lblSummary.Text = "...Xem thêm"; }
                 lblSummary.BringToFront();
 
                 // 3. Thông tin phụ
-                lblViews.Text = article.Views.ToString() + " lượt xem";
-                lblDate.Text = article.CreatedAt.ToString("dd/MM/yyyy");
+                lblViews.Text = article.Views.ToString();
+                lblDate.Text = "Ngày đăng: " + article.CreatedAt.ToString("dd/MM/yyyy");
 
                 // 4. Tác giả - DÙNG ?. ĐỂ CHẶN LỖI MẤT BÀI THỨ 5
-                lblAuthor.Text = article.Author?.FullName ?? "Admin hệ thống";
+                lblAuthor.Text = "Tác giả: " + article.Author?.FullName ?? "Admin";
                 lblAuthor.BringToFront();
 
                 // 5. Xử lý ảnh (Thumbnail)
@@ -55,6 +56,14 @@ namespace UI_Tier
                 // Nếu có lỗi, nó sẽ hiện ngay bài nào bị lỗi để Trang sửa DB
                 Console.WriteLine("Lỗi tại Card Bài Viết: " + ex.Message);
             }
+        }
+
+        private void UCCardArticle_Load(object sender, EventArgs e)
+        {
+            this.Paint+=(s, args) =>
+            {
+                UIHelper.uc_Paint(s, args, 20, Color.Gray, 2);
+            };
         }
     }
 }
