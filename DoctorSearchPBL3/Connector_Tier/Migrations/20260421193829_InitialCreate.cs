@@ -17,7 +17,8 @@ namespace DAL_Tier.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LocationName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    LocationName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Province = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -141,16 +142,14 @@ namespace DAL_Tier.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    CertificateImage = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ClinicAddress = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     ClinicName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Experience_Years = table.Column<int>(type: "int", nullable: true),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     WorkingTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LocationId = table.Column<int>(type: "int", nullable: true),
-                    SpecialtyId = table.Column<int>(type: "int", nullable: true),
-                    IsApproved = table.Column<bool>(type: "bit", nullable: false)
+                    IsApproved = table.Column<bool>(type: "bit", nullable: false),
+                    ExperienceSummary = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -159,12 +158,6 @@ namespace DAL_Tier.Migrations
                         name: "FK_Doctor_Location_LocationId",
                         column: x => x.LocationId,
                         principalTable: "Location",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Doctor_Specialtie_SpecialtyId",
-                        column: x => x.SpecialtyId,
-                        principalTable: "Specialtie",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -193,6 +186,59 @@ namespace DAL_Tier.Migrations
                         name: "FK_Patient_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Article_Specialty",
+                columns: table => new
+                {
+                    ArticleId = table.Column<int>(type: "int", nullable: false),
+                    SpecialtyId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Article_Specialty", x => new { x.ArticleId, x.SpecialtyId });
+                    table.ForeignKey(
+                        name: "FK_Article_Specialty_Articles_ArticleId",
+                        column: x => x.ArticleId,
+                        principalTable: "Articles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Article_Specialty_Specialtie_SpecialtyId",
+                        column: x => x.SpecialtyId,
+                        principalTable: "Specialtie",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Doctor_Specialty",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DoctorId = table.Column<int>(type: "int", nullable: false),
+                    SpecialtyId = table.Column<int>(type: "int", nullable: false),
+                    CertificateImage = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    CertificateCode = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Experience_Years = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Doctor_Specialty", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Doctor_Specialty_Doctor_DoctorId",
+                        column: x => x.DoctorId,
+                        principalTable: "Doctor",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Doctor_Specialty_Specialtie_SpecialtyId",
+                        column: x => x.SpecialtyId,
+                        principalTable: "Specialtie",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -408,6 +454,11 @@ namespace DAL_Tier.Migrations
                 column: "TimeSlotId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Article_Specialty_SpecialtyId",
+                table: "Article_Specialty",
+                column: "SpecialtyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Articles_AdminID",
                 table: "Articles",
                 column: "AdminID");
@@ -433,10 +484,9 @@ namespace DAL_Tier.Migrations
                 column: "PatientID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Doctor_CertificateImage",
+                name: "IX_Doctor_ExperienceSummary",
                 table: "Doctor",
-                column: "CertificateImage",
-                unique: true);
+                column: "ExperienceSummary");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Doctor_LocationId",
@@ -444,15 +494,31 @@ namespace DAL_Tier.Migrations
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Doctor_SpecialtyId",
-                table: "Doctor",
-                column: "SpecialtyId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Doctor_UserId",
                 table: "Doctor",
                 column: "UserId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Doctor_Specialty_DoctorId_SpecialtyId",
+                table: "Doctor_Specialty",
+                columns: new[] { "DoctorId", "SpecialtyId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Doctor_Specialty_SpecialtyId",
+                table: "Doctor_Specialty",
+                column: "SpecialtyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Location_Province",
+                table: "Location",
+                column: "Province");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Location_Province_LocationName",
+                table: "Location",
+                columns: new[] { "Province", "LocationName" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_MedicalRecords_AppointmentID",
@@ -519,10 +585,13 @@ namespace DAL_Tier.Migrations
                 name: "Admin");
 
             migrationBuilder.DropTable(
-                name: "Articles");
+                name: "Article_Specialty");
 
             migrationBuilder.DropTable(
                 name: "CallLogs");
+
+            migrationBuilder.DropTable(
+                name: "Doctor_Specialty");
 
             migrationBuilder.DropTable(
                 name: "MedicalRecords");
@@ -532,6 +601,12 @@ namespace DAL_Tier.Migrations
 
             migrationBuilder.DropTable(
                 name: "Reviews");
+
+            migrationBuilder.DropTable(
+                name: "Articles");
+
+            migrationBuilder.DropTable(
+                name: "Specialtie");
 
             migrationBuilder.DropTable(
                 name: "Conversation");
@@ -550,9 +625,6 @@ namespace DAL_Tier.Migrations
 
             migrationBuilder.DropTable(
                 name: "Location");
-
-            migrationBuilder.DropTable(
-                name: "Specialtie");
 
             migrationBuilder.DropTable(
                 name: "User");
