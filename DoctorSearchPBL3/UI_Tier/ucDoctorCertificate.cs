@@ -22,6 +22,7 @@ namespace UI_Tier
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this); // Kích hoạt Double Buffering để giảm nhấp nháy
+            LoadYearData(); // Load dữ liệu năm vào comboBox4 ngay khi khởi tạo
         }
 
         #region Các hàm Public để Form chính (frmRegister) lấy dữ liệu
@@ -51,19 +52,14 @@ namespace UI_Tier
 
         public int GetExperienceYears()
         {
-            // Kiểm tra nếu người dùng đã chọn năm ở comboBox4
-            if (comboBox4.SelectedItem != null)
-            {
-                if (int.TryParse(comboBox4.SelectedItem.ToString(), out int issuedYear))
-                {
-                    int currentYear = DateTime.Now.Year;
-                    int exp = currentYear - issuedYear;
+            string val = comboBox4.Text;
+            string itemVal = comboBox4.SelectedItem?.ToString() ?? "NULL";
 
-                    // Nếu năm cấp là năm hiện tại thì trả về 0, nếu lớn hơn 0 thì trả về hiệu số
-                    return exp > 0 ? exp : 0;
-                }
+            if (int.TryParse(val, out int year))
+            {
+                return 2026 - year;
             }
-            return 0; // Mặc định nếu chưa chọn hoặc lỗi là 0 năm kinh nghiệm
+            return 0;
         }
 
         #endregion
@@ -86,6 +82,17 @@ namespace UI_Tier
             {
                 MessageBox.Show("Lỗi khi tải chuyên khoa: " + ex.Message);
             }
+        }
+
+        private void LoadYearData()
+        {
+            comboBox4.Items.Clear();
+            for (int year = 2026; year >= 1990; year--)
+            {
+                comboBox4.Items.Add(year.ToString());
+            }
+            // Chọn mặc định năm hiện tại để tránh bị null
+            comboBox4.SelectedIndex = 0;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

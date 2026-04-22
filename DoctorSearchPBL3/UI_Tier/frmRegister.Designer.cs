@@ -136,7 +136,7 @@
             panel2.BackColor = Color.FromArgb(24, 112, 255);
             panel2.Controls.Add(panel3);
             panel2.Controls.Add(label1);
-            panel2.Location = new Point(141, 102);
+            panel2.Location = new Point(124, 102);
             panel2.Name = "panel2";
             panel2.Size = new Size(2165, 1719);
             panel2.TabIndex = 4;
@@ -451,6 +451,7 @@
             dtpDOB.Name = "dtpDOB";
             dtpDOB.Size = new Size(751, 50);
             dtpDOB.TabIndex = 24;
+            dtpDOB.ValueChanged += dtpDOB_ValueChanged;
             // 
             // label10
             // 

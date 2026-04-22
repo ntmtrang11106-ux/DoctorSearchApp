@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace DAL_Tier
 {
@@ -45,7 +46,10 @@ namespace DAL_Tier
                 userDto.Status = (userDto.Role == "Doctor") ? "Pending" : "Active";
                 userDto.Created_At = DateTime.Now;
                 userDto.Picture ??= "default.jpg";
-                userDto.CCCD ??= "";
+                //userDto.CCCD ??= "";
+                userDto.Residential_Address ??= (string.IsNullOrWhiteSpace(userDto.Residential_Address))
+                                        ? "Chưa cập nhật"
+                                        : userDto.Residential_Address;
                 userDto.Residential_Address ??= "";
 
                 _context.Users.Add(userDto);
@@ -83,67 +87,22 @@ namespace DAL_Tier
         }
 
         // 5. Chèn Doctor Full (Có Transaction)
-        //public bool InsertDoctorFull(int userId, string allCertCodes, string allCertImages,
-        //                            string clinicAddr, string clinicName, string bio,
-        //                            int? locationId, List<int> specialtyIds)
-        //{
-        //    using (var transaction = _context.Database.BeginTransaction())
-        //    {
-        //        try
-        //        {
-        //            var doctor = new DoctorDTO
-        //            {
-        //                UserId = userId,
-        //                ClinicAddress = string.IsNullOrWhiteSpace(clinicAddr) ? "Chưa cập nhật" : clinicAddr,
-        //                ClinicName = string.IsNullOrWhiteSpace(clinicName) ? "Phòng khám tư nhân" : clinicName,
-        //                Bio = string.IsNullOrWhiteSpace(bio) ? "Chưa có thông tin" : bio,
-        //                Price = 0,
-        //                WorkingTime = "Chưa cập nhật",
-        //                LocationId = locationId,
-        //                IsApproved = false,
-        //                ExperienceSummary = 0
-        //            };
-
-        //            _context.Doctors.Add(doctor);
-        //            _context.SaveChanges();
-
-        //            if (specialtyIds != null && specialtyIds.Any())
-        //            {
-        //                foreach (var specId in specialtyIds)
-        //                {
-        //                    var docSpec = new DoctorSpecialtyDTO
-        //                    {
-        //                        DoctorId = doctor.Id,
-        //                        SpecialtyId = specId,
-        //                        CertificateCode = string.IsNullOrWhiteSpace(allCertCodes) ? "" : allCertCodes,
-        //                        CertificateImage = string.IsNullOrWhiteSpace(allCertImages) ? "" : allCertImages,
-        //                        Experience_Years = 0
-        //                    };
-        //                    _context.DoctorSpecialties.Add(docSpec);
-        //                }
-        //                _context.SaveChanges();
-        //            }
-
-        //            transaction.Commit();
-        //            return true;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            transaction.Rollback();
-        //            Console.WriteLine("Lỗi InsertDoctorFull: " + ex.Message);
-        //            return false;
-        //        }
-        //    }
-        //}
-
         public bool InsertDoctorFull(int userId, string clinicAddr, string clinicName,
-                            int? locationId, List<DoctorSpecialtyDTO> listCerts)
+                    int? locationId, List<DoctorSpecialtyDTO> listCerts)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
-                    // 1. Tạo đối tượng Doctor
+                    // NGHIỆP VỤ: Lấy thâm niên cao nhất để gán vào bảng Doctor phục vụ Sort
+                    int maxExp = 0;
+                    if (listCerts != null && listCerts.Any())
+                    {
+                        // Sử dụng DoctorSpecialtyDTO
+                        maxExp = listCerts.Max(c => c.Experience_Years ?? 0);
+                    }
+
+                    // 1. Sử dụng DoctorDTO từ file DoctorDTO.cs
                     var doctor = new DoctorDTO
                     {
                         UserId = userId,
@@ -154,22 +113,22 @@ namespace DAL_Tier
                         WorkingTime = "Chưa cập nhật",
                         LocationId = locationId,
                         IsApproved = false,
-                        ExperienceSummary = 0
+                        ExperienceSummary = maxExp // Lưu thâm niên tổng quát
                     };
 
                     _context.Doctors.Add(doctor);
-                    _context.SaveChanges(); // Lưu để lấy doctor.Id
+                    _context.SaveChanges();
 
-                    // 2. Lưu danh sách chứng chỉ vào bảng Doctor_Specialty
+                    // 2. Lưu danh sách vào bảng Doctor_Specialty
                     if (listCerts != null && listCerts.Any())
                     {
-                        foreach (var cert in listCerts)
+                        foreach (var certDto in listCerts)
                         {
-                            cert.DoctorId = doctor.Id; // Gán ID bác sĩ vừa tạo
+                            // Sử dụng DoctorSpecialtyDTO khớp với file bạn đã upload
+                            certDto.DoctorId = doctor.Id; // Gán ID bác sĩ vừa tạo
 
-                            // Các trường CertificateCode, CertificateImage, SpecialtyId, Experience_Years 
-                            // đã có sẵn trong object cert do tầng BUS truyền xuống.
-                            _context.DoctorSpecialties.Add(cert);
+                            // Đảm bảo Experience_Years được gán đúng từ DTO xuống DB
+                            _context.DoctorSpecialties.Add(certDto);
                         }
                         _context.SaveChanges();
                     }
@@ -180,11 +139,11 @@ namespace DAL_Tier
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    Console.WriteLine("Lỗi InsertDoctorFull: " + ex.Message);
                     return false;
                 }
             }
         }
+
         // 6. Xóa User
         public bool DeleteUser(int userId)
         {

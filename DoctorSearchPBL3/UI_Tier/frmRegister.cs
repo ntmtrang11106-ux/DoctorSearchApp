@@ -116,6 +116,17 @@ namespace UI_Tier
         }
         #endregion
 
+        private int CalculateAge(DateTime birthDate)
+        {
+            DateTime today = DateTime.Today; // 22/04/2026
+            int age = today.Year - birthDate.Year;
+
+            // Kiểm tra xem đã đến sinh nhật năm nay chưa
+            if (birthDate.Date > today.AddYears(-age)) age--;
+
+            return age;
+        }
+
         #region Đăng ký
         private void btnLogin_Click(object sender, EventArgs e)
         {
@@ -151,6 +162,8 @@ namespace UI_Tier
                 Dob = dtpDOB.Value,
                 Gender = radioButton1.Checked ? "Nam" : "Nữ",
                 Role = currentRole,
+                //CCCD = txtCCCD.Text.Trim(),
+                // Lấy trực tiếp từ TextBox (nếu <16 tuổi nó đã là "Chưa cập nhật")
                 CCCD = txtCCCD.Text.Trim(),
                 Residential_Address = fullAddress,
                 Picture = "default.jpg",
@@ -175,24 +188,35 @@ namespace UI_Tier
                 {
                     if (ctrl is ucDoctorCertificate uc)
                     {
-                        // Lấy từng Certificate thông qua các hàm getter của UserControl
-                        var cert = new DoctorSpecialtyDTO
-                        {
-                            SpecialtyId = uc.GetSelectedSpecialtyId(),
-                            CertificateCode = uc.GetCertificateId(),
-                            CertificateImage = uc.GetCertificateImageName(),
-                            Experience_Years = uc.GetExperienceYears()
-                        };
+                        // Lấy dữ liệu thông qua các hàm getter đã sửa của UserControl
+                        int specialtyId = uc.GetSelectedSpecialtyId();
+                        string certCode = uc.GetCertificateId();
+                        int expYears = uc.GetExperienceYears();
 
-                        // Chỉ thêm nếu có mã chứng chỉ hoặc chuyên khoa hợp lệ
-                        if (!string.IsNullOrWhiteSpace(cert.CertificateCode))
+                        // CHỈ THÊM NẾU: Có mã chứng chỉ VÀ đã chọn chuyên khoa
+                        if (!string.IsNullOrWhiteSpace(certCode) && specialtyId > 0)
                         {
+                            var cert = new DoctorSpecialtyDTO
+                            {
+                                SpecialtyId = specialtyId,
+                                CertificateCode = certCode,
+                                CertificateImage = uc.GetCertificateImageName(),
+                                Experience_Years = expYears // Đã được tính toán (2026 - Năm cấp)
+                            };
                             listCerts.Add(cert);
                         }
                     }
                 }
 
-                // Gọi BUS: Truyền listCerts thay vì truyền các chuỗi gộp nhì nhằng
+                // --- KIỂM TRA NGHIỆP VỤ TẠI UI ---
+                if (listCerts.Count == 0)
+                {
+                    MessageBox.Show("Vui lòng nhập đầy đủ thông tin ít nhất một chứng chỉ chuyên khoa!",
+                                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Gọi BUS: Truyền dữ liệu sạch xuống tầng dưới
                 result = _loginBUS.RegisterDoctor(
                     newUser,
                     confirmPass,
@@ -302,6 +326,26 @@ namespace UI_Tier
 
                     cboRegion.SelectedIndex = -1; // Để trống, bắt người dùng phải tự chọn
                 }
+            }
+        }
+
+        private void dtpDOB_ValueChanged(object sender, EventArgs e)
+        {
+            int age = CalculateAge(dtpDOB.Value);
+
+            if (age < 16)
+            {
+                // Khóa ô nhập CCCD và xóa nội dung cũ
+                txtCCCD.Text = "Chưa đủ tuổi";
+                txtCCCD.Enabled = false; // Làm mờ ô nhập
+                txtCCCD.BackColor = Color.LightGray; // Đổi màu để người dùng biết là bị khóa
+            }
+            else
+            {
+                // Mở khóa nếu từ 16 tuổi trở lên
+                if (txtCCCD.Text == "Chưa đủ tuổi") txtCCCD.Text = "";
+                txtCCCD.Enabled = true;
+                txtCCCD.BackColor = Color.White;
             }
         }
     }
