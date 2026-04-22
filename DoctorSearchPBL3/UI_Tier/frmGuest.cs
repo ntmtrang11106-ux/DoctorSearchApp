@@ -28,6 +28,7 @@ namespace UI_Tier
         public frmGuest()
         {
             InitializeComponent();
+            UIHelper.SetDoubleBuffered(this);
 
             // Bo góc cho Button Đăng nhập
             UIHelper.ApplyRoundedRegion(btnLogin, 15);
@@ -108,7 +109,7 @@ namespace UI_Tier
             foreach (var doc in pageItems)
             {
                 UCCardDoctor card = new UCCardDoctor();
-                card.SetDoctorData(doc, true);
+                card.SetDoctorData(doc);
                 card.Margin = new Padding(25);
                 flpDoctors.Controls.Add(card);
             }
@@ -213,7 +214,7 @@ namespace UI_Tier
             foreach (var doc in doctors)
             {
                 UCCardDoctor uc = new UCCardDoctor();
-                uc.SetDoctorData(doc, true); // Dùng đúng tên hàm SetDoctorData của Trang nhé
+                uc.SetDoctorData(doc); // Dùng đúng tên hàm SetDoctorData của Trang nhé
                 flpDoctors.Controls.Add(uc);
             }
 

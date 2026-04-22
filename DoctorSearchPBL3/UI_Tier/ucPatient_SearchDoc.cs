@@ -22,6 +22,18 @@ namespace UI_Tier
         public ucPatient_SearchDoc()
         {
             InitializeComponent();
+            UIHelper.SetDoubleBuffered(this);
+        }
+
+        // Override CreateParams để bật WS_EX_COMPOSITED, giúp giảm nhấp nháy khi vẽ lại UserControl
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
+                return cp;
+            }
         }
 
         public void InitData()
@@ -63,7 +75,7 @@ namespace UI_Tier
             foreach (var doc in pageItems)
             {
                 UCCardDoctor card = new UCCardDoctor();
-                card.SetDoctorData(doc, true);
+                card.SetDoctorData(doc);
                 card.Margin = new Padding(25);
                 flpDoctors.Controls.Add(card);
             }

@@ -77,6 +77,7 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(btnCancel, 40);
             UIHelper.ApplyRoundedRegion(btnRemove, 40);
             UIHelper.ApplyRoundedRegion(btnBook, 40);
+            UIHelper.ApplyRoundedRegion(btnRate, 40);
 
             this.Paint += (sender, e) =>
             {

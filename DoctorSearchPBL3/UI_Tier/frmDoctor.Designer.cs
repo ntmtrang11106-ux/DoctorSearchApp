@@ -40,7 +40,7 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1845, 115);
+            panel1.Size = new Size(2188, 115);
             panel1.TabIndex = 2;
             // 
             // btnLogout
@@ -51,7 +51,7 @@
             btnLogout.FlatStyle = FlatStyle.Flat;
             btnLogout.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnLogout.ForeColor = Color.White;
-            btnLogout.Location = new Point(1531, 23);
+            btnLogout.Location = new Point(1874, 23);
             btnLogout.Name = "btnLogout";
             btnLogout.Size = new Size(277, 65);
             btnLogout.TabIndex = 2;
@@ -64,7 +64,7 @@
             pnMain.Dock = DockStyle.Fill;
             pnMain.Location = new Point(0, 115);
             pnMain.Name = "pnMain";
-            pnMain.Size = new Size(1845, 862);
+            pnMain.Size = new Size(2188, 862);
             pnMain.TabIndex = 3;
             // 
             // frmDoctor
@@ -72,12 +72,13 @@
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(1845, 977);
+            ClientSize = new Size(2188, 977);
             Controls.Add(pnMain);
             Controls.Add(panel1);
             Name = "frmDoctor";
             Text = "DoctorSearch";
             WindowState = FormWindowState.Maximized;
+            Load += frmDoctor_Load;
             panel1.ResumeLayout(false);
             ResumeLayout(false);
         }
