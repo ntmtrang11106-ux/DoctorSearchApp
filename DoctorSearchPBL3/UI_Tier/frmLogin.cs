@@ -66,8 +66,6 @@ namespace UI_Tier
             string pass = txtPassword.Text.Trim();
 
             // 1. Gọi hàm Login. 
-            // Giả sử hàm này bây giờ trả về Role (Patient/Doctor/Admin) nếu đúng, 
-            // hoặc trả về thông báo lỗi nếu sai.
             string result = _loginBUS.Login(phone, pass);
 
             if (result == "Patient")

@@ -25,9 +25,10 @@ namespace DTO_Tier
         [StringLength(255)]
         public string Password { get; set; } // 
 
-        public DateTime? Dob { get; set; } // 
+        [Required]
+        public DateTime Dob { get; set; } // 
         public string Gender { get; set; } // 
-        public string CCCD { get; set; } // 
+        public string? CCCD { get; set; } // 
 
         [StringLength(255)]
         public string Residential_Address { get; set; } // 

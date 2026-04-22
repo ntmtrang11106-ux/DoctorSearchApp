@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace DTO_Tier
 {
@@ -14,8 +15,6 @@ namespace DTO_Tier
         // 1. Đảm bảo 1 User chỉ có 1 hồ sơ Bác sĩ
         public int UserId { get; set; }
 
-        [Required]
-        public string CertificateImage { get; set; } // Chứng chỉ hành nghề (Unique trong DB) 
 
         [Required]
         [StringLength(255)]
@@ -23,8 +22,9 @@ namespace DTO_Tier
 
         public string ClinicName { get; set; } // Tên phòng khám 
 
-        // Giữ nguyên lỗi chính tả "Exxperience" theo đúng file Word của bạn
-        public int? Experience_Years { get; set; } // Năm kinh nghiệm 
+        // Thông tin chứng chỉ và kinh nghiệm theo từng chuyên khoa
+        // đã được tách vào bảng trung gian DoctorSpecialtyDTO để hỗ trợ
+        // 1 bác sĩ có nhiều chứng chỉ / nhiều chuyên khoa.
 
         public string Bio { get; set; } // Tiểu sử giới thiệu ngắn 
 
@@ -58,5 +58,29 @@ namespace DTO_Tier
         public int TotalReviews { get; set; } // Sẽ được BUS đếm và gán vào
 
         public virtual ICollection<ReviewsDTO> Reviews { get; set; } = new List<ReviewsDTO>();
+
+        // --- Compatibility / convenience properties ---
+        // Giữ lại để tương thích với UI/BUS hiện tại. Thực tế các thông tin này
+        // có thể nằm trong DoctorSpecialtyDTO nếu chuyên khoa khác nhau có giá trị khác nhau.
+        [NotMapped]
+        public int? Experience_Years
+        {
+            get
+            {
+                if (DoctorSpecialties != null && DoctorSpecialties.Any())
+                    return DoctorSpecialties.Max(ds => ds.Experience_Years);
+                return null;
+            }
+            set { /* setter tồn tại để hỗ trợ seeding hoặc binding */ }
+        }
+
+        [NotMapped]
+        public string CertificateImage { get; set; }
+
+        [NotMapped]
+        public SpecialtyDTO Specialty => DoctorSpecialties?.FirstOrDefault()?.Specialty;
+
+        // Stored summary to optimize sorting/filtering by experience across specialties
+        public int? ExperienceSummary { get; set; }
     }
 }
