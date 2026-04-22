@@ -136,7 +136,7 @@
             panel2.BackColor = Color.FromArgb(24, 112, 255);
             panel2.Controls.Add(panel3);
             panel2.Controls.Add(label1);
-            panel2.Location = new Point(158, 102);
+            panel2.Location = new Point(141, 102);
             panel2.Name = "panel2";
             panel2.Size = new Size(2165, 1719);
             panel2.TabIndex = 4;
@@ -585,6 +585,7 @@
             cboProvince.Name = "cboProvince";
             cboProvince.Size = new Size(481, 53);
             cboProvince.TabIndex = 29;
+            cboProvince.SelectedIndexChanged += cboProvince_SelectedIndexChanged_1;
             // 
             // label16
             // 

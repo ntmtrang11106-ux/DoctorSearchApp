@@ -17,6 +17,7 @@ namespace UI_Tier
     {
         // 1. Khai báo tầng BUS để xử lý nghiệp vụ
         private LoginBUS _loginBUS = new LoginBUS();
+        private LocationBUS _locationBUS = new LocationBUS(); // Bổ sung LocationBUS mới tách
         // Biến này cực kỳ quan trọng để phân biệt 2 luồng
         private string currentRole = "";
 
@@ -95,6 +96,26 @@ namespace UI_Tier
         // vào các hàm panel_MouseClick tương ứng để bấm vào chữ cũng đổi được luồng.
         #endregion
 
+        #region Xử lý Location (Tỉnh/Thành - Quận/Huyện)
+        // Sự kiện Load Form
+
+        // Khi chọn Tỉnh/Thành -> Lọc Quận/Huyện tương ứng
+        private void cboProvince_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboProvince.SelectedItem != null)
+            {
+                string provinceName = cboProvince.SelectedItem.ToString();
+
+                // Lấy danh sách Quận/Huyện theo Tỉnh
+                var districts = _locationBUS.GetDistricts(provinceName);
+
+                cboRegion.DataSource = districts;
+                cboRegion.DisplayMember = "LocationName"; // Tên hiển thị (Cẩm Lệ, Hải Châu...)
+                cboRegion.ValueMember = "Id";             // Giá trị lấy ra (ID)
+            }
+        }
+        #endregion
+
         #region Đăng ký
         private void btnLogin_Click(object sender, EventArgs e)
         {
@@ -105,13 +126,17 @@ namespace UI_Tier
                 return;
             }
 
+            // Lấy LocationId từ Quận/Huyện (cboRegion) thay vì cboProvince
+            int? locationId = null;
+            if (cboRegion.SelectedValue != null && cboRegion.SelectedValue is int id)
+            {
+                locationId = id;
+            }
+
             // 2. Xử lý gộp địa chỉ "Xã, Tỉnh"
             string province = cboProvince.Text.Trim();
-            string ward = cboRegion.Text.Trim();
-            string fullAddress = $"{ward}, {province}";
-
-            // Lấy LocationId(ID Tỉnh / Thành) - Trả về null nếu chưa chọn
-            int? locationId = cboProvince.SelectedValue as int?;
+            string district = cboRegion.Text.Trim();
+            string fullAddress = $"{district}, {province}";
 
             // Lấy Password và Confirm Password
             string password = textBox4.Text.Trim();
@@ -200,6 +225,8 @@ namespace UI_Tier
         }
         #endregion
 
+
+        #region Quản lý User Control chứng chỉ
         int certCount = 0; // Biến đếm số chứng chỉ đã thêm
 
         // Hàm cập nhật lại số thứ tự hiển thị (1, 2, 3...)
@@ -250,8 +277,40 @@ namespace UI_Tier
 
         private void frmRegister_Load(object sender, EventArgs e)
         {
-            btnNew_Click(null, null); // Tự động thêm 1 UC chứng chỉ khi mở form (tùy chọn)
+            // 1. Load danh sách Tỉnh/Thành
+            cboProvince.DataSource = _locationBUS.GetProvinces();
+            cboProvince.SelectedIndex = -1; // Để trống mặc định
+
+            // 2. Thêm 1 chứng chỉ mặc định cho bác sĩ
+            btnNew_Click(null, null);
         }
-        
+        #endregion
+
+        private void cboProvince_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            // Kiểm tra nếu người dùng thực sự chọn một mục (tránh lỗi khi form mới load)
+            if (cboProvince.SelectedIndex != -1 && cboProvince.SelectedItem != null)
+            {
+                // Lấy tên tỉnh đang chọn
+                string selectedProvince = cboProvince.SelectedItem.ToString();
+
+                // 1. Gọi BUS để lấy danh sách Quận/Huyện từ Database
+                var districts = _locationBUS.GetDistricts(selectedProvince);
+
+                // 2. Xóa các ràng buộc cũ của cboRegion (Xã/Phường) để làm sạch dữ liệu
+                cboRegion.DataSource = null;
+                cboRegion.Items.Clear();
+
+                // 3. Nạp dữ liệu mới
+                if (districts != null && districts.Count > 0)
+                {
+                    cboRegion.DataSource = districts;
+                    cboRegion.DisplayMember = "LocationName"; // Tên hiển thị trên ComboBox
+                    cboRegion.ValueMember = "Id";             // ID thực tế để lưu xuống bảng Doctor
+
+                    cboRegion.SelectedIndex = -1; // Để trống, bắt người dùng phải tự chọn
+                }
+            }
+        }
     }
 }
