@@ -42,9 +42,9 @@ namespace BUS_Tier
 
         //    if (cccd.Length != 12) return "CCCD không hợp lệ!";
 
-            bool result = doctorDAL.UpdateDoctor(doctor);
-            return result ? "Cập nhật thành công!" : "Cập nhật thất bại, vui lòng kiểm tra lại!";
-        }
+        //    bool result = doctorDAL.UpdateDoctor(doctor);
+        //    return result ? "Cập nhật thành công!" : "Cập nhật thất bại, vui lòng kiểm tra lại!";
+        //}
         public void CalculateDoctorStats(DoctorDTO doctor)
         {
             if (doctor.Reviews != null && doctor.Reviews.Any())
