@@ -197,7 +197,7 @@ new DoctorSpecialtyDTO { DoctorId = docList[1].Id, SpecialtyId = allSpecs[0].Id,
                         new ArticlesDTO { AdminID = adminUser.Id, Title = "Cẩm nang phòng dịch mùa hè", Content = "Nội dung chi tiết về cách phòng dịch...", Thumbnail = "news1.jpg", Views = 150, CreatedAt = DateTime.Now },
                         new ArticlesDTO { AdminID = adminUser.Id, Title = "Dinh dưỡng cho trẻ biếng ăn", Content = "Cách bổ sung vitamin cho trẻ...", Thumbnail = "news2.jpg", Views = 200, CreatedAt = DateTime.Now },
                         new ArticlesDTO { AdminID = adminUser.Id, Title = "Dấu hiệu của bệnh đau mắt đỏ", Content = "Cách nhận biết sớm bệnh về mắt...", Thumbnail = "news3.jpg", Views = 80, CreatedAt = DateTime.Now },
-new ArticlesDTO { AdminID = adminUser.Id, Title = "Tầm quan trọng của khám định kỳ", Content = "Lợi ích của việc đi khám tổng quát...", Thumbnail = "news4.jpg", Views = 120, CreatedAt = DateTime.Now },
+                        new ArticlesDTO { AdminID = adminUser.Id, Title = "Tầm quan trọng của khám định kỳ", Content = "Lợi ích của việc đi khám tổng quát...", Thumbnail = "news4.jpg", Views = 120, CreatedAt = DateTime.Now },
                         new ArticlesDTO { AdminID = adminUser.Id, Title = "Bí quyết giữ trái tim khỏe mạnh", Content = "Chế độ tập luyện cho tim mạch...", Thumbnail = "news5.jpg", Views = 310, CreatedAt = DateTime.Now }
                     };
                     context.Articles.AddRange(articles);
@@ -214,20 +214,86 @@ new ArticlesDTO { AdminID = adminUser.Id, Title = "Tầm quan trọng của khá
                     context.ArticleSpecialties.AddRange(artSpecs);
                     context.SaveChanges(); // Chốt hạ lần cuối
                 }
-                    Visit_Date = DateTime.Now,
-                    Diagnosis = "Viêm họng cấp",
-                    Treatment = "Uống thuốc đúng liều và súc miệng nước muối"
-                });
 
-                // 9. LIÊN KẾT CHUYÊN KHOA (Doctor_Specialty)
-                context.DoctorSpecialties.Add(new DoctorSpecialtyDTO { DoctorId = doctors[0].Id, SpecialtyId = specs[1].Id });
+                // 9. NẠP KHUNG GIỜ (TimeSlots)
+                if (!context.TimeSlots.Any())
+                {
+                    var slots = new List<TimeSlotsDTO>();
 
-                context.SaveChanges();
-                Debug.WriteLine("=== SEED DATA HOÀN TẤT ===");
+                    // Đổi tên từ 'doctors' thành 'allDoctorsForSlots' để tránh trùng với Bước 4
+                    var allDoctorsForSlots = context.Doctors.ToList();
+
+                    if (allDoctorsForSlots.Any())
+                    {
+                        for (int day = 0; day < 3; day++)
+                        {
+                            DateTime testDate = DateTime.Today.AddDays(day);
+                            slots.Add(new TimeSlotsDTO
+                            {
+                                DoctorId = allDoctorsForSlots[0].Id, // Dùng tên mới ở đây
+                                Date = testDate,
+                                StartTime = new TimeSpan(8, 0, 0),
+                                EndTime = new TimeSpan(9, 0, 0),
+                                Status = "Trống"
+                            });
+                            // ... các slot khác tương tự
+                        }
+                        context.TimeSlots.AddRange(slots);
+                        context.SaveChanges();
+                    }
+                }
+
+                // 10. NẠP LỊCH HẸN MẪU (Appointments)
+                if (!context.Appointments.Any())
+{
+    var patient = context.Patients.FirstOrDefault();
+    var doctor = context.Doctors.FirstOrDefault();
+    // Lấy các Slot đang "Trống"
+    var availableSlots = context.TimeSlots.Where(s => s.Status == "Trống").Take(2).ToList();
+
+    if (patient != null && doctor != null && availableSlots.Count >= 2)
+    {
+        var appointments = new List<AppointmentsDTO>
+        {
+            new AppointmentsDTO 
+            { 
+                PatientId = patient.Id, 
+                DoctorId = doctor.Id, 
+                TimeSlotId = availableSlots[0].Id, // Khớp với tên cột TimeSlotId trong SQL
+                Symptoms = "Đau đầu, chóng mặt kéo dài",
+                Status = "Chờ duyệt", // Mặc định theo SQL của bạn
+                CreatedAt = DateTime.Now 
+            },
+            new AppointmentsDTO 
+            { 
+                PatientId = patient.Id, 
+                DoctorId = doctor.Id, 
+                TimeSlotId = availableSlots[1].Id, 
+                Symptoms = "Khám sức khỏe tổng quát",
+                Status = "Đã duyệt",
+                CreatedAt = DateTime.Now 
             }
+        };
+
+        context.Appointments.AddRange(appointments);
+        
+        // Cập nhật trạng thái Slot sang "Đã đặt" để không bị trùng
+        availableSlots[0].Status = "Đã đặt";
+        availableSlots[1].Status = "Đã đặt";
+        context.TimeSlots.UpdateRange(availableSlots);
+
+        context.SaveChanges();
+        Debug.WriteLine("=== SEED APPOINTMENTS HOÀN TẤT ===");
+    }
+}
+            }
+
+
             catch (Exception ex)
             {
-                Debug.WriteLine("=== LỖI SEED: " + ex.Message);
+                var inner = ex.InnerException;
+                while (inner?.InnerException != null) inner = inner.InnerException;
+                Debug.WriteLine("=== LỖI SEED: " + (inner?.Message ?? ex.Message));
                 throw;
             }
         }

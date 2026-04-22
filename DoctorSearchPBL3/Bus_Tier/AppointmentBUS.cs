@@ -41,7 +41,7 @@ namespace BUS_Tier
                 var app = context.Appointments.FirstOrDefault(a => a.Id == appointmentId);
                 if (app == null) return false;
 
-                // 2. Cập nhật trạng thái Appointments sang 'Đã từ chối'
+                // 2. Cập nhật trạng thái Appointments sang 'Đã hủy'
                 app.Status = "Đã hủy";
 
                 // 3. Tìm TimeSlot liên quan và cập nhật về 'Trống'
