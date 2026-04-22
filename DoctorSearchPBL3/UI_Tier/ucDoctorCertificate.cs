@@ -49,6 +49,23 @@ namespace UI_Tier
             return label24.Text; // Trả về tên file đã chọn hoặc "default.jpg"
         }
 
+        public int GetExperienceYears()
+        {
+            // Kiểm tra nếu người dùng đã chọn năm ở comboBox4
+            if (comboBox4.SelectedItem != null)
+            {
+                if (int.TryParse(comboBox4.SelectedItem.ToString(), out int issuedYear))
+                {
+                    int currentYear = DateTime.Now.Year;
+                    int exp = currentYear - issuedYear;
+
+                    // Nếu năm cấp là năm hiện tại thì trả về 0, nếu lớn hơn 0 thì trả về hiệu số
+                    return exp > 0 ? exp : 0;
+                }
+            }
+            return 0; // Mặc định nếu chưa chọn hoặc lỗi là 0 năm kinh nghiệm
+        }
+
         #endregion
 
         // Hàm đổ dữ liệu từ database vào ComboBox

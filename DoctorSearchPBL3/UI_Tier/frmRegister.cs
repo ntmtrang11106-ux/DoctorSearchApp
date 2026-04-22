@@ -167,48 +167,40 @@ namespace UI_Tier
             }
             else if (currentRole == "Doctor")
             {
-                List<int> specialtyIds = new List<int>();
-                List<string> certCodes = new List<string>();
-                List<string> certImages = new List<string>(); // Thêm danh sách để chứa nhiều ảnh
+                // --- ĐÓNG GÓI DANH SÁCH CHỨNG CHỈ ---
+                List<DoctorSpecialtyDTO> listCerts = new List<DoctorSpecialtyDTO>();
+                string clinicName = textBox3.Text.Trim();
 
                 foreach (Control ctrl in flpCertificate.Controls)
                 {
                     if (ctrl is ucDoctorCertificate uc)
                     {
-                        // 1. Lấy chuyên khoa
-                        int specId = uc.GetSelectedSpecialtyId();
-                        if (specId > 0 && !specialtyIds.Contains(specId))
-                            specialtyIds.Add(specId);
+                        // Lấy từng Certificate thông qua các hàm getter của UserControl
+                        var cert = new DoctorSpecialtyDTO
+                        {
+                            SpecialtyId = uc.GetSelectedSpecialtyId(),
+                            CertificateCode = uc.GetCertificateId(),
+                            CertificateImage = uc.GetCertificateImageName(),
+                            Experience_Years = uc.GetExperienceYears()
+                        };
 
-                        // 2. Lấy mã chứng chỉ
-                        string cCode = uc.GetCertificateId();
-                        if (!string.IsNullOrWhiteSpace(cCode))
-                            certCodes.Add(cCode);
-
-                        // 3. Lấy tên file ảnh và thêm vào danh sách (SỬA Ở ĐÂY)
-                        string imgName = uc.GetCertificateImageName();
-                        if (!string.IsNullOrWhiteSpace(imgName))
-                            certImages.Add(imgName);
+                        // Chỉ thêm nếu có mã chứng chỉ hoặc chuyên khoa hợp lệ
+                        if (!string.IsNullOrWhiteSpace(cert.CertificateCode))
+                        {
+                            listCerts.Add(cert);
+                        }
                     }
                 }
 
-                // Gộp danh sách thành chuỗi cách nhau bởi dấu phẩy
-                string allCertCodes = string.Join(", ", certCodes);
-                string allCertImages = string.Join(", ", certImages); // Kết quả: "anh1.jpg, anh2.jpg"
-
-                string clinicName = textBox3.Text.Trim();
-                string clinicAddr = fullAddress;
-
-                // Gọi BUS với chuỗi ảnh đã gộp
+                // Gọi BUS: Truyền listCerts thay vì truyền các chuỗi gộp nhì nhằng
                 result = _loginBUS.RegisterDoctor(
                     newUser,
                     confirmPass,
-                    allCertCodes,
-                    allCertImages, // Truyền chuỗi đầy đủ xuống
-                    clinicAddr,
+                    province,
+                    district,
                     clinicName,
                     locationId,
-                    specialtyIds
+                    listCerts
                 );
             }
 

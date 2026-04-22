@@ -225,47 +225,94 @@ namespace BUS_Tier
         }
 
         // 3. Logic Đăng ký Bác sĩ
-        public string RegisterDoctor(UserDTO user, string confirmPass, string allCertCodes, string allCertImages,
-            string clinicAddr, string clinicName, int? locationId, List<int> specialtyIds)
+        //public string RegisterDoctor(UserDTO user, string confirmPass, string allCertCodes, string allCertImages,
+        //    string clinicAddr, string clinicName, int? locationId, List<int> specialtyIds)
+        //{
+        //    // Kiểm tra hợp lệ dữ liệu
+        //    string validateMsg = ValidateCommon(user);
+        //    if (validateMsg != "OK") return validateMsg;
+
+        //    if (user.Password != confirmPass) return "Mật khẩu xác nhận không khớp!";
+        //    if (string.IsNullOrWhiteSpace(clinicName)) return "Vui lòng nhập nơi công tác!";
+        //    if (specialtyIds == null || !specialtyIds.Any()) return "Vui lòng chọn ít nhất một chuyên khoa!";
+
+        //    try
+        //    {
+        //        // Bước 1: Lưu thông tin User cơ bản
+        //        int newUserId = _dal.RegisterUserBasic(user);
+
+        //        if (newUserId > 0)
+        //        {
+        //            // Bước 2: Lưu thông tin Doctor và các bản ghi DoctorSpecialtyDTO
+        //            bool isDetailSaved = _dal.InsertDoctorFull(
+        //                newUserId,
+        //                allCertCodes,
+        //                allCertImages,
+        //                clinicAddr,
+        //                clinicName,
+        //                "Chưa có giới thiệu", // Bio mặc định
+        //                locationId,
+        //                specialtyIds
+        //            );
+
+        //            if (isDetailSaved) return "Success";
+
+        //            // Rollback
+        //            _dal.DeleteUser(newUserId);
+        //            return "Lỗi lưu hồ sơ bác sĩ!";
+        //        }
+        //        return "Đăng ký tài khoản cơ bản thất bại!";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return "Lỗi hệ thống: " + ex.Message;
+        //    }
+        //}
+
+        public string RegisterDoctor(UserDTO user, string confirmPass, string province, string district,
+                                     string clinicName, int? locationId, List<DoctorSpecialtyDTO> listCerts)
         {
-            // Kiểm tra hợp lệ dữ liệu
+            // --- BƯỚC 1: Kiểm tra hợp lệ dữ liệu cơ bản ---
             string validateMsg = ValidateCommon(user);
             if (validateMsg != "OK") return validateMsg;
 
             if (user.Password != confirmPass) return "Mật khẩu xác nhận không khớp!";
-            if (string.IsNullOrWhiteSpace(clinicName)) return "Vui lòng nhập nơi công tác!";
-            if (specialtyIds == null || !specialtyIds.Any()) return "Vui lòng chọn ít nhất một chuyên khoa!";
+            if (string.IsNullOrWhiteSpace(clinicName)) return "Vui lòng nhập tên phòng khám/nơi công tác!";
+            if (listCerts == null || !listCerts.Any()) return "Bác sĩ phải có ít nhất một chứng chỉ chuyên khoa!";
+            if (string.IsNullOrWhiteSpace(province) || string.IsNullOrWhiteSpace(district)) return "Vui lòng chọn đầy đủ địa chỉ!";
+
+            // --- BƯỚC 2: Xử lý nghiệp vụ gộp địa chỉ ---
+            user.Residential_Address = $"{district}, {province}";
+            user.Created_At = DateTime.Now;
 
             try
             {
-                // Bước 1: Lưu thông tin User cơ bản
+                // Bước 1: Lưu User cơ bản
                 int newUserId = _dal.RegisterUserBasic(user);
 
                 if (newUserId > 0)
                 {
-                    // Bước 2: Lưu thông tin Doctor và các bản ghi DoctorSpecialtyDTO
+                    // Bước 2: Lưu Doctor và danh sách Specialty (DAL dùng Transaction)
+                    // Ở đây truyền listCerts kiểu List<DoctorSpecialtyDTO> đã đóng gói từ UI
                     bool isDetailSaved = _dal.InsertDoctorFull(
                         newUserId,
-                        allCertCodes,
-                        allCertImages,
-                        clinicAddr,
+                        user.Residential_Address,
                         clinicName,
-                        "Chưa có giới thiệu", // Bio mặc định
                         locationId,
-                        specialtyIds
+                        listCerts
                     );
 
                     if (isDetailSaved) return "Success";
 
-                    // Rollback
+                    // Nếu lỗi thì xóa User vừa tạo để đảm bảo sạch DB
                     _dal.DeleteUser(newUserId);
-                    return "Lỗi lưu hồ sơ bác sĩ!";
+                    return "Lỗi hệ thống khi lưu hồ sơ bác sĩ!";
                 }
                 return "Đăng ký tài khoản cơ bản thất bại!";
             }
             catch (Exception ex)
             {
-                return "Lỗi hệ thống: " + ex.Message;
+                return "Lỗi BUS: " + ex.Message;
             }
         }
 
