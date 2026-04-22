@@ -292,21 +292,6 @@ namespace DAL_Tier.Migrations
                     b.ToTable("Doctor_Specialty");
                 });
 
-            modelBuilder.Entity("DTO_Tier.DoctorSpecialtyDTO", b =>
-                {
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SpecialtyId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DoctorId", "SpecialtyId");
-
-                    b.HasIndex("SpecialtyId");
-
-                    b.ToTable("Doctor_Specialty");
-                });
-
             modelBuilder.Entity("DTO_Tier.LocationDTO", b =>
                 {
                     b.Property<int>("Id")
@@ -512,13 +497,12 @@ namespace DAL_Tier.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CCCD")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Created_At")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("Dob")
+                    b.Property<DateTime>("Dob")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FullName")
