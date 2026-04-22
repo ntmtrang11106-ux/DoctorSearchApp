@@ -91,9 +91,9 @@
             // 
             lblSymptoms.Font = new Font("Segoe UI", 11F);
             lblSymptoms.ImageAlign = ContentAlignment.MiddleLeft;
-            lblSymptoms.Location = new Point(851, 83);
+            lblSymptoms.Location = new Point(957, 80);
             lblSymptoms.Name = "lblSymptoms";
-            lblSymptoms.Size = new Size(886, 131);
+            lblSymptoms.Size = new Size(553, 131);
             lblSymptoms.TabIndex = 7;
             lblSymptoms.Text = "Đau ngực, khó thở";
             // 
@@ -116,7 +116,7 @@
             // 
             label2.Font = new Font("Segoe MDL2 Assets", 27F);
             label2.ForeColor = Color.DimGray;
-            label2.Location = new Point(753, 71);
+            label2.Location = new Point(859, 68);
             label2.Margin = new Padding(0);
             label2.Name = "label2";
             label2.Size = new Size(100, 100);
@@ -142,7 +142,7 @@
             btnAccept.FlatStyle = FlatStyle.Flat;
             btnAccept.Font = new Font("Segoe MDL2 Assets", 20F);
             btnAccept.ForeColor = Color.Green;
-            btnAccept.Location = new Point(0, 5);
+            btnAccept.Location = new Point(-62, 5);
             btnAccept.Margin = new Padding(0, 5, 70, 0);
             btnAccept.Name = "btnAccept";
             btnAccept.Size = new Size(80, 80);
@@ -156,11 +156,12 @@
             // flpAction
             // 
             flpAction.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            flpAction.Controls.Add(btnAccept);
-            flpAction.Controls.Add(btnCancel);
-            flpAction.Controls.Add(btnRemove);
-            flpAction.Controls.Add(btnBook);
             flpAction.Controls.Add(btnRate);
+            flpAction.Controls.Add(btnBook);
+            flpAction.Controls.Add(btnRemove);
+            flpAction.Controls.Add(btnCancel);
+            flpAction.Controls.Add(btnAccept);
+            flpAction.FlowDirection = FlowDirection.RightToLeft;
             flpAction.Location = new Point(1549, 75);
             flpAction.Name = "flpAction";
             flpAction.Size = new Size(688, 100);
@@ -175,7 +176,7 @@
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe MDL2 Assets", 20F);
             btnCancel.ForeColor = Color.DarkRed;
-            btnCancel.Location = new Point(150, 5);
+            btnCancel.Location = new Point(88, 5);
             btnCancel.Margin = new Padding(0, 5, 70, 0);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(80, 80);
@@ -194,7 +195,7 @@
             btnRemove.FlatStyle = FlatStyle.Flat;
             btnRemove.Font = new Font("Segoe MDL2 Assets", 18F);
             btnRemove.ForeColor = Color.Goldenrod;
-            btnRemove.Location = new Point(300, 5);
+            btnRemove.Location = new Point(238, 5);
             btnRemove.Margin = new Padding(0, 5, 70, 0);
             btnRemove.Name = "btnRemove";
             btnRemove.Size = new Size(80, 80);
@@ -212,7 +213,7 @@
             btnBook.FlatStyle = FlatStyle.Flat;
             btnBook.Font = new Font("Segoe MDL2 Assets", 18F);
             btnBook.ForeColor = Color.DodgerBlue;
-            btnBook.Location = new Point(450, 5);
+            btnBook.Location = new Point(388, 5);
             btnBook.Margin = new Padding(0, 5, 70, 0);
             btnBook.Name = "btnBook";
             btnBook.Size = new Size(80, 80);
@@ -230,7 +231,7 @@
             btnRate.FlatStyle = FlatStyle.Flat;
             btnRate.Font = new Font("Segoe MDL2 Assets", 18F);
             btnRate.ForeColor = Color.Goldenrod;
-            btnRate.Location = new Point(600, 5);
+            btnRate.Location = new Point(538, 5);
             btnRate.Margin = new Padding(0, 5, 70, 0);
             btnRate.Name = "btnRate";
             btnRate.Size = new Size(80, 80);

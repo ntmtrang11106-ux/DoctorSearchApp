@@ -83,8 +83,8 @@ namespace UI_Tier
 
             // --- QUAN TRỌNG: Cấm nút nếu không phải "Chờ duyệt" ---
             bool isPending = (data.Status == "Chờ duyệt");
-            btnAccept.Enabled = isPending;
-            btnCancel.Enabled = isPending;
+            btnAccept.Visible = isPending;
+            btnCancel.Visible = isPending;
 
             // 2. Xử lý màu sắc hiển thị
             if (data.Status == "Đã duyệt" || data.Status == "Hoàn thành")
@@ -198,8 +198,8 @@ namespace UI_Tier
                     btnStatus.ForeColor = Color.Green;
 
                     // Cấm bấm tiếp
-                    btnAccept.Enabled = false;
-                    btnCancel.Enabled = false;
+                    btnAccept.Visible = false;
+                    btnCancel.Visible = false;
 
                     MessageBox.Show("Thành công!");
                     RefreshData?.Invoke(); // Load lại toàn bộ list nếu cần
@@ -227,8 +227,8 @@ namespace UI_Tier
                     btnStatus.ForeColor = Color.Red;
 
                     // Cấm bấm tiếp
-                    btnAccept.Enabled = false;
-                    btnCancel.Enabled = false;
+                    btnAccept.Visible = false;
+                    btnCancel.Visible = false;
 
                     MessageBox.Show("Đã hủy lịch hẹn thành công!");
                     RefreshData?.Invoke();
