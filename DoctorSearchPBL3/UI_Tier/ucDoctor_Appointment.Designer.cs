@@ -88,6 +88,7 @@
             btnAddTimeSlot.TabIndex = 29;
             btnAddTimeSlot.Text = "+ Tạo lịch hẹn mới";
             btnAddTimeSlot.UseVisualStyleBackColor = false;
+            btnAddTimeSlot.Click += btnAddTimeSlot_Click;
             // 
             // label4
             // 
@@ -234,7 +235,7 @@
             btnDone.Name = "btnDone";
             btnDone.Size = new Size(255, 55);
             btnDone.TabIndex = 3;
-            btnDone.Text = "Hoàn thành";
+            btnDone.Text = "Thành công";
             btnDone.UseVisualStyleBackColor = true;
             // 
             // pnlAlert

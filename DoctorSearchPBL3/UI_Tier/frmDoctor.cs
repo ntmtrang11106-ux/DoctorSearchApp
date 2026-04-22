@@ -35,6 +35,7 @@ namespace UI_Tier
             }
         }
 
+
         /// <summary>
         /// Hàm dùng chung để thay đổi nội dung hiển thị trong panel chính (pnMain).
         /// Việc dùng hàm này giúp giải phóng bộ nhớ (Dispose) các Control cũ, tránh giật lag.
@@ -60,6 +61,47 @@ namespace UI_Tier
         private void frmDoctor_Load(object sender, EventArgs e)
         {
 
+        }
+
+        // Hàm này dùng để hiển thị hộp thoại (UserControl) dưới dạng Overlay (nền mờ phía sau)
+        public void ShowOverlay(UserControl ucDialog)
+        {
+            // Vô hiệu hóa các control phía sau (nếu cần)
+            foreach (Control ctrl in pnMain.Controls) { ctrl.Enabled=false; }
+
+            if (ucDialog is ucTimeSlotDialog dialog)
+            {
+                dialog.OnCloseModal += CloseModalLogic;
+            }
+
+            ucDialog.Name = "ucDialog";
+            // Căn giữa hộp thoại
+            ucDialog.Location = new Point(
+                (this.ClientSize.Width - ucDialog.Width) / 2,
+                (this.ClientSize.Height - ucDialog.Height) / 2
+            );
+            // Nếu muốn khi resize form hộp thoại vẫn ở giữa
+            ucDialog.Anchor = AnchorStyles.None;
+
+            // 3. Add vào Form
+            this.Controls.Add(ucDialog);
+            ucDialog.BringToFront(); // Đưa lên lớp trên cùng
+        }
+        private void CloseModalLogic(object sender, EventArgs e)
+        {
+            UserControl uc = sender as UserControl;
+            if (uc != null)
+            {
+                // Gỡ sự kiện để tránh rò rỉ bộ nhớ (Memory Leak)
+                if (uc is ucTimeSlotDialog ucApp) ucApp.OnCloseModal -= CloseModalLogic;
+
+                // Xóa UC khỏi Form
+                this.Controls.Remove(uc);
+                uc.Dispose(); // Hủy hẳn để giải phóng RAM
+
+                // Kích hoạt lại các control phía sau
+                foreach (Control ctrl in pnMain.Controls) { ctrl.Enabled = true; }
+            }
         }
     }
 }

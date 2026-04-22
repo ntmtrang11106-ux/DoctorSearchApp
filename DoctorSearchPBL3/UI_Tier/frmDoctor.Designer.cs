@@ -36,8 +36,8 @@
             // 
             // panel1
             // 
+            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             panel1.Controls.Add(btnLogout);
-            panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
             panel1.Size = new Size(2188, 115);
@@ -61,7 +61,7 @@
             // 
             // pnMain
             // 
-            pnMain.Dock = DockStyle.Fill;
+            pnMain.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             pnMain.Location = new Point(0, 115);
             pnMain.Name = "pnMain";
             pnMain.Size = new Size(2188, 862);

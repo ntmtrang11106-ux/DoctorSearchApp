@@ -19,6 +19,8 @@ namespace UI_Tier
 
             UIHelper.ApplyRoundedRegion(btnAddTimeSlot, 10);
         }
+
+        #region Xử lý phân trang (Pagination)
         // Khai báo một lần ở cấp độ class để tái sử dụng
         private AppointmentBUS _bus = new AppointmentBUS();
 
@@ -103,6 +105,23 @@ namespace UI_Tier
                 DisplayPage(_currentPage);
             }
         }
+        #endregion
 
+        #region Xử lý thêm khung giờ mới cho bác sĩ
+
+        private void btnAddTimeSlot_Click(object sender, EventArgs e)
+        {
+            // Khởi tạo UC hộp thoại của ông
+            var myDialog = new ucTimeSlotDialog();
+
+            // Tìm Form chính và gọi hàm hiện Overlay
+            var mainForm = this.FindForm() as frmDoctor; // Thay 'MainForm' bằng tên class Form của ông
+            if (mainForm != null)
+            {
+                mainForm.ShowOverlay(myDialog);
+            }
+        }
+
+        #endregion
     }
 }
