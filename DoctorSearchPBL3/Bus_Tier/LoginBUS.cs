@@ -13,114 +13,160 @@ namespace BUS_Tier
         // Khởi tạo DAL - MyDbContext phải được cấu hình trong DAL_Tier
         private readonly LoginDAL _dal = new LoginDAL(new AppDbContext());
 
-        // 1. Logic Đăng nhập
-        public string Login(string phone, string pass)
+        public string Login(string phone, string pass, out int userId, out string msg)
         {
-            if (string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(pass))
-                return "Vui lòng nhập đầy đủ số điện thoại và mật khẩu!";
+            // Khởi tạo giá trị mặc định
+            userId = 0;
+            msg = "";
 
-            // Trả về đối tượng UserDTO từ EF
+            if (string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(pass))
+            {
+                msg = "Vui lòng nhập đầy đủ số điện thoại và mật khẩu!";
+                return "";
+            }
+
             var user = _dal.CheckLogin(phone, pass);
 
             if (user != null)
             {
-                // Trả về Role (Admin, Doctor, Patient) để UI điều hướng
-                return user.Role;
+                userId = user.Id; // Trả ID về qua out
+                msg = "Đăng nhập thành công!";
+                return user.Role;     // Trả Role về để UI điều hướng
             }
 
-            return "Số điện thoại hoặc mật khẩu không chính xác!";
+            msg = "Số điện thoại hoặc mật khẩu không chính xác!";
+            return "";
         }
 
-        // 2. Logic Đăng ký Bệnh nhân
-        public string RegisterPatient(UserDTO user, string confirmPass, string bhyt)
+        public string RegisterPatient(UserDTO user, string confirmPass, string province, string district, string bhyt)
         {
+            // 1. Kiểm tra nghiệp vụ cơ bản và địa chỉ (Truyền thêm tỉnh/huyện)
+            string validateMsg = ValidateCommon(user, province, district);
+            if (validateMsg != "OK") return validateMsg;
+
+            // 2. Kiểm tra mật khẩu khớp
             if (user.Password != confirmPass)
                 return "Mật khẩu xác nhận không khớp!";
 
-            // Kiểm tra các ràng buộc chung (SĐT, CCCD...)
-            string validateMsg = ValidateCommon(user);
-            if (validateMsg != "OK") return validateMsg;
-
+            // 3. Kiểm tra mã BHYT (Đặc thù của Bệnh nhân)
             if (string.IsNullOrWhiteSpace(bhyt))
                 return "Vui lòng nhập mã số Bảo hiểm y tế!";
 
-            // Thực hiện lưu qua DAL
-            int newUserId = _dal.RegisterUserBasic(user);
-            if (newUserId > 0)
-            {
-                bool isDetailSaved = _dal.InsertPatientFull(newUserId, bhyt);
-                if (isDetailSaved) return "Success";
+            // Regex mẫu cho BHYT (ví dụ 15 ký tự - tùy theo yêu cầu đồ án của bạn)
+            if (!Regex.IsMatch(bhyt, @"^[A-Z]{2}\d{13}$"))
+                return "Mã số BHYT không đúng định dạng!";
 
-                // Nếu lưu bảng Patient lỗi thì xóa User vừa tạo (Rollback thủ công)
-                _dal.DeleteUser(newUserId);
-                return "Lỗi khi lưu thông tin chi tiết bệnh nhân!";
+            // 4. Chuẩn hóa dữ liệu trước khi lưu
+            user.Residential_Address = $"{district}, {province}";
+            user.Created_At = DateTime.Now;
+            user.Status = "Active"; // Bệnh nhân thường được kích hoạt ngay không cần duyệt
+
+            // 5. Gọi DAL để thực thi
+            try
+            {
+                int newUserId = _dal.RegisterUserBasic(user);
+                if (newUserId > 0)
+                {
+                    bool isDetailSaved = _dal.InsertPatientFull(newUserId, bhyt);
+                    if (isDetailSaved) return "Success";
+
+                    // Rollback thủ công
+                    _dal.DeleteUser(newUserId);
+                    return "Lỗi hệ thống khi lưu hồ sơ chi tiết bệnh nhân!";
+                }
+                return "Số điện thoại này có thể đã tồn tại!";
             }
-            return "Đăng ký tài khoản thất bại!";
+            catch (Exception ex)
+            {
+                return "Lỗi BUS (Hệ thống): " + ex.Message;
+            }
         }
 
-        // 3. Logic Đăng ký Bác sĩ
         public string RegisterDoctor(UserDTO user, string confirmPass, string province, string district,
-                             string clinicName, int? locationId, List<DoctorSpecialtyDTO> listCerts)
+         string clinicName, int? locationId, List<DoctorSpecialtyDTO> listCerts)
         {
-            // --- BƯỚC 1: Kiểm tra hợp lệ ---
-            string validateMsg = ValidateCommon(user);
+            // 1. Kiểm tra thông tin chung (SĐT, CCCD, Địa chỉ...)
+            string validateMsg = ValidateCommon(user, province, district);
             if (validateMsg != "OK") return validateMsg;
 
             if (user.Password != confirmPass) return "Mật khẩu xác nhận không khớp!";
             if (string.IsNullOrWhiteSpace(clinicName)) return "Vui lòng nhập tên phòng khám!";
 
-            // Lọc: Chỉ lấy những chứng chỉ có nhập mã (CertificateCode) hợp lệ
-            var validCerts = listCerts?.Where(c => !string.IsNullOrWhiteSpace(c.CertificateCode)).ToList();
+            // 2. Kiểm tra chi tiết từng chứng chỉ
+            if (listCerts == null || !listCerts.Any())
+                return "Bác sĩ phải có ít nhất một chứng chỉ chuyên khoa!";
 
-            if (validCerts == null || !validCerts.Any())
-                return "Bác sĩ phải có ít nhất một chứng chỉ chuyên khoa hợp lệ!";
+            foreach (var cert in listCerts)
+            {
+                if (cert.SpecialtyId <= 0)
+                    return "Vui lòng chọn chuyên khoa cho tất cả chứng chỉ!";
 
-            if (string.IsNullOrWhiteSpace(province) || string.IsNullOrWhiteSpace(district))
-                return "Vui lòng chọn đầy đủ địa chỉ!";
+                if (string.IsNullOrWhiteSpace(cert.CertificateCode))
+                    return "Vui lòng nhập đầy đủ mã chứng chỉ hành nghề!";
 
-            // --- BƯỚC 2: Xử lý nghiệp vụ ---
+                if (cert.Experience_Years < 0)
+                    return "Năm cấp chứng chỉ không hợp lệ (lớn hơn năm hiện tại)!";
+
+                if (string.IsNullOrWhiteSpace(cert.CertificateImage) || cert.CertificateImage == "default_cert.jpg")
+                    return "Vui lòng tải lên hình ảnh minh chứng cho tất cả chứng chỉ!";
+            }
+
+            // 3. Chuẩn hóa dữ liệu & Tính toán nghiệp vụ
             user.Residential_Address = $"{district}, {province}";
             user.Created_At = DateTime.Now;
+            user.Status = "Pending";
 
+            // Thực hiện cộng dồn thâm niên
+            int totalExp = listCerts.Sum(c => c.Experience_Years ?? 0);
+
+            // 4. Gọi DAL để lưu Database
             try
             {
-                // Bước 1: Lưu User cơ bản
                 int newUserId = _dal.RegisterUserBasic(user);
-
                 if (newUserId > 0)
                 {
-                    // Bước 2: Lưu Doctor (DAL sẽ tự tính Max Experience_Years để lưu vào ExperienceSummary)
+                    // QUAN TRỌNG: Truyền thêm totalExp vào hàm DAL
                     bool isDetailSaved = _dal.InsertDoctorFull(
                         newUserId,
                         user.Residential_Address,
                         clinicName,
                         locationId,
-                        validCerts // Dùng danh sách đã lọc sạch
+                        listCerts,
+                        totalExp // <--- Truyền tổng kinh nghiệm xuống đây
                     );
 
                     if (isDetailSaved) return "Success";
 
-                    // Xóa User nếu lưu hồ sơ chi tiết lỗi để tránh rác DB
+                    // Rollback thủ công nếu lỗi bước 2
                     _dal.DeleteUser(newUserId);
-                    return "Lỗi hệ thống khi lưu hồ sơ bác sĩ!";
+                    return "Lỗi hệ thống khi lưu hồ sơ chi tiết bác sĩ!";
                 }
-                return "Đăng ký tài khoản thất bại (Số điện thoại có thể đã tồn tại)!";
+                return "Số điện thoại này đã tồn tại trong hệ thống!";
             }
             catch (Exception ex)
             {
-                return "Lỗi BUS: " + ex.Message;
+                return "Lỗi hệ thống (BUS): " + ex.Message;
             }
         }
 
         // 4. Hàm kiểm tra hợp lệ chung (Dùng chung cho cả Doctor và Patient)
-        private string ValidateCommon(UserDTO user)
+        private string ValidateCommon(UserDTO user, string province, string district)
         {
-            int age = DateTime.Now.Year - user.Dob.Year;
+            //int age = DateTime.Now.Year - user.Dob.Year;
+            int age = CalculateAge(user.Dob);
+
             if (user.Dob.Date > DateTime.Now.AddYears(-age)) age--;
 
             if (string.IsNullOrWhiteSpace(user.PhoneNumber) || string.IsNullOrWhiteSpace(user.FullName) ||
                 string.IsNullOrWhiteSpace(user.Password) )
                 return "Vui lòng điền đầy đủ các thông tin bắt buộc!";
+
+            // 3. KIỂM TRA TỈNH/HUYỆN (Phần bạn vừa nhắc)
+            if (string.IsNullOrWhiteSpace(province) || province == "--Chọn Tỉnh/Thành phố--" ||
+                string.IsNullOrWhiteSpace(district) || district == "--Chọn Quận/Huyện--")
+            {
+                return "Vui lòng chọn đầy đủ Tỉnh/Thành phố và Quận/Huyện!";
+            }
 
             // Regex kiểm tra SĐT 10 số
             if (!Regex.IsMatch(user.PhoneNumber, @"^\d{10}$"))
@@ -150,6 +196,21 @@ namespace BUS_Tier
                 return "Số điện thoại này đã được đăng ký!";
 
             return "OK";
+        }
+
+        public int CalculateAge(DateTime birthDate)
+        {
+            DateTime today = DateTime.Today;
+            int age = today.Year - birthDate.Year;
+            if (birthDate.Date > today.AddYears(-age)) age--;
+            return age;
+        }
+        // Trong LoginBUS.cs
+        public int CalculateExperience(int issuedYear)
+        {
+            int currentYear = DateTime.Now.Year; // Lấy năm hiện tại từ hệ thống, không fix cứng 2026
+            if (issuedYear > currentYear || issuedYear <= 0) return 0;
+            return currentYear - issuedYear;
         }
     }
 }

@@ -60,35 +60,77 @@ namespace UI_Tier
             this.Show();
         }
 
+        //private void btnLogin_Click(object sender, EventArgs e)
+        //{
+        //    string phone = txtUsername.Text.Trim();
+        //    string pass = txtPassword.Text.Trim();
+
+        //    // 1. Gọi hàm Login. 
+        //    string result = _loginBUS.Login(phone, pass);
+
+        //    if (result == "Patient")
+        //    {              
+        //        this.Hide();
+        //        frmPatient f = new frmPatient();
+        //        f.ShowDialog();
+        //        this.Close();
+        //    }
+        //    else if (result == "Doctor")
+        //    {
+        //        this.Hide();
+        //        frmDoctor f = new frmDoctor();
+        //        f.ShowDialog();
+        //        this.Close();
+        //    }
+        //    else if (result == "Admin")
+        //    {
+        //        MessageBox.Show("Tài khoản Admin: Hiện tại chưa có Form giao diện.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show(result, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
+
         private void btnLogin_Click(object sender, EventArgs e)
         {
             string phone = txtUsername.Text.Trim();
             string pass = txtPassword.Text.Trim();
 
-            // 1. Gọi hàm Login. 
-            string result = _loginBUS.Login(phone, pass);
+            // Khai báo biến để hứng dữ liệu từ BUS trả về
+            int loggedInId;
+            string message;
 
-            if (result == "Patient")
-            {              
-                this.Hide();
-                frmPatient f = new frmPatient();
-                f.ShowDialog();
-                this.Close();
-            }
-            else if (result == "Doctor")
+            // Gọi hàm BUS
+            string role = _loginBUS.Login(phone, pass, out loggedInId, out message);
+
+            if (!string.IsNullOrEmpty(role))
             {
-                this.Hide();
-                frmDoctor f = new frmDoctor();
-                f.ShowDialog();
-                this.Close();
-            }
-            else if (result == "Admin")
-            {
-                MessageBox.Show("Tài khoản Admin: Hiện tại chưa có Form giao diện.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                // Nếu đăng nhập thành công
+                if (role == "Doctor")
+                {
+                    this.Hide();
+                    frmDoctor f = new frmDoctor();
+
+                    // LƯU ID VÀO TAG CỦA FORM ĐỂ DÙNG CHO CÁC NHIỆM VỤ SAU
+                    f.Tag = loggedInId;
+
+                    f.ShowDialog();
+                    this.Close();
+                }
+                else if (role == "Patient")
+                {
+                    this.Hide();
+                    frmPatient f = new frmPatient();
+                    f.Tag = loggedInId;
+                    f.ShowDialog();
+                    this.Close();
+                }
             }
             else
             {
-                MessageBox.Show(result, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Nếu thất bại, hiển thị thông báo lỗi mà BUS đã xử lý
+                MessageBox.Show(message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BUS_Tier;
+using DTO_Tier;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,9 +12,15 @@ namespace UI_Tier
 {
     public partial class ucTimeSlotDialog : UserControl
     {
+        // Khởi tạo tầng BUS để xử lý nghiệp vụ
+        private readonly TimeSlotBUS _timeSlotBus = new TimeSlotBUS();
+        // Biến cục bộ để lưu ID bác sĩ được truyền vào
+        private int _currentDoctorId;
+
         public ucTimeSlotDialog()
         {
             InitializeComponent();
+            //this._currentDoctorId = doctorId; // Lưu ID vào đây để dùng cho nút Confirm
         }
 
         private Color _activeBack = Color.FromArgb(206, 225, 255); // Màu xanh nhạt
@@ -89,6 +97,88 @@ namespace UI_Tier
 
             // Sau khi lưu xong, cũng bắn tín hiệu để đóng
             OnCloseModal?.Invoke(this, EventArgs.Empty);
+
+            // --- 1. LẤY ID BÁC SĨ ĐỘNG (NGHIỆP VỤ UI) ---
+            // Bây giờ biến _currentDoctorId đã tồn tại và có giá trị
+            int doctorIdToSave = this._currentDoctorId;
+
+            // --- 2. KIỂM TRA HÌNH THỨC (VALIDATION) ---
+            // Kiểm tra giờ bắt đầu và kết thúc
+            TimeSpan startTime = dateTimePicker1.Value.TimeOfDay;
+            TimeSpan endTime = dateTimePicker2.Value.TimeOfDay;
+
+            if (startTime >= endTime)
+            {
+                MessageBox.Show("Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc!", "Thông báo");
+                return;
+            }
+
+            bool isSuccess = false;
+
+            // --- 3. ĐIỀU HƯỚNG NGHIỆP VỤ SANG TẦNG BUS ---
+            if (cbRepeat.Checked)
+            {
+                // Nghiệp vụ UI: Thu thập các thứ (T2, T3...) được chọn từ flowLayoutPanel
+                List<string> selectedDays = new List<string>();
+                foreach (Control ctrl in flpDay.Controls)
+                {
+                    if (ctrl is CheckBox chk && chk.Checked)
+                    {
+                        selectedDays.Add(chk.Text);
+                    }
+                }
+
+                if (selectedDays.Count == 0)
+                {
+                    MessageBox.Show("Vui lòng chọn ít nhất một thứ để lặp lại!");
+                    return;
+                }
+
+                // Lấy khoảng ngày lặp lại từ 2 cái DateTimePicker trong pnlRepeat
+                DateTime startDate = dateTimePicker1.Value.Date;
+                DateTime endDate = dateTimePicker2.Value.Date;
+
+                if (startDate > endDate)
+                {
+                    MessageBox.Show("Ngày bắt đầu lặp lại không được lớn hơn ngày kết thúc!");
+                    return;
+                }
+
+                // BƯỚC 3: Truyền doctorIdToSave vào hàm BUS
+                isSuccess = _timeSlotBus.CreateBulkTimeSlots(
+                    doctorIdToSave,
+                    selectedDays,
+                    dateTimePicker1.Value.Date,
+                    dateTimePicker2.Value.Date,
+                    startTime,
+                    endTime
+                );
+            }
+            else
+            {
+                TimeSlotsDTO singleSlot = new TimeSlotsDTO
+                {
+                    DoctorId = doctorIdToSave,
+                    Date = dtpDOB.Value.Date,
+                    StartTime = startTime,
+                    EndTime = endTime,
+                    Status = "Trống"
+                };
+                isSuccess = _timeSlotBus.CreateSingleTimeSlot(singleSlot);
+            }
+
+            // --- 4. PHẢN HỒI VÀ KẾT THÚC ---
+            if (isSuccess)
+            {
+                MessageBox.Show("Đã tạo khung giờ khám thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Sau khi lưu thành công mới bắn tín hiệu để Form cha đóng Overlay và Refresh data
+                OnCloseModal?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                MessageBox.Show("Tạo thất bại. Khung giờ này có thể đã tồn tại hoặc bị trùng lịch bác sĩ!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void cbRepeat_CheckedChanged(object sender, EventArgs e)

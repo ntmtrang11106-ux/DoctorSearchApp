@@ -86,26 +86,18 @@ namespace DAL_Tier
             }
         }
 
-        // 5. Chèn Doctor Full (Có Transaction)
         public bool InsertDoctorFull(int userId, string clinicAddr, string clinicName,
-                    int? locationId, List<DoctorSpecialtyDTO> listCerts)
+            int? locationId, List<DoctorSpecialtyDTO> listCerts, int totalExp) // Thêm tham số totalExp
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
-                    // NGHIỆP VỤ: Lấy thâm niên cao nhất để gán vào bảng Doctor phục vụ Sort
-                    int maxExp = 0;
-                    if (listCerts != null && listCerts.Any())
-                    {
-                        // Sử dụng DoctorSpecialtyDTO
-                        maxExp = listCerts.Max(c => c.Experience_Years ?? 0);
-                    }
-
-                    // 1. Sử dụng DoctorDTO từ file DoctorDTO.cs
+                    // 1. Tạo đối tượng Doctor và gán tổng thâm niên từ BUS truyền xuống
                     var doctor = new DoctorDTO
                     {
                         UserId = userId,
+                        // Kiểm tra null/trống ngay tại đây để tránh lỗi DB
                         ClinicAddress = string.IsNullOrWhiteSpace(clinicAddr) ? "Chưa cập nhật" : clinicAddr,
                         ClinicName = string.IsNullOrWhiteSpace(clinicName) ? "Phòng khám tư nhân" : clinicName,
                         Bio = "Chưa có thông tin",
@@ -113,21 +105,22 @@ namespace DAL_Tier
                         WorkingTime = "Chưa cập nhật",
                         LocationId = locationId,
                         IsApproved = false,
-                        ExperienceSummary = maxExp // Lưu thâm niên tổng quát
+                        // Sử dụng giá trị tổng (Sum) đã tính ở tầng BUS
+                        ExperienceSummary = totalExp
                     };
 
                     _context.Doctors.Add(doctor);
-                    _context.SaveChanges();
+                    _context.SaveChanges(); // Lưu để lấy doctor.Id
 
-                    // 2. Lưu danh sách vào bảng Doctor_Specialty
+                    // 2. Lưu danh sách chứng chỉ chi tiết vào bảng Doctor_Specialty
                     if (listCerts != null && listCerts.Any())
                     {
                         foreach (var certDto in listCerts)
                         {
-                            // Sử dụng DoctorSpecialtyDTO khớp với file bạn đã upload
-                            certDto.DoctorId = doctor.Id; // Gán ID bác sĩ vừa tạo
+                            // Chuyển đổi DTO sang Entity nếu cần (hoặc dùng trực tiếp nếu đã khớp)
+                            // Gán Id của Doctor vừa tạo cho từng chứng chỉ
+                            certDto.DoctorId = doctor.Id;
 
-                            // Đảm bảo Experience_Years được gán đúng từ DTO xuống DB
                             _context.DoctorSpecialties.Add(certDto);
                         }
                         _context.SaveChanges();
@@ -138,7 +131,9 @@ namespace DAL_Tier
                 }
                 catch (Exception ex)
                 {
+                    // Nếu có bất kỳ lỗi nào, hoàn tác toàn bộ (không tạo User lửng lơ)
                     transaction.Rollback();
+                    // Bạn có thể log lỗi ex tại đây nếu cần
                     return false;
                 }
             }

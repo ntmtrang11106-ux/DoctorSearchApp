@@ -49,17 +49,14 @@ namespace UI_Tier
         {
             return label24.Text; // Trả về tên file đã chọn hoặc "default.jpg"
         }
-
         public int GetExperienceYears()
         {
             string val = comboBox4.Text;
-            string itemVal = comboBox4.SelectedItem?.ToString() ?? "NULL";
-
             if (int.TryParse(val, out int year))
             {
-                return 2026 - year;
+                return year;
             }
-            return 0;
+            return 0; // Hoặc trả về năm hiện tại tùy logic của bạn
         }
 
         #endregion
