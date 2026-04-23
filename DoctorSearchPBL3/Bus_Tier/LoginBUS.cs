@@ -10,32 +10,57 @@ namespace BUS_Tier
 {
     public class LoginBUS
     {
-        // Khởi tạo DAL - MyDbContext phải được cấu hình trong DAL_Tier
-        private readonly LoginDAL _dal = new LoginDAL(new AppDbContext());
+        // Khởi tạo các tầng DAL cần thiết
+        private readonly LoginDAL _dal = new LoginDAL();
+        private readonly DoctorDAL _doctorDAL = new DoctorDAL();
+        private readonly PatientDAL _patientDAL = new PatientDAL();
 
-        public string Login(string phone, string pass, out int userId, out string msg)
+        public string Login(string phone, string pass, out int actorId, out string message)
         {
-            // Khởi tạo giá trị mặc định
-            userId = 0;
-            msg = "";
+            actorId = 0;
 
-            if (string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(pass))
-            {
-                msg = "Vui lòng nhập đầy đủ số điện thoại và mật khẩu!";
-                return "";
-            }
-
+            // 1. Kiểm tra tài khoản trong bảng Users (Sử dụng LoginDAL của nhóm)
+            // Giả sử hàm CheckLogin trả về đối tượng UserDTO hoặc User model
             var user = _dal.CheckLogin(phone, pass);
 
-            if (user != null)
+            if (user == null)
             {
-                userId = user.Id; // Trả ID về qua out
-                msg = "Đăng nhập thành công!";
-                return user.Role;     // Trả Role về để UI điều hướng
+                message = "Số điện thoại hoặc mật khẩu không đúng!";
+                return null;
             }
 
-            msg = "Số điện thoại hoặc mật khẩu không chính xác!";
-            return "";
+            // 2. Nếu login đúng, thực hiện ÁNH XẠ (Mapping) ID ngay lập tức
+            if (user.Role == "Doctor")
+            {
+                // Tìm DoctorId thực tế (Số 1) dựa trên UserId (Số 2)
+                actorId = _doctorDAL.GetDoctorIdByUserId(user.Id);
+
+                if (actorId <= 0)
+                {
+                    message = "Lỗi: Tài khoản bác sĩ chưa được tạo hồ sơ chuyên môn!";
+                    return null;
+                }
+
+                message = "Đăng nhập bác sĩ thành công!";
+                return "Doctor";
+            }
+            else if (user.Role == "Patient")
+            {
+                // Tìm PatientId thực tế dựa trên UserId
+                actorId = _patientDAL.GetPatientIdByUserId(user.Id);
+
+                if (actorId <= 0)
+                {
+                    message = "Lỗi: Tài khoản bệnh nhân chưa được kích hoạt hồ sơ!";
+                    return null;
+                }
+
+                message = "Đăng nhập bệnh nhân thành công!";
+                return "Patient";
+            }
+
+            message = "Tài khoản không có quyền truy cập hệ thống!";
+            return null;
         }
 
         public string RegisterPatient(UserDTO user, string confirmPass, string province, string district, string bhyt)

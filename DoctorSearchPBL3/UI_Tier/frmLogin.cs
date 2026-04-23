@@ -16,6 +16,9 @@ namespace UI_Tier
         // === BƯỚC 1: KHAI BÁO BIẾN Ở ĐÂY ĐỂ HẾT LỖI ===
         private LoginBUS _loginBUS = new LoginBUS();
 
+        // === QUAN TRỌNG: THÊM DÒNG NÀY ĐỂ LƯU ID TOÀN CỤC ===
+        public static int LoggedInUserId;
+
         public frmLogin()
         {
             InitializeComponent();
@@ -97,24 +100,25 @@ namespace UI_Tier
             string phone = txtUsername.Text.Trim();
             string pass = txtPassword.Text.Trim();
 
-            // Khai báo biến để hứng dữ liệu từ BUS trả về
-            int loggedInId;
+            // idFromDB lúc này sẽ nhận DoctorId hoặc PatientId từ tầng BUS
+            int idFromDB;
             string message;
 
-            // Gọi hàm BUS
-            string role = _loginBUS.Login(phone, pass, out loggedInId, out message);
+            // Gọi BUS thực hiện đăng nhập và ánh xạ ID
+            string role = _loginBUS.Login(phone, pass, out idFromDB, out message);
 
             if (!string.IsNullOrEmpty(role))
             {
-                // Nếu đăng nhập thành công
+                // 2. SỬ DỤNG TIỆN ÍCH MỚI: Lưu ID và Role vào kho dùng chung
+                // Thay vì dùng frmLogin.LoggedInUserId = idFromDB;
+                GlobalAccount.SetLoggedInAccount(idFromDB, role);
+
                 if (role == "Doctor")
                 {
                     this.Hide();
                     frmDoctor f = new frmDoctor();
-
-                    // LƯU ID VÀO TAG CỦA FORM ĐỂ DÙNG CHO CÁC NHIỆM VỤ SAU
-                    f.Tag = loggedInId;
-
+                    // Lưu vào Tag để dự phòng, nhưng dùng biến static sẽ tiện hơn cho Nhân
+                    f.Tag = idFromDB;
                     f.ShowDialog();
                     this.Close();
                 }
@@ -122,14 +126,14 @@ namespace UI_Tier
                 {
                     this.Hide();
                     frmPatient f = new frmPatient();
-                    f.Tag = loggedInId;
+                    f.Tag = idFromDB;
                     f.ShowDialog();
                     this.Close();
                 }
             }
             else
             {
-                // Nếu thất bại, hiển thị thông báo lỗi mà BUS đã xử lý
+                // Hiển thị lỗi nếu sai mật khẩu hoặc không tìm thấy hồ sơ bác sĩ/bệnh nhân
                 MessageBox.Show(message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
