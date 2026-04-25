@@ -100,6 +100,60 @@ namespace DAL_Tier
                 .HasForeignKey(r => r.DoctorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<ConversationDTO>()
+                .HasOne(c => c.Patient)
+                .WithMany()
+                .HasForeignKey(c => c.PatientID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ConversationDTO>()
+                .HasOne(c => c.Doctor)
+                .WithMany()
+                .HasForeignKey(c => c.DoctorID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MessagesDTO>()
+                .HasOne(m => m.Conversation)
+                .WithMany()
+                .HasForeignKey(m => m.ConversationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MessagesDTO>()
+                .HasOne(m => m.Sender)
+                .WithMany()
+                .HasForeignKey(m => m.SenderID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<CallLogsDTO>()
+                .HasOne(c => c.Caller)
+                .WithMany()
+                .HasForeignKey(c => c.CallerID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<CallLogsDTO>()
+                .HasOne(c => c.Receiver)
+                .WithMany()
+                .HasForeignKey(c => c.ReceiverID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MedicalRecordsDTO>()
+                .HasOne(m => m.Patient)
+                .WithMany()
+                .HasForeignKey(m => m.PatientId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MedicalRecordsDTO>()
+                .HasOne(m => m.Doctor)
+                .WithMany()
+                .HasForeignKey(m => m.DoctorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MedicalRecordsDTO>()
+                .HasOne(m => m.Appointment)
+                .WithMany()
+                .HasForeignKey(m => m.AppointmentID)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<UserDTO>().Property(u => u.Status).HasDefaultValue("Active");
             modelBuilder.Entity<TimeSlotsDTO>().Property(t => t.Status).HasDefaultValue("Open");
             modelBuilder.Entity<AppointmentsDTO>().Property(a => a.Status).HasDefaultValue("Pending");

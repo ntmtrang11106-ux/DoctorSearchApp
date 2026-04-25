@@ -10,8 +10,10 @@ namespace DAL_Tier
             if (force)
             {
                 context.Database.EnsureDeleted();
-                context.Database.Migrate();
             }
+
+            // Always align schema before seeding so refactor changes are applied.
+            context.Database.Migrate();
 
             if (!context.Departments.Any())
             {
