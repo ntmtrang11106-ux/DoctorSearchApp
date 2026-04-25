@@ -1,39 +1,39 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DTO_Tier
 {
-    
-    [Table("Reviews")] // [cite: 48]
+    [Table("Reviews")]
     public class ReviewsDTO
     {
         [Key]
-        public int Id { get; set; } // 
+        public int Id { get; set; }
 
         [Required]
-        public int AppointmentId { get; set; } // Liên kết tới 1 lần khám 
+        public int PatientId { get; set; }
 
-        public int PatientID { get; set; } // Người thực hiện đánh giá 
-
-        public int DoctorID { get; set; } // Bác sĩ nhận đánh giá 
+        [Required]
+        public int DoctorId { get; set; }
 
         [Range(1, 5)]
-        public int Rating { get; set; } // Số sao (1-5) 
+        public int Rating { get; set; }
 
-        public string Comment { get; set; } // Nhận xét 
+        public string? Comment { get; set; }
 
-        public bool IsVisible { get; set; } = true; // 
+        public bool IsVisible { get; set; } = true;
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now; // 
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        // --- Liên kết Navigation ---
-        [ForeignKey("AppointmentId")]
-        public virtual AppointmentsDTO Appointment { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
-        [ForeignKey("PatientID")]
-        public virtual PatientDTO Patient { get; set; }
+        public bool IsDeleted { get; set; }
 
-        [ForeignKey("DoctorID")]
-        public virtual DoctorDTO Doctor { get; set; }
+        public DateTime? DeletedAt { get; set; }
+
+        [ForeignKey(nameof(PatientId))]
+        public virtual PatientDTO? Patient { get; set; }
+
+        [ForeignKey(nameof(DoctorId))]
+        public virtual DoctorDTO? Doctor { get; set; }
     }
 }

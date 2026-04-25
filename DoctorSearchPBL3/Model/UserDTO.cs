@@ -1,41 +1,53 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DTO_Tier
 {
-   
-    [Table("User")] // Tên bảng theo source [cite: 20]
+    [Table("User")]
     public class UserDTO
     {
         [Key]
-        public int Id { get; set; } // 
+        public int Id { get; set; }
 
         [Required]
-        public string Role { get; set; } // 
+        [StringLength(20)]
+        public string Role { get; set; } = null!;
 
         [Required]
         [StringLength(15)]
-        public string PhoneNumber { get; set; } // 
+        public string PhoneNumber { get; set; } = null!;
 
         [Required]
         [StringLength(100)]
-        public string FullName { get; set; } // 
+        public string FullName { get; set; } = null!;
 
         [Required]
         [StringLength(255)]
-        public string Password { get; set; } // 
+        public string Password { get; set; } = null!;
 
-        [Required]
-        public DateTime Dob { get; set; } // 
-        public string Gender { get; set; } // 
-        public string? CCCD { get; set; } // 
+        public DateTime? Dob { get; set; }
+
+        [StringLength(20)]
+        public string? Gender { get; set; }
+
+        [StringLength(20)]
+        public string? CCCD { get; set; }
 
         [StringLength(255)]
-        public string Residential_Address { get; set; } // 
+        public string? Residential_Address { get; set; }
 
-        public string Picture { get; set; } // 
-        public string Status { get; set; } // 
+        [StringLength(255)]
+        public string? Picture { get; set; }
 
-        public DateTime Created_At { get; set; } = DateTime.Now; // 
+        [StringLength(20)]
+        public string Status { get; set; } = "Active";
+
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        public DateTime? UpdatedAt { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public DateTime? DeletedAt { get; set; }
     }
 }

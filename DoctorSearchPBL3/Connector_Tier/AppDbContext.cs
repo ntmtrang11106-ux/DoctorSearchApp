@@ -1,4 +1,4 @@
-﻿using DTO_Tier;
+using DTO_Tier;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL_Tier
@@ -9,17 +9,15 @@ namespace DAL_Tier
         public DbSet<PatientDTO> Patients { get; set; }
         public DbSet<DoctorDTO> Doctors { get; set; }
         public DbSet<AdminDTO> Admins { get; set; }
-        public DbSet<LocationDTO> Locations { get; set; }
-        public DbSet<SpecialtyDTO> Specialties { get; set; }
-        public DbSet<DoctorSpecialtyDTO> DoctorSpecialties { get; set; }
-        public DbSet<ArticleSpecialtyDTO> ArticleSpecialties { get; set; }
+        public DbSet<DepartmentDTO> Departments { get; set; }
+        public DbSet<RoomDTO> Rooms { get; set; }
         public DbSet<TimeSlotsDTO> TimeSlots { get; set; }
         public DbSet<AppointmentsDTO> Appointments { get; set; }
         public DbSet<ConversationDTO> Conversations { get; set; }
         public DbSet<MessagesDTO> Messages { get; set; }
         public DbSet<CallLogsDTO> CallLogs { get; set; }
         public DbSet<MedicalRecordsDTO> MedicalRecords { get; set; }
-        public DbSet<ArticlesDTO> Articles { get; set; }
+        public DbSet<ContentDTO> Contents { get; set; }
         public DbSet<ReviewsDTO> Reviews { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -34,64 +32,82 @@ namespace DAL_Tier
         {
             base.OnModelCreating(modelBuilder);
 
-            // 1. Ràng buộc UNIQUE
             modelBuilder.Entity<UserDTO>().HasIndex(u => u.PhoneNumber).IsUnique();
-            // Chứng chỉ đã được di chuyển sang DoctorSpecialtyDTO, không còn index UNIQUE ở DoctorDTO
+            modelBuilder.Entity<DepartmentDTO>().HasIndex(d => d.DepartmentName).IsUnique();
+            modelBuilder.Entity<RoomDTO>().HasIndex(r => r.RoomCode).IsUnique();
 
-            // 2. Thiết lập quan hệ 1-1 MỘT CHIỀU
             modelBuilder.Entity<DoctorDTO>().HasOne(d => d.User).WithOne().HasForeignKey<DoctorDTO>(d => d.UserId);
             modelBuilder.Entity<PatientDTO>().HasOne(p => p.User).WithOne().HasForeignKey<PatientDTO>(p => p.UserId);
             modelBuilder.Entity<AdminDTO>().HasOne(a => a.User).WithOne().HasForeignKey<AdminDTO>(a => a.UserId);
-            // --- 2. CẤU HÌNH QUAN HỆ NHIỀU-NHIỀU (BÁC SĨ - CHUYÊN KHOA) ---
-            // Thiết lập khóa chính cho bảng DoctorSpecialtyDTO
-            modelBuilder.Entity<DoctorSpecialtyDTO>()
-                .HasKey(ds => ds.Id);
 
-            // Đồng thời đảm bảo một Doctor không duplicate cùng một Specialty
-            modelBuilder.Entity<DoctorSpecialtyDTO>()
-                .HasIndex(ds => new { ds.DoctorId, ds.SpecialtyId }).IsUnique();
+            modelBuilder.Entity<DoctorDTO>()
+                .HasOne(d => d.Department)
+                .WithMany()
+                .HasForeignKey(d => d.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<DoctorSpecialtyDTO>()
-                .HasOne(ds => ds.Doctor)
-                .WithMany(d => d.DoctorSpecialties)
-                .HasForeignKey(ds => ds.DoctorId);
+            modelBuilder.Entity<TimeSlotsDTO>()
+                .HasOne(t => t.Doctor)
+                .WithMany(d => d.TimeSlots)
+                .HasForeignKey(t => t.DoctorId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<DoctorSpecialtyDTO>()
-                .HasOne(ds => ds.Specialty)
-                .WithMany() // Một chuyên khoa có nhiều bác sĩ
-                .HasForeignKey(ds => ds.SpecialtyId);
+            modelBuilder.Entity<TimeSlotsDTO>()
+                .HasOne(t => t.Room)
+                .WithMany(r => r.TimeSlots)
+                .HasForeignKey(t => t.RoomId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // --- 3. CẤU HÌNH QUAN HỆ NHIỀU-NHIỀU (BÀI VIẾT - CHUYÊN KHOA) ---
-            modelBuilder.Entity<ArticleSpecialtyDTO>()
-                .HasKey(aspec => new { aspec.ArticleId, aspec.SpecialtyId });
+            modelBuilder.Entity<AppointmentsDTO>()
+                .HasOne(a => a.Patient)
+                .WithMany()
+                .HasForeignKey(a => a.PatientId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ArticleSpecialtyDTO>()
-                .HasOne(aspec => aspec.Article)
-                .WithMany(a => a.ArticleSpecialties)
-                .HasForeignKey(aspec => aspec.ArticleId);
+            modelBuilder.Entity<AppointmentsDTO>()
+                .HasOne(a => a.Doctor)
+                .WithMany(d => d.Appointments)
+                .HasForeignKey(a => a.DoctorId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ArticleSpecialtyDTO>()
-                .HasOne(aspec => aspec.Specialty)
-                .WithMany() // Một chuyên khoa có nhiều bài viết
-                .HasForeignKey(aspec => aspec.SpecialtyId);
+            modelBuilder.Entity<AppointmentsDTO>()
+                .HasOne(a => a.TimeSlot)
+                .WithMany(t => t.Appointments)
+                .HasForeignKey(a => a.TimeSlotId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // 3. GIẢI PHÁP TỔNG LỰC: Chặn Cascade Delete cho TOÀN BỘ Database
-            // Đoạn code này sẽ tự động cấu hình cho tất cả 14 bảng, dứt điểm lỗi Multiple Cascade Paths
-            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
-            {
-                relationship.DeleteBehavior = DeleteBehavior.Restrict;
-            }
+            modelBuilder.Entity<ContentDTO>()
+                .HasOne(c => c.Department)
+                .WithMany()
+                .HasForeignKey(c => c.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // 4. Giá trị mặc định
-            modelBuilder.Entity<TimeSlotsDTO>().Property(t => t.Status).HasDefaultValue("Trống");
-            modelBuilder.Entity<AppointmentsDTO>().Property(a => a.Status).HasDefaultValue("Chờ duyệt");
+            modelBuilder.Entity<ContentDTO>()
+                .HasOne(c => c.AuthorAdmin)
+                .WithMany()
+                .HasForeignKey(c => c.AuthorAdminId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Indexes to speed up location-based filtering
-            modelBuilder.Entity<LocationDTO>().HasIndex(l => l.Province);
-            modelBuilder.Entity<LocationDTO>().HasIndex(l => new { l.Province, l.LocationName });
+            modelBuilder.Entity<ReviewsDTO>()
+                .HasOne(r => r.Patient)
+                .WithMany()
+                .HasForeignKey(r => r.PatientId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Index to speed up sorting by experience summary on doctors
-            modelBuilder.Entity<DoctorDTO>().HasIndex(d => d.ExperienceSummary);
+            modelBuilder.Entity<ReviewsDTO>()
+                .HasOne(r => r.Doctor)
+                .WithMany(d => d.Reviews)
+                .HasForeignKey(r => r.DoctorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserDTO>().Property(u => u.Status).HasDefaultValue("Active");
+            modelBuilder.Entity<TimeSlotsDTO>().Property(t => t.Status).HasDefaultValue("Open");
+            modelBuilder.Entity<AppointmentsDTO>().Property(a => a.Status).HasDefaultValue("Pending");
+            modelBuilder.Entity<ContentDTO>().Property(c => c.Status).HasDefaultValue("Draft");
+
+            modelBuilder.Entity<DoctorDTO>().HasIndex(d => d.DepartmentId);
+            modelBuilder.Entity<TimeSlotsDTO>().HasIndex(t => new { t.WorkDate, t.DoctorId, t.RoomId });
+            modelBuilder.Entity<ContentDTO>().HasIndex(c => new { c.ContentType, c.Status, c.DepartmentId });
         }
     }
 }

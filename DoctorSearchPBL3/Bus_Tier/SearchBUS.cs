@@ -1,7 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
 using DAL_Tier;
 using DTO_Tier;
 
@@ -9,25 +5,20 @@ namespace BUS_Tier
 {
     public class SearchBUS
     {
-        private DoctorDAL _doctorDAL = new DoctorDAL();
-        private ArticleDAL _articleDAL = new ArticleDAL();
+        private readonly DoctorDAL _doctorDAL = new DoctorDAL();
+        private readonly ArticleDAL _articleDAL = new ArticleDAL();
 
-        // Một hàm trả về cả 2 danh sách để Form hiển thị
-        public (List<DoctorDTO> doctors, List<ArticlesDTO> articles) ExecuteIntegratedSearch(
-    string keyword,
-    List<string> specs,
-    string loc,
-    string gender,
-    string sortDoctor,
-    string sortArticle)
+        public (List<DoctorDTO> doctors, List<ContentDTO> contents) ExecuteIntegratedSearch(
+            string? keyword,
+            List<string>? departments,
+            string? gender,
+            string? sortDoctor,
+            string? sortContent)
         {
-            // Gọi DAL tìm Bác sĩ
-            var doctors = _doctorDAL.SearchDoctors(keyword, specs, loc, gender, sortDoctor);
+            var doctors = _doctorDAL.SearchDoctors(keyword, departments, gender, sortDoctor);
+            var contents = _articleDAL.SearchContents(keyword, departments, sortContent);
 
-            // Gọi DAL tìm Bài viết
-            var articles = _articleDAL.SearchArticles(keyword, specs, sortArticle);
-
-            return (doctors, articles);
+            return (doctors, contents);
         }
     }
 }

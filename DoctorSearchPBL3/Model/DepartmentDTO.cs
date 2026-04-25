@@ -3,17 +3,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DTO_Tier
 {
-    [Table("Admin")]
-    public class AdminDTO
+    [Table("Department")]
+    public class DepartmentDTO
     {
         [Key]
         public int Id { get; set; }
 
         [Required]
-        public int UserId { get; set; }
-
         [StringLength(100)]
-        public string? Position { get; set; }
+        public string DepartmentName { get; set; } = null!;
+
+        public string? Description { get; set; }
+
+        public int DisplayOrder { get; set; }
 
         public bool IsActive { get; set; } = true;
 
@@ -21,7 +23,8 @@ namespace DTO_Tier
 
         public DateTime? UpdatedAt { get; set; }
 
-        [ForeignKey(nameof(UserId))]
-        public virtual UserDTO? User { get; set; }
+        public bool IsDeleted { get; set; }
+
+        public DateTime? DeletedAt { get; set; }
     }
 }
