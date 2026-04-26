@@ -36,26 +36,26 @@ namespace UI_Tier
 
         {
             lblFullName.Text = doctor.User.FullName;
-            lblWorkPlace.Text = doctor.ClinicName;
+            //lblWorkPlace.Text = doctor.ClinicName;
             // 3. Địa chỉ (Kết hợp địa chỉ chi tiết và tên khu vực)
-            lblSpecificAdress.Text = $"{doctor.ClinicAddress}, {doctor.Location.LocationName}";
+            //lblSpecificAdress.Text = $"{doctor.ClinicAddress}, {doctor.Location.LocationName}";
 
             // 4. Thời gian làm việc (Nếu trong DTO bạn có trường Status hoặc WorkingTime)
             // Giả sử Status chứa chuỗi "Thứ 2 - Thứ 6, 8:00 - 16:00"
             lblWorkingTime.Text = doctor.User.Status;
 
             // 5. Giá tiền (Định dạng tiền tệ VNĐ: 500.000đ)
-            lblPrice.Text = UIHelper.FormatVND(doctor.Price);
+            lblPrice.Text = UIHelper.FormatVND(doctor.ConsultationFee);
 
             // 6. Đánh giá (Số sao và tổng lượt review)
             lblRating.Text = $"{doctor.AverageRating}";
             lblTotalReviews.Text = $"({doctor.TotalReviews} đánh giá)";
 
             // 7. Kinh nghiệm
-            lblEx.Text = $"{doctor.Experience_Years} năm kinh nghiệm";
+            lblEx.Text = $"{doctor.ExperienceYears} năm kinh nghiệm";
 
             // 8. Chuyên khoa (Cái nhãn màu xanh góc trên cùng bên phải)
-            lblSpecialtyTag.Text = doctor.Specialty.SpecialtyName;
+            //lblSpecialtyTag.Text = doctor.Specialty.SpecialtyName;
 
             // 9. Hình ảnh (Nếu có đường dẫn hoặc Image)
             // 9. Hình ảnh

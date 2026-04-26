@@ -61,6 +61,10 @@ namespace DAL_Tier
 
             string[] docNames = { "BS. Nguyễn Văn An", "BS. Lê Thị Mỹ Hạnh", "BS. Trần Thành Nhân", "BS. Phạm Minh Tuấn" };
             var departments = context.Departments.OrderBy(d => d.Id).ToList();
+            if (departments.Count == 0)
+            {
+                throw new InvalidOperationException("Seed failed: Department table is empty.");
+            }
             for (int i = 0; i < docNames.Length; i++)
             {
                 string phone = $"090{i}";
@@ -157,6 +161,10 @@ namespace DAL_Tier
             {
                 var doctors = context.Doctors.OrderBy(d => d.Id).ToList();
                 var rooms = context.Rooms.OrderBy(r => r.Id).ToList();
+                if (rooms.Count == 0)
+                {
+                    throw new InvalidOperationException("Seed failed: Room table is empty.");
+                }
                 foreach (var doctor in doctors)
                 {
                     context.TimeSlots.Add(new TimeSlotsDTO
@@ -176,7 +184,12 @@ namespace DAL_Tier
             var admin = context.Admins.First();
             if (!context.Contents.Any())
             {
-                var departmentId = context.Departments.First().Id;
+                var firstDepartment = context.Departments.OrderBy(d => d.Id).FirstOrDefault();
+                if (firstDepartment == null)
+                {
+                    throw new InvalidOperationException("Seed failed: no Department available for Content.");
+                }
+                var departmentId = firstDepartment.Id;
                 context.Contents.AddRange(
                     new ContentDTO
                     {
