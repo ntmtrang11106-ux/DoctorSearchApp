@@ -39,10 +39,10 @@
             label1 = new Label();
             btnAccept = new Button();
             flpAction = new FlowLayoutPanel();
-            btnCancel = new Button();
-            btnRemove = new Button();
-            btnBook = new Button();
             btnRate = new Button();
+            btnBook = new Button();
+            btnRemove = new Button();
+            btnCancel = new Button();
             ttAction = new ToolTip(components);
             flpAction.SuspendLayout();
             SuspendLayout();
@@ -142,8 +142,8 @@
             btnAccept.FlatStyle = FlatStyle.Flat;
             btnAccept.Font = new Font("Segoe MDL2 Assets", 20F);
             btnAccept.ForeColor = Color.Green;
-            btnAccept.Location = new Point(-62, 5);
-            btnAccept.Margin = new Padding(0, 5, 70, 0);
+            btnAccept.Location = new Point(8, 5);
+            btnAccept.Margin = new Padding(70, 5, 0, 0);
             btnAccept.Name = "btnAccept";
             btnAccept.Size = new Size(80, 80);
             btnAccept.TabIndex = 14;
@@ -168,42 +168,23 @@
             flpAction.TabIndex = 15;
             flpAction.WrapContents = false;
             // 
-            // btnCancel
+            // btnRate
             // 
-            btnCancel.Anchor = AnchorStyles.None;
-            btnCancel.BackColor = Color.Snow;
-            btnCancel.FlatAppearance.BorderSize = 0;
-            btnCancel.FlatStyle = FlatStyle.Flat;
-            btnCancel.Font = new Font("Segoe MDL2 Assets", 20F);
-            btnCancel.ForeColor = Color.DarkRed;
-            btnCancel.Location = new Point(88, 5);
-            btnCancel.Margin = new Padding(0, 5, 70, 0);
-            btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(80, 80);
-            btnCancel.TabIndex = 15;
-            btnCancel.Text = "";
-            btnCancel.TextAlign = ContentAlignment.MiddleLeft;
-            ttAction.SetToolTip(btnCancel, "Từ chối");
-            btnCancel.UseVisualStyleBackColor = false;
-            btnCancel.Click += btnCancel_Click;
-            // 
-            // btnRemove
-            // 
-            btnRemove.Anchor = AnchorStyles.None;
-            btnRemove.BackColor = Color.LightGoldenrodYellow;
-            btnRemove.FlatAppearance.BorderSize = 0;
-            btnRemove.FlatStyle = FlatStyle.Flat;
-            btnRemove.Font = new Font("Segoe MDL2 Assets", 18F);
-            btnRemove.ForeColor = Color.Goldenrod;
-            btnRemove.Location = new Point(238, 5);
-            btnRemove.Margin = new Padding(0, 5, 70, 0);
-            btnRemove.Name = "btnRemove";
-            btnRemove.Size = new Size(80, 80);
-            btnRemove.TabIndex = 16;
-            btnRemove.Text = "";
-            btnRemove.TextAlign = ContentAlignment.MiddleRight;
-            ttAction.SetToolTip(btnRemove, "Xóa lịch hẹn");
-            btnRemove.UseVisualStyleBackColor = false;
+            btnRate.Anchor = AnchorStyles.None;
+            btnRate.BackColor = Color.LightGoldenrodYellow;
+            btnRate.FlatAppearance.BorderSize = 0;
+            btnRate.FlatStyle = FlatStyle.Flat;
+            btnRate.Font = new Font("Segoe MDL2 Assets", 18F);
+            btnRate.ForeColor = Color.Goldenrod;
+            btnRate.Location = new Point(608, 5);
+            btnRate.Margin = new Padding(70, 5, 0, 0);
+            btnRate.Name = "btnRate";
+            btnRate.Size = new Size(80, 80);
+            btnRate.TabIndex = 18;
+            btnRate.Text = "";
+            btnRate.TextAlign = ContentAlignment.MiddleRight;
+            ttAction.SetToolTip(btnRate, "Đặt lịch ngay");
+            btnRate.UseVisualStyleBackColor = false;
             // 
             // btnBook
             // 
@@ -213,8 +194,8 @@
             btnBook.FlatStyle = FlatStyle.Flat;
             btnBook.Font = new Font("Segoe MDL2 Assets", 18F);
             btnBook.ForeColor = Color.DodgerBlue;
-            btnBook.Location = new Point(388, 5);
-            btnBook.Margin = new Padding(0, 5, 70, 0);
+            btnBook.Location = new Point(458, 5);
+            btnBook.Margin = new Padding(70, 5, 0, 0);
             btnBook.Name = "btnBook";
             btnBook.Size = new Size(80, 80);
             btnBook.TabIndex = 17;
@@ -223,23 +204,42 @@
             ttAction.SetToolTip(btnBook, "Đặt lịch ngay");
             btnBook.UseVisualStyleBackColor = false;
             // 
-            // btnRate
+            // btnRemove
             // 
-            btnRate.Anchor = AnchorStyles.None;
-            btnRate.BackColor = Color.LightGoldenrodYellow;
-            btnRate.FlatAppearance.BorderSize = 0;
-            btnRate.FlatStyle = FlatStyle.Flat;
-            btnRate.Font = new Font("Segoe MDL2 Assets", 18F);
-            btnRate.ForeColor = Color.Goldenrod;
-            btnRate.Location = new Point(538, 5);
-            btnRate.Margin = new Padding(0, 5, 70, 0);
-            btnRate.Name = "btnRate";
-            btnRate.Size = new Size(80, 80);
-            btnRate.TabIndex = 18;
-            btnRate.Text = "";
-            btnRate.TextAlign = ContentAlignment.MiddleRight;
-            ttAction.SetToolTip(btnRate, "Đặt lịch ngay");
-            btnRate.UseVisualStyleBackColor = false;
+            btnRemove.Anchor = AnchorStyles.None;
+            btnRemove.BackColor = Color.LightGoldenrodYellow;
+            btnRemove.FlatAppearance.BorderSize = 0;
+            btnRemove.FlatStyle = FlatStyle.Flat;
+            btnRemove.Font = new Font("Segoe MDL2 Assets", 18F);
+            btnRemove.ForeColor = Color.Goldenrod;
+            btnRemove.Location = new Point(308, 5);
+            btnRemove.Margin = new Padding(70, 5, 0, 0);
+            btnRemove.Name = "btnRemove";
+            btnRemove.Size = new Size(80, 80);
+            btnRemove.TabIndex = 16;
+            btnRemove.Text = "";
+            btnRemove.TextAlign = ContentAlignment.MiddleRight;
+            ttAction.SetToolTip(btnRemove, "Xóa lịch hẹn");
+            btnRemove.UseVisualStyleBackColor = false;
+            // 
+            // btnCancel
+            // 
+            btnCancel.Anchor = AnchorStyles.None;
+            btnCancel.BackColor = Color.Snow;
+            btnCancel.FlatAppearance.BorderSize = 0;
+            btnCancel.FlatStyle = FlatStyle.Flat;
+            btnCancel.Font = new Font("Segoe MDL2 Assets", 20F);
+            btnCancel.ForeColor = Color.DarkRed;
+            btnCancel.Location = new Point(158, 5);
+            btnCancel.Margin = new Padding(70, 5, 0, 0);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Size = new Size(80, 80);
+            btnCancel.TabIndex = 15;
+            btnCancel.Text = "";
+            btnCancel.TextAlign = ContentAlignment.MiddleLeft;
+            ttAction.SetToolTip(btnCancel, "Từ chối");
+            btnCancel.UseVisualStyleBackColor = false;
+            btnCancel.Click += btnCancel_Click;
             // 
             // ttAction
             // 
