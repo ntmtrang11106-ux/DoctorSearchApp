@@ -6,37 +6,50 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DAL_Tier.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class RefactorFinish : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Location",
+                name: "Department",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LocationName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Province = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    DepartmentName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Location", x => x.Id);
+                    table.PrimaryKey("PK_Department", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Specialtie",
+                name: "Room",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SpecialtyName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    RoomCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    RoomName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Floor = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Specialtie", x => x.Id);
+                    table.PrimaryKey("PK_Room", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -45,17 +58,20 @@ namespace DAL_Tier.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Dob = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CCCD = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Residential_Address = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Picture = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Gender = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    CCCD = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Residential_Address = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    Picture = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "Active"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -68,7 +84,11 @@ namespace DAL_Tier.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Position = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -78,31 +98,7 @@ namespace DAL_Tier.Migrations
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Articles",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AdminID = table.Column<int>(type: "int", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Thumbnail = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Views = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Articles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Articles_User_AdminID",
-                        column: x => x.AdminID,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -142,22 +138,31 @@ namespace DAL_Tier.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    ClinicAddress = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    ClinicName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    WorkingTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LocationId = table.Column<int>(type: "int", nullable: true),
+                    DepartmentId = table.Column<int>(type: "int", nullable: false),
+                    Position = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    LicenseNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Biography = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConsultationFee = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    ExperienceYears = table.Column<int>(type: "int", nullable: true),
                     IsApproved = table.Column<bool>(type: "bit", nullable: false),
-                    ExperienceSummary = table.Column<int>(type: "int", nullable: true)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    JoinDate = table.Column<DateTime>(type: "date", nullable: true),
+                    NotesInternal = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedBy = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Doctor", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Doctor_Location_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "Location",
+                        name: "FK_Doctor_Department_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Department",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -165,7 +170,7 @@ namespace DAL_Tier.Migrations
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -175,9 +180,15 @@ namespace DAL_Tier.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    BHYT = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Blood_Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Medical_History = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    MedicalCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    EmergencyContactName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    EmergencyContactPhone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
+                    InsuranceCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -187,58 +198,45 @@ namespace DAL_Tier.Migrations
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Article_Specialty",
-                columns: table => new
-                {
-                    ArticleId = table.Column<int>(type: "int", nullable: false),
-                    SpecialtyId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Article_Specialty", x => new { x.ArticleId, x.SpecialtyId });
-                    table.ForeignKey(
-                        name: "FK_Article_Specialty_Articles_ArticleId",
-                        column: x => x.ArticleId,
-                        principalTable: "Articles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Article_Specialty_Specialtie_SpecialtyId",
-                        column: x => x.SpecialtyId,
-                        principalTable: "Specialtie",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Doctor_Specialty",
+                name: "Content",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DoctorId = table.Column<int>(type: "int", nullable: false),
-                    SpecialtyId = table.Column<int>(type: "int", nullable: false),
-                    CertificateImage = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    CertificateCode = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Experience_Years = table.Column<int>(type: "int", nullable: true)
+                    DepartmentId = table.Column<int>(type: "int", nullable: true),
+                    AuthorAdminId = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Summary = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Thumbnail = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    ContentType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "Draft"),
+                    Priority = table.Column<int>(type: "int", nullable: false),
+                    IsPinned = table.Column<bool>(type: "bit", nullable: false),
+                    ViewCount = table.Column<int>(type: "int", nullable: false),
+                    PublishedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Doctor_Specialty", x => x.Id);
+                    table.PrimaryKey("PK_Content", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Doctor_Specialty_Doctor_DoctorId",
-                        column: x => x.DoctorId,
-                        principalTable: "Doctor",
+                        name: "FK_Content_Admin_AuthorAdminId",
+                        column: x => x.AuthorAdminId,
+                        principalTable: "Admin",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Doctor_Specialty_Specialtie_SpecialtyId",
-                        column: x => x.SpecialtyId,
-                        principalTable: "Specialtie",
+                        name: "FK_Content_Department_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Department",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -250,10 +248,17 @@ namespace DAL_Tier.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DoctorId = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<DateTime>(type: "date", nullable: false),
+                    RoomId = table.Column<int>(type: "int", nullable: false),
+                    WorkDate = table.Column<DateTime>(type: "date", nullable: false),
                     StartTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     EndTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "Trống")
+                    MaxAppointments = table.Column<int>(type: "int", nullable: false),
+                    BookedCount = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "Open"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -262,6 +267,12 @@ namespace DAL_Tier.Migrations
                         name: "FK_TimeSlots_Doctor_DoctorId",
                         column: x => x.DoctorId,
                         principalTable: "Doctor",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TimeSlots_Room_RoomId",
+                        column: x => x.RoomId,
+                        principalTable: "Room",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -295,6 +306,39 @@ namespace DAL_Tier.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Reviews",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PatientId = table.Column<int>(type: "int", nullable: false),
+                    DoctorId = table.Column<int>(type: "int", nullable: false),
+                    Rating = table.Column<int>(type: "int", nullable: false),
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsVisible = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reviews_Doctor_DoctorId",
+                        column: x => x.DoctorId,
+                        principalTable: "Doctor",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Reviews_Patient_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "Patient",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Appointments",
                 columns: table => new
                 {
@@ -303,9 +347,15 @@ namespace DAL_Tier.Migrations
                     PatientId = table.Column<int>(type: "int", nullable: false),
                     DoctorId = table.Column<int>(type: "int", nullable: false),
                     TimeSlotId = table.Column<int>(type: "int", nullable: false),
-                    Symptoms = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "Chờ duyệt"),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Reason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "Pending"),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DoctorNameSnapshot = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    DepartmentNameSnapshot = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    RoomNameSnapshot = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    FeeSnapshot = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -395,43 +445,6 @@ namespace DAL_Tier.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Reviews",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AppointmentId = table.Column<int>(type: "int", nullable: false),
-                    PatientID = table.Column<int>(type: "int", nullable: false),
-                    DoctorID = table.Column<int>(type: "int", nullable: false),
-                    Rating = table.Column<int>(type: "int", nullable: false),
-                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsVisible = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reviews", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Reviews_Appointments_AppointmentId",
-                        column: x => x.AppointmentId,
-                        principalTable: "Appointments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Reviews_Doctor_DoctorID",
-                        column: x => x.DoctorID,
-                        principalTable: "Doctor",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Reviews_Patient_PatientID",
-                        column: x => x.PatientID,
-                        principalTable: "Patient",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Admin_UserId",
                 table: "Admin",
@@ -454,16 +467,6 @@ namespace DAL_Tier.Migrations
                 column: "TimeSlotId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Article_Specialty_SpecialtyId",
-                table: "Article_Specialty",
-                column: "SpecialtyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Articles_AdminID",
-                table: "Articles",
-                column: "AdminID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CallLogs_CallerID",
                 table: "CallLogs",
                 column: "CallerID");
@@ -472,6 +475,21 @@ namespace DAL_Tier.Migrations
                 name: "IX_CallLogs_ReceiverID",
                 table: "CallLogs",
                 column: "ReceiverID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Content_AuthorAdminId",
+                table: "Content",
+                column: "AuthorAdminId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Content_ContentType_Status_DepartmentId",
+                table: "Content",
+                columns: new[] { "ContentType", "Status", "DepartmentId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Content_DepartmentId",
+                table: "Content",
+                column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Conversation_DoctorID",
@@ -484,41 +502,21 @@ namespace DAL_Tier.Migrations
                 column: "PatientID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Doctor_ExperienceSummary",
-                table: "Doctor",
-                column: "ExperienceSummary");
+                name: "IX_Department_DepartmentName",
+                table: "Department",
+                column: "DepartmentName",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Doctor_LocationId",
+                name: "IX_Doctor_DepartmentId",
                 table: "Doctor",
-                column: "LocationId");
+                column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Doctor_UserId",
                 table: "Doctor",
                 column: "UserId",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Doctor_Specialty_DoctorId_SpecialtyId",
-                table: "Doctor_Specialty",
-                columns: new[] { "DoctorId", "SpecialtyId" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Doctor_Specialty_SpecialtyId",
-                table: "Doctor_Specialty",
-                column: "SpecialtyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Location_Province",
-                table: "Location",
-                column: "Province");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Location_Province_LocationName",
-                table: "Location",
-                columns: new[] { "Province", "LocationName" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_MedicalRecords_AppointmentID",
@@ -552,24 +550,35 @@ namespace DAL_Tier.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reviews_AppointmentId",
+                name: "IX_Reviews_DoctorId",
                 table: "Reviews",
-                column: "AppointmentId");
+                column: "DoctorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reviews_DoctorID",
+                name: "IX_Reviews_PatientId",
                 table: "Reviews",
-                column: "DoctorID");
+                column: "PatientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reviews_PatientID",
-                table: "Reviews",
-                column: "PatientID");
+                name: "IX_Room_RoomCode",
+                table: "Room",
+                column: "RoomCode",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_TimeSlots_DoctorId",
                 table: "TimeSlots",
                 column: "DoctorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TimeSlots_RoomId",
+                table: "TimeSlots",
+                column: "RoomId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TimeSlots_WorkDate_DoctorId_RoomId",
+                table: "TimeSlots",
+                columns: new[] { "WorkDate", "DoctorId", "RoomId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_PhoneNumber",
@@ -582,16 +591,10 @@ namespace DAL_Tier.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Admin");
-
-            migrationBuilder.DropTable(
-                name: "Article_Specialty");
-
-            migrationBuilder.DropTable(
                 name: "CallLogs");
 
             migrationBuilder.DropTable(
-                name: "Doctor_Specialty");
+                name: "Content");
 
             migrationBuilder.DropTable(
                 name: "MedicalRecords");
@@ -603,28 +606,28 @@ namespace DAL_Tier.Migrations
                 name: "Reviews");
 
             migrationBuilder.DropTable(
-                name: "Articles");
-
-            migrationBuilder.DropTable(
-                name: "Specialtie");
-
-            migrationBuilder.DropTable(
-                name: "Conversation");
+                name: "Admin");
 
             migrationBuilder.DropTable(
                 name: "Appointments");
 
             migrationBuilder.DropTable(
-                name: "Patient");
+                name: "Conversation");
 
             migrationBuilder.DropTable(
                 name: "TimeSlots");
 
             migrationBuilder.DropTable(
+                name: "Patient");
+
+            migrationBuilder.DropTable(
                 name: "Doctor");
 
             migrationBuilder.DropTable(
-                name: "Location");
+                name: "Room");
+
+            migrationBuilder.DropTable(
+                name: "Department");
 
             migrationBuilder.DropTable(
                 name: "User");

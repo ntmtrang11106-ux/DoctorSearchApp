@@ -3,28 +3,26 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DTO_Tier
 {
-    [Table("Patient")]
-    public class PatientDTO
+    [Table("Room")]
+    public class RoomDTO
     {
         [Key]
         public int Id { get; set; }
 
         [Required]
-        public int UserId { get; set; }
-
         [StringLength(50)]
-        public string? MedicalCode { get; set; }
+        public string RoomCode { get; set; } = null!;
 
+        [Required]
         [StringLength(100)]
-        public string? EmergencyContactName { get; set; }
-
-        [StringLength(15)]
-        public string? EmergencyContactPhone { get; set; }
+        public string RoomName { get; set; } = null!;
 
         [StringLength(50)]
-        public string? InsuranceCode { get; set; }
+        public string? Floor { get; set; }
 
-        public string? Note { get; set; }
+        public string? Description { get; set; }
+
+        public bool IsActive { get; set; } = true;
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
@@ -34,7 +32,6 @@ namespace DTO_Tier
 
         public DateTime? DeletedAt { get; set; }
 
-        [ForeignKey(nameof(UserId))]
-        public virtual UserDTO? User { get; set; }
+        public virtual ICollection<TimeSlotsDTO> TimeSlots { get; set; } = new List<TimeSlotsDTO>();
     }
 }

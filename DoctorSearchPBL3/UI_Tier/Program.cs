@@ -42,12 +42,12 @@ namespace UI_Tier
             {
                 int users = context.Users.Count();
                 int doctors = context.Doctors.Count();
-                int specs = context.Specialties.Count();
-                int locs = context.Locations.Count();
-                int ds = context.DoctorSpecialties.Count();
-                int arts = context.Articles.Count();
+                    int specs = context.Departments.Count();
+                    //int locs = context.Locations.Count();
+                //int ds = context.DoctorSpecialties.Count();
+                int arts = context.Contents.Count();
 
-                MessageBox.Show($"Seed check:\nUsers: {users}\nDoctors: {doctors}\nSpecialties: {specs}\nLocations: {locs}\nDoctorSpecialty: {ds}\nArticles: {arts}");
+                MessageBox.Show($"Seed check:\nUsers: {users}\nDoctors: {doctors}\nSpecialties: {specs}\nArticles: {arts}");
             }
             catch (Exception ex)
             {
@@ -63,7 +63,8 @@ namespace UI_Tier
             // test form
             //Application.Run(new frmLogin());
             //Application.Run(new frmRegister());
-            Application.Run(new frmGuest());
+            //Application.Run(new frmPatient());
+            Application.Run(new frmDoctor());
         }
 
     }
