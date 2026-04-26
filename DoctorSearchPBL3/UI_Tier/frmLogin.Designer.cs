@@ -174,6 +174,7 @@
             btnLogin.Text = "Đăng nhập";
             btnLogin.UseCompatibleTextRendering = true;
             btnLogin.UseVisualStyleBackColor = false;
+            btnLogin.Click += btnLogin_Click;
             // 
             // label3
             // 

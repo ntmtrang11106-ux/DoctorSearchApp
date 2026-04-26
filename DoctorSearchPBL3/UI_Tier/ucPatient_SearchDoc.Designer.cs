@@ -70,7 +70,7 @@
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 0);
             panel3.Name = "panel3";
-            panel3.Size = new Size(1845, 569);
+            panel3.Size = new Size(1845, 524);
             panel3.TabIndex = 6;
             // 
             // pictureBox2
@@ -134,10 +134,10 @@
             flpFilter.Controls.Add(btnENT);
             flpFilter.Controls.Add(btnOphthalmology);
             flpFilter.Controls.Add(btnPediatrics);
-            flpFilter.Location = new Point(144, 361);
+            flpFilter.Location = new Point(144, 314);
             flpFilter.Name = "flpFilter";
             flpFilter.Padding = new Padding(10);
-            flpFilter.Size = new Size(1653, 132);
+            flpFilter.Size = new Size(1653, 137);
             flpFilter.TabIndex = 7;
             // 
             // btnAll
@@ -238,7 +238,7 @@
             pnlAlert.Controls.Add(lblPageStatus);
             pnlAlert.Controls.Add(lblPrev);
             pnlAlert.Controls.Add(lblNext);
-            pnlAlert.Location = new Point(0, 501);
+            pnlAlert.Location = new Point(0, 457);
             pnlAlert.Name = "pnlAlert";
             pnlAlert.Padding = new Padding(10);
             pnlAlert.Size = new Size(1845, 67);
@@ -284,9 +284,9 @@
             // 
             flpDoctors.AutoScroll = true;
             flpDoctors.Dock = DockStyle.Fill;
-            flpDoctors.Location = new Point(0, 569);
+            flpDoctors.Location = new Point(0, 524);
             flpDoctors.Name = "flpDoctors";
-            flpDoctors.Size = new Size(1845, 293);
+            flpDoctors.Size = new Size(1845, 338);
             flpDoctors.TabIndex = 7;
             // 
             // ucPatient_SearchDoc
@@ -314,7 +314,6 @@
         private Label label2;
         private Label label1;
         private FlowLayoutPanel flpFilter;
-        private Button btnAll;
         private Button btnCardiology;
         private Button btnInternalMedicine;
         private Button btnSurgery;
@@ -331,5 +330,6 @@
         private Label lblPageStatus;
         private Label lblPrev;
         private Label lblNext;
+        private Button btnAll;
     }
 }

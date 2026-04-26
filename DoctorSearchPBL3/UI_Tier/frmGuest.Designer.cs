@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             panel1 = new Panel();
             btnLogin = new Button();
             txtSearchBar = new TextBox();
@@ -48,17 +49,25 @@
             btnPediatrics = new Button();
             pictureBox2 = new PictureBox();
             pictureBox1 = new PictureBox();
+            tabControl1 = new TabControl();
+            tabPage1 = new TabPage();
+            flpDoctors = new FlowLayoutPanel();
+            tabPage2 = new TabPage();
+            flpArticles = new FlowLayoutPanel();
             panel3 = new Panel();
             label2 = new Label();
             label1 = new Label();
-            flpDoctors = new FlowLayoutPanel();
+            errorProvider1 = new ErrorProvider(components);
             panel1.SuspendLayout();
             pnlSearch.SuspendLayout();
             pnlAlert.SuspendLayout();
             flpFilter.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            tabControl1.SuspendLayout();
+            tabPage2.SuspendLayout();
             panel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
             // 
             // panel1
@@ -94,6 +103,8 @@
             txtSearchBar.PlaceholderText = "Tìm kiếm tên bác sĩ ...";
             txtSearchBar.Size = new Size(1653, 57);
             txtSearchBar.TabIndex = 1;
+            txtSearchBar.TextChanged += txtSearchBar_TextChanged;
+            txtSearchBar.KeyDown += txtSearchBar_KeyDown;
             // 
             // pnlSearch
             // 
@@ -126,7 +137,7 @@
             lblPageStatus.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblPageStatus.AutoSize = true;
             lblPageStatus.Font = new Font("Segoe UI", 11F);
-            lblPageStatus.Location = new Point(1396, 16);
+            lblPageStatus.Location = new Point(1379, 14);
             lblPageStatus.Name = "lblPageStatus";
             lblPageStatus.RightToLeft = RightToLeft.No;
             lblPageStatus.Size = new Size(67, 41);
@@ -138,7 +149,7 @@
             lblPrev.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblPrev.AutoSize = true;
             lblPrev.Font = new Font("Segoe UI", 11F);
-            lblPrev.Location = new Point(1157, 16);
+            lblPrev.Location = new Point(1140, 14);
             lblPrev.Name = "lblPrev";
             lblPrev.Size = new Size(219, 41);
             lblPrev.TabIndex = 1;
@@ -150,7 +161,7 @@
             lblNext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblNext.AutoSize = true;
             lblNext.Font = new Font("Segoe UI", 11F);
-            lblNext.Location = new Point(1590, 16);
+            lblNext.Location = new Point(1554, 14);
             lblNext.Name = "lblNext";
             lblNext.Size = new Size(194, 41);
             lblNext.TabIndex = 0;
@@ -172,7 +183,7 @@
             flpFilter.Location = new Point(144, 91);
             flpFilter.Name = "flpFilter";
             flpFilter.Padding = new Padding(10);
-            flpFilter.Size = new Size(1653, 132);
+            flpFilter.Size = new Size(1687, 132);
             flpFilter.TabIndex = 3;
             flpFilter.Paint += flowLayoutPanel2_Paint;
             // 
@@ -287,13 +298,61 @@
             pictureBox1.TabIndex = 2;
             pictureBox1.TabStop = false;
             // 
+            // tabControl1
+            // 
+            tabControl1.Controls.Add(tabPage1);
+            tabControl1.Controls.Add(tabPage2);
+            tabControl1.Location = new Point(0, 617);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new Size(1863, 441);
+            tabControl1.TabIndex = 3;
+            // 
+            // tabPage1
+            // 
+            tabPage1.Location = new Point(4, 37);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(1855, 400);
+            tabPage1.TabIndex = 0;
+            tabPage1.Text = "Bác sĩ";
+            tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // flpDoctors
+            // 
+            flpDoctors.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            flpDoctors.AutoScroll = true;
+            flpDoctors.Location = new Point(0, 617);
+            flpDoctors.Name = "flpDoctors";
+            flpDoctors.Size = new Size(1845, 359);
+            flpDoctors.TabIndex = 4;
+            // 
+            // tabPage2
+            // 
+            tabPage2.Controls.Add(flpArticles);
+            tabPage2.Location = new Point(4, 37);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new Size(1855, 400);
+            tabPage2.TabIndex = 1;
+            tabPage2.Text = "Bài viết";
+            tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // flpArticles
+            // 
+            flpArticles.Dock = DockStyle.Fill;
+            flpArticles.Location = new Point(3, 3);
+            flpArticles.Name = "flpArticles";
+            flpArticles.Size = new Size(1849, 394);
+            flpArticles.TabIndex = 0;
+            // 
             // panel3
             // 
+            panel3.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             panel3.BackColor = Color.White;
             panel3.BackgroundImageLayout = ImageLayout.Center;
             panel3.Controls.Add(label2);
             panel3.Controls.Add(label1);
-            panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 115);
             panel3.Name = "panel3";
             panel3.Size = new Size(1845, 212);
@@ -319,14 +378,9 @@
             label1.TabIndex = 0;
             label1.Text = "Tìm kiếm bác sĩ phù hợp với bạn";
             // 
-            // flpDoctors
+            // errorProvider1
             // 
-            flpDoctors.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            flpDoctors.AutoScroll = true;
-            flpDoctors.Location = new Point(0, 617);
-            flpDoctors.Name = "flpDoctors";
-            flpDoctors.Size = new Size(1845, 359);
-            flpDoctors.TabIndex = 4;
+            errorProvider1.ContainerControl = this;
             // 
             // frmGuest
             // 
@@ -334,10 +388,10 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(1845, 977);
-            Controls.Add(flpDoctors);
             Controls.Add(panel3);
             Controls.Add(pnlSearch);
             Controls.Add(panel1);
+            Controls.Add(flpDoctors);
             Cursor = Cursors.SizeAll;
             Font = new Font("Segoe UI", 10.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Name = "frmGuest";
@@ -352,8 +406,11 @@
             flpFilter.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            tabControl1.ResumeLayout(false);
+            tabPage2.ResumeLayout(false);
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
             ResumeLayout(false);
         }
 
@@ -377,11 +434,16 @@
         private Panel panel3;
         private Label label1;
         private Label label2;
-        private FlowLayoutPanel flpDoctors;
         private FlowLayoutPanel flpFilter;
         private Panel pnlAlert;
         private Label lblPrev;
         private Label lblNext;
         private Label lblPageStatus;
+        private TabControl tabControl1;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
+        private FlowLayoutPanel flpDoctors;
+        private FlowLayoutPanel flpArticles;
+        private ErrorProvider errorProvider1;
     }
 }
