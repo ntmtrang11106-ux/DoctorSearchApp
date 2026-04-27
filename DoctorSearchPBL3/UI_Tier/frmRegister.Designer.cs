@@ -42,7 +42,6 @@
             textBox3 = new TextBox();
             label20 = new Label();
             panel14 = new Panel();
-            btnNew = new Button();
             label17 = new Label();
             flpCertificate = new FlowLayoutPanel();
             label7 = new Label();
@@ -136,7 +135,7 @@
             panel2.BackColor = Color.FromArgb(24, 112, 255);
             panel2.Controls.Add(panel3);
             panel2.Controls.Add(label1);
-            panel2.Location = new Point(124, 102);
+            panel2.Location = new Point(90, 102);
             panel2.Name = "panel2";
             panel2.Size = new Size(2165, 1719);
             panel2.TabIndex = 4;
@@ -254,30 +253,17 @@
             label20.ForeColor = SystemColors.ControlText;
             label20.Location = new Point(3, 8);
             label20.Name = "label20";
-            label20.Size = new Size(316, 45);
+            label20.Size = new Size(361, 45);
             label20.TabIndex = 21;
-            label20.Text = "Nơi công tác hiện tại";
+            label20.Text = "Chức danh nghề nghiệp";
             // 
             // panel14
             // 
-            panel14.Controls.Add(btnNew);
             panel14.Controls.Add(label17);
             panel14.Location = new Point(3, 329);
             panel14.Name = "panel14";
             panel14.Size = new Size(911, 73);
             panel14.TabIndex = 0;
-            // 
-            // btnNew
-            // 
-            btnNew.BackColor = Color.Azure;
-            btnNew.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnNew.Location = new Point(400, 9);
-            btnNew.Name = "btnNew";
-            btnNew.Size = new Size(253, 48);
-            btnNew.TabIndex = 23;
-            btnNew.Text = "+ Thêm chứng chỉ";
-            btnNew.UseVisualStyleBackColor = false;
-            btnNew.Click += btnNew_Click;
             // 
             // label17
             // 
@@ -586,7 +572,6 @@
             cboProvince.Name = "cboProvince";
             cboProvince.Size = new Size(481, 53);
             cboProvince.TabIndex = 29;
-            cboProvince.SelectedIndexChanged += cboProvince_SelectedIndexChanged_1;
             // 
             // label16
             // 
@@ -911,7 +896,6 @@
         private OpenFileDialog ofdCCHN;
         private FlowLayoutPanel flpCertificate;
         private Panel panel14;
-        private Button btnNew;
         private Label label17;
     }
 }

@@ -159,7 +159,7 @@ namespace UI_Tier
                 TimeSlotsDTO singleSlot = new TimeSlotsDTO
                 {
                     DoctorId = doctorIdToSave,
-                    Date = dtpDOB.Value.Date,
+                    //Date = dtpDOB.Value.Date,
                     StartTime = startTime,
                     EndTime = endTime,
                     Status = "Trống"

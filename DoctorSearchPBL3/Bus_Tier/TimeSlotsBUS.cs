@@ -32,7 +32,7 @@ namespace BUS_Tier
                     listToCreate.Add(new TimeSlotsDTO
                     {
                         DoctorId = doctorId,
-                        Date = date,
+                        //Date = date,
                         StartTime = startT,
                         EndTime = endT,
                         Status = "Trống" // Trạng thái ban đầu luôn là Trống

@@ -42,7 +42,6 @@
             panel29 = new Panel();
             label24 = new Label();
             label22 = new Label();
-            btnCancel = new Button();
             lblCertIndex = new Label();
             panel14.SuspendLayout();
             panel22.SuspendLayout();
@@ -192,24 +191,6 @@
             label22.TabIndex = 21;
             label22.Text = "Hình ảnh chứng chỉ";
             // 
-            // btnCancel
-            // 
-            btnCancel.Anchor = AnchorStyles.None;
-            btnCancel.BackColor = Color.Transparent;
-            btnCancel.FlatAppearance.BorderSize = 0;
-            btnCancel.FlatStyle = FlatStyle.Flat;
-            btnCancel.Font = new Font("Segoe MDL2 Assets", 15F);
-            btnCancel.ForeColor = Color.DarkRed;
-            btnCancel.Location = new Point(783, 0);
-            btnCancel.Margin = new Padding(0, 5, 70, 0);
-            btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(66, 66);
-            btnCancel.TabIndex = 24;
-            btnCancel.Text = "";
-            btnCancel.TextAlign = ContentAlignment.MiddleLeft;
-            btnCancel.UseVisualStyleBackColor = false;
-            btnCancel.Click += btnCancel_Click;
-            // 
             // lblCertIndex
             // 
             lblCertIndex.AutoSize = true;
@@ -218,9 +199,9 @@
             lblCertIndex.ForeColor = Color.Black;
             lblCertIndex.Location = new Point(0, 0);
             lblCertIndex.Name = "lblCertIndex";
-            lblCertIndex.Size = new Size(187, 45);
+            lblCertIndex.Size = new Size(170, 45);
             lblCertIndex.TabIndex = 38;
-            lblCertIndex.Text = "Chứng chỉ 1";
+            lblCertIndex.Text = "Chứng chỉ ";
             // 
             // ucDoctorCertificate
             // 
@@ -228,7 +209,6 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             Controls.Add(lblCertIndex);
-            Controls.Add(btnCancel);
             Controls.Add(panel14);
             Controls.Add(panel22);
             Controls.Add(panel25);

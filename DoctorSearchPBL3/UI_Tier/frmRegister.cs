@@ -1,7 +1,6 @@
 ﻿using BUS_Tier;
 using DAL_Tier;
 using DTO_Tier;
-using DTO_Tier;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,8 +15,9 @@ namespace UI_Tier
     public partial class frmRegister : Form
     {
         // 1. Khai báo tầng BUS để xử lý nghiệp vụ
-        private LoginBUS _loginBUS = new LoginBUS();
-        private LocationBUS _locationBUS = new LocationBUS(); // Bổ sung LocationBUS mới tách
+        private UserBUS _userBUS = new UserBUS();
+
+        //private LocationBUS _locationBUS = new LocationBUS(); // Bổ sung LocationBUS mới tách
         // Biến này cực kỳ quan trọng để phân biệt 2 luồng
         private string currentRole = "";
 
@@ -96,25 +96,25 @@ namespace UI_Tier
         // vào các hàm panel_MouseClick tương ứng để bấm vào chữ cũng đổi được luồng.
         #endregion
 
-        #region Xử lý Location (Tỉnh/Thành - Quận/Huyện)
-        // Sự kiện Load Form
+        //#region Xử lý Location (Tỉnh/Thành - Quận/Huyện)
+        //// Sự kiện Load Form
 
-        // Khi chọn Tỉnh/Thành -> Lọc Quận/Huyện tương ứng
-        private void cboProvince_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cboProvince.SelectedItem != null)
-            {
-                string provinceName = cboProvince.SelectedItem.ToString();
+        //// Khi chọn Tỉnh/Thành -> Lọc Quận/Huyện tương ứng
+        //private void cboProvince_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    if (cboProvince.SelectedItem != null)
+        //    {
+        //        string provinceName = cboProvince.SelectedItem.ToString();
 
-                // Lấy danh sách Quận/Huyện theo Tỉnh lấy ở tầng BUS (đã tách riêng)
-                var districts = _locationBUS.GetDistricts(provinceName);
+        //        // Lấy danh sách Quận/Huyện theo Tỉnh lấy ở tầng BUS (đã tách riêng)
+        //        //var districts = _locationBUS.GetDistricts(provinceName);
 
-                cboRegion.DataSource = districts;
-                cboRegion.DisplayMember = "LocationName"; // Tên hiển thị (Cẩm Lệ, Hải Châu...)
-                cboRegion.ValueMember = "Id";             // Giá trị lấy ra (ID)
-            }
-        }
-        #endregion
+        //        //cboRegion.DataSource = districts;
+        //        cboRegion.DisplayMember = "LocationName"; // Tên hiển thị (Cẩm Lệ, Hải Châu...)
+        //        cboRegion.ValueMember = "Id";             // Giá trị lấy ra (ID)
+        //    }
+        //}
+        //#endregion
 
         #region Đăng ký
 
@@ -127,81 +127,81 @@ namespace UI_Tier
                 return;
             }
 
-            // 2. Thu thập dữ liệu cơ bản vào DTO và các biến bổ trợ
-            UserDTO newUser = CollectUserData();
-            string confirmPass = textBox5.Text.Trim();
-
-            // Lấy thông tin địa chỉ từ ComboBox (Cần cho cả Patient và Doctor)
-            string province = cboProvince.Text;
-            string district = cboRegion.Text;
-
-            string result = "";
-
-            // 3. Gọi BUS xử lý theo vai trò
-            if (currentRole == "Patient")
-            {
-                string bhyt = textBox7.Text.Trim();
-                // CẬP NHẬT: Truyền thêm province và district xuống BUS
-                result = _loginBUS.RegisterPatient(newUser, confirmPass, province, district, bhyt);
-            }
-            else if (currentRole == "Doctor")
-            {
-                List<DoctorSpecialtyDTO> listCerts = CollectCertificates();
-                string clinicName = textBox3.Text.Trim();
-                int? locationId = cboRegion.SelectedValue as int?;
-
-                // Truyền xuống BUS để kiểm tra nghiệp vụ
-                result = _loginBUS.RegisterDoctor(newUser, confirmPass, province, district, clinicName, locationId, listCerts);
-            }
-
-            // 4. Hiển thị kết quả trả về từ BUS
-            if (result == "Success")
-            {
-                MessageBox.Show($"Đăng ký {currentRole} thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.Close();
-            }
-            else
-            {
-                MessageBox.Show(result, "Thông báo lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        private UserDTO CollectUserData()
-        {
-            return new UserDTO
+            // 2. Thu thập dữ liệu cơ bản vào DTO
+            UserDTO newUser = new UserDTO
             {
                 PhoneNumber = txtPhoneNumber.Text.Trim(),
                 FullName = txtUsername.Text.Trim(),
                 Password = textBox4.Text.Trim(),
                 Dob = dtpDOB.Value,
-                Gender = radioButton1.Checked ? "Nam" : "Nữ",
-                Role = currentRole,
-                CCCD = txtCCCD.Text.Trim(),
-                Picture = "default.jpg" // Hoặc lấy từ đường dẫn ảnh nếu có
-            };
-        }
+                //Gender = radioButton1.Checked ? "Nam" : "Nữ",
+                // Sửa logic giới tính ở đây:
+                Gender = radioButton1.Checked ? "Nam" : (radioButton2.Checked ? "Nữ" : null),
 
-        private List<DoctorSpecialtyDTO> CollectCertificates()
-        {
-            // Sử dụng LINQ để duyệt qua các UserControl trong FlowLayoutPanel
-            return flpCertificate.Controls.OfType<ucDoctorCertificate>()
-                .Select(uc => new DoctorSpecialtyDTO
+                CCCD = (txtCCCD.Text == "Chưa đủ tuổi") ? null : txtCCCD.Text.Trim(),
+                Residential_Address = $"{cboRegion.Text}, {cboProvince.Text}",
+                Picture = "default.jpg"
+            };
+
+            string confirmPass = textBox5.Text.Trim();
+            string result = "";
+
+            // 3. Phân luồng xử lý theo vai trò
+            if (currentRole == "Patient")
+            {
+                // Lấy mã BHYT từ giao diện
+                string bhyt = textBox7.Text.Trim();
+                result = _userBUS.RegisterPatient(newUser, confirmPass, bhyt);
+            }
+            else if (currentRole == "Doctor")
+            {
+                // 1. Lấy UserControl chứng chỉ (Dùng để lấy chuyên khoa, số giấy phép, kinh nghiệm)
+                var firstCertUC = flpCertificate.Controls.OfType<ucDoctorCertificate>().FirstOrDefault();
+
+                if (firstCertUC == null)
                 {
-                    SpecialtyId = uc.GetSelectedSpecialtyId(),
-                    CertificateCode = uc.GetCertificateId(),
-                    CertificateImage = uc.GetCertificateImageName(),
-                    // UI gọi BUS để tính toán logic số năm kinh nghiệm
-                    Experience_Years = _loginBUS.CalculateExperience(uc.GetExperienceYears())
-                })
-                // Chỉ lấy những cái đã nhập mã chứng chỉ hợp lệ
-                .Where(c => !string.IsNullOrWhiteSpace(c.CertificateCode))
-                .ToList();
+                    // Nếu không có UC nào, gán lỗi vào result để hiện ở bước 4 thay vì return im lặng
+                    result = "Vui lòng thêm thông tin chứng chỉ và chuyên khoa.";
+                }
+                else
+                {
+                    // 2. Thu thập dữ liệu từ các Control
+                    string position = textBox3.Text.Trim();
+                    int deptId = firstCertUC.GetSelectedDepartmentId();
+                    string licenseNumber = firstCertUC.GetCertificateCode(); // Lấy từ UC
+                    int maxExp = firstCertUC.GetExperienceYears();  
+
+                    // 3. Gọi tầng BUS xử lý (Tầng BUS sẽ lo việc check trống, check CCCD, check tuổi...)
+                    try
+                    {
+                        // Truyền đủ 6 tham số như bạn đã định nghĩa ở tầng BUS
+                        result = _userBUS.RegisterDoctor(newUser, confirmPass, deptId, maxExp, position, licenseNumber);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Trường hợp lỗi kết nối DB hoặc lỗi code nghiêm trọng
+                        result = "Lỗi hệ thống: " + ex.Message;
+                    }
+                }
+            }
+
+            // 4. Thông báo kết quả (Đoạn này cực kỳ quan trọng để không bị "đứng im")
+            if (result == "Success")
+            {
+                MessageBox.Show($"Đăng ký {currentRole} thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
+            }
+            else if (!string.IsNullOrEmpty(result))
+            {
+                // Chỉ hiện thông báo lỗi nếu result có nội dung (tránh hiện thông báo trống)
+                MessageBox.Show(result, "Lỗi đăng ký", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         #endregion
 
 
-        #region Quản lý User Control chứng chỉ
-        int certCount = 0; // Biến đếm số chứng chỉ đã thêm
+            #region Quản lý User Control chứng chỉ
+            int certCount = 0; // Biến đếm số chứng chỉ đã thêm
 
         // Hàm cập nhật lại số thứ tự hiển thị (1, 2, 3...)
         private void UpdateCertIndexes()
@@ -251,46 +251,43 @@ namespace UI_Tier
 
         private void frmRegister_Load(object sender, EventArgs e)
         {
-            // 1. Load danh sách Tỉnh/Thành
-            cboProvince.DataSource = _locationBUS.GetProvinces();
-            cboProvince.SelectedIndex = -1; // Để trống mặc định
 
             // 2. Thêm 1 chứng chỉ mặc định cho bác sĩ
             btnNew_Click(null, null);
         }
         #endregion
 
-        private void cboProvince_SelectedIndexChanged_1(object sender, EventArgs e)
-        {
-            // Kiểm tra nếu người dùng thực sự chọn một mục (tránh lỗi khi form mới load)
-            if (cboProvince.SelectedIndex != -1 && cboProvince.SelectedItem != null)
-            {
-                // Lấy tên tỉnh đang chọn
-                string selectedProvince = cboProvince.SelectedItem.ToString();
+        //private void cboProvince_SelectedIndexChanged_1(object sender, EventArgs e)
+        //{
+        //    // Kiểm tra nếu người dùng thực sự chọn một mục (tránh lỗi khi form mới load)
+        //    if (cboProvince.SelectedIndex != -1 && cboProvince.SelectedItem != null)
+        //    {
+        //        // Lấy tên tỉnh đang chọn
+        //        string selectedProvince = cboProvince.SelectedItem.ToString();
 
-                // 1. Gọi BUS để lấy danh sách Quận/Huyện từ Database
-                var districts = _locationBUS.GetDistricts(selectedProvince);
+        //        // 1. Gọi BUS để lấy danh sách Quận/Huyện từ Database
+        //        var districts = _locationBUS.GetDistricts(selectedProvince);
 
-                // 2. Xóa các ràng buộc cũ của cboRegion (Xã/Phường) để làm sạch dữ liệu
-                cboRegion.DataSource = null;
-                cboRegion.Items.Clear();
+        //        // 2. Xóa các ràng buộc cũ của cboRegion (Xã/Phường) để làm sạch dữ liệu
+        //        cboRegion.DataSource = null;
+        //        cboRegion.Items.Clear();
 
-                // 3. Nạp dữ liệu mới
-                if (districts != null && districts.Count > 0)
-                {
-                    cboRegion.DataSource = districts;
-                    cboRegion.DisplayMember = "LocationName"; // Tên hiển thị trên ComboBox
-                    cboRegion.ValueMember = "Id";             // ID thực tế để lưu xuống bảng Doctor
+        //        // 3. Nạp dữ liệu mới
+        //        if (districts != null && districts.Count > 0)
+        //        {
+        //            cboRegion.DataSource = districts;
+        //            cboRegion.DisplayMember = "LocationName"; // Tên hiển thị trên ComboBox
+        //            cboRegion.ValueMember = "Id";             // ID thực tế để lưu xuống bảng Doctor
 
-                    cboRegion.SelectedIndex = -1; // Để trống, bắt người dùng phải tự chọn
-                }
-            }
-        }
+        //            cboRegion.SelectedIndex = -1; // Để trống, bắt người dùng phải tự chọn
+        //        }
+        //    }
+        //}
 
         private void dtpDOB_ValueChanged(object sender, EventArgs e)
         {
             //int age = CalculateAge(dtpDOB.Value);
-            int age = _loginBUS.CalculateAge(dtpDOB.Value);
+            int age = _userBUS.CalculateAge(dtpDOB.Value);
 
             if (age < 16)
             {

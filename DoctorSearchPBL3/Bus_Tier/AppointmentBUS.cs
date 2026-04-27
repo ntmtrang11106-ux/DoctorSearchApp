@@ -86,8 +86,8 @@ namespace BUS_Tier
                 return false;
 
             // Kiểm tra nghiệp vụ: Triệu chứng không được để trống (nvarchar(500) trong SQL)
-            if (string.IsNullOrWhiteSpace(app.Symptoms))
-                return false;
+            //if (string.IsNullOrWhiteSpace(app.Symptoms))
+            //    return false;
 
             // Gọi DAL: DAL sẽ tự động dùng Transaction để vừa tạo App vừa khóa TimeSlot
             return _appointmentDAL.CreateAppointment(app);

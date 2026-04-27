@@ -14,7 +14,7 @@ namespace UI_Tier
     {
 
         // === BƯỚC 1: KHAI BÁO BIẾN Ở ĐÂY ĐỂ HẾT LỖI ===
-        private LoginBUS _loginBUS = new LoginBUS();
+        private UserBUS _userBUS = new UserBUS();
 
         public frmLogin()
         {
@@ -60,78 +60,98 @@ namespace UI_Tier
             this.Show();
         }
 
+        private void btnLogin_Click(object sender, EventArgs e)
+        {
+            // 1. Lấy thông tin từ TextBox (Nhân kiểm tra tên txtPhoneNumber cho đúng nhé)
+            string phone = txtUsername.Text.Trim();
+            string pass = txtPassword.Text.Trim();
+
+            // 2. Khai báo các biến để hứng dữ liệu từ BUS trả về (out)
+            int loggedInId;
+            string message;
+
+            // 3. Gọi hàm Login từ tầng BUS
+            // Hàm này trả về Role (Doctor/Patient), và đẩy ID vào loggedInId, thông báo vào message
+            string role = _userBUS.Login(phone, pass, out loggedInId, out message);
+
+            // 4. Xử lý điều hướng dựa trên Role nhận được
+            if (!string.IsNullOrEmpty(role))
+            {
+                // Đăng nhập thành công
+                this.Hide();
+
+                if (role == "Patient")
+                {
+                    frmPatient f = new frmPatient();
+                    f.Tag = loggedInId; // QUAN TRỌNG: Lưu ID vào Tag để Form Patient biết ai đang dùng
+                    f.ShowDialog();
+                }
+                else if (role == "Doctor")
+                {
+                    frmDoctor f = new frmDoctor();
+                    f.Tag = loggedInId; // Lưu ID bác sĩ vào Tag
+                    f.ShowDialog();
+                }
+                else if (role == "Admin")
+                {
+                    MessageBox.Show("Chào Admin! Form quản trị đang được cập nhật.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Nếu có Form Admin thì mở ở đây
+                }
+
+                // Sau khi đóng Form chức năng thì đóng luôn Form Login
+                this.Close();
+            }
+            else
+            {
+                // 5. Đăng nhập thất bại (Sai pass, số điện thoại, hoặc tài khoản bị khóa)
+                // Hiển thị nội dung lỗi cụ thể mà tầng BUS đã trả về trong biến 'message'
+                MessageBox.Show(message, "Lỗi đăng nhập", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                txtPassword.Clear();
+                txtPassword.Focus();
+            }
+        }
+
         //private void btnLogin_Click(object sender, EventArgs e)
         //{
         //    string phone = txtUsername.Text.Trim();
         //    string pass = txtPassword.Text.Trim();
 
-        //    // 1. Gọi hàm Login. 
-        //    string result = _loginBUS.Login(phone, pass);
+        //    // Khai báo biến để hứng dữ liệu từ BUS trả về
+        //    int loggedInId;
+        //    string message;
 
-        //    if (result == "Patient")
-        //    {              
-        //        this.Hide();
-        //        frmPatient f = new frmPatient();
-        //        f.ShowDialog();
-        //        this.Close();
-        //    }
-        //    else if (result == "Doctor")
+        //    // Gọi hàm BUS
+        //    string role = _userBUS.Login(phone, pass, out loggedInId, out message);
+
+        //    if (!string.IsNullOrEmpty(role))
         //    {
-        //        this.Hide();
-        //        frmDoctor f = new frmDoctor();
-        //        f.ShowDialog();
-        //        this.Close();
-        //    }
-        //    else if (result == "Admin")
-        //    {
-        //        MessageBox.Show("Tài khoản Admin: Hiện tại chưa có Form giao diện.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        // Nếu đăng nhập thành công
+        //        if (role == "Doctor")
+        //        {
+        //            this.Hide();
+        //            frmDoctor f = new frmDoctor();
+
+        //            // LƯU ID VÀO TAG CỦA FORM ĐỂ DÙNG CHO CÁC NHIỆM VỤ SAU
+        //            f.Tag = loggedInId;
+
+        //            f.ShowDialog();
+        //            this.Close();
+        //        }
+        //        else if (role == "Patient")
+        //        {
+        //            this.Hide();
+        //            frmPatient f = new frmPatient();
+        //            f.Tag = loggedInId;
+        //            f.ShowDialog();
+        //            this.Close();
+        //        }
         //    }
         //    else
         //    {
-        //        MessageBox.Show(result, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        // Nếu thất bại, hiển thị thông báo lỗi mà BUS đã xử lý
+        //        MessageBox.Show(message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
         //    }
         //}
-
-        private void btnLogin_Click(object sender, EventArgs e)
-        {
-            string phone = txtUsername.Text.Trim();
-            string pass = txtPassword.Text.Trim();
-
-            // Khai báo biến để hứng dữ liệu từ BUS trả về
-            int loggedInId;
-            string message;
-
-            // Gọi hàm BUS
-            string role = _loginBUS.Login(phone, pass, out loggedInId, out message);
-
-            if (!string.IsNullOrEmpty(role))
-            {
-                // Nếu đăng nhập thành công
-                if (role == "Doctor")
-                {
-                    this.Hide();
-                    frmDoctor f = new frmDoctor();
-
-                    // LƯU ID VÀO TAG CỦA FORM ĐỂ DÙNG CHO CÁC NHIỆM VỤ SAU
-                    f.Tag = loggedInId;
-
-                    f.ShowDialog();
-                    this.Close();
-                }
-                else if (role == "Patient")
-                {
-                    this.Hide();
-                    frmPatient f = new frmPatient();
-                    f.Tag = loggedInId;
-                    f.ShowDialog();
-                    this.Close();
-                }
-            }
-            else
-            {
-                // Nếu thất bại, hiển thị thông báo lỗi mà BUS đã xử lý
-                MessageBox.Show(message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
     }
 }

@@ -32,7 +32,7 @@ namespace UI_Tier
             //nhân 
             lblPatientName.Text = data.Patient?.User?.FullName ?? "N/A";
             lblPhoneNumber.Text = data.Patient?.User?.PhoneNumber ?? "N/A";
-            lblSymptoms.Text = string.IsNullOrEmpty(data.Symptoms) ? "Không có triệu chứng" : data.Symptoms;
+            //lblSymptoms.Text = string.IsNullOrEmpty(data.Symptoms) ? "Không có triệu chứng" : data.Symptoms;
 
             //if (data.TimeSlot != null)
             //{
@@ -49,7 +49,7 @@ namespace UI_Tier
 
             if (data.TimeSlot != null)
             {
-                lblDate.Text = data.TimeSlot.Date.ToString("dd/MM/yyyy");
+                //lblDate.Text = data.TimeSlot.Date.ToString("dd/MM/yyyy");
                 lblTime.Text = $"{data.TimeSlot.StartTime:hh\\:mm} - {data.TimeSlot.EndTime:hh\\:mm}";
             }
 
