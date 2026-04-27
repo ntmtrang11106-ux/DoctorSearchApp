@@ -74,5 +74,15 @@ namespace DAL_Tier
                 _ => result
             };
         }
+
+        // Trong DoctorDAL.cs
+        public int GetDoctorIdByUserId(int userId)
+        {
+            using (var db = new AppDbContext()) // Hoặc cách gọi DB của nhóm
+            {
+                var doctor = db.Doctors.FirstOrDefault(d => d.UserId == userId);
+                return doctor != null ? doctor.Id : 0;
+            }
+        }
     }
 }

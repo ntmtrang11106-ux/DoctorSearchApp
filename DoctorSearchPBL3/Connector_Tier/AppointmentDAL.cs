@@ -42,44 +42,53 @@ namespace DAL_Tier
             {
                 try
                 {
-                    // Bước 1: Gán các giá trị mặc định nếu cần
+                    // Bước 1: Gán các giá trị mặc định nếu BUS chưa gán
                     app.CreatedAt = DateTime.Now;
-                    if (string.IsNullOrEmpty(app.Status))
-                        app.Status = "Chờ duyệt";
+                    if (string.IsNullOrEmpty(app.Status)) app.Status = "Chờ duyệt";
 
-                    // Bước 2: Thêm bản ghi vào bảng Appointments
-                    _context.Appointments.Add(app);
-
-                    // Bước 3: Tìm TimeSlot tương ứng và cập nhật trạng thái
-                    var slot = _context.TimeSlots.FirstOrDefault(s => s.Id == app.TimeSlotId);
-                    if (slot != null)
+                    // Xử lý Symptoms để tránh lỗi NOT NULL trong CSDL
+                    if (string.IsNullOrWhiteSpace(app.Symptoms))
                     {
-                        // Kiểm tra nếu slot vẫn đang 'Trống' mới cho đặt
-                        if (slot.Status == "Trống")
-                        {
-                            slot.Status = "Đã đặt"; // Khóa khung giờ ngay khi bấm đặt
-                        }
-                        else
-                        {
-                            throw new Exception("Khung giờ này đã có người khác đặt mất rồi!");
-                        }
+                        app.Symptoms = "Chưa cập nhật";
                     }
 
-                    // Bước 4: Lưu tất cả thay đổi
+                    // Bước 2: Tìm và kiểm tra trạng thái TimeSlot trong DB
+                    var slot = _context.TimeSlots.FirstOrDefault(s => s.Id == app.TimeSlotId);
+                    if (slot == null)
+                    {
+                        throw new Exception("Không tìm thấy khung giờ (TimeSlot) tương ứng!");
+                    }
+
+                    // Kiểm tra xem slot có còn 'Trống' không (Tránh trùng lịch thực tế trong DB)
+                    if (slot.Status != "Trống")
+                    {
+                        throw new Exception("Khung giờ này đã bị chiếm dụng!");
+                    }
+
+                    // Bước 3: Cập nhật trạng thái slot và thêm lịch hẹn
+                    slot.Status = "Đã đặt";
+                    _context.Appointments.Add(app);
+
+                    // Bước 4: Lưu thay đổi đồng bộ
                     _context.SaveChanges();
 
-                    // Xác nhận hoàn tất transaction
                     transaction.Commit();
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    // Nếu có lỗi thì hủy bỏ toàn bộ (không tạo lịch, không khóa giờ)
                     transaction.Rollback();
-                    Console.WriteLine("Lỗi CreateAppointment: " + ex.Message);
+                    // Log chi tiết để nhóm (Nhân, Trang, Tiên) dễ theo dõi
+                    Console.WriteLine($"Lỗi DAL CreateAppointment: {ex.Message}");
                     return false;
                 }
             }
+        }
+
+        // Hàm bổ trợ để tầng BUS gọi kiểm tra nhanh mà không cần mở transaction
+        public bool IsSlotBooked(int timeSlotId)
+        {
+            return _context.Appointments.Any(a => a.TimeSlotId == timeSlotId && a.Status != "Đã hủy");
         }
 
         // 3. Hàm cập nhật trạng thái Chấp nhận (Duyệt lịch)

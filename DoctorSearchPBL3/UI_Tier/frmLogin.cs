@@ -16,6 +16,9 @@ namespace UI_Tier
         // === BƯỚC 1: KHAI BÁO BIẾN Ở ĐÂY ĐỂ HẾT LỖI ===
         private UserBUS _userBUS = new UserBUS();
 
+        // === QUAN TRỌNG: THÊM DÒNG NÀY ĐỂ LƯU ID TOÀN CỤC ===
+        public static int LoggedInUserId;
+
         public frmLogin()
         {
             InitializeComponent();

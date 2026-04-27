@@ -31,7 +31,7 @@ namespace DAL_Tier
         {
             using var transaction = _context.Database.BeginTransaction();
             try
-            {
+        {
                 var slot = _context.TimeSlots.Find(app.TimeSlotId);
                 if (slot == null || slot.BookedCount >= slot.MaxAppointments || slot.Status == "Full")
                     return false;

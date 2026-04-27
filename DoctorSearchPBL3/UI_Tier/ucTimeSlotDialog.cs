@@ -13,14 +13,11 @@ namespace UI_Tier
     public partial class ucTimeSlotDialog : UserControl
     {
         // Khởi tạo tầng BUS để xử lý nghiệp vụ
-        private readonly TimeSlotBUS _timeSlotBus = new TimeSlotBUS();
-        // Biến cục bộ để lưu ID bác sĩ được truyền vào
-        private int _currentDoctorId;
+        private readonly TimeSlotBUS _timeSlotsBus = new TimeSlotBUS();
 
         public ucTimeSlotDialog()
         {
             InitializeComponent();
-            //this._currentDoctorId = doctorId; // Lưu ID vào đây để dùng cho nút Confirm
         }
 
         private Color _activeBack = Color.FromArgb(206, 225, 255); // Màu xanh nhạt
@@ -90,101 +87,93 @@ namespace UI_Tier
             // 2. Khi bấm nút Cancel, bắn tín hiệu báo cho Form cha biết
             OnCloseModal?.Invoke(this, EventArgs.Empty);
         }
-
         private void btnConfirm_Click(object sender, EventArgs e)
         {
-            // Xử lý lưu database các kiểu ở đây...
-
-            // Sau khi lưu xong, cũng bắn tín hiệu để đóng
-            OnCloseModal?.Invoke(this, EventArgs.Empty);
-
-            // --- 1. LẤY ID BÁC SĨ ĐỘNG (NGHIỆP VỤ UI) ---
-            // Bây giờ biến _currentDoctorId đã tồn tại và có giá trị
-            int doctorIdToSave = this._currentDoctorId;
-
-            // --- 2. KIỂM TRA HÌNH THỨC (VALIDATION) ---
-            // Kiểm tra giờ bắt đầu và kết thúc
-            TimeSpan startTime = dateTimePicker1.Value.TimeOfDay;
-            TimeSpan endTime = dateTimePicker2.Value.TimeOfDay;
-
-            if (startTime >= endTime)
+            int currentDoctorId = GlobalAccount.GetCurrentId();
+            if (currentDoctorId <= 0)
             {
-                MessageBox.Show("Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc!", "Thông báo");
+                MessageBox.Show("Phiên đăng nhập hết hạn, vui lòng thử lại!", "Thông báo");
                 return;
             }
 
-            bool isSuccess = false;
+            // LẤY GIỜ: Từ 2 ô chọn giờ phía trên
+            TimeSpan startTime = new TimeSpan(dateTimePicker1.Value.Hour, dateTimePicker1.Value.Minute, 0);
+            TimeSpan endTime = new TimeSpan(dateTimePicker2.Value.Hour, dateTimePicker2.Value.Minute, 0);
 
-            // --- 3. ĐIỀU HƯỚNG NGHIỆP VỤ SANG TẦNG BUS ---
+            if (endTime <= startTime)
+            {
+                MessageBox.Show("Giờ kết thúc phải lớn hơn giờ bắt đầu!", "Thông báo");
+                return;
+            }
+
+            string result = "";
+
             if (cbRepeat.Checked)
             {
-                // Nghiệp vụ UI: Thu thập các thứ (T2, T3...) được chọn từ flowLayoutPanel
-                List<string> selectedDays = new List<string>();
-                foreach (Control ctrl in flpDay.Controls)
-                {
-                    if (ctrl is CheckBox chk && chk.Checked)
-                    {
-                        selectedDays.Add(chk.Text);
-                    }
-                }
-
+                List<string> selectedDays = GetCheckedDays();
                 if (selectedDays.Count == 0)
                 {
-                    MessageBox.Show("Vui lòng chọn ít nhất một thứ để lặp lại!");
+                    MessageBox.Show("Hãy chọn ít nhất một thứ để lặp lại!", "Thông báo");
                     return;
                 }
 
-                // Lấy khoảng ngày lặp lại từ 2 cái DateTimePicker trong pnlRepeat
-                DateTime startDate = dateTimePicker1.Value.Date;
-                DateTime endDate = dateTimePicker2.Value.Date;
+                // --- SỬA TẠI ĐÂY ---
+                // Giả sử 2 ô ngày ở dưới của bạn tên là dtpRepeatStart và dtpRepeatEnd
+                // Bạn hãy thay tên đúng với tên bạn đặt trong Designer nhé!
+                DateTime startDay = dateTimePicker3.Value.Date;
+                DateTime endDay = dateTimePicker4.Value.Date;
 
-                if (startDate > endDate)
-                {
-                    MessageBox.Show("Ngày bắt đầu lặp lại không được lớn hơn ngày kết thúc!");
-                    return;
-                }
-
-                // BƯỚC 3: Truyền doctorIdToSave vào hàm BUS
-                isSuccess = _timeSlotBus.CreateBulkTimeSlots(
-                    doctorIdToSave,
-                    selectedDays,
-                    dateTimePicker1.Value.Date,
-                    dateTimePicker2.Value.Date,
-                    startTime,
-                    endTime
-                );
+                result = _timeSlotsBus.CreateBulkTimeSlots(currentDoctorId, selectedDays, startDay, endDay, startTime, endTime);
             }
             else
             {
-                TimeSlotsDTO singleSlot = new TimeSlotsDTO
+                result = _timeSlotsBus.CreateSingleTimeSlot(new TimeSlotsDTO
                 {
-                    DoctorId = doctorIdToSave,
-                    //Date = dtpDOB.Value.Date,
+                    DoctorId = currentDoctorId,
+                    Date = dtpDOB.Value.Date,
                     StartTime = startTime,
                     EndTime = endTime,
                     Status = "Trống"
-                };
-                isSuccess = _timeSlotBus.CreateSingleTimeSlot(singleSlot);
+                });
             }
 
-            // --- 4. PHẢN HỒI VÀ KẾT THÚC ---
-            if (isSuccess)
+            // Hiển thị thông báo (giữ nguyên)
+            if (result == "Success" || result.Contains("Thành công") || result.Contains("Đã tạo"))
             {
-                MessageBox.Show("Đã tạo khung giờ khám thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                // Sau khi lưu thành công mới bắn tín hiệu để Form cha đóng Overlay và Refresh data
+                MessageBox.Show(result == "Success" ? "Cài đặt khung giờ thành công!" : result, "Thành công");
                 OnCloseModal?.Invoke(this, EventArgs.Empty);
             }
             else
             {
-                MessageBox.Show("Tạo thất bại. Khung giờ này có thể đã tồn tại hoặc bị trùng lịch bác sĩ!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(result, "Thông báo");
             }
+        }
+
+        private List<string> GetCheckedDays()
+        {
+            List<string> days = new List<string>();
+            foreach (Control ctrl in flpDay.Controls)
+            {
+                if (ctrl is CheckBox chk && chk.Checked)
+                {
+                    // Thêm .Trim() để chắc chắn không có khoảng trắng thừa
+                    days.Add(chk.Text.Trim().ToUpper());
+                }
+            }
+            return days;
         }
 
         private void cbRepeat_CheckedChanged(object sender, EventArgs e)
         {
-            // Hiển thị hoặc ẩn phần chọn ngày tùy theo trạng thái của checkbox
-            pnlRepeat.Visible = cbRepeat.Checked;
+            bool isRepeat = cbRepeat.Checked;
+
+            // 1. Hiển thị panel lặp lại (Chứa Từ ngày... Đến ngày... của riêng nó)
+            pnlRepeat.Visible = isRepeat;
+
+            // 2. Ẩn hoặc Vô hiệu hóa cái "Ngày" đơn lẻ bên trên để tránh lấy nhầm
+            // Giả sử cái Label và DateTimePicker ngày đơn lẻ của bạn tên là lblSingleDate và dtpDOB
+            label10.Visible = !isRepeat;
+            dtpDOB.Visible = !isRepeat;
         }
     }
 }

@@ -1,68 +1,8 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Text;
-//using DAL_Tier;
-//using DTO_Tier;
-
-//namespace BUS_Tier
-//{
-//    public class AppointmentBUS
-//    {
-//        private AppointmentDAL dal = new AppointmentDAL();
-
-//        public List<AppointmentsDTO> GetAll()
-//        {
-//            return dal.GetAllAppointments();
-//        }
-
-//        //tạo lịch hẹn mới
-//        public bool BookAppointment(AppointmentsDTO app)
-//        {
-//            // 1. Logic: Kiểm tra nếu các ID quan trọng bị trống thì không cho đặt
-//            if (app.PatientId <= 0 || app.DoctorId <= 0 || app.TimeSlotId <= 0)
-//                return false;
-
-//            // 2. Gọi DAL thực hiện thêm vào DB
-//            return dal.CreateAppointment(app);
-//        }
-
-//        public bool AcceptAppointment(int appointmentId)
-//        {
-//            // Ở đây bạn có thể thêm logic kiểm tra: 
-//            // ví dụ: nếu lịch đã bị hủy thì không cho chấp nhận nữa.
-//            return dal.UpdateStatusToAccept(appointmentId);
-//        }
-
-//        public bool RejectAppointment(int appointmentId)
-//        {
-//            using (var context = new AppDbContext())
-//            {
-//                // 1. Tìm lịch hẹn cần từ chối
-//                var app = context.Appointments.FirstOrDefault(a => a.Id == appointmentId);
-//                if (app == null) return false;
-
-//                // 2. Cập nhật trạng thái Appointments sang 'Đã hủy'
-//                app.Status = "Đã hủy";
-
-//                // 3. Tìm TimeSlot liên quan và cập nhật về 'Trống'
-//                var slot = context.TimeSlots.FirstOrDefault(s => s.Id == app.TimeSlotId);
-//                if (slot != null)
-//                {
-//                    slot.Status = "Trống";
-//                }
-
-//                // Lưu tất cả thay đổi
-//                return context.SaveChanges() > 0;
-//            }
-//        }
-//    }
-//}
-
-
+﻿using DAL_Tier;
+using DTO_Tier;
 using System;
 using System.Collections.Generic;
-using DAL_Tier;
-using DTO_Tier;
+using System.Text;
 
 namespace BUS_Tier
 {
@@ -70,7 +10,7 @@ namespace BUS_Tier
     {
         // Khởi tạo DAL để điều hướng dữ liệu
         private readonly AppointmentDAL _appointmentDAL = new AppointmentDAL();
-
+        private readonly TimeSlotDAL _timeSlotDAL = new TimeSlotDAL();
         // 1. Lấy tất cả lịch hẹn để đổ lên DataGridView
         public List<AppointmentsDTO> GetAll()
         {
@@ -79,20 +19,102 @@ namespace BUS_Tier
         }
 
         // 2. Tạo lịch hẹn mới (Đặt lịch)
-        public bool BookAppointment(AppointmentsDTO app)
+        public string CreateRepeatingAppointments(AppointmentsDTO baseApp, List<DateTime> selectedDates)
         {
-            // Kiểm tra nghiệp vụ: Các ID phải hợp lệ
-            if (app.PatientId <= 0 || app.DoctorId <= 0 || app.TimeSlotId <= 0)
-                return false;
+            // Nghiệp vụ 1: Kiểm tra ngày chọn lặp lại có hợp lệ không
+            if (selectedDates != null && selectedDates.Any(d => d.Date < DateTime.Now.Date))
+            {
+                return "Lỗi: Không thể đặt lịch cho những ngày trong quá khứ!";
+            }
 
-            // Kiểm tra nghiệp vụ: Triệu chứng không được để trống (nvarchar(500) trong SQL)
-            //if (string.IsNullOrWhiteSpace(app.Symptoms))
-            //    return false;
+            // Nghiệp vụ 2: Kiểm tra logic cơ bản (Phòng hờ UI gửi thiếu dữ liệu)
+            if (baseApp.PatientId == 0 || baseApp.DoctorId == 0)
+            {
+                return "Lỗi: Thông tin bệnh nhân hoặc bác sĩ không hợp lệ!";
+            }
 
-            // Gọi DAL: DAL sẽ tự động dùng Transaction để vừa tạo App vừa khóa TimeSlot
-            return _appointmentDAL.CreateAppointment(app);
+            // Nếu không lặp lại
+            if (selectedDates == null || !selectedDates.Any())
+            {
+                return CreateSingleAppointment(baseApp);
+            }
+
+            int successCount = 0;
+            int duplicateCount = 0;
+            int noSlotCount = 0;
+            string errorDetails = "";
+
+            foreach (var date in selectedDates)
+            {
+                try
+                {
+                    // BƯỚC 1: Tìm TimeSlotId dựa trên DoctorId và Ngày cụ thể
+                    // DAL cần viết: GetSlotIdByDateTime(int doctorId, DateTime date)
+                    int actualSlotId = _timeSlotDAL.GetSlotIdByDateTime(baseApp.DoctorId, date);
+
+                    if (actualSlotId <= 0)
+                    {
+                        noSlotCount++;
+                        continue;
+                    }
+
+                    // BƯỚC 2: Kiểm tra xem slot này đã bị ai khác đặt chưa (IsSlotBooked)
+                    if (_appointmentDAL.IsSlotBooked(actualSlotId))
+                    {
+                        duplicateCount++;
+                        continue;
+                    }
+
+                    // BƯỚC 3: Tạo DTO mới
+                    var newApp = new AppointmentsDTO
+                    {
+                        PatientId = baseApp.PatientId,
+                        DoctorId = baseApp.DoctorId,
+                        TimeSlotId = actualSlotId,
+                        Symptoms = string.IsNullOrWhiteSpace(baseApp.Symptoms) ? "Chưa cập nhật" : baseApp.Symptoms,
+                        Status = "Chờ duyệt", // Mặc định theo quy trình phòng khám
+                        CreatedAt = DateTime.Now
+                    };
+
+                    // BƯỚC 4: Lưu xuống DAL (DAL sẽ chuyển Status của TimeSlot sang 'Đã đặt')
+                    if (_appointmentDAL.CreateAppointment(newApp)) successCount++;
+                    else errorDetails += $"{date.ToShortDateString()} (Lỗi hệ thống); ";
+                }
+                catch (Exception ex)
+                {
+                    errorDetails += $"{date.ToShortDateString()} ({ex.Message}); ";
+                }
+            }
+
+            // TỔNG HỢP KẾT QUẢ TRẢ VỀ
+            if (successCount == selectedDates.Count && noSlotCount == 0 && duplicateCount == 0)
+                return "Success";
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"Hoàn thành: {successCount}/{selectedDates.Count}. ");
+            if (duplicateCount > 0) sb.Append($"Trùng lịch: {duplicateCount}. ");
+            if (noSlotCount > 0) sb.Append($"Chưa có giờ: {noSlotCount}. ");
+            if (!string.IsNullOrEmpty(errorDetails)) sb.Append($"Chi tiết lỗi: {errorDetails}");
+
+            return sb.ToString();
         }
 
+        private string CreateSingleAppointment(AppointmentsDTO app)
+        {
+            // Nghiệp vụ: Không đặt lịch ngày hôm qua
+            // (Cần lấy thông tin ngày của TimeSlotId từ DAL để check)
+
+            if (_appointmentDAL.IsSlotBooked(app.TimeSlotId))
+            {
+                return "Lỗi: Khung giờ này đã được đặt lịch trước đó!";
+            }
+
+            if (string.IsNullOrWhiteSpace(app.Symptoms))
+                app.Symptoms = "Chưa cập nhật";
+
+            bool result = _appointmentDAL.CreateAppointment(app);
+            return result ? "Success" : "Lỗi hệ thống DAL khi tạo lịch đơn.";
+        }
         // 3. Chấp nhận/Duyệt lịch hẹn (Dùng cho Bác sĩ/Admin)
         public bool AcceptAppointment(int appointmentId)
         {
