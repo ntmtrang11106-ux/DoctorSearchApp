@@ -17,6 +17,9 @@ namespace DTO_Tier
         [StringLength(100)]
         public string RoomName { get; set; } = null!;
 
+        [Required]
+        public int? DepartmentId { get; set; }
+
         [StringLength(50)]
         public string? Floor { get; set; }
 
@@ -33,5 +36,7 @@ namespace DTO_Tier
         public DateTime? DeletedAt { get; set; }
 
         public virtual ICollection<TimeSlotsDTO> TimeSlots { get; set; } = new List<TimeSlotsDTO>();
+        [ForeignKey(nameof(DepartmentId))]
+        public virtual DepartmentDTO? Department { get; set; }
     }
 }

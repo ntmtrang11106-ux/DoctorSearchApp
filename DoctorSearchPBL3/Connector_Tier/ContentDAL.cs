@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL_Tier
 {
-    public class ArticleDAL
+    public class ContentDAL
     {
         public List<ContentDTO> SearchContents(string? keyword, List<string>? departmentNames, string? sortType)
         {

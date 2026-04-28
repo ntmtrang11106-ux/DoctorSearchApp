@@ -33,10 +33,10 @@ namespace UI_Tier
             //nhân 
             lblPatientName.Text = data.Patient?.User?.FullName ?? "N/A";
             lblPhoneNumber.Text = data.Patient?.User?.PhoneNumber ?? "N/A";
-            lblSymptoms.Text = string.IsNullOrEmpty(data.Symptoms) ? "Không có triệu chứng" : data.Symptoms;
+            lblSymptoms.Text = string.IsNullOrEmpty(data.Reason) ? "Không có triệu chứng" : data.Reason;
             if (data.TimeSlot != null)
             {
-                lblDate.Text = data.TimeSlot.Date.ToString("dd/MM/yyyy");
+                lblDate.Text = data.TimeSlot.WorkDate.ToString("dd/MM/yyyy");
                 // Format TimeSpan thành dạng HH'h':mm (Ví dụ: 08h:30)
                 lblTime.Text = $"{data.TimeSlot.StartTime:hh\\:mm} - {data.TimeSlot.EndTime:hh\\:mm}";
             }

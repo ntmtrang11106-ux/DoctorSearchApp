@@ -1,6 +1,5 @@
 ﻿using DAL_Tier;
 using DTO_Tier; 
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,27 +59,19 @@ namespace BUS_Tier
 
         // 3. Logic Đăng ký Bác sĩ
         public string RegisterDoctor(UserDTO user, string confirmPass, string province, string district,
-                             string clinicName, int? locationId, List<DoctorSpecialtyDTO> listCerts)
+                             string clinicName)
         {
-            // --- BƯỚC 1: Kiểm tra hợp lệ ---
             string validateMsg = ValidateCommon(user);
             if (validateMsg != "OK") return validateMsg;
 
             if (user.Password != confirmPass) return "Mật khẩu xác nhận không khớp!";
             if (string.IsNullOrWhiteSpace(clinicName)) return "Vui lòng nhập tên phòng khám!";
 
-            // Lọc: Chỉ lấy những chứng chỉ có nhập mã (CertificateCode) hợp lệ
-            var validCerts = listCerts?.Where(c => !string.IsNullOrWhiteSpace(c.CertificateCode)).ToList();
-
-            if (validCerts == null || !validCerts.Any())
-                return "Bác sĩ phải có ít nhất một chứng chỉ chuyên khoa hợp lệ!";
-
             if (string.IsNullOrWhiteSpace(province) || string.IsNullOrWhiteSpace(district))
                 return "Vui lòng chọn đầy đủ địa chỉ!";
 
-            // --- BƯỚC 2: Xử lý nghiệp vụ ---
             user.Residential_Address = $"{district}, {province}";
-            user.Created_At = DateTime.Now;
+            user.CreatedAt = DateTime.Now;
 
             try
             {
@@ -89,13 +80,10 @@ namespace BUS_Tier
 
                 if (newUserId > 0)
                 {
-                    // Bước 2: Lưu Doctor (DAL sẽ tự tính Max Experience_Years để lưu vào ExperienceSummary)
                     bool isDetailSaved = _dal.InsertDoctorFull(
                         newUserId,
                         user.Residential_Address,
-                        clinicName,
-                        locationId,
-                        validCerts // Dùng danh sách đã lọc sạch
+                        clinicName
                     );
 
                     if (isDetailSaved) return "Success";
@@ -115,8 +103,10 @@ namespace BUS_Tier
         // 4. Hàm kiểm tra hợp lệ chung (Dùng chung cho cả Doctor và Patient)
         private string ValidateCommon(UserDTO user)
         {
-            int age = DateTime.Now.Year - user.Dob.Year;
-            if (user.Dob.Date > DateTime.Now.AddYears(-age)) age--;
+            if (!user.Dob.HasValue) return "Vui lòng chọn ngày sinh!";
+
+            int age = DateTime.Now.Year - user.Dob.Value.Year;
+            if (user.Dob.Value.Date > DateTime.Now.AddYears(-age)) age--;
 
             if (string.IsNullOrWhiteSpace(user.PhoneNumber) || string.IsNullOrWhiteSpace(user.FullName) ||
                 string.IsNullOrWhiteSpace(user.Password) )

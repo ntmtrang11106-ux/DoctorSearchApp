@@ -1,5 +1,4 @@
-﻿using BUS_Tier;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,9 +13,6 @@ namespace UI_Tier
     {
         // 1. Khai báo cái loa (Event)
         public event EventHandler OnRemoveRequested;
-
-        // 2. Khai báo đối tượng BUS để lấy dữ liệu chuyên khoa
-        private SpecialtyBUS _specialtyBUS = new SpecialtyBUS();
 
         public ucDoctorCertificate()
         {
@@ -69,14 +65,14 @@ namespace UI_Tier
         {
             try
             {
-                DataTable dt = _specialtyBUS.GetListSpecialties(); // Gọi qua tầng BUS
-                if (dt != null)
-                {
-                    comboBox3.DataSource = dt;
-                    comboBox3.DisplayMember = "SpecialtyName"; // Tên hiển thị
-                    comboBox3.ValueMember = "Id";             // Giá trị thực là ID
-                    comboBox3.SelectedIndex = -1;             // Mặc định không chọn cái nào
-                }
+                // Specialty table is removed in code-first refactor.
+                var dt = new DataTable();
+                dt.Columns.Add("Id", typeof(int));
+                dt.Columns.Add("SpecialtyName", typeof(string));
+                comboBox3.DataSource = dt;
+                comboBox3.DisplayMember = "SpecialtyName";
+                comboBox3.ValueMember = "Id";
+                comboBox3.SelectedIndex = -1;
             }
             catch (Exception ex)
             {

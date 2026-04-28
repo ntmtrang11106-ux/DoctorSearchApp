@@ -64,7 +64,7 @@ namespace UI_Tier
             //Application.Run(new frmLogin());
             //Application.Run(new frmRegister());
             //Application.Run(new frmPatient());
-            Application.Run(new frmDoctor());
+            Application.Run(new frmGuest());
         }
 
     }

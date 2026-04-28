@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL_Tier.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260426025434_RefactorFinish")]
-    partial class RefactorFinish
+    [Migration("20260427171728_AddDoctorCertificates")]
+    partial class AddDoctorCertificates
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -305,6 +305,45 @@ namespace DAL_Tier.Migrations
                         .IsUnique();
 
                     b.ToTable("Department");
+                });
+
+            modelBuilder.Entity("DTO_Tier.DoctorCertificateDTO", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FileName")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.ToTable("DoctorCertificates");
                 });
 
             modelBuilder.Entity("DTO_Tier.DoctorDTO", b =>
@@ -822,6 +861,17 @@ namespace DAL_Tier.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("DTO_Tier.DoctorCertificateDTO", b =>
+                {
+                    b.HasOne("DTO_Tier.DoctorDTO", "Doctor")
+                        .WithMany("Certificates")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+                });
+
             modelBuilder.Entity("DTO_Tier.DoctorDTO", b =>
                 {
                     b.HasOne("DTO_Tier.DepartmentDTO", "Department")
@@ -939,6 +989,8 @@ namespace DAL_Tier.Migrations
             modelBuilder.Entity("DTO_Tier.DoctorDTO", b =>
                 {
                     b.Navigation("Appointments");
+
+                    b.Navigation("Certificates");
 
                     b.Navigation("Reviews");
 

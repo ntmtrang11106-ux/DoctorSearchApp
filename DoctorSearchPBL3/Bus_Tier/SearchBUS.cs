@@ -6,7 +6,7 @@ namespace BUS_Tier
     public class SearchBUS
     {
         private readonly DoctorDAL _doctorDAL = new DoctorDAL();
-        private readonly ArticleDAL _articleDAL = new ArticleDAL();
+        private readonly ContentDAL _articleDAL = new ContentDAL();
 
         public (List<DoctorDTO> doctors, List<ContentDTO> contents) ExecuteIntegratedSearch(
             string? keyword,

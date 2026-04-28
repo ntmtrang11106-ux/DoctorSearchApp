@@ -16,36 +16,36 @@ namespace UI_Tier
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
         }
-        public void SetData(ArticlesDTO article)
+        public void SetData(ContentDTO content)
         {
-            if (article == null) return;
+            if (content == null) return;
 
             try
             {
                 // 1. Tiêu đề - Luôn đưa lên trên cùng (BringToFront) để không bị Panel đè
-                lblTitle.Text = article.Title ?? "Không có tiêu đề";
+                lblTitle.Text = content.Title ?? "Không có tiêu đề";
                 lblTitle.BringToFront();
 
                 // 2. Tóm tắt nội dung
-                if (!string.IsNullOrEmpty(article.Content))
+                if (!string.IsNullOrEmpty(content.Summary))
                 {
-                    lblSummary.Text = article.Content.Length > 100
-                        ? article.Content.Substring(0, 100) + "...Xem thêm"
-                        : article.Content;
+                    lblSummary.Text = content.Summary.Length > 100
+                        ? content.Summary.Substring(0, 100) + "...Xem thêm"
+                        : content.Summary;
                 }
                 else { lblSummary.Text = "...Xem thêm"; }
                 lblSummary.BringToFront();
 
                 // 3. Thông tin phụ
-                lblViews.Text = article.Views.ToString();
-                lblDate.Text = "Ngày đăng: " + article.CreatedAt.ToString("dd/MM/yyyy");
+                lblViews.Text = content.ViewCount.ToString();
+                lblDate.Text = "Ngày đăng: " + content.CreatedAt.ToString("dd/MM/yyyy");
 
                 // 4. Tác giả - DÙNG ?. ĐỂ CHẶN LỖI MẤT BÀI THỨ 5
-                lblAuthor.Text = "Tác giả: " + article.Author?.FullName ?? "Admin";
+                lblAuthor.Text = "Tác giả: " + content.AuthorAdmin?.User.FullName ?? "Admin";
                 lblAuthor.BringToFront();
 
                 // 5. Xử lý ảnh (Thumbnail)
-                if (!string.IsNullOrEmpty(article.Thumbnail))
+                if (!string.IsNullOrEmpty(content.Thumbnail))
                 {
                     // Tạm thời comment hoặc load ảnh từ resources
                     // picThumbnail.Image = Properties.Resources.default_news; 

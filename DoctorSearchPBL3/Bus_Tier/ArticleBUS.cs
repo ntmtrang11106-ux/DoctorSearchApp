@@ -1,26 +1,22 @@
 ﻿using DAL_Tier;
 using DTO_Tier;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BUS_Tier
 {
     public class ArticleBUS
     {
-        private ArticleDAL _articleDAL = new ArticleDAL();
+        private readonly ContentDAL _contentDAL = new ContentDAL();
 
-        // Lấy toàn bộ bài viết để hiện ban đầu (mới mở App)
-        public List<ArticlesDTO> GetInitialArticles()
+        public List<ContentDTO> GetInitialArticles()
         {
-            // Gọi DAL đã có Include Author và Specialties
-            return _articleDAL.GetAllArticles();
+            return _contentDAL.GetAllContents();
         }
 
-        // Nếu Trang muốn viết thêm logic kiểm tra nội dung bài viết trước khi hiện
-        public string ValidateArticle(ArticlesDTO article)
+        public string ValidateArticle(ContentDTO article)
         {
             if (string.IsNullOrEmpty(article.Title)) return "Tiêu đề không được để trống!";
-            if (article.Content.Length < 10) return "Nội dung bài viết quá ngắn!";
+            if (article.Body.Length < 10) return "Nội dung bài viết quá ngắn!";
             return "OK";
         }
     }

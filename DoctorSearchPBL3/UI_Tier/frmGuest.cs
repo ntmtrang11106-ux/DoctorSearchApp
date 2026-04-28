@@ -192,22 +192,21 @@ namespace UI_Tier
                 }
 
                 List<string> selectedSpecs = new List<string>();
-                string location = null;
                 string gender = null;
                 string sortDoc = "Rating";
                 string sortArt = "Newest";
 
-                ExecuteUI_Search(keyword, selectedSpecs, location, gender, sortDoc, sortArt);
+                ExecuteUI_Search(keyword, selectedSpecs, gender, sortDoc, sortArt);
             }
         } // <--- DẤU NGOẶC NÀY CỰC KỲ QUAN TRỌNG, PHẢI ĐÓNG Ở ĐÂY!
 
         // Bây giờ mới viết hàm ExecuteUI_Search nằm RIÊNG BIỆT ra ngoài
-        private void ExecuteUI_Search(string key, List<string> specs, string loc, string gen, string sDoc, string sArt)
+        private void ExecuteUI_Search(string key, List<string> specs, string gen, string sDoc, string sArt)
         {
-            var result = _searchBUS.ExecuteIntegratedSearch(key, specs, loc, gen, sDoc, sArt);
+            var result = _searchBUS.ExecuteIntegratedSearch(key, specs, gen, sDoc, sArt);
 
             List<DoctorDTO> doctors = result.doctors;
-            List<ArticlesDTO> articles = result.articles;
+            List<ContentDTO> articles = result.contents;
 
             // Đổ Bác sĩ
             flpDoctors.Controls.Clear();

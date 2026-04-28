@@ -22,7 +22,7 @@ namespace UI_Tier
         // Khai báo một lần ở cấp độ class để tái sử dụng
         private ArticleBUS _bus = new ArticleBUS();
 
-        private List<ArticlesDTO> _allArt = new List<ArticlesDTO>();
+        private List<ContentDTO> _allArt = new List<ContentDTO>();
         private int _pageSize = 10;     // Số lượng 1 trang
         private int _currentPage = 1;  // Trang hiện tại
 

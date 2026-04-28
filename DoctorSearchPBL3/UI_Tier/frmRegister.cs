@@ -17,7 +17,7 @@ namespace UI_Tier
     {
         // 1. Khai báo tầng BUS để xử lý nghiệp vụ
         private LoginBUS _loginBUS = new LoginBUS();
-        private LocationBUS _locationBUS = new LocationBUS(); // Bổ sung LocationBUS mới tách
+        //private LocationBUS _locationBUS = new LocationBUS(); // Bổ sung LocationBUS mới tách
         // Biến này cực kỳ quan trọng để phân biệt 2 luồng
         private string currentRole = "";
 
@@ -100,20 +100,19 @@ namespace UI_Tier
         // Sự kiện Load Form
 
         // Khi chọn Tỉnh/Thành -> Lọc Quận/Huyện tương ứng
-        private void cboProvince_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cboProvince.SelectedItem != null)
-            {
-                string provinceName = cboProvince.SelectedItem.ToString();
+        //private void cboProvince_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    if (cboProvince.SelectedItem != null)
+        //    {
+        //        string provinceName = cboProvince.SelectedItem.ToString();
 
-                // Lấy danh sách Quận/Huyện theo Tỉnh
-                var districts = _locationBUS.GetDistricts(provinceName);
+        //        // Lấy danh sách Quận/Huyện theo Tỉnh
+        //        //var districts = _locationBUS.GetDistricts(provinceName);
 
-                cboRegion.DataSource = districts;
-                cboRegion.DisplayMember = "LocationName"; // Tên hiển thị (Cẩm Lệ, Hải Châu...)
-                cboRegion.ValueMember = "Id";             // Giá trị lấy ra (ID)
-            }
-        }
+        //        cboRegion.DataSource = districts;
+        //        cboRegion.SelectedIndex = -1;
+        //    }
+        //}
         #endregion
 
         private int CalculateAge(DateTime birthDate)
@@ -135,13 +134,6 @@ namespace UI_Tier
             {
                 MessageBox.Show("Vui lòng chọn vai trò!");
                 return;
-            }
-
-            // Lấy LocationId từ Quận/Huyện (cboRegion) thay vì cboProvince
-            int? locationId = null;
-            if (cboRegion.SelectedValue != null && cboRegion.SelectedValue is int id)
-            {
-                locationId = id;
             }
 
             // 2. Xử lý gộp địa chỉ "Xã, Tỉnh"
@@ -180,41 +172,7 @@ namespace UI_Tier
             }
             else if (currentRole == "Doctor")
             {
-                // --- ĐÓNG GÓI DANH SÁCH CHỨNG CHỈ ---
-                List<DoctorSpecialtyDTO> listCerts = new List<DoctorSpecialtyDTO>();
                 string clinicName = textBox3.Text.Trim();
-
-                foreach (Control ctrl in flpCertificate.Controls)
-                {
-                    if (ctrl is ucDoctorCertificate uc)
-                    {
-                        // Lấy dữ liệu thông qua các hàm getter đã sửa của UserControl
-                        int specialtyId = uc.GetSelectedSpecialtyId();
-                        string certCode = uc.GetCertificateId();
-                        int expYears = uc.GetExperienceYears();
-
-                        // CHỈ THÊM NẾU: Có mã chứng chỉ VÀ đã chọn chuyên khoa
-                        if (!string.IsNullOrWhiteSpace(certCode) && specialtyId > 0)
-                        {
-                            var cert = new DoctorSpecialtyDTO
-                            {
-                                SpecialtyId = specialtyId,
-                                CertificateCode = certCode,
-                                CertificateImage = uc.GetCertificateImageName(),
-                                Experience_Years = expYears // Đã được tính toán (2026 - Năm cấp)
-                            };
-                            listCerts.Add(cert);
-                        }
-                    }
-                }
-
-                // --- KIỂM TRA NGHIỆP VỤ TẠI UI ---
-                if (listCerts.Count == 0)
-                {
-                    MessageBox.Show("Vui lòng nhập đầy đủ thông tin ít nhất một chứng chỉ chuyên khoa!",
-                                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
 
                 // Gọi BUS: Truyền dữ liệu sạch xuống tầng dưới
                 result = _loginBUS.RegisterDoctor(
@@ -222,9 +180,7 @@ namespace UI_Tier
                     confirmPass,
                     province,
                     district,
-                    clinicName,
-                    locationId,
-                    listCerts
+                    clinicName
                 );
             }
 
@@ -294,7 +250,7 @@ namespace UI_Tier
         private void frmRegister_Load(object sender, EventArgs e)
         {
             // 1. Load danh sách Tỉnh/Thành
-            cboProvince.DataSource = _locationBUS.GetProvinces();
+            //cboProvince.DataSource = _locationBUS.GetProvinces();
             cboProvince.SelectedIndex = -1; // Để trống mặc định
 
             // 2. Thêm 1 chứng chỉ mặc định cho bác sĩ
@@ -302,32 +258,29 @@ namespace UI_Tier
         }
         #endregion
 
-        private void cboProvince_SelectedIndexChanged_1(object sender, EventArgs e)
-        {
-            // Kiểm tra nếu người dùng thực sự chọn một mục (tránh lỗi khi form mới load)
-            if (cboProvince.SelectedIndex != -1 && cboProvince.SelectedItem != null)
-            {
-                // Lấy tên tỉnh đang chọn
-                string selectedProvince = cboProvince.SelectedItem.ToString();
+        //private void cboProvince_SelectedIndexChanged_1(object sender, EventArgs e)
+        //{
+        //    // Kiểm tra nếu người dùng thực sự chọn một mục (tránh lỗi khi form mới load)
+        //    if (cboProvince.SelectedIndex != -1 && cboProvince.SelectedItem != null)
+        //    {
+        //        // Lấy tên tỉnh đang chọn
+        //        string selectedProvince = cboProvince.SelectedItem.ToString();
 
-                // 1. Gọi BUS để lấy danh sách Quận/Huyện từ Database
-                var districts = _locationBUS.GetDistricts(selectedProvince);
+        //        // 1. Gọi BUS để lấy danh sách Quận/Huyện từ Database
+        //        //var districts = _locationBUS.GetDistricts(selectedProvince);
 
-                // 2. Xóa các ràng buộc cũ của cboRegion (Xã/Phường) để làm sạch dữ liệu
-                cboRegion.DataSource = null;
-                cboRegion.Items.Clear();
+        //        // 2. Xóa các ràng buộc cũ của cboRegion (Xã/Phường) để làm sạch dữ liệu
+        //        cboRegion.DataSource = null;
+        //        cboRegion.Items.Clear();
 
-                // 3. Nạp dữ liệu mới
-                if (districts != null && districts.Count > 0)
-                {
-                    cboRegion.DataSource = districts;
-                    cboRegion.DisplayMember = "LocationName"; // Tên hiển thị trên ComboBox
-                    cboRegion.ValueMember = "Id";             // ID thực tế để lưu xuống bảng Doctor
-
-                    cboRegion.SelectedIndex = -1; // Để trống, bắt người dùng phải tự chọn
-                }
-            }
-        }
+        //        // 3. Nạp dữ liệu mới
+        //        if (districts != null && districts.Count > 0)
+        //        {
+        //            cboRegion.DataSource = districts;
+        //            cboRegion.SelectedIndex = -1; // Để trống, bắt người dùng phải tự chọn
+        //        }
+        //    }
+        //}
 
         private void dtpDOB_ValueChanged(object sender, EventArgs e)
         {

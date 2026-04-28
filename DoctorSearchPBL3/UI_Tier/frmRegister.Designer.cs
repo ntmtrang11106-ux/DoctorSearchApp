@@ -586,7 +586,7 @@
             cboProvince.Name = "cboProvince";
             cboProvince.Size = new Size(481, 53);
             cboProvince.TabIndex = 29;
-            cboProvince.SelectedIndexChanged += cboProvince_SelectedIndexChanged_1;
+            //cboProvince.SelectedIndexChanged += cboProvince_SelectedIndexChanged_1;
             // 
             // label16
             // 

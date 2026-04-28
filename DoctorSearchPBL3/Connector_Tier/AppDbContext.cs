@@ -19,6 +19,8 @@ namespace DAL_Tier
         public DbSet<MedicalRecordsDTO> MedicalRecords { get; set; }
         public DbSet<ContentDTO> Contents { get; set; }
         public DbSet<ReviewsDTO> Reviews { get; set; }
+        public DbSet<DoctorCertificateDTO> DoctorCertificates { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -45,7 +47,13 @@ namespace DAL_Tier
                 .WithMany()
                 .HasForeignKey(d => d.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<RoomDTO>()
+                .HasOne(r => r.Department)
+                .WithMany()
+                .HasForeignKey(r => r.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<RoomDTO>().HasIndex(r => new { r.DepartmentId, r.RoomCode });
             modelBuilder.Entity<TimeSlotsDTO>()
                 .HasOne(t => t.Doctor)
                 .WithMany(d => d.TimeSlots)
@@ -153,6 +161,13 @@ namespace DAL_Tier
                 .WithMany()
                 .HasForeignKey(m => m.AppointmentID)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<DoctorCertificateDTO>()
+                .HasOne(c => c.Doctor)
+                .WithMany(d => d.Certificates)
+                .HasForeignKey(c => c.DoctorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DoctorCertificateDTO>().HasIndex(c => c.DoctorId);
 
             modelBuilder.Entity<UserDTO>().Property(u => u.Status).HasDefaultValue("Active");
             modelBuilder.Entity<TimeSlotsDTO>().Property(t => t.Status).HasDefaultValue("Open");

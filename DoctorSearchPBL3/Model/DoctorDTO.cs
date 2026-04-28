@@ -68,5 +68,8 @@ namespace DTO_Tier
 
         [NotMapped]
         public int TotalReviews { get; set; }
+
+        // Certificates: 1 doctor -> many certificate files
+        public virtual ICollection<DoctorCertificateDTO> Certificates { get; set; } = new List<DoctorCertificateDTO>();
     }
 }
