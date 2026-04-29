@@ -1,29 +1,30 @@
-using BUS_Tier;
-using DTO_Tier;
-using System.Drawing.Drawing2D;
+﻿using DTO_Tier;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Reflection.Metadata;
+using System.Text;
+using System.Windows.Forms;
 
 namespace UI_Tier
 {
-    public partial class UCCardDoctor : UserControl
+    public partial class ucPatient_DocProfile : UserControl
     {
-        private DoctorDTO _currentDoc;
 
-        public UCCardDoctor()
+        public ucPatient_DocProfile()
         {
             InitializeComponent();
 
             UIHelper.SetDoubleBuffered(this); // Kích hoạt Double Buffering cho UserControl để giảm nhấp nháy
         }
 
-
         // Hàm này dùng để "đổ" dữ liệu từ đối tượng Doctor vào các Label
 
         public void SetDoctorData(DoctorDTO doctor)
-
         {
-            if (doctor == null) return;
 
-            _currentDoc = doctor;
             /// 1. Tên Bác sĩ: Kết hợp Chức danh + Họ tên
             // Ví dụ: "Thạc sĩ Nguyễn Văn A" hoặc "Bác sĩ Trần Thị B"
             string position = doctor.Position ?? "";
@@ -41,7 +42,7 @@ namespace UI_Tier
             lblSpecialties.Text = deptName;
 
             //4. Giơí tính
-            lblGender.Text = $"Giới tính: {doctor.User?.Gender ?? "Chưa cập nhật" }";
+            lblGender.Text = $"Giới tính: {doctor.User?.Gender ?? "Chưa cập nhật"}";
 
             //5. Địa chỉ cụ thể 
             lblSpecificAdress.Text = doctor.User?.Residential_Address ?? "Chưa cập nhật";
@@ -99,31 +100,19 @@ namespace UI_Tier
             }
         }
 
-        private void UCCardDoctor_Load(object sender, EventArgs e)
+        private void ucPatient_DocProfile_Load(object sender, EventArgs e)
         {
-            // Bo góc cho toàn bộ Card (nếu muốn)
-            UIHelper.ApplyRoundedRegion(this, 15);
-
-            // Bo góc cho Label chuyên khoa ở góc phải
-            UIHelper.ApplyRoundedRegion(lblSpecialtyTag, 8);
-
-            // Bo góc cho PictureBox (nếu bạn muốn bo nhẹ 4 góc)
-            UIHelper.ApplyRoundedRegion(picDoctor, 15);
-
-            // Vẽ border cho Card (nếu muốn)
-            this.Paint += (sender, e) => UIHelper.uc_Paint(sender, e, 20, Color.FromArgb(224, 224, 224), 2);
+            UIHelper.ApplyRoundedRegion(picDoctor, 175); // Bo tròn ảnh bác sĩ
         }
 
-        // Hàm xử lý khi kích vào bất kỳ đâu trên Card
-        private void Card_Click(object sender, EventArgs e)
+        private void btnBack_Click(object sender, EventArgs e)
         {
             // Tìm về Form chính để điều hướng trang
             Form parentForm = this.FindForm();
             if (parentForm is frmPatient main)
             {
-                main.OpenDoctorProfile(_currentDoc);
+                main.BackToDoctorList();
             }
         }
-
     }
 }

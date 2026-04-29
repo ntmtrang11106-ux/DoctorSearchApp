@@ -61,6 +61,7 @@
             picDoctor.SizeMode = PictureBoxSizeMode.Zoom;
             picDoctor.TabIndex = 0;
             picDoctor.TabStop = false;
+            picDoctor.Click += Card_Click;
             // 
             // lblFullName
             // 
@@ -72,6 +73,7 @@
             lblFullName.Size = new Size(432, 54);
             lblFullName.TabIndex = 1;
             lblFullName.Text = "BS. Nguyễn Văn Minh";
+            lblFullName.Click += Card_Click;
             // 
             // lblSpecialtyTag
             // 
@@ -86,25 +88,28 @@
             lblSpecialtyTag.Size = new Size(93, 36);
             lblSpecialtyTag.TabIndex = 5;
             lblSpecialtyTag.Text = "label1";
+            lblSpecialtyTag.Click += Card_Click;
             // 
             // lblEx
             // 
             lblEx.AutoSize = true;
             lblEx.Font = new Font("Segoe UI", 10F);
-            lblEx.Location = new Point(97, 824);
+            lblEx.Location = new Point(97, 834);
             lblEx.Name = "lblEx";
             lblEx.Size = new Size(90, 37);
             lblEx.TabIndex = 16;
             lblEx.Text = "label1";
+            lblEx.Click += Card_Click;
             // 
             // lblTotalReviews
             // 
             lblTotalReviews.AutoSize = true;
-            lblTotalReviews.Location = new Point(187, 771);
+            lblTotalReviews.Location = new Point(187, 781);
             lblTotalReviews.Name = "lblTotalReviews";
             lblTotalReviews.Size = new Size(78, 32);
             lblTotalReviews.TabIndex = 17;
             lblTotalReviews.Text = "label2";
+            lblTotalReviews.Click += Card_Click;
             // 
             // pnlContainer
             // 
@@ -133,147 +138,162 @@
             pnlContainer.Padding = new Padding(10);
             pnlContainer.Size = new Size(659, 886);
             pnlContainer.TabIndex = 19;
+            pnlContainer.Click += Card_Click;
             // 
             // lblGender
             // 
             lblGender.AutoSize = true;
-            lblGender.Location = new Point(29, 515);
+            lblGender.Font = new Font("Segoe UI", 10F);
+            lblGender.Location = new Point(29, 517);
             lblGender.Name = "lblGender";
-            lblGender.Size = new Size(105, 32);
+            lblGender.Size = new Size(119, 37);
             lblGender.TabIndex = 27;
             lblGender.Text = "Gioi tính";
+            lblGender.Click += Card_Click;
             // 
             // lblSpecialties
             // 
             lblSpecialties.AutoSize = true;
             lblSpecialties.Font = new Font("Segoe UI", 11F);
             lblSpecialties.ForeColor = Color.FromArgb(37, 99, 235);
-            lblSpecialties.Location = new Point(25, 469);
+            lblSpecialties.Location = new Point(25, 468);
             lblSpecialties.Margin = new Padding(0, 5, 0, 5);
             lblSpecialties.MaximumSize = new Size(600, 0);
             lblSpecialties.Name = "lblSpecialties";
             lblSpecialties.Size = new Size(192, 41);
             lblSpecialties.TabIndex = 26;
             lblSpecialties.Text = "Chuyên khoa";
+            lblSpecialties.Click += Card_Click;
             // 
             // label7
             // 
             label7.BackColor = Color.Transparent;
             label7.Font = new Font("Segoe MDL2 Assets", 15F);
             label7.ForeColor = Color.DodgerBlue;
-            label7.Location = new Point(24, 824);
+            label7.Location = new Point(24, 834);
             label7.Margin = new Padding(4, 0, 4, 0);
             label7.Name = "label7";
             label7.Size = new Size(65, 64);
             label7.TabIndex = 25;
             label7.Text = "";
+            label7.Click += Card_Click;
             // 
             // label6
             // 
             label6.Font = new Font("Segoe MDL2 Assets", 15F);
             label6.ForeColor = Color.Gold;
-            label6.Location = new Point(29, 760);
+            label6.Location = new Point(29, 770);
             label6.Margin = new Padding(4, 0, 4, 0);
             label6.Name = "label6";
             label6.Size = new Size(65, 64);
             label6.TabIndex = 24;
             label6.Text = "";
+            label6.Click += Card_Click;
             // 
             // label5
             // 
             label5.Font = new Font("Segoe MDL2 Assets", 15F);
             label5.ForeColor = Color.DodgerBlue;
-            label5.Location = new Point(24, 680);
+            label5.Location = new Point(24, 690);
             label5.Margin = new Padding(4, 0, 4, 0);
             label5.Name = "label5";
             label5.Size = new Size(65, 47);
             label5.TabIndex = 23;
             label5.Text = "";
+            label5.Click += Card_Click;
             // 
             // label4
             // 
             label4.Font = new Font("Segoe MDL2 Assets", 15F);
             label4.ForeColor = Color.DodgerBlue;
-            label4.Location = new Point(24, 618);
+            label4.Location = new Point(24, 628);
             label4.Margin = new Padding(4, 0, 4, 0);
             label4.Name = "label4";
             label4.Size = new Size(65, 64);
             label4.TabIndex = 22;
             label4.Text = "";
+            label4.Click += Card_Click;
             // 
             // label3
             // 
             label3.Font = new Font("Segoe MDL2 Assets", 15F);
             label3.ForeColor = Color.DodgerBlue;
-            label3.Location = new Point(29, 563);
+            label3.Location = new Point(29, 573);
             label3.Margin = new Padding(4, 0, 4, 0);
             label3.Name = "label3";
             label3.Size = new Size(65, 64);
             label3.TabIndex = 21;
             label3.Text = "";
+            label3.Click += Card_Click;
             // 
             // label2
             // 
             label2.BackColor = Color.Gray;
-            label2.Location = new Point(5, 737);
+            label2.Location = new Point(5, 747);
             label2.Name = "label2";
             label2.Size = new Size(650, 3);
             label2.TabIndex = 20;
+            label2.Click += Card_Click;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(87, 682);
+            label1.Location = new Point(87, 692);
             label1.Name = "label1";
             label1.Size = new Size(0, 32);
             label1.TabIndex = 19;
+            label1.Click += Card_Click;
             // 
             // lblRating
             // 
             lblRating.AutoSize = true;
             lblRating.Font = new Font("Segoe UI", 11F);
             lblRating.ForeColor = Color.DimGray;
-            lblRating.Location = new Point(98, 766);
+            lblRating.Location = new Point(98, 776);
             lblRating.Name = "lblRating";
             lblRating.Size = new Size(97, 41);
             lblRating.TabIndex = 9;
             lblRating.Text = "label1";
+            lblRating.Click += Card_Click;
             // 
             // lblPrice
             // 
             lblPrice.AutoSize = true;
             lblPrice.Font = new Font("Segoe UI", 10F);
             lblPrice.ForeColor = Color.Blue;
-            lblPrice.Location = new Point(98, 680);
+            lblPrice.Location = new Point(98, 690);
             lblPrice.Margin = new Padding(0, 5, 0, 5);
             lblPrice.Name = "lblPrice";
             lblPrice.Size = new Size(90, 37);
             lblPrice.TabIndex = 15;
             lblPrice.Text = "label1";
+            lblPrice.Click += Card_Click;
             // 
             // lblWorkingTime
             // 
             lblWorkingTime.AutoSize = true;
             lblWorkingTime.Font = new Font("Segoe UI", 10F);
             lblWorkingTime.ForeColor = Color.DimGray;
-            lblWorkingTime.Location = new Point(98, 621);
+            lblWorkingTime.Location = new Point(98, 631);
             lblWorkingTime.Margin = new Padding(0, 5, 0, 5);
             lblWorkingTime.Name = "lblWorkingTime";
             lblWorkingTime.Size = new Size(90, 37);
             lblWorkingTime.TabIndex = 4;
             lblWorkingTime.Text = "label4";
+            lblWorkingTime.Click += Card_Click;
             // 
             // lblSpecificAdress
             // 
             lblSpecificAdress.AutoSize = true;
             lblSpecificAdress.Font = new Font("Segoe UI", 10F);
             lblSpecificAdress.ForeColor = Color.DimGray;
-            lblSpecificAdress.Location = new Point(98, 565);
+            lblSpecificAdress.Location = new Point(98, 575);
             lblSpecificAdress.Margin = new Padding(0, 5, 0, 5);
             lblSpecificAdress.Name = "lblSpecificAdress";
             lblSpecificAdress.Size = new Size(90, 37);
             lblSpecificAdress.TabIndex = 3;
             lblSpecificAdress.Text = "label3";
+            lblSpecificAdress.Click += Card_Click;
             // 
             // lblPhone
             // 
@@ -286,6 +306,7 @@
             lblPhone.Size = new Size(348, 41);
             lblPhone.TabIndex = 2;
             lblPhone.Text = "Bệnh viện Tỉnh Quảng Trị";
+            lblPhone.Click += Card_Click;
             // 
             // UCCardDoctor
             // 

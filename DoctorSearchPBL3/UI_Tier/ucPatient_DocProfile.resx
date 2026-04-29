@@ -117,4 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="lblBio.Text" xml:space="preserve">
+    <value>Bắn Chính Xác (精准射击): * Siêu Cấp Súng Máy Xạ Thủ (Gatling Pea) và Cứu Cực Hắc Ô Lãm Súng Máy Xạ Thủ: Sát thương đạn khi tung tuyệt chiêu (đại chiêu) sẽ được x2, đồng thời đạn sẽ không còn bị phân tán (bắn tập trung thành một đường thẳng).
+
+Dòng cây Bắn Tỉa (Sniper): Số lần bắn cần thiết để thực hiện một cú Headshot (bắn vào đầu) sẽ giảm đi 3 lần.</value>
+  </data>
 </root>

@@ -139,7 +139,50 @@ namespace UI_Tier
             InitTabs();
             PanelTab_Click(pnlHome, EventArgs.Empty);
         }
-        
+
+        public void OpenDoctorProfile(DoctorDTO doctor)
+        {
+            if (_currentUC != null) _currentUC.Visible = false; // Ẩn UC hiện tại nếu có
+            ucPatient_DocProfile profile = new ucPatient_DocProfile();
+            profile.Dock = DockStyle.Fill;
+
+            profile.SetDoctorData(doctor); // Nạp dữ liệu bác sĩ vào UC mới
+
+            pnMain.Controls.Add(profile);
+            profile.BringToFront();
+        }
+        public void BackToDoctorList()
+        {
+            // 1. Tìm và tiêu diệt thằng Profile đang hiện
+            ucPatient_DocProfile currentProfile = null;
+            foreach (Control ctrl in pnMain.Controls)
+            {
+                if (ctrl is ucPatient_DocProfile)
+                {
+                    currentProfile = (ucPatient_DocProfile)ctrl;
+                    break;
+                }
+            }
+
+            if (currentProfile != null)
+            {
+                pnMain.Controls.Remove(currentProfile);
+                currentProfile.Dispose();
+            }
+
+            // 2. Hiện lại thằng SearchDoc (vốn đã được cache trong Dictionary hoặc biến _currentUC)
+            // Giả sử cái SearchDoc của bác đang được lưu trong _tabMapping[pnlSearchDoc]
+            if (_tabMapping.ContainsKey(pnlSearchDoc))
+            {
+                _currentUC = _tabMapping[pnlSearchDoc];
+                _currentUC.Visible = true;
+                _currentUC.BringToFront();
+
+                // Cập nhật lại màu sắc Menu cho chuẩn
+                UpdateLabelStyles(pnlSearchDoc);
+            }
+        }
+
         public async void OpenArticleDetail(ContentDTO art)
         {
             //try
