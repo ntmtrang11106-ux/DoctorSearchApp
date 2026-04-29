@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BUS_Tier
 {
-    public class ArticleBUS
+    public class ContentBUS
     {
         private readonly ContentDAL _contentDAL = new ContentDAL();
 

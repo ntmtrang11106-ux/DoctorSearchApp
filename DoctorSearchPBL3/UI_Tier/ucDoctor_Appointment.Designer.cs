@@ -82,7 +82,7 @@
             btnAddTimeSlot.FlatStyle = FlatStyle.Flat;
             btnAddTimeSlot.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnAddTimeSlot.ForeColor = Color.White;
-            btnAddTimeSlot.Location = new Point(1332, 268);
+            btnAddTimeSlot.Location = new Point(1396, 264);
             btnAddTimeSlot.Name = "btnAddTimeSlot";
             btnAddTimeSlot.Size = new Size(418, 70);
             btnAddTimeSlot.TabIndex = 29;

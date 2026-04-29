@@ -19,7 +19,7 @@ namespace UI_Tier
         // Khai báo một lần ở cấp độ class để tái sử dụng
         private DoctorBUS _bus = new DoctorBUS();
 
-        private ArticleBUS _articleBus = new ArticleBUS();
+        private ContentBUS _articleBus = new ContentBUS();
 
         private List<DoctorDTO> _allDoctors = new List<DoctorDTO>();
         private int _pageSize = 8;     // Số lượng 1 trang
