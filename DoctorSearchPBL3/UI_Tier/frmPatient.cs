@@ -167,22 +167,7 @@ namespace UI_Tier
             InitTabs();
             PanelTab_Click(pnlHome, EventArgs.Empty);
         }
-
-        //public void OpenArticleDetail(ContentDTO art)
-        //{
-        //    // 1. Tạo UC chi tiết
-        //    ucArticleDetail detail = new ucArticleDetail();
-        //    detail.SetData(art);
-        //    detail.Dock = DockStyle.Fill;
-
-        //    // 2. Dọn dẹp pnMain (Panel chứa nội dung chính)
-        //    pnMain.Controls.Clear();
-
-        //    // 3. Thêm UC chi tiết vào
-        //    pnMain.Controls.Add(detail);
-        //    detail.BringToFront(); // Đưa lên trên cùng để đảm bảo nó hiện ra
-        //}
-        // Lưu ý: Thêm async vào đầu tên hàm
+        
         public async void OpenArticleDetail(ContentDTO art)
         {
             try

@@ -36,19 +36,6 @@ namespace DAL_Tier
 
             return query.ToList();
         }
-
-        //public List<ContentDTO> GetAllContents()
-        //{
-        //    using var context = new AppDbContext();
-
-        //    return context.Contents
-        //        .Include(c => c.Department)
-        //        .Include(c => c.AuthorAdmin)
-        //            .ThenInclude(a => a.User)
-        //        .Where(c => !c.IsDeleted)
-        //        .ToList();
-        //}
-
         public List<ContentDTO> GetAllContents()
         {
             // Sử dụng AppDbContext bạn đã cung cấp

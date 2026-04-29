@@ -129,15 +129,5 @@ namespace DAL_Tier
                                   && !u.IsDeleted
                                   && u.Status == "Active");
         }
-        //public UserDTO? CheckLogin(string phone, string pass)
-        //{
-        //    // Nó sẽ trả về cả đối tượng User, trong đó có chứa Id
-        //    return _context.Users
-        //        .AsNoTracking()
-        //        .FirstOrDefault(u => u.PhoneNumber == phone
-        //                          && u.Password == pass
-        //                          && !u.IsDeleted
-        //                          && u.Status == "Active");
-        //}
     }
 }
