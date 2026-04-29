@@ -142,15 +142,40 @@ namespace UI_Tier
 
         public void OpenDoctorProfile(DoctorDTO doctor)
         {
-            if (_currentUC != null) _currentUC.Visible = false; // Ẩn UC hiện tại nếu có
-            ucPatient_DocProfile profile = new ucPatient_DocProfile();
-            profile.Dock = DockStyle.Fill;
+            try
+            {
+                if (doctor == null) return;
 
-            profile.SetDoctorData(doctor); // Nạp dữ liệu bác sĩ vào UC mới
+                // 1. Ẩn UC hiện tại (SearchDoc) để giữ lại kết quả tìm kiếm cũ
+                if (_currentUC != null)
+                {
+                    _currentUC.Visible = false;
+                }
 
-            pnMain.Controls.Add(profile);
-            profile.BringToFront();
+                // 2. Khởi tạo UC Profile mới
+                ucPatient_DocProfile profile = new ucPatient_DocProfile();
+                profile.Dock = DockStyle.Fill;
+
+                // 3. Nạp dữ liệu (Bao bọc an toàn trong SetDoctorData của UC nếu cần)
+                profile.SetDoctorData(doctor);
+
+                // 4. Hiển thị lên Panel chính
+                pnMain.Controls.Add(profile);
+                profile.BringToFront();
+                profile.Visible = true;
+            }
+            catch (Exception ex)
+            {
+                // Nếu lỗi, hiện thông báo cho user và không làm đứng app
+                MessageBox.Show("Không thể hiển thị thông tin bác sĩ. Vui lòng thử lại!", "Lỗi",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine("Lỗi OpenDoctorProfile: " + ex.Message);
+
+                // Hiện lại thằng cũ nếu thằng mới lỗi
+                if (_currentUC != null) _currentUC.Visible = true;
+            }
         }
+
         public void BackToDoctorList()
         {
             // 1. Tìm và tiêu diệt thằng Profile đang hiện
@@ -185,50 +210,70 @@ namespace UI_Tier
 
         public async void OpenArticleDetail(ContentDTO art)
         {
-            //try
-            //{
-            //    // 1. Hiển thị trang chi tiết NGAY LẬP TỨC để tạo cảm giác app nhanh
-            //    pnMain.Controls.Clear();
-            //    ucArticleDetail detail = new ucArticleDetail();
-            //    detail.Dock = DockStyle.Fill;
+            try
+            {
+                if (art == null) return;
 
-            //    // Tạm thời tăng ViewCount trong bộ nhớ để hiện lên luôn
-            //    art.ViewCount++;
-            //    detail.SetData(art);
+                // 1. Hiển thị trang chi tiết NGAY LẬP TỨC
+                // Ẩn danh sách bài viết hiện tại thay vì Clear
+                if (_currentUC != null) _currentUC.Visible = false;
 
-            //    pnMain.Controls.Add(detail);
-            //    detail.BringToFront();
+                ucArticleDetail detail = new ucArticleDetail();
+                detail.Dock = DockStyle.Fill;
 
-            //    // 2. Chạy lệnh cập nhật Database ngầm (Background)
-            //    // Dùng Task.Run để không làm chậm việc vẽ giao diện trang chi tiết
-            //    ContentBUS bus = new ContentBUS();
-            //    bool isSuccess = await bus.IncrementViewAsync(art.Id);
+                // Tăng View ảo trong bộ nhớ để user thấy số view nhảy luôn (tăng trải nghiệm)
+                art.ViewCount++;
+                detail.SetData(art);
 
-            //    // Nếu cập nhật DB thất bại thì trả lại giá trị cũ (tùy chọn)
-            //    if (!isSuccess)
-            //    {
-            //        art.ViewCount--;
-            //        // Cập nhật lại UI nếu cần thiết
-            //        // detail.UpdateViewCount(art.ViewCount);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    // Ghi log lỗi thay vì hiện MessageBox làm gián đoạn việc đọc bài của user
-            //    Console.WriteLine("Lỗi cập nhật lượt xem: " + ex.Message);
-            //}
+                pnMain.Controls.Add(detail);
+                detail.BringToFront();
+
+                // 2. Cập nhật Database ngầm (Sử dụng Task để không block UI)
+                // Lưu ý: ContentBUS của bác phải có hàm Async tương ứng
+                ContentBUS bus = new ContentBUS();
+
+                // Chạy ngầm việc tăng view trên server
+                await Task.Run(() => bus.IncrementViewAsync(art.Id));
+            }
+            catch (Exception ex)
+            {
+                // Với bài viết, lỗi tăng view ngầm thì kệ nó, đừng hiện Popup làm phiền người đọc
+                Console.WriteLine("Lỗi ngầm khi xử lý bài viết: " + ex.Message);
+
+                // Nếu lỗi ngay từ lúc mở trang thì mới báo
+                if (pnMain.Controls.Count == 0 && _currentUC != null) _currentUC.Visible = true;
+            }
         }
         public void BackToHome()
         {
-            // 1. Xóa chi tiết bài viết cũ để giải phóng bộ nhớ
-            //foreach (Control ctrl in pnMain.Controls)
-            //{
-            //    ctrl.Dispose();
-            //}
+            // 1. Tìm và tiêu diệt thằng Profile đang hiện
+            ucArticleDetail currentArt = null;
+            foreach (Control ctrl in pnMain.Controls)
+            {
+                if (ctrl is ucArticleDetail)
+                {
+                    currentArt = (ucArticleDetail)ctrl;
+                    break;
+                }
+            }
 
-            //// 2. Ép chạy lại sự kiện Click vào nút "Trang chủ" trên menu
-            //// Giả sử pnlHome là cái Panel chứa chữ "Trang chủ" màu xanh trong hình của bạn
-            //PanelTab_Click(pnlHome, EventArgs.Empty);
+            if (currentArt != null)
+            {
+                pnMain.Controls.Remove(currentArt);
+                currentArt.Dispose();
+            }
+
+            // 2. Hiện lại thằng SearchDoc (vốn đã được cache trong Dictionary hoặc biến _currentUC)
+            // Giả sử cái SearchDoc của bác đang được lưu trong _tabMapping[pnlSearchDoc]
+            if (_tabMapping.ContainsKey(pnlHome))
+            {
+                _currentUC = _tabMapping[pnlHome];
+                _currentUC.Visible = true;
+                _currentUC.BringToFront();
+
+                // Cập nhật lại màu sắc Menu cho chuẩn
+                UpdateLabelStyles(pnlHome);
+            }
         }
     }
 }
