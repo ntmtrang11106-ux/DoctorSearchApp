@@ -63,10 +63,8 @@ namespace DTO_Tier
 
         public virtual ICollection<ReviewsDTO> Reviews { get; set; } = new List<ReviewsDTO>();
 
-        [NotMapped]
         public double AverageRating { get; set; }
 
-        [NotMapped]
         public int TotalReviews { get; set; }
 
         // Certificates: 1 doctor -> many certificate files
