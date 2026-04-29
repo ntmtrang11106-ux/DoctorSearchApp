@@ -1,20 +1,26 @@
 using DTO_Tier;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace DAL_Tier
 {
     public static class DbSeeder
     {
+        private static string HashPassword(string password)
+        {
+            var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(password));
+            return Convert.ToHexString(bytes).ToLower();
+        }
+
         public static void Seed(AppDbContext context, bool force = false)
         {
             if (force)
-            {
                 context.Database.EnsureDeleted();
-            }
 
-            // Always align schema before seeding so refactor changes are applied.
             context.Database.Migrate();
 
+            // 1. Departments
             if (!context.Departments.Any())
             {
                 context.Departments.AddRange(
@@ -25,13 +31,12 @@ namespace DAL_Tier
                 );
                 context.SaveChanges();
             }
-            // Lấy danh sách khoa vừa tạo để có ID thật
-            var depList = context.Departments.ToList();
+            var depList = context.Departments.OrderBy(d => d.Id).ToList();
 
+            // 2. Rooms (chỉ một block — block duplicate đã xóa)
             if (!context.Rooms.Any())
             {
                 context.Rooms.AddRange(
-                    // Gán DepartmentId cụ thể cho từng phòng
                     new RoomDTO { RoomCode = "P101", RoomName = "Phòng khám 101", Floor = "1", DepartmentId = depList[0].Id },
                     new RoomDTO { RoomCode = "P201", RoomName = "Phòng khám 201", Floor = "2", DepartmentId = depList[0].Id },
                     new RoomDTO { RoomCode = "P301", RoomName = "Phòng khám 301", Floor = "3", DepartmentId = depList[2].Id }
@@ -39,16 +44,7 @@ namespace DAL_Tier
                 context.SaveChanges();
             }
 
-            if (!context.Rooms.Any())
-            {
-                context.Rooms.AddRange(
-                    new RoomDTO { RoomCode = "P101", RoomName = "Phòng khám 101", Floor = "1" },
-                    new RoomDTO { RoomCode = "P201", RoomName = "Phòng khám 201", Floor = "2" },
-                    new RoomDTO { RoomCode = "P202", RoomName = "Phòng khám 202", Floor = "2" }
-                );
-                context.SaveChanges();
-            }
-
+            // 3. Admin user — khai báo sớm để dùng được ở TimeSlots
             if (!context.Users.Any(u => u.Role == "Admin" && u.PhoneNumber == "000"))
             {
                 context.Users.Add(new UserDTO
@@ -56,7 +52,7 @@ namespace DAL_Tier
                     FullName = "Admin Hệ Thống",
                     Role = "Admin",
                     PhoneNumber = "000",
-                    Password = "123",
+                    Password = HashPassword("123"),
                     Gender = "Nam",
                     Status = "Active",
                     CCCD = "999",
@@ -72,12 +68,15 @@ namespace DAL_Tier
                 context.SaveChanges();
             }
 
-            string[] docNames = { "BS. Nguyễn Văn An", "BS. Lê Thị Mỹ Hạnh", "BS. Trần Thành Nhân", "BS. Phạm Minh Tuấn" };
+            // admin được khai báo ở đây — dùng được cho cả TimeSlots lẫn Contents
+            var admin = context.Admins.First();
+
+            // 4. Doctors
             var departments = context.Departments.OrderBy(d => d.Id).ToList();
             if (departments.Count == 0)
-            {
                 throw new InvalidOperationException("Seed failed: Department table is empty.");
-            }
+
+            string[] docNames = { "BS. Nguyễn Văn An", "BS. Lê Thị Mỹ Hạnh", "BS. Trần Thành Nhân", "BS. Phạm Minh Tuấn" };
             for (int i = 0; i < docNames.Length; i++)
             {
                 string phone = $"090{i}";
@@ -88,7 +87,7 @@ namespace DAL_Tier
                         FullName = docNames[i],
                         Role = "Doctor",
                         PhoneNumber = phone,
-                        Password = "123",
+                        Password = HashPassword("123"),
                         Gender = i % 2 == 0 ? "Nam" : "Nữ",
                         Status = "Active",
                         CCCD = $"100{i}",
@@ -122,6 +121,7 @@ namespace DAL_Tier
             }
             context.SaveChanges();
 
+            // 5. Patients
             if (!context.Users.Any(u => u.PhoneNumber == "070"))
             {
                 context.Users.Add(new UserDTO
@@ -129,7 +129,7 @@ namespace DAL_Tier
                     FullName = "Nguyễn Thị Mai Trang",
                     Role = "Patient",
                     PhoneNumber = "070",
-                    Password = "123",
+                    Password = HashPassword("123"),
                     Gender = "Nữ",
                     Status = "Active",
                     CCCD = "2001",
@@ -137,7 +137,6 @@ namespace DAL_Tier
                     Dob = new DateTime(1995, 5, 5)
                 });
             }
-
             if (!context.Users.Any(u => u.PhoneNumber == "077"))
             {
                 context.Users.Add(new UserDTO
@@ -145,7 +144,7 @@ namespace DAL_Tier
                     FullName = "Lê Văn Tiến",
                     Role = "Patient",
                     PhoneNumber = "077",
-                    Password = "123",
+                    Password = HashPassword("123"),
                     Gender = "Nam",
                     Status = "Active",
                     CCCD = "2002",
@@ -170,20 +169,21 @@ namespace DAL_Tier
             }
             context.SaveChanges();
 
+            // 6. TimeSlots — dùng admin.Id đã khai báo ở trên
             if (!context.TimeSlots.Any())
             {
                 var doctors = context.Doctors.OrderBy(d => d.Id).ToList();
                 var rooms = context.Rooms.OrderBy(r => r.Id).ToList();
                 if (rooms.Count == 0)
-                {
                     throw new InvalidOperationException("Seed failed: Room table is empty.");
-                }
+
                 foreach (var doctor in doctors)
                 {
                     context.TimeSlots.Add(new TimeSlotsDTO
                     {
                         DoctorId = doctor.Id,
                         RoomId = rooms[doctor.Id % rooms.Count].Id,
+                        CreatedByAdminId = admin.Id,  // ✅ field bắt buộc
                         WorkDate = DateTime.Today.AddDays(1),
                         StartTime = new TimeSpan(8, 0, 0),
                         EndTime = new TimeSpan(9, 0, 0),
@@ -194,15 +194,12 @@ namespace DAL_Tier
                 context.SaveChanges();
             }
 
-            var admin = context.Admins.First();
+            // 7. Contents
             if (!context.Contents.Any())
             {
-                var firstDepartment = context.Departments.OrderBy(d => d.Id).FirstOrDefault();
-                if (firstDepartment == null)
-                {
-                    throw new InvalidOperationException("Seed failed: no Department available for Content.");
-                }
-                var departmentId = firstDepartment.Id;
+                var firstDepartment = context.Departments.OrderBy(d => d.Id).FirstOrDefault()
+                    ?? throw new InvalidOperationException("Seed failed: no Department available for Content.");
+
                 context.Contents.AddRange(
                     new ContentDTO
                     {
@@ -217,7 +214,7 @@ namespace DAL_Tier
                     },
                     new ContentDTO
                     {
-                        DepartmentId = departmentId,
+                        DepartmentId = firstDepartment.Id,
                         AuthorAdminId = admin.Id,
                         Title = "Hướng dẫn khám Nội khoa",
                         Summary = "Quy trình tiếp nhận và thăm khám tại khoa Nội.",

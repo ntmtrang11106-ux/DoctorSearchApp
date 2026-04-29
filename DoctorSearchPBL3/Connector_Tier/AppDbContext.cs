@@ -65,6 +65,11 @@ namespace DAL_Tier
                 .WithMany(r => r.TimeSlots)
                 .HasForeignKey(t => t.RoomId)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<TimeSlotsDTO>()
+                .HasOne(t => t.CreatedByAdmin)
+                .WithMany()
+                .HasForeignKey(t => t.CreatedByAdminId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<AppointmentsDTO>()
                 .HasOne(a => a.Patient)

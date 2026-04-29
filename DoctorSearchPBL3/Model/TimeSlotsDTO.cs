@@ -47,5 +47,8 @@ namespace DTO_Tier
         public virtual RoomDTO? Room { get; set; }
 
         public virtual ICollection<AppointmentsDTO> Appointments { get; set; } = new List<AppointmentsDTO>();
+
+        public int CreatedByAdminId { get; set; }
+        public AdminDTO CreatedByAdmin { get; set; }
     }
 }
