@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using System.Windows.Forms;
 
@@ -18,98 +19,98 @@ namespace UI_Tier
         public delegate void OnActionSuccess();
         public OnActionSuccess RefreshData;
 
+        // Enum để xác định chế độ hiển thị của card, giúp tái sử dụng cho nhiều mục đích khác nhau
+        public enum AppCardMode
+        {
+            PatientView,    // Bệnh nhân xem lịch của mình (Chỉ xem)
+            DoctorView,     // Bác sĩ duyệt lịch (Hiện nút Accept/Cancel)
+            DoctorSchedule, // Bệnh nhân xem khung giờ trống của bác sĩ (Hiện nút Book/Đặt lịch)
+            HistoryView     // Xem lại lịch cũ (Hiện nút Rate/Đánh giá)
+        }
+
         public ucAppItem()
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
         }
 
-        // Trong file UC_AppItem.cs
-        //public void SetAppItemData(AppointmentsDTO data)
-        //{
-        //    _appointmentId = data.Id; // Gán ID ở đây
+        // Trong ucAppItem.cs
+        private void UpdateStatusStyle(string status)
+        {
+            switch (status)
+            {
+                case "Open": // Trống
+                    btnStatus.Text = "Trống";
+                    btnStatus.BackColor = Color.LightGray;
+                    btnStatus.ForeColor= Color.DarkGray;
+                    break;
+                case "Pending": // Chờ duyệt
+                    btnStatus.Text = "Chờ duyệt";
+                    btnStatus.BackColor = Color.LightGoldenrodYellow;
+                    btnStatus.ForeColor = Color.Goldenrod;
+                    break;
+                case "Confirmed": // Đã duyệt
+                    btnStatus.Text = "Đã duyệt";
+                    btnStatus.BackColor = Color.LightGreen;
+                    btnStatus.ForeColor = Color.Green;
+                    break;
+                case "Cancelled": // Đã hủy
+                    btnStatus.Text = "Đã hủy";
+                    btnStatus.BackColor = Color.LightCoral;
+                    btnStatus.ForeColor = Color.Red;
+                    break;
+                case "Completed": // Thành công
+                    btnStatus.Text = "Thành công";
+                    btnStatus.BackColor = Color.Azure;
+                    btnStatus.ForeColor = Color.DodgerBlue;
+                    break;
+            }
+        }
 
-        //    //nhân 
-        //    lblPatientName.Text = data.Patient?.User?.FullName ?? "N/A";
-        //    lblPhoneNumber.Text = data.Patient?.User?.PhoneNumber ?? "N/A";
-        //    //lblSymptoms.Text = string.IsNullOrEmpty(data.Symptoms) ? "Không có triệu chứng" : data.Symptoms;
-
-        //    if (data.TimeSlot != null)
-        //    {
-        //        //lblDate.Text = data.TimeSlot.Date.ToString("dd/MM/yyyy");
-        //        lblTime.Text = $"{data.TimeSlot.StartTime:hh\\:mm} - {data.TimeSlot.EndTime:hh\\:mm}";
-        //    }
-
-        //    btnStatus.Text = data.Status;
-
-        //    // 2. Xử lý hiển thị cho trạng thái (Status)
-        //    btnStatus.Text = data.Status;
-
-        //    // --- QUAN TRỌNG: Cấm nút nếu không phải "Chờ duyệt" ---
-        //    bool isPending = (data.Status == "Pending");
-        //    btnAccept.Visible = isPending;
-        //    btnCancel.Visible = isPending;
-
-        //    // 2. Xử lý màu sắc hiển thị
-        //    if (data.Status == "Confirmed" || data.Status == "Completed")
-        //    {
-        //        btnStatus.BackColor = Color.FromArgb(200, 255, 200); // Xanh nhạt
-        //        btnStatus.ForeColor = Color.Green;
-        //    }
-        //    else if (data.Status == "Pending")
-        //    {
-        //        btnStatus.BackColor = Color.FromArgb(255, 240, 200); // Vàng nhạt
-        //        btnStatus.ForeColor = Color.Orange;
-        //    }
-        //    else // Đã hủy hoặc Đã từ chối
-        //    {
-        //        btnStatus.BackColor = Color.FromArgb(255, 200, 200); // Đỏ nhạt
-        //        btnStatus.ForeColor = Color.Red;
-        //    }
-        //}
-
-        public void SetAppItemData(AppointmentsDTO data)
+        private void SetupButtons(AppCardMode mode, string status)
+        {
+            // Dọn dẹp các nút trước khi hiện cái cần thiết
+            foreach (Button btn in new Button[] { btnAccept, btnCancel, btnRemove, btnBook, btnRate, btnViewRecord })
+            {
+                btn.Visible = false;
+            }
+            btnAccept.Visible = (mode == AppCardMode.DoctorView && status == "Pending");
+            btnCancel.Visible = (mode == AppCardMode.DoctorView && status == "Pending");
+            //btnRemove.Visible = (mode == AppCardMode.DoctorView && status == "Open"); // tạm k cho hiện vì chỉ admin ms đổi đc
+            btnBook.Visible = (mode == AppCardMode.DoctorSchedule && status == "Open");
+            btnRate.Visible = (mode == AppCardMode.HistoryView && status == "Completed") || (mode == AppCardMode.DoctorView && status == "Completed");
+            btnViewRecord.Visible = (mode == AppCardMode.HistoryView && status == "Completed") || (mode == AppCardMode.DoctorView && status == "Confirmed");
+        }
+        public void SetupCard(AppointmentsDTO data, AppCardMode mode)
         {
             _appointmentId = data.Id;
-            lblPatientName.Text = data.Patient?.User?.FullName ?? "N/A";
-            lblPhoneNumber.Text = data.Patient?.User?.PhoneNumber ?? "N/A";
 
+            // 1. Phân biệt hiển thị Tên
+            if (mode == AppCardMode.PatientView || mode == AppCardMode.HistoryView)
+            {
+                lblName.Text = "BS. " + (data.Doctor?.User?.FullName ?? "N/A");
+                lblPhoneNumber.Text = data.Doctor?.User?.PhoneNumber ?? "N/A";
+            }
+            else
+            {
+                lblName.Text = data.Patient?.User?.FullName ?? "Bệnh nhân chưa đặt";
+            }
+
+            label2.Visible = lblSymptoms.Visible = (data.Status != "Open");
+            lblSymptoms.Text = data.Reason ?? "N/A";
+
+            // 2. Load giờ giấc (Dùng chung)
             if (data.TimeSlot != null)
             {
-                // Sử dụng WorkDate cho đúng file SQL của nhóm
                 lblDate.Text = data.TimeSlot.WorkDate.ToString("dd/MM/yyyy");
                 lblTime.Text = $"{data.TimeSlot.StartTime:hh\\:mm} - {data.TimeSlot.EndTime:hh\\:mm}";
             }
 
-            // --- PHẦN QUAN TRỌNG: DỊCH STATUS ---
-            string displayStatus = "";
-            switch (data.Status)
-            {
-                case "Pending":
-                    displayStatus = "Chờ duyệt";
-                    btnStatus.BackColor = Color.FromArgb(255, 240, 200); // Vàng
-                    btnStatus.ForeColor = Color.Orange;
-                    break;
-                case "Confirmed":
-                    displayStatus = "Đã duyệt";
-                    btnStatus.BackColor = Color.FromArgb(200, 255, 200); // Xanh
-                    btnStatus.ForeColor = Color.Green;
-                    break;
-                case "Cancelled":
-                    displayStatus = "Đã hủy";
-                    btnStatus.BackColor = Color.FromArgb(255, 200, 200); // Đỏ
-                    btnStatus.ForeColor = Color.Red;
-                    break;
-                default:
-                    displayStatus = data.Status; // Trạng thái khác giữ nguyên
-                    break;
-            }
-            btnStatus.Text = displayStatus;
+            // 3. Dịch trạng thái sang tiếng Việt và đổi màu
+            UpdateStatusStyle(data.Status);
 
-            // Ẩn hiện nút dựa trên giá trị gốc từ DB (Tiếng Anh)
-            bool isPending = (data.Status == "Pending");
-            btnAccept.Visible = isPending;
-            btnCancel.Visible = isPending;
+            // 4. PHÂN CHIA NÚT BẤM (QUAN TRỌNG NHẤT)
+            SetupButtons(mode, data.Status);
         }
 
         private void ucAppItem_Load(object sender, EventArgs e)
@@ -126,34 +127,6 @@ namespace UI_Tier
                 UIHelper.uc_Paint(this, e, 10, Color.LightGray, 2);
             };
         }
-        //private void btnAccept_Click(object sender, EventArgs e)
-        //{
-        //    // Kiểm tra lớp bảo vệ 2: Nếu trạng thái hiện tại khác Chờ duyệt thì báo lỗi
-        //    if (btnStatus.Text != "Pending")
-        //    {
-        //        MessageBox.Show("Lịch hẹn này đã được xử lý, bạn không được phép thay đổi nữa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-        //        return;
-        //    }
-
-        //    if (MessageBox.Show("Chấp nhận lịch này?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
-        //    {
-        //        AppointmentBUS bus = new AppointmentBUS();
-        //        if (bus.AcceptAppointment(_appointmentId))
-        //        {
-        //            // Cập nhật giao diện tại chỗ
-        //            btnStatus.Text = "Confirmed";
-        //            btnStatus.BackColor = Color.FromArgb(200, 255, 200);
-        //            btnStatus.ForeColor = Color.Green;
-
-        //            // Cấm bấm tiếp
-        //            btnAccept.Visible = false;
-        //            btnCancel.Visible = false;
-
-        //            MessageBox.Show("Thành công!");
-        //            RefreshData?.Invoke(); // Load lại toàn bộ list nếu cần
-        //        }
-        //    }
-        //}
 
         private void btnAccept_Click(object sender, EventArgs e)
         {
@@ -182,35 +155,6 @@ namespace UI_Tier
                 }
             }
         }
-
-        //private void btnCancel_Click(object sender, EventArgs e)
-        //{
-        //    // Kiểm tra lớp bảo vệ 2
-        //    if (btnStatus.Text != "Pending")
-        //    {
-        //        MessageBox.Show("Lịch hẹn này đã được xử lý, bạn không được phép thay đổi nữa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-        //        return;
-        //    }
-
-        //    if (MessageBox.Show("Từ chối lịch hẹn này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-        //    {
-        //        AppointmentBUS bus = new AppointmentBUS();
-        //        if (bus.RejectAppointment(_appointmentId))
-        //        {
-        //            // Cập nhật giao diện tại chỗ
-        //            btnStatus.Text = "Cancelled";
-        //            btnStatus.BackColor = Color.FromArgb(255, 200, 200);
-        //            btnStatus.ForeColor = Color.Red;
-
-        //            // Cấm bấm tiếp
-        //            btnAccept.Visible = false;
-        //            btnCancel.Visible = false;
-
-        //            MessageBox.Show("Đã hủy lịch hẹn thành công!");
-        //            RefreshData?.Invoke();
-        //        }
-        //    }
-        //}
 
         private void btnCancel_Click(object sender, EventArgs e)
         {

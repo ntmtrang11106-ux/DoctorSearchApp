@@ -65,7 +65,7 @@ namespace UI_Tier
             foreach (var ap in pageItems)
             { 
                 ucAppItem card = new ucAppItem();
-                card.SetAppItemData(ap);
+                card.SetupCard(ap, ucAppItem.AppCardMode.DoctorView);
                 card.Margin = new Padding(20, 10, 20, 10);
                 // Ép chiều ngang UC = Chiều ngang Panel - (trừ đi 25~30 để chừa chỗ cho thanh cuộn)
                 card.Width = flpAppItem.Width - 80;

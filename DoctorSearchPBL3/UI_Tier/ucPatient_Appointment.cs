@@ -59,15 +59,11 @@ namespace UI_Tier
             var pageItems = _allApps.Skip(startIndex).Take(_pageSize).ToList();
 
             foreach (var ap in pageItems)
-            { 
+            {
                 ucAppItem card = new ucAppItem();
-                card.SetAppItemData(ap);
+                card.SetupCard(ap, ucAppItem.AppCardMode.PatientView);
                 card.Margin = new Padding(20, 10, 20, 10);
-                // Ép chiều ngang UC = Chiều ngang Panel - (trừ đi 25~30 để chừa chỗ cho thanh cuộn)
-                card.Width = flpAppItem.Width - 80;
-                // Thêm dòng này để nếu resize Form thì UC nó cũng co giãn theo (tùy chọn)
-                //card.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-                
+
                 flpAppItem.Controls.Add(card);
             }
 
@@ -80,7 +76,23 @@ namespace UI_Tier
 
         private void ucPatient_Appointment_Load(object sender, EventArgs e)
         {
+            flpAppItem.Dock = DockStyle.None; // Tạm bỏ dock
+            //flpAppItem.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+
+            flpAppItem.Width = this.Width;
+
             InitData();
+
+            this.Resize += (s, ev) =>
+            {
+                foreach (Control ctrl in flpAppItem.Controls)
+                {
+                    if (ctrl is ucAppItem card)
+                    {
+                        card.Width = flpAppItem.Width - 80;
+                    }
+                }
+            };
         }
 
         private void lblPrev_Click(object sender, EventArgs e)
