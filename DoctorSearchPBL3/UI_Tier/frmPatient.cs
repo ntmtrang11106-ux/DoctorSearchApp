@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BUS_Tier;
+using DTO_Tier;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -67,27 +69,54 @@ namespace UI_Tier
 
             if (clickedPanel == null || !_tabTypeMapping.ContainsKey(clickedPanel)) return;
 
-            // 2. LAZY LOADING: Nếu chưa có Instance thì mới khởi tạo
-            if (!_tabMapping.ContainsKey(clickedPanel))
+            // --- PHẦN SỬA ĐỔI QUAN TRỌNG ---
+            // Nếu là tab Trang chủ, ta nên tạo mới để cập nhật danh sách bài viết 
+            // hoặc đảm bảo nó được Add lại vào pnMain nếu trước đó bị Clear.
+
+            if (clickedPanel == pnlHome) // Giả sử pnlHome là panel Trang chủ
             {
-                // Dùng Reflection để tạo instance từ Type (đúng chất dân kỹ thuật)
+                // Xóa các bài viết chi tiết đang hiện (nếu có)
+                pnMain.Controls.Clear();
+
+                // Tạo mới hoàn toàn để nạp lại bài viết từ Database (Tránh lỗi trắng trang)
                 UserControl uc = (UserControl)Activator.CreateInstance(_tabTypeMapping[clickedPanel]);
                 uc.Dock = DockStyle.Fill;
-                uc.Visible = false;
                 pnMain.Controls.Add(uc);
-                _tabMapping.Add(clickedPanel, uc);
+
+                _currentUC = uc;
+                _tabMapping[clickedPanel] = uc; // Cập nhật lại cache
             }
+            else
+            {
+                // 2. LAZY LOADING: Nếu chưa có Instance thì mới khởi tạo
+                if (!_tabMapping.ContainsKey(clickedPanel))
+                {
+                    // Dùng Reflection để tạo instance từ Type (đúng chất dân kỹ thuật)
+                    UserControl uc = (UserControl)Activator.CreateInstance(_tabTypeMapping[clickedPanel]);
+                    uc.Dock = DockStyle.Fill;
+                    uc.Visible = false;
+                    pnMain.Controls.Add(uc);
+                    _tabMapping.Add(clickedPanel, uc);
+                }
 
-            UserControl selectedUC = _tabMapping[clickedPanel];
-            if (_currentUC == selectedUC) return;
+                UserControl selectedUC = _tabMapping[clickedPanel];
 
-            // 3. Hiển thị
-            if (_currentUC != null) _currentUC.Visible = false;
-            selectedUC.Visible = true;
-            selectedUC.BringToFront();
-            _currentUC = selectedUC;
+                // Đảm bảo Control đã được add vào pnMain (phòng trường hợp bị Clear trước đó)
+                if (!pnMain.Controls.Contains(selectedUC))
+                {
+                    pnMain.Controls.Add(selectedUC);
+                }
 
-            UpdateLabelStyles(clickedPanel);
+                if (_currentUC == selectedUC) return;
+
+                // 3. Hiển thị
+                if (_currentUC != null) _currentUC.Visible = false;
+                selectedUC.Visible = true;
+                selectedUC.BringToFront();
+                _currentUC = selectedUC;
+
+                UpdateLabelStyles(clickedPanel);
+            }
         }
 
         private void UpdateLabelStyles(Panel activePanel)
@@ -136,6 +165,70 @@ namespace UI_Tier
 
             // Khởi tạo các tab và sự kiện click
             InitTabs();
+            PanelTab_Click(pnlHome, EventArgs.Empty);
+        }
+
+        //public void OpenArticleDetail(ContentDTO art)
+        //{
+        //    // 1. Tạo UC chi tiết
+        //    ucArticleDetail detail = new ucArticleDetail();
+        //    detail.SetData(art);
+        //    detail.Dock = DockStyle.Fill;
+
+        //    // 2. Dọn dẹp pnMain (Panel chứa nội dung chính)
+        //    pnMain.Controls.Clear();
+
+        //    // 3. Thêm UC chi tiết vào
+        //    pnMain.Controls.Add(detail);
+        //    detail.BringToFront(); // Đưa lên trên cùng để đảm bảo nó hiện ra
+        //}
+        // Lưu ý: Thêm async vào đầu tên hàm
+        public async void OpenArticleDetail(ContentDTO art)
+        {
+            try
+            {
+                // 1. Hiển thị trang chi tiết NGAY LẬP TỨC để tạo cảm giác app nhanh
+                pnMain.Controls.Clear();
+                ucArticleDetail detail = new ucArticleDetail();
+                detail.Dock = DockStyle.Fill;
+
+                // Tạm thời tăng ViewCount trong bộ nhớ để hiện lên luôn
+                art.ViewCount++;
+                detail.SetData(art);
+
+                pnMain.Controls.Add(detail);
+                detail.BringToFront();
+
+                // 2. Chạy lệnh cập nhật Database ngầm (Background)
+                // Dùng Task.Run để không làm chậm việc vẽ giao diện trang chi tiết
+                ContentBUS bus = new ContentBUS();
+                bool isSuccess = await bus.IncrementViewAsync(art.Id);
+
+                // Nếu cập nhật DB thất bại thì trả lại giá trị cũ (tùy chọn)
+                if (!isSuccess)
+                {
+                    art.ViewCount--;
+                    // Cập nhật lại UI nếu cần thiết
+                    // detail.UpdateViewCount(art.ViewCount);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi thay vì hiện MessageBox làm gián đoạn việc đọc bài của user
+                Console.WriteLine("Lỗi cập nhật lượt xem: " + ex.Message);
+            }
+        }
+        public void BackToHome()
+        {
+            // 1. Xóa chi tiết bài viết cũ để giải phóng bộ nhớ
+            foreach (Control ctrl in pnMain.Controls)
+            {
+                ctrl.Dispose();
+            }
+            pnMain.Controls.Clear();
+
+            // 2. Ép chạy lại sự kiện Click vào nút "Trang chủ" trên menu
+            // Giả sử pnlHome là cái Panel chứa chữ "Trang chủ" màu xanh trong hình của bạn
             PanelTab_Click(pnlHome, EventArgs.Empty);
         }
     }

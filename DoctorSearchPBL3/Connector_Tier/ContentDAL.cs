@@ -62,5 +62,22 @@ namespace DAL_Tier
                 .OrderByDescending(c => c.PublishedAt) // Sắp xếp theo ngày đăng (giống hình mẫu)
                 .ToList();
         }
+
+        //Tăng mắt xem
+        public async Task<bool> IncrementViewAsync(int id)
+        {
+            using (var context = new AppDbContext())
+            {
+                // Tìm bài viết theo ID
+                var art = await context.Contents.FindAsync(id);
+                if (art != null)
+                {
+                    art.ViewCount++;
+                    await context.SaveChangesAsync();
+                    return true;
+                }
+                return false;
+            }
+        }
     }
 }

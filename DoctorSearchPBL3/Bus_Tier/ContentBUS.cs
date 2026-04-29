@@ -19,5 +19,13 @@ namespace BUS_Tier
             if (article.Body.Length < 10) return "Nội dung bài viết quá ngắn!";
             return "OK";
         }
+
+        public async Task<bool> IncrementViewAsync(int id)
+        {
+            // Ở đây bạn có thể thêm logic kiểm tra nếu cần
+            // Ví dụ: if (id <= 0) return false;
+
+            return await _contentDAL.IncrementViewAsync(id);
+        }
     }
 }
