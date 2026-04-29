@@ -107,7 +107,14 @@ namespace UI_Tier
             }
 
             // 3. Dịch trạng thái sang tiếng Việt và đổi màu
-            UpdateStatusStyle(data.Status);
+            if(mode == AppCardMode.DoctorSchedule)
+            {
+                btnStatus.Visible = false;
+                lblName.Visible = lblPhoneNumber.Visible = label2.Visible = lblSymptoms.Visible = false;
+            }
+            else 
+                UpdateStatusStyle(data.Status);
+            
 
             // 4. PHÂN CHIA NÚT BẤM (QUAN TRỌNG NHẤT)
             SetupButtons(mode, data.Status);

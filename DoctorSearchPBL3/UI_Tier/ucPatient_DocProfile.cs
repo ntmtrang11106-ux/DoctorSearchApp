@@ -1,4 +1,5 @@
-﻿using DTO_Tier;
+﻿using BUS_Tier;
+using DTO_Tier;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -103,6 +104,28 @@ namespace UI_Tier
         private void ucPatient_DocProfile_Load(object sender, EventArgs e)
         {
             UIHelper.ApplyRoundedRegion(picDoctor, 175); // Bo tròn ảnh bác sĩ
+
+            flpAppItem.Dock = DockStyle.None; // Tạm bỏ dock
+            //flpAppItem.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+
+            flpAppItem.Width = panel4.Width;
+
+            InitData();
+
+            DisplayPage();
+
+            //MessageBox.Show($"height: {flpAppItem.Height}, width: {flpAppItem.Width}");
+
+            this.Resize += (s, ev) =>
+            {
+                foreach (Control ctrl in flpAppItem.Controls)
+                {
+                    if (ctrl is ucAppItem card)
+                    {
+                        card.Width = flpAppItem.Width - 80;
+                    }
+                }
+            };
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -114,5 +137,69 @@ namespace UI_Tier
                 main.BackToDoctorList();
             }
         }
+
+        #region Xử lí flpAppItem, lưu ý cái này chỉ để thử form chứ chưa lọc, muốn lọc data thì code mấy tầng trên
+        private AppointmentBUS _bus = new AppointmentBUS();
+        private List<AppointmentsDTO> _allApps = new List<AppointmentsDTO>();
+
+        public void InitData()
+        {
+            try
+            {
+                // Giả sử ông có biến _doctorId từ Form đăng nhập truyền vào
+                _allApps = _bus.GetAll(); // Nên OrderBy StartTime ở đây nếu BUS chưa làm
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi InitData: " + ex.Message);
+            }
+        }
+
+        public void DisplayPage()
+        {
+            try
+            {
+                flpAppItem.SuspendLayout();
+
+                // 1. Dọn dẹp sạch sẽ
+                while (flpAppItem.Controls.Count > 0)
+                {
+                    var control = flpAppItem.Controls[0];
+                    flpAppItem.Controls.RemoveAt(0);
+                    control.Dispose();
+                }
+
+                if (_allApps == null || _allApps.Count == 0) return;
+
+                // 2. Đổ card
+                foreach (var ap in _allApps)
+                {
+                    ucAppItem card = new ucAppItem();
+
+                    // Mode DoctorSchedule sẽ hiện nút Xóa/Quản lý slot trống
+                    card.SetupCard(ap, ucAppItem.AppCardMode.DoctorSchedule);
+
+                    card.Margin = new Padding(20, 10, 20, 10);
+
+                    // Dùng ClientSize.Width cho chuẩn xác vùng chứa
+                    card.Width = flpAppItem.Width - 80;
+
+                    card.Visible = true;
+                    flpAppItem.Controls.Add(card);
+
+                    // Mẹo: Ép lại Width một lần nữa sau khi Add để đảm bảo nó nhận đúng size của cha
+                    card.Width = flpAppItem.Width- 80;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi hiển thị lịch trình: " + ex.Message);
+            }
+            finally
+            {
+                flpAppItem.ResumeLayout();
+            }
+        }
+        #endregion
     }
 }

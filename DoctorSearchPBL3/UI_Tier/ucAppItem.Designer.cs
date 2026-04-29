@@ -39,12 +39,12 @@
             label1 = new Label();
             btnAccept = new Button();
             flpAction = new FlowLayoutPanel();
+            btnViewRecord = new Button();
             btnRate = new Button();
             btnBook = new Button();
             btnRemove = new Button();
             btnCancel = new Button();
             ttAction = new ToolTip(components);
-            btnViewRecord = new Button();
             flpAction.SuspendLayout();
             SuspendLayout();
             // 
@@ -143,7 +143,7 @@
             btnAccept.FlatStyle = FlatStyle.Flat;
             btnAccept.Font = new Font("Segoe MDL2 Assets", 20F);
             btnAccept.ForeColor = Color.Green;
-            btnAccept.Location = new Point(-142, 5);
+            btnAccept.Location = new Point(70, 5);
             btnAccept.Margin = new Padding(70, 5, 0, 0);
             btnAccept.Name = "btnAccept";
             btnAccept.Size = new Size(80, 80);
@@ -157,6 +157,8 @@
             // flpAction
             // 
             flpAction.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            flpAction.AutoSize = true;
+            flpAction.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             flpAction.Controls.Add(btnViewRecord);
             flpAction.Controls.Add(btnRate);
             flpAction.Controls.Add(btnBook);
@@ -164,11 +166,29 @@
             flpAction.Controls.Add(btnCancel);
             flpAction.Controls.Add(btnAccept);
             flpAction.FlowDirection = FlowDirection.RightToLeft;
-            flpAction.Location = new Point(1549, 75);
+            flpAction.Location = new Point(1337, 75);
             flpAction.Name = "flpAction";
-            flpAction.Size = new Size(688, 100);
+            flpAction.Size = new Size(900, 85);
             flpAction.TabIndex = 15;
             flpAction.WrapContents = false;
+            // 
+            // btnViewRecord
+            // 
+            btnViewRecord.Anchor = AnchorStyles.None;
+            btnViewRecord.BackColor = Color.Azure;
+            btnViewRecord.FlatAppearance.BorderSize = 0;
+            btnViewRecord.FlatStyle = FlatStyle.Flat;
+            btnViewRecord.Font = new Font("Segoe MDL2 Assets", 18F);
+            btnViewRecord.ForeColor = Color.DodgerBlue;
+            btnViewRecord.Location = new Point(820, 5);
+            btnViewRecord.Margin = new Padding(70, 5, 0, 0);
+            btnViewRecord.Name = "btnViewRecord";
+            btnViewRecord.Size = new Size(80, 80);
+            btnViewRecord.TabIndex = 19;
+            btnViewRecord.Text = "";
+            btnViewRecord.TextAlign = ContentAlignment.MiddleRight;
+            ttAction.SetToolTip(btnViewRecord, "Kết quả khám");
+            btnViewRecord.UseVisualStyleBackColor = false;
             // 
             // btnRate
             // 
@@ -178,7 +198,7 @@
             btnRate.FlatStyle = FlatStyle.Flat;
             btnRate.Font = new Font("Segoe MDL2 Assets", 18F);
             btnRate.ForeColor = Color.Goldenrod;
-            btnRate.Location = new Point(458, 5);
+            btnRate.Location = new Point(670, 5);
             btnRate.Margin = new Padding(70, 5, 0, 0);
             btnRate.Name = "btnRate";
             btnRate.Size = new Size(80, 80);
@@ -196,7 +216,7 @@
             btnBook.FlatStyle = FlatStyle.Flat;
             btnBook.Font = new Font("Segoe MDL2 Assets", 18F);
             btnBook.ForeColor = Color.DodgerBlue;
-            btnBook.Location = new Point(308, 5);
+            btnBook.Location = new Point(520, 5);
             btnBook.Margin = new Padding(70, 5, 0, 0);
             btnBook.Name = "btnBook";
             btnBook.Size = new Size(80, 80);
@@ -214,7 +234,7 @@
             btnRemove.FlatStyle = FlatStyle.Flat;
             btnRemove.Font = new Font("Segoe MDL2 Assets", 18F);
             btnRemove.ForeColor = Color.Goldenrod;
-            btnRemove.Location = new Point(158, 5);
+            btnRemove.Location = new Point(370, 5);
             btnRemove.Margin = new Padding(70, 5, 0, 0);
             btnRemove.Name = "btnRemove";
             btnRemove.Size = new Size(80, 80);
@@ -232,7 +252,7 @@
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe MDL2 Assets", 20F);
             btnCancel.ForeColor = Color.DarkRed;
-            btnCancel.Location = new Point(8, 5);
+            btnCancel.Location = new Point(220, 5);
             btnCancel.Margin = new Padding(70, 5, 0, 0);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(80, 80);
@@ -249,24 +269,6 @@
             ttAction.InitialDelay = 500;
             ttAction.ReshowDelay = 100;
             ttAction.ShowAlways = true;
-            // 
-            // btnViewRecord
-            // 
-            btnViewRecord.Anchor = AnchorStyles.None;
-            btnViewRecord.BackColor = Color.Azure;
-            btnViewRecord.FlatAppearance.BorderSize = 0;
-            btnViewRecord.FlatStyle = FlatStyle.Flat;
-            btnViewRecord.Font = new Font("Segoe MDL2 Assets", 18F);
-            btnViewRecord.ForeColor = Color.DodgerBlue;
-            btnViewRecord.Location = new Point(608, 5);
-            btnViewRecord.Margin = new Padding(70, 5, 0, 0);
-            btnViewRecord.Name = "btnViewRecord";
-            btnViewRecord.Size = new Size(80, 80);
-            btnViewRecord.TabIndex = 19;
-            btnViewRecord.Text = "";
-            btnViewRecord.TextAlign = ContentAlignment.MiddleRight;
-            ttAction.SetToolTip(btnViewRecord, "Kết quả khám");
-            btnViewRecord.UseVisualStyleBackColor = false;
             // 
             // ucAppItem
             // 
