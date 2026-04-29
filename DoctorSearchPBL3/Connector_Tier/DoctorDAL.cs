@@ -7,6 +7,7 @@ namespace DAL_Tier
     {
         // Không dùng shared _context làm field — mỗi method tự quản lý context
         // để đảm bảo Dispose đúng cách và tránh conflict giữa các context.
+        private readonly AppDbContext _context = new AppDbContext();
 
         // Trong DoctorDAL.cs
         public int GetDoctorIdByUserId(int userId)
@@ -55,14 +56,15 @@ namespace DAL_Tier
             var query = context.Doctors
                 .Include(d => d.User)
                 .Include(d => d.Department)
+                .Include(d => d.Reviews) // Cần Include để tính toán Rating bên dưới
                 .Where(d => d.IsApproved && d.IsActive && !d.IsDeleted)
                 .AsQueryable();
 
-            // 1. Lọc theo từ khóa (Tên bác sĩ từ bảng User)
+            // 1. Lọc theo từ khóa
             if (!string.IsNullOrWhiteSpace(keyword))
                 query = query.Where(d => d.User != null && d.User.FullName.Contains(keyword));
 
-            // 2. Lọc theo giới tính (từ bảng User)
+            // 2. Lọc theo giới tính
             if (!string.IsNullOrWhiteSpace(gender) && gender != "Tất cả")
                 query = query.Where(d => d.User != null && d.User.Gender == gender);
 
@@ -70,9 +72,10 @@ namespace DAL_Tier
             if (departmentNames != null && departmentNames.Any() && !departmentNames.Contains("Tất cả"))
                 query = query.Where(d => d.Department != null && departmentNames.Contains(d.Department.DepartmentName));
 
+            // Chuyển dữ liệu về List để tính toán Rating (Client-side)
             var result = query.ToList();
 
-            // 4.Tính toán Rating và TotalReviews(Logic nghiệp vụ)
+            // 4. Tính toán Rating và TotalReviews
             foreach (var doctor in result)
             {
                 var visibleReviews = doctor.Reviews?.Where(r => r.IsVisible && !r.IsDeleted).ToList() ?? new List<ReviewsDTO>();
@@ -80,16 +83,15 @@ namespace DAL_Tier
                 doctor.AverageRating = visibleReviews.Any() ? Math.Round(visibleReviews.Average(r => r.Rating), 1) : 0;
             }
 
+            // 5. Sắp xếp trên danh sách đã tính toán 'result'
             return sortType switch
             {
-                "Giá khám thấp đến cao" => query.OrderBy(d => d.ConsultationFee ?? decimal.MaxValue),
-                "Giá khám cao đến thấp" => query.OrderByDescending(d => d.ConsultationFee ?? 0),
-                "Năm kinh nghiệm cao đến thấp" => query.OrderByDescending(d => d.ExperienceYears ?? 0),
-                "Rating cao đến thấp" => query.OrderByDescending(d => d.AverageRating),
-                _ => query.OrderByDescending(d => d.CreatedAt)
+                "Giá khám thấp đến cao" => result.OrderBy(d => d.ConsultationFee ?? decimal.MaxValue).ToList(),
+                "Giá khám cao đến thấp" => result.OrderByDescending(d => d.ConsultationFee ?? 0).ToList(),
+                "Năm kinh nghiệm cao đến thấp" => result.OrderByDescending(d => d.ExperienceYears ?? 0).ToList(),
+                "Rating cao đến thấp" => result.OrderByDescending(d => d.AverageRating).ToList(),
+                _ => result.OrderByDescending(d => d.CreatedAt).ToList()
             };
-
-            return query.ToList();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using DAL_Tier;
 using DTO_Tier;
 using System;
+using System.Security.Cryptography;
 
 namespace BUS_Tier
 {
@@ -48,41 +49,94 @@ namespace BUS_Tier
                 return 0;
             }
         }
+        //public string Login(string phone, string pass, out int loggedInId, out string msg)
+        //{
+        //    loggedInId = 0;
+        //    msg = "";
+
+        //    // 1. Gọi DAL xác thực tài khoản User
+        //    var user = _userDAL.CheckLogin(phone, pass);
+
+        //    if (user != null)
+        //    {
+        //        // 2. Dựa vào Role để lấy đúng ID của vai trò đó
+        //        if (user.Role == "Doctor")
+        //        {
+        //            // Tìm trong bảng Doctor xem ai có UserId này
+        //            var doctor = _context.Doctors.FirstOrDefault(d => d.UserId == user.Id);
+        //            if (doctor != null)
+        //            {
+        //                loggedInId = doctor.Id; // Đây mới là DoctorId (ví dụ: 1)
+        //            }
+        //        }
+        //        else if (user.Role == "Patient")
+        //        {
+        //            // Tìm trong bảng Patient xem ai có UserId này
+        //            var patient = _context.Patients.FirstOrDefault(p => p.UserId == user.Id);
+        //            if (patient != null)
+        //            {
+        //                loggedInId = patient.Id; // Đây là PatientId
+        //            }
+        //        }
+        //        else // Role Admin hoặc trường hợp khác
+        //        {
+        //            loggedInId = user.Id;
+        //        }
+
+        //        // Kiểm tra nếu tìm thấy ID vai trò
+        //        if (loggedInId > 0)
+        //        {
+        //            msg = "Đăng nhập thành công!";
+        //            return user.Role;
+        //        }
+        //        else
+        //        {
+        //            msg = "Tài khoản chưa được cấu hình vai trò chi tiết!";
+        //            return "";
+        //        }
+        //    }
+
+        //    msg = "Số điện thoại hoặc mật khẩu không chính xác!";
+        //    return "";
+        //}
+
         public string Login(string phone, string pass, out int loggedInId, out string msg)
         {
             loggedInId = 0;
             msg = "";
 
-            // 1. Gọi DAL xác thực tài khoản User
-            var user = _userDAL.CheckLogin(phone, pass);
+            // 1. Lấy thông tin User từ DB qua SĐT (Hàm này bạn đã sửa ở UserDAL để lấy theo Phone)
+            var user = _userDAL.GetUserForLogin(phone);
 
-            if (user != null)
+            // 2. Kiểm tra User tồn tại VÀ so khớp mật khẩu đã băm
+            // BCrypt.Verify sẽ lấy 'pass' (chưa băm) so sánh với 'user.Password' (đã băm trong DB)
+            if (user != null && SecurityHelper.VerifyPassword(pass, user.Password))
             {
-                // 2. Dựa vào Role để lấy đúng ID của vai trò đó
+                // 3. Nếu mật khẩu đúng, bắt đầu phân quyền để lấy ID vai trò tương ứng
                 if (user.Role == "Doctor")
                 {
-                    // Tìm trong bảng Doctor xem ai có UserId này
                     var doctor = _context.Doctors.FirstOrDefault(d => d.UserId == user.Id);
                     if (doctor != null)
                     {
-                        loggedInId = doctor.Id; // Đây mới là DoctorId (ví dụ: 1)
+                        loggedInId = doctor.Id; // Trả về DoctorId (ví dụ: 1)
                     }
                 }
                 else if (user.Role == "Patient")
                 {
-                    // Tìm trong bảng Patient xem ai có UserId này
                     var patient = _context.Patients.FirstOrDefault(p => p.UserId == user.Id);
                     if (patient != null)
                     {
-                        loggedInId = patient.Id; // Đây là PatientId
+                        loggedInId = patient.Id; // Trả về PatientId
                     }
                 }
-                else // Role Admin hoặc trường hợp khác
+                else if (user.Role == "Admin")
                 {
+                    // Nếu bạn có bảng Admin riêng thì tìm tương tự, 
+                    // nếu không thì dùng luôn UserId
                     loggedInId = user.Id;
                 }
 
-                // Kiểm tra nếu tìm thấy ID vai trò
+                // 4. Kiểm tra xem đã lấy được ID định danh chưa
                 if (loggedInId > 0)
                 {
                     msg = "Đăng nhập thành công!";
@@ -95,6 +149,7 @@ namespace BUS_Tier
                 }
             }
 
+            // 5. Nếu không tìm thấy User hoặc mật khẩu sai
             msg = "Số điện thoại hoặc mật khẩu không chính xác!";
             return "";
         }
@@ -109,6 +164,9 @@ namespace BUS_Tier
             if (validation != "OK") return validation;
 
             if (string.IsNullOrWhiteSpace(insuranceCode)) return "Vui lòng nhập mã số Bảo hiểm y tế!";
+
+            // Sử dụng SecurityHelper để băm trước khi lưu
+            user.Password = SecurityHelper.HashPassword(user.Password);
 
             // 2. Gọi DAL lưu thông tin
             bool isSuccess = _userDAL.RegisterPatient(user, insuranceCode);
@@ -132,6 +190,8 @@ namespace BUS_Tier
 
             if (string.IsNullOrWhiteSpace(licenseNumber.ToString())) return "Vui lòng nhập mã giấy phép hành nghề.";
 
+            // Sử dụng SecurityHelper để băm trước khi lưu
+            user.Password = SecurityHelper.HashPassword(user.Password);
 
             // Truyền xuống DAL (đã bỏ fee)
             bool isSuccess = _userDAL.RegisterDoctor(user, deptId, exp, position, licenseNumber);
@@ -167,12 +227,23 @@ namespace BUS_Tier
             if (string.IsNullOrWhiteSpace(user.Gender))
                 return "Vui lòng chọn giới tính.";
 
-            if (string.IsNullOrWhiteSpace(user.Residential_Address)) 
-                 return "Địa chỉ không được để trống.";
+            if (string.IsNullOrWhiteSpace(user.Residential_Address))
+                return "Địa chỉ không được để trống.";
 
-            if (string.IsNullOrWhiteSpace(user.Password)) return "Mật khẩu không được để trống.";
-            if (string.IsNullOrWhiteSpace(confirmPass)) return "Vui lòng xác nhận mật khẩu.";
-            if (user.Password != confirmPass) return "Mật khẩu nhập lại không khớp.";
+            //if (string.IsNullOrWhiteSpace(user.Password)) return "Mật khẩu không được để trống.";
+            //if (string.IsNullOrWhiteSpace(confirmPass)) return "Vui lòng xác nhận mật khẩu.";
+            //if (user.Password != confirmPass) return "Mật khẩu nhập lại không khớp.";
+
+            // Kiểm tra mật khẩu
+            if (string.IsNullOrWhiteSpace(user.Password))
+                return "Mật khẩu không được để trống.";
+
+            if (string.IsNullOrWhiteSpace(confirmPass))
+                return "Vui lòng xác nhận mật khẩu.";
+
+            // So sánh 2 chuỗi chưa băm
+            if (user.Password != confirmPass)
+                return "Mật khẩu nhập lại không khớp.";
 
             // Kiểm tra xem số điện thoại đã tồn tại chưa
             if (_userDAL.IsPhoneExists(user.PhoneNumber))
@@ -187,6 +258,64 @@ namespace BUS_Tier
             int age = DateTime.Now.Year - dob.Year;
             if (dob > DateTime.Now.AddYears(-age)) age--;
             return age;
+        }
+
+        public static class SecurityHelper
+        {
+            private const int SaltSize = 16; // 128 bit
+            private const int KeySize = 32;  // 256 bit
+            private const int Iterations = 10000; // Số vòng lặp để làm chậm tấn công brute-force
+            private static readonly HashAlgorithmName HashAlgorithm = HashAlgorithmName.SHA256;
+
+            public static string HashPassword(string password)
+            {
+                // 1. Tạo Salt ngẫu nhiên
+                byte[] salt = RandomNumberGenerator.GetBytes(SaltSize);
+
+                // 2. Tạo Hash từ password và salt
+                using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, Iterations, HashAlgorithm))
+                {
+                    byte[] hash = pbkdf2.GetBytes(KeySize);
+
+                    // 3. Gộp Salt và Hash thành một mảng byte duy nhất
+                    byte[] combinedBytes = new byte[SaltSize + KeySize];
+                    Array.Copy(salt, 0, combinedBytes, 0, SaltSize);
+                    Array.Copy(hash, 0, combinedBytes, SaltSize, KeySize);
+
+                    // 4. Chuyển sang chuỗi Base64 để lưu vào SQL
+                    return Convert.ToBase64String(combinedBytes);
+                }
+            }
+
+            public static bool VerifyPassword(string password, string storedHash)
+            {
+                try
+                {
+                    // 1. Giải mã chuỗi Base64 từ DB
+                    byte[] combinedBytes = Convert.FromBase64String(storedHash);
+
+                    // 2. Tách Salt ra khỏi chuỗi
+                    byte[] salt = new byte[SaltSize];
+                    Array.Copy(combinedBytes, 0, salt, 0, SaltSize);
+
+                    // 3. Tách Hash cũ ra để so sánh
+                    byte[] hash = new byte[KeySize];
+                    Array.Copy(combinedBytes, SaltSize, hash, 0, KeySize);
+
+                    // 4. Băm mật khẩu người dùng vừa nhập với Salt đã lấy được
+                    using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, Iterations, HashAlgorithm))
+                    {
+                        byte[] newHash = pbkdf2.GetBytes(KeySize);
+
+                        // 5. So sánh từng byte một (dùng CryptographicOperations để chống Side-channel attack)
+                        return CryptographicOperations.FixedTimeEquals(hash, newHash);
+                    }
+                }
+                catch
+                {
+                    return false;
+                }
+            }
         }
     }
 }

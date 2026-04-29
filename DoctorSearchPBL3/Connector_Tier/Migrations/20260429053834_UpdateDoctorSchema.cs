@@ -161,7 +161,9 @@ namespace DAL_Tier.Migrations
                     UpdatedBy = table.Column<int>(type: "int", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedBy = table.Column<int>(type: "int", nullable: true)
+                    DeletedBy = table.Column<int>(type: "int", nullable: true),
+                    AverageRating = table.Column<double>(type: "float", nullable: false),
+                    TotalReviews = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -290,11 +292,18 @@ namespace DAL_Tier.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedByAdminId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TimeSlots", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TimeSlots_Admin_CreatedByAdminId",
+                        column: x => x.CreatedByAdminId,
+                        principalTable: "Admin",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_TimeSlots_Doctor_DoctorId",
                         column: x => x.DoctorId,
@@ -608,6 +617,11 @@ namespace DAL_Tier.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_TimeSlots_CreatedByAdminId",
+                table: "TimeSlots",
+                column: "CreatedByAdminId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TimeSlots_DoctorId",
                 table: "TimeSlots",
                 column: "DoctorId");
@@ -651,9 +665,6 @@ namespace DAL_Tier.Migrations
                 name: "Reviews");
 
             migrationBuilder.DropTable(
-                name: "Admin");
-
-            migrationBuilder.DropTable(
                 name: "Appointments");
 
             migrationBuilder.DropTable(
@@ -664,6 +675,9 @@ namespace DAL_Tier.Migrations
 
             migrationBuilder.DropTable(
                 name: "Patient");
+
+            migrationBuilder.DropTable(
+                name: "Admin");
 
             migrationBuilder.DropTable(
                 name: "Doctor");

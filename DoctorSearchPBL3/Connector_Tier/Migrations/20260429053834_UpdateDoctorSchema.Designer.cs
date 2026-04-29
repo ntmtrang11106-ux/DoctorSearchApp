@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL_Tier.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260429020111_UpdateDoctorSchema")]
+    [Migration("20260429053834_UpdateDoctorSchema")]
     partial class UpdateDoctorSchema
     {
         /// <inheritdoc />
@@ -354,6 +354,9 @@ namespace DAL_Tier.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<double>("AverageRating")
+                        .HasColumnType("float");
+
                     b.Property<string>("Biography")
                         .HasColumnType("nvarchar(max)");
 
@@ -400,6 +403,9 @@ namespace DAL_Tier.Migrations
                     b.Property<string>("Position")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("TotalReviews")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -653,6 +659,9 @@ namespace DAL_Tier.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("CreatedByAdminId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -688,6 +697,8 @@ namespace DAL_Tier.Migrations
                         .HasColumnType("date");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedByAdminId");
 
                     b.HasIndex("DoctorId");
 
@@ -985,6 +996,12 @@ namespace DAL_Tier.Migrations
 
             modelBuilder.Entity("DTO_Tier.TimeSlotsDTO", b =>
                 {
+                    b.HasOne("DTO_Tier.AdminDTO", "CreatedByAdmin")
+                        .WithMany()
+                        .HasForeignKey("CreatedByAdminId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("DTO_Tier.DoctorDTO", "Doctor")
                         .WithMany("TimeSlots")
                         .HasForeignKey("DoctorId")
@@ -996,6 +1013,8 @@ namespace DAL_Tier.Migrations
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("CreatedByAdmin");
 
                     b.Navigation("Doctor");
 

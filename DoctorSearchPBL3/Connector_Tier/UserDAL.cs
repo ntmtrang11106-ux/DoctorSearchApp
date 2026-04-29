@@ -20,7 +20,7 @@ namespace DAL_Tier
             //userDto.Status = "Active";
             userDto.CreatedAt = DateTime.Now;
             userDto.IsDeleted = false;
-
+            // Password đã được băm ở tầng BUS trước khi truyền xuống đây
             _context.Users.Add(userDto);
             _context.SaveChanges();
         }
@@ -87,7 +87,9 @@ namespace DAL_Tier
                     IsActive = true,
                     CreatedAt = DateTime.Now,
                     JoinDate = DateTime.Now,
-                    IsDeleted = false
+                    IsDeleted = false,
+                    AverageRating = 0,
+                    TotalReviews = 0
                 };
 
                 // Bước 3: Lưu thông tin Doctor
@@ -108,15 +110,34 @@ namespace DAL_Tier
         public bool IsPhoneExists(string phone)
             => _context.Users.Any(u => u.PhoneNumber == phone && !u.IsDeleted);
 
-        public UserDTO? CheckLogin(string phone, string pass)
+        // SỬA ĐỔI: Chỉ lấy User theo Phone, việc check Pass sẽ làm ở BUS
+        public UserDTO? GetUserByPhone(string phone)
         {
-            // Nó sẽ trả về cả đối tượng User, trong đó có chứa Id
+            return _context.Users
+                .AsNoTracking()
+                .FirstOrDefault(u => u.PhoneNumber == phone 
+                                  && !u.IsDeleted 
+                                  && u.Status == "Active");
+        }
+
+        public UserDTO? GetUserForLogin(string phone)
+        {
+            // Chỉ lấy User theo số điện thoại, không check pass ở đây nữa
             return _context.Users
                 .AsNoTracking()
                 .FirstOrDefault(u => u.PhoneNumber == phone
-                                  && u.Password == pass
                                   && !u.IsDeleted
                                   && u.Status == "Active");
         }
+        //public UserDTO? CheckLogin(string phone, string pass)
+        //{
+        //    // Nó sẽ trả về cả đối tượng User, trong đó có chứa Id
+        //    return _context.Users
+        //        .AsNoTracking()
+        //        .FirstOrDefault(u => u.PhoneNumber == phone
+        //                          && u.Password == pass
+        //                          && !u.IsDeleted
+        //                          && u.Status == "Active");
+        //}
     }
 }
