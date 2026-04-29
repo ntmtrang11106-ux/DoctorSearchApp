@@ -41,7 +41,7 @@ namespace UI_Tier
                 lblDate.Text = "Ngày đăng: " + content.CreatedAt.ToString("dd/MM/yyyy");
 
                 // 4. Tác giả - DÙNG ?. ĐỂ CHẶN LỖI MẤT BÀI THỨ 5
-                //lblAuthor.Text = "Tác giả: " + content.Author?.FullName ?? "Admin";
+                lblAuthor.Text = "Tác giả: " + content.AuthorAdmin?.User.FullName ?? "Admin";
                 lblAuthor.BringToFront();
 
                 // 5. Xử lý ảnh (Thumbnail)

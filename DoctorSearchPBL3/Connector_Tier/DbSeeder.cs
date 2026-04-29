@@ -252,6 +252,19 @@ namespace DAL_Tier
                 );
                 context.SaveChanges();
             }
+            // Lấy danh sách khoa vừa tạo để có ID thật
+            var depList = context.Departments.ToList();
+
+            if (!context.Rooms.Any())
+            {
+                context.Rooms.AddRange(
+                    // Gán DepartmentId cụ thể cho từng phòng
+                    new RoomDTO { RoomCode = "P101", RoomName = "Phòng khám 101", Floor = "1", DepartmentId = depList[0].Id },
+                    new RoomDTO { RoomCode = "P201", RoomName = "Phòng khám 201", Floor = "2", DepartmentId = depList[0].Id },
+                    new RoomDTO { RoomCode = "P301", RoomName = "Phòng khám 301", Floor = "3", DepartmentId = depList[2].Id }
+                );
+                context.SaveChanges();
+            }
 
             // 2. SEED ROOMS (Phòng khám)
             if (!context.Rooms.Any())

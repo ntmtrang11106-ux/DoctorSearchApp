@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL_Tier.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260426084923_RefactorFinish")]
+    [Migration("20260426025434_RefactorFinish")]
     partial class RefactorFinish
     {
         /// <inheritdoc />

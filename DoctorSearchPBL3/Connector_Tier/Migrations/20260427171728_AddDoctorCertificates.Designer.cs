@@ -4,6 +4,7 @@ using DAL_Tier;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL_Tier.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260427171728_AddDoctorCertificates")]
+    partial class AddDoctorCertificates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -597,9 +600,6 @@ namespace DAL_Tier.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -630,8 +630,6 @@ namespace DAL_Tier.Migrations
 
                     b.HasIndex("RoomCode")
                         .IsUnique();
-
-                    b.HasIndex("DepartmentId", "RoomCode");
 
                     b.ToTable("Room");
                 });
@@ -967,17 +965,6 @@ namespace DAL_Tier.Migrations
                     b.Navigation("Doctor");
 
                     b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("DTO_Tier.RoomDTO", b =>
-                {
-                    b.HasOne("DTO_Tier.DepartmentDTO", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("DTO_Tier.TimeSlotsDTO", b =>
