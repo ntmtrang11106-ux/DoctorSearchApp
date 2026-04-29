@@ -44,21 +44,52 @@ namespace BUS_Tier
             }
         }
 
+        /// <summary>
+        /// Logic tìm kiếm bác sĩ kết hợp lọc và sắp xếp
+        /// </summary>
+        /// <param name="keyword">Tên bác sĩ</param>
+        /// <param name="departmentNames">Danh sách các chuyên khoa được chọn</param>
+        /// <param name="gender">Giới tính (Nam/Nữ/Tất cả)</param>
+        /// <param name="sortType">Kiểu sắp xếp</param>
+        public List<DoctorDTO> SearchDoctors(string keyword, List<string> selectedDepts, string gender, string sortType)
+        {
+            // Logic nghiệp vụ: 
+            // 1. Chuẩn hóa từ khóa: xóa khoảng trắng thừa
+            string cleanKeyword = string.IsNullOrWhiteSpace(keyword) ? null : keyword.Trim();
+
+            // 2. Xử lý chuyên khoa: Nếu chọn "Tất cả" hoặc không chọn gì, truyền null vào DAL để lấy hết
+            List<string> filterDepts = null;
+            if (selectedDepts != null && selectedDepts.Count > 0 && !selectedDepts.Contains("Tất cả"))
+            {
+                filterDepts = selectedDepts;
+            }
+
+            // 3. Giới tính: Nếu là "Tất cả", truyền null
+            string filterGender = (gender == "Tất cả") ? null : gender;
+
+            // Gọi DAL để thực hiện truy vấn
+            return doctorDAL.SearchDoctors(cleanKeyword, filterDepts, filterGender, sortType);
+        }
+        public int GetDoctorIdByUserId(int userId)
+        {
+            return doctorDAL.GetDoctorIdByUserId(userId);
+        }
+
         /////////////////////////////////////////////////
 
 
 
-            /// <summary>
-            /// Tìm kiếm bác sĩ nâng cao: lọc theo tên, chuyên khoa, giới tính và sắp xếp.
-            /// Sử dụng trực tiếp hàm SearchDoctors của DAL để tối ưu hiệu năng (Filter tại Database).
-            /// </summary>
-       public List<DoctorDTO> SearchDoctors(string? keyword, List<string>? departments, string? gender, string? sortType)
-       {
-            // Tầng BUS có thể xử lý chuẩn hóa dữ liệu đầu vào trước khi gọi DAL
-            string? normalizedKeyword = string.IsNullOrWhiteSpace(keyword) ? null : keyword.Trim();
-            
-            return doctorDAL.SearchDoctors(normalizedKeyword, departments, gender, sortType);
-       }
+        //     /// <summary>
+        //     /// Tìm kiếm bác sĩ nâng cao: lọc theo tên, chuyên khoa, giới tính và sắp xếp.
+        //     /// Sử dụng trực tiếp hàm SearchDoctors của DAL để tối ưu hiệu năng (Filter tại Database).
+        //     /// </summary>
+        //public List<DoctorDTO> SearchDoctors(string? keyword, List<string>? departments, string? gender, string? sortType)
+        //{
+        //     // Tầng BUS có thể xử lý chuẩn hóa dữ liệu đầu vào trước khi gọi DAL
+        //     string? normalizedKeyword = string.IsNullOrWhiteSpace(keyword) ? null : keyword.Trim();
+
+        //     return doctorDAL.SearchDoctors(normalizedKeyword, departments, gender, sortType);
+        //}
 
         //public List<DoctorDTO> SearchDoctorsByName(string name)
         //{

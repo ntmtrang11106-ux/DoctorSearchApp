@@ -34,6 +34,7 @@
             lblEx = new Label();
             lblTotalReviews = new Label();
             pnlContainer = new Panel();
+            lblGender = new Label();
             lblSpecialties = new Label();
             label7 = new Label();
             label6 = new Label();
@@ -108,6 +109,7 @@
             // pnlContainer
             // 
             pnlContainer.BackColor = Color.White;
+            pnlContainer.Controls.Add(lblGender);
             pnlContainer.Controls.Add(lblSpecialties);
             pnlContainer.Controls.Add(label7);
             pnlContainer.Controls.Add(label6);
@@ -132,6 +134,15 @@
             pnlContainer.Size = new Size(659, 886);
             pnlContainer.TabIndex = 19;
             // 
+            // lblGender
+            // 
+            lblGender.AutoSize = true;
+            lblGender.Location = new Point(29, 515);
+            lblGender.Name = "lblGender";
+            lblGender.Size = new Size(105, 32);
+            lblGender.TabIndex = 27;
+            lblGender.Text = "Gioi tính";
+            // 
             // lblSpecialties
             // 
             lblSpecialties.AutoSize = true;
@@ -141,9 +152,9 @@
             lblSpecialties.Margin = new Padding(0, 5, 0, 5);
             lblSpecialties.MaximumSize = new Size(600, 0);
             lblSpecialties.Name = "lblSpecialties";
-            lblSpecialties.Size = new Size(589, 82);
+            lblSpecialties.Size = new Size(192, 41);
             lblSpecialties.TabIndex = 26;
-            lblSpecialties.Text = "list các chuyên khoa, đương nhiên chưa có rồi, làm đi nào";
+            lblSpecialties.Text = "Chuyên khoa";
             // 
             // label7
             // 
@@ -313,5 +324,6 @@
         private Label label4;
         private Label label7;
         private Label lblSpecialties;
+        private Label lblGender;
     }
 }

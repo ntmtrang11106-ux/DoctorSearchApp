@@ -19,6 +19,8 @@ namespace BUS_Tier
             return _deptDAL.GetActiveDepartments();
         }
 
+        ////////////////////////////////////////////////////////////////////////////
+
         /// <summary>
         /// Lấy tên chuyên khoa khi biết ID
         /// </summary>

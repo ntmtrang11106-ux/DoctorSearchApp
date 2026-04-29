@@ -34,15 +34,18 @@ namespace UI_Tier
             lblPhone.Text = doctor.User?.PhoneNumber ?? "Chưa cập nhật";
 
             //3. Chuyên khoa (Tên chuyên khoa hoặc "Chưa cập nhật" nếu không có)
-            string deptName = doctor.Department?.DepartmentName ?? "Chưa cập nhật";
+            string deptName = $"Chuyên khoa: {doctor.Department?.DepartmentName ?? "Chưa cập nhật"}";
             lblSpecialties.Text = deptName;
 
-            //4. Địa chỉ cụ thể 
+            //4. Giơí tính
+            lblGender.Text = $"Giới tính: {doctor.User?.Gender ?? "Chưa cập nhật" }";
+
+            //5. Địa chỉ cụ thể 
             lblSpecificAdress.Text = doctor.User?.Residential_Address ?? "Chưa cập nhật";
 
-            //5.Thời gian làm việc(Nếu trong DTO bạn có trường Status hoặc WorkingTime)
+            //6.Thời gian làm việc(Nếu trong DTO bạn có trường Status hoặc WorkingTime)
             //lblWorkingTime.Text = $"Lịch: {doctor.JoinDate}";
-            // 5. Thời gian làm việc
+            //6.Thời gian làm việc
             lblWorkingTime.Text = doctor.JoinDate.HasValue
                 ? $"Gia nhập: {doctor.JoinDate.Value:dd/MM/yyyy}"
                 : "Lịch: Thứ 2 - Thứ 7";
@@ -51,7 +54,7 @@ namespace UI_Tier
             decimal price = doctor.ConsultationFee ?? 0;
             lblPrice.Text = price.ToString("N0") + " đ";
 
-            //// 6. Đánh giá (Số sao và tổng lượt review)
+            //// 7. Đánh giá (Số sao và tổng lượt review)
             //lblRating.Text = doctor.AverageRating.ToString("0.0"); // Ví dụ: 4.5
             //lblTotalReviews.Text = $"{doctor.TotalReviews} đánh giá";
             // 7. Đánh giá (Tính từ bảng Reviews)
@@ -67,7 +70,7 @@ namespace UI_Tier
                 lblTotalReviews.Text = "0 đánh giá";
             }
 
-            //7.Kinh nghiệm
+            //8.Kinh nghiệm
             lblEx.Text = $"{doctor.ExperienceYears ?? 0} năm kinh nghiệm";
 
             // 9. Hình ảnh
