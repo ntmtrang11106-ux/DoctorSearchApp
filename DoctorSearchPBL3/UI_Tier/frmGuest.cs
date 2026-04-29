@@ -65,18 +65,18 @@
 //                // Gọi ArticleBUS để lấy dữ liệu ban đầu
 //                var initialArticles = _articleBus.GetInitialArticles();
 
-//                flpArticles.Controls.Clear();
+//                //flpArticles.Controls.Clear();
 //                foreach (var art in initialArticles)
 //                {
 //                    UCCardArticle ucArt = new UCCardArticle();
 //                    ucArt.SetData(art);
 //                    // Gán Margin cho đẹp, đồng bộ với Card Bác sĩ
 //                    ucArt.Margin = new Padding(15);
-//                    flpArticles.Controls.Add(ucArt);
+//                    //flpArticles.Controls.Add(ucArt);
 //                }
 
 //                // Cập nhật số lượng lên tab cho chuyên nghiệp
-//                tabPage2.Text = $"Bài viết ({initialArticles.Count})";
+//                //tabPage2.Text = $"Bài viết ({initialArticles.Count})";
 //            }
 //            catch (Exception ex)
 //            {
@@ -191,22 +191,22 @@
 //                    return;
 //                }
 
-                List<string> selectedSpecs = new List<string>();
-                string gender = null;
-                string sortDoc = "Rating";
-                string sortArt = "Newest";
+//                List<string> selectedSpecs = new List<string>();
+//                string gender = null;
+//                string sortDoc = "Rating";
+//                string sortArt = "Newest";
 
-                ExecuteUI_Search(keyword, selectedSpecs, gender, sortDoc, sortArt);
-            }
-        } // <--- DẤU NGOẶC NÀY CỰC KỲ QUAN TRỌNG, PHẢI ĐÓNG Ở ĐÂY!
+//                ExecuteUI_Search(keyword, selectedSpecs, gender, sortDoc, sortArt);
+//            }
+//        } // <--- DẤU NGOẶC NÀY CỰC KỲ QUAN TRỌNG, PHẢI ĐÓNG Ở ĐÂY!
 
-        // Bây giờ mới viết hàm ExecuteUI_Search nằm RIÊNG BIỆT ra ngoài
-        private void ExecuteUI_Search(string key, List<string> specs, string gen, string sDoc, string sArt)
-        {
-            var result = _searchBUS.ExecuteIntegratedSearch(key, specs, gen, sDoc, sArt);
+//        //Bây giờ mới viết hàm ExecuteUI_Search nằm RIÊNG BIỆT ra ngoài
+//        private void ExecuteUI_Search(string key, List<string> specs, string gen, string sDoc, string sArt)
+//        {
+//            var result = _searchBUS.ExecuteIntegratedSearch(key, specs, gen, sDoc, sArt);
 
-            List<DoctorDTO> doctors = result.doctors;
-            List<ContentDTO> articles = result.contents;
+//            List<DoctorDTO> doctors = result.doctors;
+//            List<ContentDTO> articles = result.contents;
 
 //            // Đổ Bác sĩ
 //            flpDoctors.Controls.Clear();
@@ -231,6 +231,9 @@
 //            tabPage2.Text = $"Bài viết ({articles.Count})";
 //        }
 
+//        private void InitializeComponent()
+//        {
 
+//        }
 //    }
 //}

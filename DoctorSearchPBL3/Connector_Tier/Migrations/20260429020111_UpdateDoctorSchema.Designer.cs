@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL_Tier.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260426025434_RefactorFinish")]
-    partial class RefactorFinish
+    [Migration("20260429020111_UpdateDoctorSchema")]
+    partial class UpdateDoctorSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -307,6 +307,45 @@ namespace DAL_Tier.Migrations
                     b.ToTable("Department");
                 });
 
+            modelBuilder.Entity("DTO_Tier.DoctorCertificateDTO", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FileName")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.ToTable("DoctorCertificates");
+                });
+
             modelBuilder.Entity("DTO_Tier.DoctorDTO", b =>
                 {
                     b.Property<int>("Id")
@@ -561,6 +600,9 @@ namespace DAL_Tier.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -591,6 +633,8 @@ namespace DAL_Tier.Migrations
 
                     b.HasIndex("RoomCode")
                         .IsUnique();
+
+                    b.HasIndex("DepartmentId", "RoomCode");
 
                     b.ToTable("Room");
                 });
@@ -822,6 +866,17 @@ namespace DAL_Tier.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("DTO_Tier.DoctorCertificateDTO", b =>
+                {
+                    b.HasOne("DTO_Tier.DoctorDTO", "Doctor")
+                        .WithMany("Certificates")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+                });
+
             modelBuilder.Entity("DTO_Tier.DoctorDTO", b =>
                 {
                     b.HasOne("DTO_Tier.DepartmentDTO", "Department")
@@ -917,6 +972,17 @@ namespace DAL_Tier.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("DTO_Tier.RoomDTO", b =>
+                {
+                    b.HasOne("DTO_Tier.DepartmentDTO", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+                });
+
             modelBuilder.Entity("DTO_Tier.TimeSlotsDTO", b =>
                 {
                     b.HasOne("DTO_Tier.DoctorDTO", "Doctor")
@@ -939,6 +1005,8 @@ namespace DAL_Tier.Migrations
             modelBuilder.Entity("DTO_Tier.DoctorDTO", b =>
                 {
                     b.Navigation("Appointments");
+
+                    b.Navigation("Certificates");
 
                     b.Navigation("Reviews");
 

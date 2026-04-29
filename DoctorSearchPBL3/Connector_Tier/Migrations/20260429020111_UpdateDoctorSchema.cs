@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DAL_Tier.Migrations
 {
     /// <inheritdoc />
-    public partial class RefactorFinish : Migration
+    public partial class UpdateDoctorSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -29,27 +29,6 @@ namespace DAL_Tier.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Department", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Room",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoomCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    RoomName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Floor = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Room", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -76,6 +55,34 @@ namespace DAL_Tier.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_User", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Room",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoomCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    RoomName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    DepartmentId = table.Column<int>(type: "int", nullable: false),
+                    Floor = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Room", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Room_Department_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Department",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -237,6 +244,31 @@ namespace DAL_Tier.Migrations
                         name: "FK_Content_Department_DepartmentId",
                         column: x => x.DepartmentId,
                         principalTable: "Department",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DoctorCertificates",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DoctorId = table.Column<int>(type: "int", nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    FileName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    IsPrimary = table.Column<bool>(type: "bit", nullable: false),
+                    UploadedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DoctorCertificates", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DoctorCertificates_Doctor_DoctorId",
+                        column: x => x.DoctorId,
+                        principalTable: "Doctor",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -519,6 +551,11 @@ namespace DAL_Tier.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_DoctorCertificates_DoctorId",
+                table: "DoctorCertificates",
+                column: "DoctorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MedicalRecords_AppointmentID",
                 table: "MedicalRecords",
                 column: "AppointmentID");
@@ -560,6 +597,11 @@ namespace DAL_Tier.Migrations
                 column: "PatientId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Room_DepartmentId_RoomCode",
+                table: "Room",
+                columns: new[] { "DepartmentId", "RoomCode" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Room_RoomCode",
                 table: "Room",
                 column: "RoomCode",
@@ -597,6 +639,9 @@ namespace DAL_Tier.Migrations
                 name: "Content");
 
             migrationBuilder.DropTable(
+                name: "DoctorCertificates");
+
+            migrationBuilder.DropTable(
                 name: "MedicalRecords");
 
             migrationBuilder.DropTable(
@@ -627,10 +672,10 @@ namespace DAL_Tier.Migrations
                 name: "Room");
 
             migrationBuilder.DropTable(
-                name: "Department");
+                name: "User");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Department");
         }
     }
 }

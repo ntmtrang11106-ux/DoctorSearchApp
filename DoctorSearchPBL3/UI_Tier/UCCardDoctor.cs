@@ -18,52 +18,80 @@ namespace UI_Tier
         // Hàm này dùng để "đổ" dữ liệu từ đối tượng Doctor vào các Label
         // Trong UCCardDoctor.cs
 
-        //public void SetDoctorData(DoctorDTO doctor)
+        public void SetDoctorData(DoctorDTO doctor)
 
         {
-            lblFullName.Text = doctor.User.FullName;
-            //lblWorkPlace.Text = doctor.ClinicName;
-            // 3. Địa chỉ (Kết hợp địa chỉ chi tiết và tên khu vực)
-            //lblSpecificAdress.Text = $"{doctor.ClinicAddress}, {doctor.Location.LocationName}";
+            /// 1. Tên Bác sĩ: Kết hợp Chức danh + Họ tên
+            // Ví dụ: "Thạc sĩ Nguyễn Văn A" hoặc "Bác sĩ Trần Thị B"
+            string position = doctor.Position ?? "";
+            string fullName = doctor.User?.FullName ?? "Chưa cập nhật";
+            // Nếu có chức danh thì cộng chuỗi, không thì chỉ hiện tên
+            lblFullName.Text = string.IsNullOrWhiteSpace(position)
+                ? fullName
+                : $"{position} {fullName}";
 
-            // 4. Thời gian làm việc (Nếu trong DTO bạn có trường Status hoặc WorkingTime)
-            lblWorkingTime.Text = $"Lịch: {doctor.JoinDate}";
+            //2. Nơi làm việc (Tên phòng khám hoặc bệnh viện)
+            lblPhone.Text = doctor.User?.PhoneNumber ?? "Chưa cập nhật";
 
-            // 5. Giá tiền (Định dạng tiền tệ VNĐ: 500.000đ)
-            lblPrice.Text = UIHelper.FormatVND(doctor.ConsultationFee);
+            //3. Chuyên khoa (Tên chuyên khoa hoặc "Chưa cập nhật" nếu không có)
+            string deptName = doctor.Department?.DepartmentName ?? "Chưa cập nhật";
+            lblSpecialties.Text = deptName;
 
-        //    // 6. Đánh giá (Số sao và tổng lượt review)
-        //    lblRating.Text = doctor.AverageRating.ToString("0.0"); // Ví dụ: 4.5
-        //    lblTotalReviews.Text = $"{doctor.TotalReviews} đánh giá";
+            //4. Địa chỉ cụ thể 
+            lblSpecificAdress.Text = doctor.User?.Residential_Address ?? "Chưa cập nhật";
 
-            // 7. Kinh nghiệm
-            lblEx.Text = $"{doctor.ExperienceYears} năm kinh nghiệm";
+            //5.Thời gian làm việc(Nếu trong DTO bạn có trường Status hoặc WorkingTime)
+            //lblWorkingTime.Text = $"Lịch: {doctor.JoinDate}";
+            // 5. Thời gian làm việc
+            lblWorkingTime.Text = doctor.JoinDate.HasValue
+                ? $"Gia nhập: {doctor.JoinDate.Value:dd/MM/yyyy}"
+                : "Lịch: Thứ 2 - Thứ 7";
 
-        //    // 8. Chuyên khoa
-        //    // --- XỬ LÝ CHUYÊN KHOA (CÁCH 2) ---
+            // 6. Giá tiền (Đã có cột ConsultationFee trong bảng Doctor)
+            decimal price = doctor.ConsultationFee ?? 0;
+            lblPrice.Text = price.ToString("N0") + " đ";
 
-        //    // 9. Hình ảnh
-        //    // --- XỬ LÝ HÌNH ẢNH ---
-        //    // Kiểm tra null hoặc rỗng để dùng ảnh mặc định
-        //    string fileName = string.IsNullOrWhiteSpace(doctor.User.Picture) ? "default.jpg" : doctor.User.Picture.Trim();
+            //// 6. Đánh giá (Số sao và tổng lượt review)
+            //lblRating.Text = doctor.AverageRating.ToString("0.0"); // Ví dụ: 4.5
+            //lblTotalReviews.Text = $"{doctor.TotalReviews} đánh giá";
+            // 7. Đánh giá (Tính từ bảng Reviews)
+            if (doctor.Reviews != null && doctor.Reviews.Any())
+            {
+                double avg = doctor.Reviews.Average(r => r.Rating);
+                lblRating.Text = avg.ToString("0.0");
+                lblTotalReviews.Text = $"{doctor.Reviews.Count} đánh giá";
+            }
+            else
+            {
+                lblRating.Text = "0.0";
+                lblTotalReviews.Text = "0 đánh giá";
+            }
 
-        //    // Đường dẫn trỏ vào folder Resources_Images trong thư mục chạy app
-        //    string imageFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources_Images");
-        //    string imagePath = Path.Combine(imageFolder, fileName);
+            //7.Kinh nghiệm
+            lblEx.Text = $"{doctor.ExperienceYears ?? 0} năm kinh nghiệm";
 
-        //    if (File.Exists(imagePath))
-        //    {
-        //        try
-        //        {
-        //            if (picDoctor.Image != null) picDoctor.Image.Dispose();
-        //            using (FileStream fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
-        //            {
-        //                picDoctor.Image = new Bitmap(fs); // Dùng Bitmap để không bị khóa file
-        //            }
-        //        }
-        //        catch (Exception ex) { }
-        //    }
-        //}
+            // 9. Hình ảnh
+            // --- XỬ LÝ HÌNH ẢNH ---
+            // Kiểm tra null hoặc rỗng để dùng ảnh mặc định
+            string fileName = string.IsNullOrWhiteSpace(doctor.User.Picture) ? "default.jpg" : doctor.User.Picture.Trim();
+
+            // Đường dẫn trỏ vào folder Resources_Images trong thư mục chạy app
+            string imageFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources_Images");
+            string imagePath = Path.Combine(imageFolder, fileName);
+
+            if (File.Exists(imagePath))
+            {
+                try
+                {
+                    if (picDoctor.Image != null) picDoctor.Image.Dispose();
+                    using (FileStream fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
+                    {
+                        picDoctor.Image = new Bitmap(fs); // Dùng Bitmap để không bị khóa file
+                    }
+                }
+                catch (Exception ex) { }
+            }
+        }
 
         private void UCCardDoctor_Load(object sender, EventArgs e)
         {

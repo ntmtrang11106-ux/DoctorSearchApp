@@ -7,20 +7,35 @@ namespace DAL_Tier
     {
         private readonly AppDbContext _context = new AppDbContext();
 
+        // Trong DoctorDAL.cs
+        public int GetDoctorIdByUserId(int userId)
+        {
+            using (var db = new AppDbContext()) // Hoặc cách gọi DB của nhóm
+            {
+                var doctor = db.Doctors.FirstOrDefault(d => d.UserId == userId);
+                return doctor != null ? doctor.Id : 0;
+            }
+        }
         public List<DoctorDTO> GetAllDoctors()
         {
             return _context.Doctors
-                .Include(d => d.User)
-                .Include(d => d.Department)
+                .Include(d => d.User) // Kết nối bảng User (để lấy FullName, Picture)
+                .Include(d => d.Department) // Kết nối bảng Department (để lấy tên Chuyên khoa)
                 .Include(d => d.Reviews)
                 .Where(d => d.IsApproved && d.IsActive && !d.IsDeleted)
                 .ToList();
         }
 
+
+        //////////////////////////////////////////////////
+        
+
         public bool UpdateDoctor(DoctorDTO doctor)
         {
             try
             {
+                // Cập nhật thời gian UpdatedAt trước khi lưu
+                doctor.UpdatedAt = DateTime.Now;
                 _context.Doctors.Update(doctor);
                 return _context.SaveChanges() > 0;
             }
@@ -41,16 +56,19 @@ namespace DAL_Tier
                 .Where(d => d.IsApproved && d.IsActive && !d.IsDeleted)
                 .AsQueryable();
 
+            // 1. Lọc theo từ khóa (Tên bác sĩ từ bảng User)
             if (!string.IsNullOrWhiteSpace(keyword))
             {
                 query = query.Where(d => d.User != null && d.User.FullName.Contains(keyword));
             }
 
+            // 2. Lọc theo giới tính (từ bảng User)
             if (!string.IsNullOrWhiteSpace(gender) && gender != "Tất cả")
             {
                 query = query.Where(d => d.User != null && d.User.Gender == gender);
             }
 
+            // 3. Lọc theo danh sách chuyên khoa
             if (departmentNames != null && departmentNames.Any() && !departmentNames.Contains("Tất cả"))
             {
                 query = query.Where(d => d.Department != null && departmentNames.Contains(d.Department.DepartmentName));
@@ -58,6 +76,7 @@ namespace DAL_Tier
 
             var result = query.ToList();
 
+            // 4.Tính toán Rating và TotalReviews(Logic nghiệp vụ)
             foreach (var doctor in result)
             {
                 var visibleReviews = doctor.Reviews?.Where(r => r.IsVisible && !r.IsDeleted).ToList() ?? new List<ReviewsDTO>();
@@ -73,16 +92,6 @@ namespace DAL_Tier
                 "Rating cao đến thấp" => result.OrderByDescending(d => d.AverageRating).ToList(),
                 _ => result
             };
-        }
-
-        // Trong DoctorDAL.cs
-        public int GetDoctorIdByUserId(int userId)
-        {
-            using (var db = new AppDbContext()) // Hoặc cách gọi DB của nhóm
-            {
-                var doctor = db.Doctors.FirstOrDefault(d => d.UserId == userId);
-                return doctor != null ? doctor.Id : 0;
-            }
         }
     }
 }

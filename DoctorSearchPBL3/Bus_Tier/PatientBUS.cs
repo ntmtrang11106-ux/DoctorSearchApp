@@ -8,6 +8,18 @@ namespace DAL_Tier
         private readonly AppDbContext _context;
         public PatientDAL() => _context = new AppDbContext();
 
+        public int GetPatientIdByUserId(int userId)
+        {
+            using (var db = new AppDbContext())
+            {
+                // Tìm bệnh nhân dựa trên UserId và đảm bảo bệnh nhân chưa bị xóa (IsDeleted)
+                var patient = db.Patients.FirstOrDefault(p => p.UserId == userId && !p.IsDeleted);
+
+                // Nếu tìm thấy trả về Id của Patient, ngược lại trả về 0
+                return patient != null ? patient.Id : 0;
+            }
+        }
+
         public PatientDTO? GetPatientProfile(int patientId)
         {
             return _context.Patients

@@ -63,104 +63,112 @@ namespace UI_Tier
             this.Show();
         }
 
+        //private void btnLogin_Click(object sender, EventArgs e)
+        //{
+        //    // 1. Lấy thông tin từ TextBox (Nhân kiểm tra tên txtPhoneNumber cho đúng nhé)
+        //    string phone = txtUsername.Text.Trim();
+        //    string pass = txtPassword.Text.Trim();
+
+        //    // 2. Khai báo các biến để hứng dữ liệu từ BUS trả về (out)
+        //    int loggedInId;
+        //    string message;
+
+        //    // 3. Gọi hàm Login từ tầng BUS
+        //    // Hàm này trả về Role (Doctor/Patient), và đẩy ID vào loggedInId, thông báo vào message
+        //    string role = _userBUS.Login(phone, pass, out loggedInId, out message);
+
+        //    // 4. Xử lý điều hướng dựa trên Role nhận được
+        //    if (!string.IsNullOrEmpty(role))
+        //    {
+
+        //        // 2. CỰC KỲ QUAN TRỌNG: Lưu ID và Role vào kho lưu trữ chung (GlobalAccount)
+        //        // Dòng này giúp xóa bỏ lỗi "ID bác sĩ không hợp lệ" khi tạo lịch
+        //        UI_Tier.GlobalAccount.SetLoggedInAccount(loggedInId, role);
+
+
+        //        // Đăng nhập thành công
+        //        this.Hide();
+
+        //        if (role == "Patient")
+        //        {
+        //            frmPatient f = new frmPatient();
+        //            f.Tag = loggedInId; // QUAN TRỌNG: Lưu ID vào Tag để Form Patient biết ai đang dùng
+        //            f.ShowDialog();
+        //        }
+        //        else if (role == "Doctor")
+        //        {
+        //            frmDoctor f = new frmDoctor();
+        //            f.Tag = loggedInId; // Lưu ID bác sĩ vào Tag
+        //            f.ShowDialog();
+        //        }
+        //        else if (role == "Admin")
+        //        {
+        //            MessageBox.Show("Chào Admin! Form quản trị đang được cập nhật.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //            // Nếu có Form Admin thì mở ở đây
+        //        }
+
+        //        // Sau khi đóng Form chức năng thì đóng luôn Form Login
+        //        this.Close();
+        //    }
+        //    else
+        //    {
+        //        // 5. Đăng nhập thất bại (Sai pass, số điện thoại, hoặc tài khoản bị khóa)
+        //        // Hiển thị nội dung lỗi cụ thể mà tầng BUS đã trả về trong biến 'message'
+        //        MessageBox.Show(message, "Lỗi đăng nhập", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+        //        txtPassword.Clear();
+        //        txtPassword.Focus();
+        //    }
+        //}
+
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            // 1. Lấy thông tin từ TextBox (Nhân kiểm tra tên txtPhoneNumber cho đúng nhé)
             string phone = txtUsername.Text.Trim();
             string pass = txtPassword.Text.Trim();
 
-            // 2. Khai báo các biến để hứng dữ liệu từ BUS trả về (out)
-            int loggedInId;
+            int userId;
             string message;
 
-            // 3. Gọi hàm Login từ tầng BUS
-            // Hàm này trả về Role (Doctor/Patient), và đẩy ID vào loggedInId, thông báo vào message
-            string role = _userBUS.Login(phone, pass, out loggedInId, out message);
+            // 1. Gọi BUS để kiểm tra tài khoản (User)
+            // Giả sử hàm Login trả về Role (Doctor/Patient/Admin)
+            string role = _userBUS.Login(phone, pass, out userId, out message);
 
-            // 4. Xử lý điều hướng dựa trên Role nhận được
             if (!string.IsNullOrEmpty(role))
             {
+                // 2. ĐỔI ID: Lấy ProfileId tương ứng với vai trò
+                // Chúng ta gọi hàm này từ BUS để lấy DoctorId hoặc PatientId
+                int profileId = _userBUS.GetProfileIdByRole(userId, role);
 
-                // 2. CỰC KỲ QUAN TRỌNG: Lưu ID và Role vào kho lưu trữ chung (GlobalAccount)
-                // Dòng này giúp xóa bỏ lỗi "ID bác sĩ không hợp lệ" khi tạo lịch
-                UI_Tier.GlobalAccount.SetLoggedInAccount(loggedInId, role);
+                // 3. LƯU VÀO DTO: Cất vào GlobalAccount để dùng toàn app
+                // Giả sử bạn lấy thêm được FullName từ UserDTO
+                string fullName = "Người dùng"; // Hoặc lấy từ object User trả về
+                DTO_Tier.GlobalAccount.SetLoggedInAccount(userId, profileId, role, fullName);
 
-
-                // Đăng nhập thành công
+                // 4. ĐIỀU HƯỚNG: Dùng if-else như bạn mong muốn
                 this.Hide();
 
                 if (role == "Patient")
                 {
                     frmPatient f = new frmPatient();
-                    f.Tag = loggedInId; // QUAN TRỌNG: Lưu ID vào Tag để Form Patient biết ai đang dùng
                     f.ShowDialog();
                 }
                 else if (role == "Doctor")
                 {
                     frmDoctor f = new frmDoctor();
-                    f.Tag = loggedInId; // Lưu ID bác sĩ vào Tag
                     f.ShowDialog();
                 }
                 else if (role == "Admin")
                 {
-                    MessageBox.Show("Chào Admin! Form quản trị đang được cập nhật.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    // Nếu có Form Admin thì mở ở đây
+                    MessageBox.Show("Chào Admin!", "Thông báo");
+                    // Mở form Admin ở đây
                 }
 
-                // Sau khi đóng Form chức năng thì đóng luôn Form Login
                 this.Close();
             }
             else
             {
-                // 5. Đăng nhập thất bại (Sai pass, số điện thoại, hoặc tài khoản bị khóa)
-                // Hiển thị nội dung lỗi cụ thể mà tầng BUS đã trả về trong biến 'message'
                 MessageBox.Show(message, "Lỗi đăng nhập", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                txtPassword.Clear();
-                txtPassword.Focus();
             }
         }
-
-        //private void btnLogin_Click(object sender, EventArgs e)
-        //{
-        //    string phone = txtUsername.Text.Trim();
-        //    string pass = txtPassword.Text.Trim();
-
-        //    // Khai báo biến để hứng dữ liệu từ BUS trả về
-        //    int loggedInId;
-        //    string message;
-
-        //    // Gọi hàm BUS
-        //    string role = _userBUS.Login(phone, pass, out loggedInId, out message);
-
-        //    if (!string.IsNullOrEmpty(role))
-        //    {
-        //        // Nếu đăng nhập thành công
-        //        if (role == "Doctor")
-        //        {
-        //            this.Hide();
-        //            frmDoctor f = new frmDoctor();
-
-        //            // LƯU ID VÀO TAG CỦA FORM ĐỂ DÙNG CHO CÁC NHIỆM VỤ SAU
-        //            f.Tag = loggedInId;
-
-        //            f.ShowDialog();
-        //            this.Close();
-        //        }
-        //        else if (role == "Patient")
-        //        {
-        //            this.Hide();
-        //            frmPatient f = new frmPatient();
-        //            f.Tag = loggedInId;
-        //            f.ShowDialog();
-        //            this.Close();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // Nếu thất bại, hiển thị thông báo lỗi mà BUS đã xử lý
-        //        MessageBox.Show(message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //    }
-        //}
     }
 }

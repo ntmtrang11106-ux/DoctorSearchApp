@@ -61,7 +61,7 @@ namespace UI_Tier
             //Application.Run(new frmGuest());
 
             // test form
-            Application.Run(new frmLogin());
+            //Application.Run(new frmLogin());
             //Application.Run(new frmRegister());
             //Application.Run(new frmPatient());
             Application.Run(new frmGuest());

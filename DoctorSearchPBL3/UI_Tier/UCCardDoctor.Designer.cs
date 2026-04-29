@@ -46,7 +46,7 @@
             lblPrice = new Label();
             lblWorkingTime = new Label();
             lblSpecificAdress = new Label();
-            lblWorkPlace = new Label();
+            lblPhone = new Label();
             ((System.ComponentModel.ISupportInitialize)picDoctor).BeginInit();
             pnlContainer.SuspendLayout();
             SuspendLayout();
@@ -121,7 +121,7 @@
             pnlContainer.Controls.Add(lblPrice);
             pnlContainer.Controls.Add(lblWorkingTime);
             pnlContainer.Controls.Add(lblSpecificAdress);
-            pnlContainer.Controls.Add(lblWorkPlace);
+            pnlContainer.Controls.Add(lblPhone);
             pnlContainer.Controls.Add(lblFullName);
             pnlContainer.Controls.Add(lblTotalReviews);
             pnlContainer.Controls.Add(lblEx);
@@ -264,17 +264,17 @@
             lblSpecificAdress.TabIndex = 3;
             lblSpecificAdress.Text = "label3";
             // 
-            // lblWorkPlace
+            // lblPhone
             // 
-            lblWorkPlace.AutoSize = true;
-            lblWorkPlace.Font = new Font("Segoe UI", 11F);
-            lblWorkPlace.ForeColor = SystemColors.ControlDarkDark;
-            lblWorkPlace.Location = new Point(25, 427);
-            lblWorkPlace.Margin = new Padding(0, 5, 0, 5);
-            lblWorkPlace.Name = "lblWorkPlace";
-            lblWorkPlace.Size = new Size(348, 41);
-            lblWorkPlace.TabIndex = 2;
-            lblWorkPlace.Text = "Bệnh viện Tỉnh Quảng Trị";
+            lblPhone.AutoSize = true;
+            lblPhone.Font = new Font("Segoe UI", 11F);
+            lblPhone.ForeColor = SystemColors.ControlDarkDark;
+            lblPhone.Location = new Point(25, 427);
+            lblPhone.Margin = new Padding(0, 5, 0, 5);
+            lblPhone.Name = "lblPhone";
+            lblPhone.Size = new Size(348, 41);
+            lblPhone.TabIndex = 2;
+            lblPhone.Text = "Bệnh viện Tỉnh Quảng Trị";
             // 
             // UCCardDoctor
             // 
@@ -304,7 +304,7 @@
         private Label lblPrice;
         private Label lblWorkingTime;
         private Label lblSpecificAdress;
-        private Label lblWorkPlace;
+        private Label lblPhone;
         private Label label1;
         private Label label2;
         private Label label3;
