@@ -9,114 +9,195 @@ namespace BUS_Tier
     public class TimeSlotBUS
     {
         private readonly TimeSlotDAL _dal = new TimeSlotDAL();
-        // --- HÀM CHUNG: Xử lý logic kiểm tra và tạo đối tượng DTO ---
-        private string ValidateAndCheck(int doctorId, DateTime date, TimeSpan startT, TimeSpan endT, out TimeSlotsDTO newSlot)
+
+        // --- HÀM KIỂM TRA CHUNG (Validation) ---
+        // Nhân đưa các kiểm tra logic vào đây để UI gọn hơn
+        private string ValidateInputs(int doctorId, int roomId, TimeSpan startT, TimeSpan endT)
         {
-            newSlot = null;
-
-            if (_dal.IsSlotExisted(doctorId, date, startT, endT))
-            {
-                return "Existed"; // Đánh dấu là đã tồn tại
-            }
-
-            newSlot = new TimeSlotsDTO
-            {
-                DoctorId = doctorId,
-                Date = date,
-                StartTime = startT,
-                EndTime = endT,
-                Status = "Trống"
-            };
-            return "OK";
+            if (doctorId <= 0) return "Lỗi: ID bác sĩ không hợp lệ!";
+            if (roomId <= 0) return "Vui lòng chọn phòng khám!";
+            if (endT <= startT) return "Giờ kết thúc phải lớn hơn giờ bắt đầu!";
+            return null; // Trả về null nếu hợp lệ
         }
 
         // 1. Tạo một khung giờ lẻ
+        //public string CreateSingleTimeSlot(TimeSlotsDTO slot)
+        //{
+        //    // Kiểm tra các ràng buộc cơ bản
+        //    string error = ValidateInputs(slot.DoctorId, slot.RoomId, slot.StartTime, slot.EndTime);
+        //    if (error != null) return error;
+
+        //    if (slot.WorkDate.Date < DateTime.Now.Date) return "Không thể tạo lịch cho quá khứ!";
+
+        //    // Check trùng bằng WorkDate (Khớp SQL)
+        //    if (_dal.IsSlotExisted(slot.DoctorId, slot.WorkDate, slot.StartTime, slot.EndTime))
+        //    {
+        //        return $"Khung giờ này đã tồn tại trong ngày {slot.WorkDate:dd/MM}!";
+        //    }
+
+        //    slot.Status = "Open"; // Khớp DEFAULT SQL
+        //    slot.CreatedAt = DateTime.Now;
+        //    slot.IsDeleted = false;
+
+        //    return _dal.AddSingle(slot) ? "Success" : "Lỗi hệ thống khi lưu!";
+        //}
         public string CreateSingleTimeSlot(TimeSlotsDTO slot)
         {
-            if (slot.DoctorId <= 0) return "Lỗi: ID bác sĩ không hợp lệ!";
-            if (slot.EndTime <= slot.StartTime) return "Giờ kết thúc phải lớn hơn giờ bắt đầu!";
+            // 1. Kiểm tra các ràng buộc cơ bản
+            string error = ValidateInputs(slot.DoctorId, slot.RoomId, slot.StartTime, slot.EndTime);
+            if (error != null) return error;
 
-            // Dùng hàm chung để check trùng
-            string check = ValidateAndCheck(slot.DoctorId, slot.Date, slot.StartTime, slot.EndTime, out TimeSlotsDTO verifiedSlot);
+            if (slot.WorkDate.Date < DateTime.Now.Date) return "Không thể tạo lịch cho quá khứ!";
 
-            if (check == "Existed")
-                return $"Khung giờ {slot.StartTime:hh\\:mm} - {slot.EndTime:hh\\:mm} ngày {slot.Date:dd/MM} đã tồn tại!";
+            // 2. LOGIC KIỂM TRA TRÙNG (Sử dụng hàm GetConflictSlot đã viết ở DAL)
+            var conflict = _dal.GetConflictSlot(slot.WorkDate, slot.StartTime, slot.EndTime, slot.RoomId);
 
-            return _dal.AddSingle(verifiedSlot) ? "Success" : "Lỗi hệ thống khi lưu!";
+            if (conflict != null)
+            {
+                // Nếu trùng ID bác sĩ hiện tại
+                if (conflict.DoctorId == slot.DoctorId)
+                {
+                    return $"Bạn đã đăng ký lịch khám này rồi ({conflict.StartTime:hh\\:mm} - {conflict.EndTime:hh\\:mm})!";
+                }
+                // Nếu ID bác sĩ khác đang dùng phòng này
+                else
+                {
+                    return "Phòng này đã có bác sĩ khác đăng ký vào khung giờ này!";
+                }
+            }
+
+            // 3. Thiết lập mặc định và lưu
+            slot.Status = "Open";
+            slot.CreatedAt = DateTime.Now;
+            slot.IsDeleted = false;
+
+            return _dal.AddSingle(slot) ? "Success" : "Lỗi hệ thống khi lưu!";
         }
 
-        // 2. Xử lý tạo hàng loạt (Bulk)
-        public string CreateBulkTimeSlots(int doctorId, List<string> selectedDays, DateTime startDate, DateTime endDate, TimeSpan startT, TimeSpan endT)
+        // 2. Tạo hàng loạt (Bulk)
+        // Nhân thêm tham số roomId và maxApp vào đây nhé
+        //public string CreateBulkTimeSlots(int doctorId, List<string> selectedDays, DateTime startDate, DateTime endDate, TimeSpan startT, TimeSpan endT, int roomId, int maxApp)
+        //{
+        //    // Kiểm tra các ràng buộc
+        //    string error = ValidateInputs(doctorId, roomId, startT, endT);
+        //    if (error != null) return error;
+
+        //    if (endDate.Date < startDate.Date) return "Ngày kết thúc không hợp lệ!";
+        //    if (selectedDays == null || selectedDays.Count == 0) return "Vui lòng chọn ít nhất một thứ (T2, T3...)!";
+
+        //    var cleanDays = selectedDays.Select(d => d.Trim().ToUpper()).ToList();
+        //    List<TimeSlotsDTO> listToCreate = new List<TimeSlotsDTO>();
+        //    int duplicateCount = 0;
+
+        //    for (DateTime date = startDate.Date; date <= endDate.Date; date = date.AddDays(1))
+        //    {
+        //        string vnDay = ConvertToVNDay(date.DayOfWeek).ToUpper();
+
+        //        if (cleanDays.Contains(vnDay))
+        //        {
+        //            // Kiểm tra trùng trong DB
+        //            if (_dal.IsSlotExisted(doctorId, date, startT, endT))
+        //            {
+        //                duplicateCount++;
+        //                continue;
+        //            }
+
+        //            listToCreate.Add(new TimeSlotsDTO
+        //            {
+        //                DoctorId = doctorId,
+        //                RoomId = roomId,        // Bổ sung RoomId
+        //                WorkDate = date,
+        //                StartTime = startT,
+        //                EndTime = endT,
+        //                MaxAppointments = maxApp, // Bổ sung số lượng tối đa
+        //                BookedCount = 0,
+        //                Status = "Open",
+        //                IsDeleted = false,
+        //                CreatedAt = DateTime.Now
+        //            });
+        //        }
+        //    }
+
+        //    if (listToCreate.Count > 0)
+        //    {
+        //        // Gọi xuống DAL (Hàm AddRange Nhân đã thêm ở bước trước)
+        //        return _dal.AddRange(listToCreate)
+        //            ? (duplicateCount > 0 ? $"Thành công {listToCreate.Count} lịch (Bỏ qua {duplicateCount} ngày trùng)" : "Success")
+        //            : "Lỗi lưu Database!";
+        //    }
+
+        //    return duplicateCount > 0 ? "Tất cả các ngày đã chọn đều đã có lịch!" : "Không tìm thấy ngày phù hợp trong khoảng thời gian này.";
+        //}
+
+        public string CreateBulkTimeSlots(int doctorId, List<string> selectedDays, DateTime startDate, DateTime endDate, TimeSpan startT, TimeSpan endT, int roomId, int maxApp)
         {
-            // 1. Kiểm tra đầu vào cơ bản
-            if (doctorId <= 0) return "Lỗi: ID bác sĩ không hợp lệ!";
-            if (endDate.Date < startDate.Date) return "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu!";
-            if (endT <= startT) return "Giờ kết thúc phải lớn hơn giờ bắt đầu!";
+            // 1. Kiểm tra ràng buộc cơ bản
+            string error = ValidateInputs(doctorId, roomId, startT, endT);
+            if (error != null) return error;
+
+            if (endDate.Date < startDate.Date) return "Ngày kết thúc không hợp lệ!";
             if (selectedDays == null || selectedDays.Count == 0) return "Vui lòng chọn ít nhất một thứ (T2, T3...)!";
 
-            // LÀM SẠCH DANH SÁCH THỨ: Loại bỏ khoảng trắng và viết hoa hết để so sánh chuẩn
-            var cleanSelectedDays = selectedDays.Select(d => d.Trim().ToUpper()).ToList();
-
+            var cleanDays = selectedDays.Select(d => d.Trim().ToUpper()).ToList();
             List<TimeSlotsDTO> listToCreate = new List<TimeSlotsDTO>();
-            int duplicateCount = 0;
-            int matchedDayCount = 0; // Biến này để kiểm tra xem có ngày nào khớp Thứ không
 
-            // 2. Vòng lặp quét từng ngày
+            int myDuplicateCount = 0;    // Đếm số lịch trùng của chính mình
+            int roomBusyCount = 0;       // Đếm số lịch phòng đã bị người khác chiếm
+
             for (DateTime date = startDate.Date; date <= endDate.Date; date = date.AddDays(1))
             {
-                // Chuyển thứ hiện tại sang "T2", "T3"... và viết hoa
-                string currentDayStr = ConvertToVNDay(date.DayOfWeek).Trim().ToUpper();
+                string vnDay = ConvertToVNDay(date.DayOfWeek).ToUpper();
 
-                // So khớp Thứ
-                if (cleanSelectedDays.Contains(currentDayStr))
+                if (cleanDays.Contains(vnDay))
                 {
-                    matchedDayCount++;
+                    // 2. Kiểm tra xung đột cho từng ngày
+                    var conflict = _dal.GetConflictSlot(date, startT, endT, roomId);
 
-                    // Kiểm tra trùng trong DB (Sử dụng hàm của Tiên ở DAL)
-                    if (_dal.IsSlotExisted(doctorId, date, startT, endT))
+                    if (conflict != null)
                     {
-                        duplicateCount++;
-                        continue;
+                        if (conflict.DoctorId == doctorId) myDuplicateCount++;
+                        else roomBusyCount++;
+                        continue; // Bỏ qua ngày này
                     }
 
+                    // 3. Thêm vào danh sách chờ lưu
                     listToCreate.Add(new TimeSlotsDTO
                     {
                         DoctorId = doctorId,
-                        //Date = date,
+                        RoomId = roomId,
+                        WorkDate = date,
                         StartTime = startT,
                         EndTime = endT,
-                        Status = "Trống"
+                        MaxAppointments = maxApp,
+                        BookedCount = 0,
+                        Status = "Open",
+                        IsDeleted = false,
+                        CreatedAt = DateTime.Now
                     });
                 }
             }
 
-            // 3. XỬ LÝ KẾT QUẢ LƯU
+            // 4. Xử lý kết quả trả về cho UI
             if (listToCreate.Count > 0)
             {
-                // Gọi xuống DAL của Tiên để thực hiện AddRange
                 bool isSaved = _dal.AddRange(listToCreate);
-                if (isSaved)
-                {
-                    return duplicateCount > 0
-                        ? $"Thành công! Đã tạo {listToCreate.Count} lịch (Bỏ qua {duplicateCount} ngày trùng)."
-                        : "Success";
-                }
-                return "Lỗi DAL: Không thể lưu danh sách vào Database. Kiểm tra chuỗi kết nối!";
+                if (!isSaved) return "Lỗi lưu Database!";
+
+                // Tạo câu thông báo tổng hợp
+                string msg = $"Thành công {listToCreate.Count} lịch.";
+                if (myDuplicateCount > 0) msg += $" (Bỏ qua {myDuplicateCount} ngày bạn đã đặt)";
+                if (roomBusyCount > 0) msg += $" (Bỏ qua {roomBusyCount} ngày phòng đã bận)";
+
+                return (myDuplicateCount == 0 && roomBusyCount == 0) ? "Success" : msg;
             }
 
-            // 4. BẮT BỆNH NẾU KHÔNG LƯU ĐƯỢC
-            if (duplicateCount > 0)
-                return "Tất cả khung giờ trong khoảng này đã tồn tại trong hệ thống!";
+            // Trường hợp không tạo được cái nào
+            if (roomBusyCount > 0 && myDuplicateCount == 0) return "Tất cả các ngày đã chọn, phòng này đều đã có người khác dùng!";
+            if (myDuplicateCount > 0) return "Bạn đã đặt lịch trùng cho tất cả các ngày này rồi!";
 
-            if (matchedDayCount == 0)
-                return "Không có ngày nào khớp với Thứ bạn đã chọn trong khoảng thời gian này!";
-
-            return "Không có ngày phù hợp!";
+            return "Không tìm thấy ngày phù hợp trong khoảng thời gian này.";
         }
 
-
-
-        // Hàm hỗ trợ dịch ngày (Nhân nhớ nhắc Trang kiểm tra hàm này nhé)
         private string ConvertToVNDay(DayOfWeek day)
         {
             switch (day)
@@ -127,7 +208,7 @@ namespace BUS_Tier
                 case DayOfWeek.Thursday: return "T5";
                 case DayOfWeek.Friday: return "T6";
                 case DayOfWeek.Saturday: return "T7";
-                case DayOfWeek.Sunday: return "CN"; // Nhân kiểm tra nút trên UI có đúng là "CN" không nhé!
+                case DayOfWeek.Sunday: return "CN";
                 default: return "";
             }
         }

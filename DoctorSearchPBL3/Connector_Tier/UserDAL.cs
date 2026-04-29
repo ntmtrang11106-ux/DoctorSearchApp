@@ -17,7 +17,7 @@ namespace DAL_Tier
         /// </summary>
         private void RegisterUserCommon(UserDTO userDto)
         {
-            userDto.Status = "Active";
+            //userDto.Status = "Active";
             userDto.CreatedAt = DateTime.Now;
             userDto.IsDeleted = false;
 
@@ -34,6 +34,7 @@ namespace DAL_Tier
             try
             {
                 userDto.Role = "Patient";
+                userDto.Status = "Active";
                 RegisterUserCommon(userDto);
 
                 var patient = new PatientDTO
@@ -67,6 +68,7 @@ namespace DAL_Tier
             try
             {
                 userDto.Role = "Doctor";
+                userDto.Status = "False";
 
                 // Bước 1: Lưu thông tin User chung
                 // Đảm bảo hàm này có gọi _context.Users.Add(user) và _context.SaveChanges()

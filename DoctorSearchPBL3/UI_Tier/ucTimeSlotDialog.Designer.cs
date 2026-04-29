@@ -44,7 +44,12 @@
             flpDay = new FlowLayoutPanel();
             btnConfirm = new Button();
             pnlRepeat = new Panel();
+            labRoom = new Label();
+            cbRoomCode = new ComboBox();
+            lbSoLuong = new Label();
+            numMax = new NumericUpDown();
             pnlRepeat.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numMax).BeginInit();
             SuspendLayout();
             // 
             // btnCancel
@@ -55,7 +60,7 @@
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe MDL2 Assets", 15F);
             btnCancel.ForeColor = Color.DarkRed;
-            btnCancel.Location = new Point(1005, 0);
+            btnCancel.Location = new Point(991, 0);
             btnCancel.Margin = new Padding(0, 5, 70, 0);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(66, 66);
@@ -210,7 +215,7 @@
             btnConfirm.FlatStyle = FlatStyle.Flat;
             btnConfirm.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             btnConfirm.ForeColor = Color.White;
-            btnConfirm.Location = new Point(718, 560);
+            btnConfirm.Location = new Point(717, 751);
             btnConfirm.Name = "btnConfirm";
             btnConfirm.Size = new Size(296, 54);
             btnConfirm.TabIndex = 52;
@@ -230,11 +235,48 @@
             pnlRepeat.Size = new Size(1007, 200);
             pnlRepeat.TabIndex = 53;
             // 
+            // labRoom
+            // 
+            labRoom.AutoSize = true;
+            labRoom.Location = new Point(45, 602);
+            labRoom.Name = "labRoom";
+            labRoom.Size = new Size(124, 32);
+            labRoom.TabIndex = 54;
+            labRoom.Text = "Mã Phòng";
+            // 
+            // cbRoomCode
+            // 
+            cbRoomCode.FormattingEnabled = true;
+            cbRoomCode.Location = new Point(189, 611);
+            cbRoomCode.Name = "cbRoomCode";
+            cbRoomCode.Size = new Size(242, 40);
+            cbRoomCode.TabIndex = 55;
+            // 
+            // lbSoLuong
+            // 
+            lbSoLuong.AutoSize = true;
+            lbSoLuong.Location = new Point(45, 683);
+            lbSoLuong.Name = "lbSoLuong";
+            lbSoLuong.Size = new Size(219, 32);
+            lbSoLuong.TabIndex = 56;
+            lbSoLuong.Text = "Số lượng đặt tối đa";
+            // 
+            // numMax
+            // 
+            numMax.Location = new Point(270, 681);
+            numMax.Name = "numMax";
+            numMax.Size = new Size(240, 39);
+            numMax.TabIndex = 58;
+            // 
             // ucTimeSlotDialog
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
+            Controls.Add(numMax);
+            Controls.Add(lbSoLuong);
+            Controls.Add(cbRoomCode);
+            Controls.Add(labRoom);
             Controls.Add(pnlRepeat);
             Controls.Add(btnConfirm);
             Controls.Add(cbRepeat);
@@ -247,10 +289,11 @@
             Controls.Add(lblCertIndex);
             Controls.Add(btnCancel);
             Name = "ucTimeSlotDialog";
-            Size = new Size(1071, 651);
+            Size = new Size(1057, 825);
             Load += ucTimeSlotCheckbox_Load;
             pnlRepeat.ResumeLayout(false);
             pnlRepeat.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numMax).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -273,5 +316,9 @@
         private FlowLayoutPanel flpDay;
         private Button btnConfirm;
         private Panel pnlRepeat;
+        private Label labRoom;
+        private ComboBox cbRoomCode;
+        private Label lbSoLuong;
+        private NumericUpDown numMax;
     }
 }

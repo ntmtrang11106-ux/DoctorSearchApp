@@ -139,7 +139,7 @@ namespace UI_Tier
                 Gender = radioButton1.Checked ? "Nam" : (radioButton2.Checked ? "Nữ" : null),
 
                 CCCD = (txtCCCD.Text == "Chưa đủ tuổi") ? null : txtCCCD.Text.Trim(),
-                Residential_Address = $"{cboRegion.Text}, {cboProvince.Text}",
+                Residential_Address = txtAdress.Text.Trim(),
                 Picture = "default.jpg"
             };
 

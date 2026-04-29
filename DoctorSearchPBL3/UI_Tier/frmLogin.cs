@@ -80,6 +80,12 @@ namespace UI_Tier
             // 4. Xử lý điều hướng dựa trên Role nhận được
             if (!string.IsNullOrEmpty(role))
             {
+
+                // 2. CỰC KỲ QUAN TRỌNG: Lưu ID và Role vào kho lưu trữ chung (GlobalAccount)
+                // Dòng này giúp xóa bỏ lỗi "ID bác sĩ không hợp lệ" khi tạo lịch
+                UI_Tier.GlobalAccount.SetLoggedInAccount(loggedInId, role);
+
+
                 // Đăng nhập thành công
                 this.Hide();
 

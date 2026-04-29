@@ -15,12 +15,11 @@ namespace DAL_Tier
             _context = new AppDbContext();
         }
 
-        // 1. Lấy danh sách lịch hẹn (Nạp kèm thông tin Patient, Doctor, TimeSlot)
+        // 1. Lấy danh sách lịch hẹn
         public List<AppointmentsDTO> GetAllAppointments()
         {
             try
             {
-                // Dùng Include để Join các bảng liên quan (Eager Loading)
                 return _context.Appointments
                     .Include(a => a.Patient).ThenInclude(p => p.User)
                     .Include(a => a.Doctor).ThenInclude(d => d.User)
@@ -35,41 +34,32 @@ namespace DAL_Tier
             }
         }
 
-        // 2. Tạo lịch hẹn mới
+        // 2. Tạo lịch hẹn mới (Khớp với các cột Snapshot trong SQL)
         public bool CreateAppointment(AppointmentsDTO app)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
-                    // Bước 1: Gán các giá trị mặc định nếu BUS chưa gán
                     app.CreatedAt = DateTime.Now;
-                    if (string.IsNullOrEmpty(app.Status)) app.Status = "Chờ duyệt";
+                    // SQL mặc định là 'Pending', nếu BUS chưa gán thì để mặc định
+                    if (string.IsNullOrEmpty(app.Status)) app.Status = "Pending";
 
-                    // Xử lý Symptoms để tránh lỗi NOT NULL trong CSDL
-                    if (string.IsNullOrWhiteSpace(app.Symptoms))
-                    {
-                        app.Symptoms = "Chưa cập nhật";
-                    }
-
-                    // Bước 2: Tìm và kiểm tra trạng thái TimeSlot trong DB
+                    // Bước 2: Kiểm tra TimeSlot
                     var slot = _context.TimeSlots.FirstOrDefault(s => s.Id == app.TimeSlotId);
-                    if (slot == null)
+                    if (slot == null) throw new Exception("Không tìm thấy khung giờ!");
+
+                    // Trong SQL của bạn Status mặc định là 'Open'
+                    if (slot.Status != "Open")
                     {
-                        throw new Exception("Không tìm thấy khung giờ (TimeSlot) tương ứng!");
+                        throw new Exception("Khung giờ này không còn trống!");
                     }
 
-                    // Kiểm tra xem slot có còn 'Trống' không (Tránh trùng lịch thực tế trong DB)
-                    if (slot.Status != "Trống")
-                    {
-                        throw new Exception("Khung giờ này đã bị chiếm dụng!");
-                    }
+                    // Bước 3: Cập nhật slot sang 'Booked' (hoặc trạng thái bạn quy định)
+                    slot.Status = "Booked";
+                    slot.BookedCount += 1; // Tăng số lượng đã đặt
 
-                    // Bước 3: Cập nhật trạng thái slot và thêm lịch hẹn
-                    slot.Status = "Đã đặt";
                     _context.Appointments.Add(app);
-
-                    // Bước 4: Lưu thay đổi đồng bộ
                     _context.SaveChanges();
 
                     transaction.Commit();
@@ -78,34 +68,22 @@ namespace DAL_Tier
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    // Log chi tiết để nhóm (Nhân, Trang, Tiên) dễ theo dõi
-                    Console.WriteLine($"Lỗi DAL CreateAppointment: {ex.Message}");
+                    Console.WriteLine($"Lỗi CreateAppointment: {ex.Message}");
                     return false;
                 }
             }
         }
 
-        // Hàm bổ trợ để tầng BUS gọi kiểm tra nhanh mà không cần mở transaction
-        public bool IsSlotBooked(int timeSlotId)
-        {
-            return _context.Appointments.Any(a => a.TimeSlotId == timeSlotId && a.Status != "Đã hủy");
-        }
-
-        // 3. Hàm cập nhật trạng thái Chấp nhận (Duyệt lịch)
+        // 3. Duyệt lịch (Accept)
         public bool UpdateStatusToAccept(int appointmentId)
         {
             try
             {
-                // Tìm lịch hẹn và khung giờ cùng lúc
-                var app = _context.Appointments
-                    .Include(a => a.TimeSlot)
-                    .FirstOrDefault(a => a.Id == appointmentId);
+                var app = _context.Appointments.Find(appointmentId);
+                if (app == null) return false;
 
-                if (app == null || app.TimeSlot == null) return false;
-
-                // Cập nhật trạng thái cho cả 2 bảng
-                app.Status = "Đã duyệt";
-                app.TimeSlot.Status = "Đã đặt"; // Khớp với SQL của Nhân
+                app.Status = "Confirmed"; // Hoặc trạng thái tương ứng trong logic của nhóm
+                app.UpdatedAt = DateTime.Now;
 
                 return _context.SaveChanges() > 0;
             }
@@ -116,26 +94,38 @@ namespace DAL_Tier
             }
         }
 
-        // 4. Hàm cập nhật trạng thái Từ chối (Giải phóng khung giờ)
+        // 4. Từ chối/Hủy lịch (Giải phóng TimeSlot)
         public bool UpdateStatusToReject(int appointmentId)
         {
-            try
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                var app = _context.Appointments
-                    .Include(a => a.TimeSlot)
-                    .FirstOrDefault(a => a.Id == appointmentId);
+                try
+                {
+                    var app = _context.Appointments
+                        .Include(a => a.TimeSlot)
+                        .FirstOrDefault(a => a.Id == appointmentId);
 
-                if (app == null || app.TimeSlot == null) return false;
+                    if (app == null) return false;
 
-                app.Status = "Đã hủy";
-                app.TimeSlot.Status = "Trống"; // Trả khung giờ về trạng thái tự do
+                    app.Status = "Cancelled";
+                    app.UpdatedAt = DateTime.Now;
 
-                return _context.SaveChanges() > 0;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Lỗi UpdateStatusToReject: " + ex.Message);
-                return false;
+                    if (app.TimeSlot != null)
+                    {
+                        app.TimeSlot.Status = "Open"; // Mở lại khung giờ
+                        if (app.TimeSlot.BookedCount > 0)
+                            app.TimeSlot.BookedCount -= 1;
+                    }
+
+                    _context.SaveChanges();
+                    transaction.Commit();
+                    return true;
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    return false;
+                }
             }
         }
     }

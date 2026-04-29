@@ -445,21 +445,73 @@ namespace BUS_Tier
     public class UserBUS
     {
         private readonly UserDAL _userDAL = new UserDAL();
+        private readonly AppDbContext _context = new AppDbContext();
 
-        public string Login(string phone, string pass, out int userId, out string msg)
+        //public string Login(string phone, string pass, out int userId, out string msg)
+        //{
+        //    userId = 0;
+        //    msg = "";
+
+        //    // Gọi DAL lấy nguyên đối tượng User
+        //    var user = _userDAL.CheckLogin(phone, pass);
+
+        //    if (user != null)
+        //    {
+        //        // Lấy ID ở đây nề!
+        //        userId = user.Id;
+        //        msg = "Đăng nhập thành công!";
+        //        return user.Role; // Trả về "Doctor" hoặc "Patient"
+        //    }
+
+        //    msg = "Số điện thoại hoặc mật khẩu không chính xác!";
+        //    return "";
+        //}
+
+        public string Login(string phone, string pass, out int loggedInId, out string msg)
         {
-            userId = 0;
+            loggedInId = 0;
             msg = "";
 
-            // Gọi DAL lấy nguyên đối tượng User
+            // 1. Gọi DAL xác thực tài khoản User
             var user = _userDAL.CheckLogin(phone, pass);
 
             if (user != null)
             {
-                // Lấy ID ở đây nề!
-                userId = user.Id;
-                msg = "Đăng nhập thành công!";
-                return user.Role; // Trả về "Doctor" hoặc "Patient"
+                // 2. Dựa vào Role để lấy đúng ID của vai trò đó
+                if (user.Role == "Doctor")
+                {
+                    // Tìm trong bảng Doctor xem ai có UserId này
+                    var doctor = _context.Doctors.FirstOrDefault(d => d.UserId == user.Id);
+                    if (doctor != null)
+                    {
+                        loggedInId = doctor.Id; // Đây mới là DoctorId (ví dụ: 1)
+                    }
+                }
+                else if (user.Role == "Patient")
+                {
+                    // Tìm trong bảng Patient xem ai có UserId này
+                    var patient = _context.Patients.FirstOrDefault(p => p.UserId == user.Id);
+                    if (patient != null)
+                    {
+                        loggedInId = patient.Id; // Đây là PatientId
+                    }
+                }
+                else // Role Admin hoặc trường hợp khác
+                {
+                    loggedInId = user.Id;
+                }
+
+                // Kiểm tra nếu tìm thấy ID vai trò
+                if (loggedInId > 0)
+                {
+                    msg = "Đăng nhập thành công!";
+                    return user.Role;
+                }
+                else
+                {
+                    msg = "Tài khoản chưa được cấu hình vai trò chi tiết!";
+                    return "";
+                }
             }
 
             msg = "Số điện thoại hoặc mật khẩu không chính xác!";
@@ -533,6 +585,9 @@ namespace BUS_Tier
 
             if (string.IsNullOrWhiteSpace(user.Gender))
                 return "Vui lòng chọn giới tính.";
+
+            if (string.IsNullOrWhiteSpace(user.Residential_Address)) 
+                 return "Địa chỉ không được để trống.";
 
             if (string.IsNullOrWhiteSpace(user.Password)) return "Mật khẩu không được để trống.";
             if (string.IsNullOrWhiteSpace(confirmPass)) return "Vui lòng xác nhận mật khẩu.";

@@ -69,10 +69,6 @@
             radioButton2 = new RadioButton();
             label11 = new Label();
             panel21 = new Panel();
-            label15 = new Label();
-            cboProvince = new ComboBox();
-            label16 = new Label();
-            cboRegion = new ComboBox();
             label19 = new Label();
             panel12 = new Panel();
             label12 = new Label();
@@ -90,6 +86,7 @@
             label2 = new Label();
             label1 = new Label();
             ofdCCHN = new OpenFileDialog();
+            txtAdress = new TextBox();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             panel3.SuspendLayout();
@@ -135,7 +132,7 @@
             panel2.BackColor = Color.FromArgb(24, 112, 255);
             panel2.Controls.Add(panel3);
             panel2.Controls.Add(label1);
-            panel2.Location = new Point(90, 102);
+            panel2.Location = new Point(73, 102);
             panel2.Name = "panel2";
             panel2.Size = new Size(2165, 1719);
             panel2.TabIndex = 4;
@@ -543,55 +540,12 @@
             // 
             // panel21
             // 
-            panel21.Controls.Add(label15);
-            panel21.Controls.Add(cboProvince);
-            panel21.Controls.Add(label16);
-            panel21.Controls.Add(cboRegion);
+            panel21.Controls.Add(txtAdress);
             panel21.Controls.Add(label19);
             panel21.Location = new Point(3, 782);
             panel21.Name = "panel21";
             panel21.Size = new Size(808, 227);
             panel21.TabIndex = 37;
-            // 
-            // label15
-            // 
-            label15.AutoSize = true;
-            label15.Font = new Font("Segoe UI", 12F);
-            label15.Location = new Point(19, 83);
-            label15.Name = "label15";
-            label15.Size = new Size(263, 45);
-            label15.TabIndex = 28;
-            label15.Text = "Tỉnh / Thành phố";
-            // 
-            // cboProvince
-            // 
-            cboProvince.Font = new Font("Segoe UI", 12F);
-            cboProvince.FormattingEnabled = true;
-            cboProvince.Items.AddRange(new object[] { "Đà Nẵng", "Quảng Trị", "Huế" });
-            cboProvince.Location = new Point(297, 79);
-            cboProvince.Name = "cboProvince";
-            cboProvince.Size = new Size(481, 53);
-            cboProvince.TabIndex = 29;
-            // 
-            // label16
-            // 
-            label16.AutoSize = true;
-            label16.Font = new Font("Segoe UI", 12F);
-            label16.Location = new Point(19, 152);
-            label16.Name = "label16";
-            label16.Size = new Size(196, 45);
-            label16.TabIndex = 28;
-            label16.Text = "Xã / Phường";
-            // 
-            // cboRegion
-            // 
-            cboRegion.Font = new Font("Segoe UI", 12F);
-            cboRegion.FormattingEnabled = true;
-            cboRegion.Items.AddRange(new object[] { "Xã Hiếu Giang" });
-            cboRegion.Location = new Point(296, 152);
-            cboRegion.Name = "cboRegion";
-            cboRegion.Size = new Size(481, 53);
-            cboRegion.TabIndex = 30;
             // 
             // label19
             // 
@@ -769,6 +723,13 @@
             // 
             ofdCCHN.FileName = "pngCCHN";
             // 
+            // txtAdress
+            // 
+            txtAdress.Location = new Point(80, 99);
+            txtAdress.Name = "txtAdress";
+            txtAdress.Size = new Size(575, 39);
+            txtAdress.TabIndex = 39;
+            // 
             // frmRegister
             // 
             AutoScaleDimensions = new SizeF(192F, 192F);
@@ -868,10 +829,6 @@
         private RadioButton radioButton2;
         private Label label11;
         private Panel panel21;
-        private Label label15;
-        private ComboBox cboProvince;
-        private Label label16;
-        private ComboBox cboRegion;
         private FlowLayoutPanel flowLayoutPanel2;
         private Panel panel12;
         private Label label12;
@@ -897,5 +854,6 @@
         private FlowLayoutPanel flpCertificate;
         private Panel panel14;
         private Label label17;
+        private TextBox txtAdress;
     }
 }
