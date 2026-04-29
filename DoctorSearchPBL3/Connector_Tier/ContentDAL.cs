@@ -37,15 +37,29 @@ namespace DAL_Tier
             return query.ToList();
         }
 
+        //public List<ContentDTO> GetAllContents()
+        //{
+        //    using var context = new AppDbContext();
+
+        //    return context.Contents
+        //        .Include(c => c.Department)
+        //        .Include(c => c.AuthorAdmin)
+        //            .ThenInclude(a => a.User)
+        //        .Where(c => !c.IsDeleted)
+        //        .ToList();
+        //}
+
         public List<ContentDTO> GetAllContents()
         {
+            // Sử dụng AppDbContext bạn đã cung cấp
             using var context = new AppDbContext();
 
             return context.Contents
-                .Include(c => c.Department)
-                .Include(c => c.AuthorAdmin)
-                    .ThenInclude(a => a.User)
-                .Where(c => !c.IsDeleted)
+                .Include(c => c.Department)    // Load dữ liệu từ bảng Department
+                .Include(c => c.AuthorAdmin)   // Load dữ liệu từ bảng Admin
+                    .ThenInclude(a => a.User)  // Load tiếp dữ liệu từ bảng User để lấy FullName
+                .Where(c => !c.IsDeleted)      // Lọc các bài chưa bị xóa
+                .OrderByDescending(c => c.PublishedAt) // Sắp xếp theo ngày đăng (giống hình mẫu)
                 .ToList();
         }
     }
