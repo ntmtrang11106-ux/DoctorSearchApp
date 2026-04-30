@@ -212,5 +212,24 @@ namespace BUS_Tier
                 default: return "";
             }
         }
+
+        // 3. Lấy toàn bộ danh sách TimeSlots (Thường dùng cho Admin)
+        public List<TimeSlotsDTO> GetAllTimeSlots()
+        {
+            // Gọi xuống DAL để lấy dữ liệu raw, BUS có thể xử lý thêm logic nếu cần
+            return _dal.GetAll() ?? new List<TimeSlotsDTO>();
+        }
+
+        // 4. Lấy danh sách lịch khám của một bác sĩ cụ thể
+        public List<TimeSlotsDTO> GetTimeSlotsByDoctor(int doctorId)
+        {
+            if (doctorId <= 0) return new List<TimeSlotsDTO>();
+
+            // Sắp xếp theo ngày gần nhất và giờ sớm nhất để UI hiển thị đẹp luôn
+            var list = _dal.GetByDoctorId(doctorId);
+            return list.OrderByDescending(s => s.WorkDate)
+                       .ThenBy(s => s.StartTime)
+                       .ToList();
+        }
     }
 }

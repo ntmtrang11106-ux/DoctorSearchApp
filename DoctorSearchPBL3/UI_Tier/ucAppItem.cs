@@ -14,6 +14,7 @@ namespace UI_Tier
     public partial class ucAppItem : UserControl
     {
         private int _appointmentId; // Lưu ID để dùng khi bấm nút
+        private int _timeslotId; // Lưu ID để dùng khi bấm nút
 
         // Khai báo delegate để load lại danh sách sau khi update thành công
         public delegate void OnActionSuccess();
@@ -34,7 +35,7 @@ namespace UI_Tier
             UIHelper.SetDoubleBuffered(this);
         }
 
-        // Trong ucAppItem.cs
+        // Phương thức để cập nhật giao diện của nút trạng thái dựa trên giá trị status
         private void UpdateStatusStyle(string status)
         {
             switch (status)
@@ -67,6 +68,7 @@ namespace UI_Tier
             }
         }
 
+        // Thiết lập hiển thị nút dựa trên chế độ và trạng thái
         private void SetupButtons(AppCardMode mode, string status)
         {
             // Dọn dẹp các nút trước khi hiện cái cần thiết
@@ -81,6 +83,8 @@ namespace UI_Tier
             btnRate.Visible = (mode == AppCardMode.HistoryView && status == "Completed") || (mode == AppCardMode.DoctorView && status == "Completed");
             btnViewRecord.Visible = (mode == AppCardMode.HistoryView && status == "Completed") || (mode == AppCardMode.DoctorView && status == "Confirmed");
         }
+
+        // Thiết lập dữ liệu cho card dựa trên AppointmentsDTO và chế độ hiển thị
         public void SetupCard(AppointmentsDTO data, AppCardMode mode)
         {
             _appointmentId = data.Id;
@@ -120,6 +124,22 @@ namespace UI_Tier
             SetupButtons(mode, data.Status);
         }
 
+        // Thiết lập dữ liệu cho card dựa trên TimeSlotsDTO và chế độ hiển thị (Dành cho DoctorSchedule)
+        public void SetupCard(TimeSlotsDTO data, AppCardMode mode)
+        {
+            if (mode != AppCardMode.DoctorSchedule) return;
+            _appointmentId = data.Id;
+
+            label2.Visible = lblSymptoms.Visible = (data.Status != "Open");
+
+            lblDate.Text = data.WorkDate.ToString("dd/MM/yyyy");
+            lblTime.Text = $"{data.StartTime:hh\\:mm} - {data.EndTime:hh\\:mm}";
+
+            btnStatus.Visible = false;
+            lblName.Visible = lblPhoneNumber.Visible = label2.Visible = lblSymptoms.Visible = false;
+
+            SetupButtons(mode, data.Status);
+        }
         private void ucAppItem_Load(object sender, EventArgs e)
         {
             UIHelper.ApplyRoundedRegion(btnStatus, 10);

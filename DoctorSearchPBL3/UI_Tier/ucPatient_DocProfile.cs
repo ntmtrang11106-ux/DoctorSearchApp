@@ -1,5 +1,6 @@
 ﻿using BUS_Tier;
 using DTO_Tier;
+using DAL_Tier;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,8 +24,11 @@ namespace UI_Tier
 
         // Hàm này dùng để "đổ" dữ liệu từ đối tượng Doctor vào các Label
 
+        private int _doctorId; // Lưu ID bác sĩ để dùng cho việc lấy lịch trình sau này
+
         public void SetDoctorData(DoctorDTO doctor)
         {
+            _doctorId = doctor.Id; // Lưu ID bác sĩ để sử dụng sau này
 
             /// 1. Tên Bác sĩ: Kết hợp Chức danh + Họ tên
             // Ví dụ: "Thạc sĩ Nguyễn Văn A" hoặc "Bác sĩ Trần Thị B"
@@ -139,15 +143,15 @@ namespace UI_Tier
         }
 
         #region Xử lí flpAppItem, lưu ý cái này chỉ để thử form chứ chưa lọc, muốn lọc data thì code mấy tầng trên
-        private AppointmentBUS _bus = new AppointmentBUS();
-        private List<AppointmentsDTO> _allApps = new List<AppointmentsDTO>();
+        private TimeSlotBUS _bus = new TimeSlotBUS();
+        private List<TimeSlotsDTO> _allTimes = new List<TimeSlotsDTO>();
 
         public void InitData()
         {
             try
             {
                 // Giả sử ông có biến _doctorId từ Form đăng nhập truyền vào
-                _allApps = _bus.GetAll(); // Nên OrderBy StartTime ở đây nếu BUS chưa làm
+                _allTimes = _bus.GetTimeSlotsByDoctor(_doctorId); // Nên OrderBy StartTime ở đây nếu BUS chưa làm
             }
             catch (Exception ex)
             {
@@ -169,15 +173,15 @@ namespace UI_Tier
                     control.Dispose();
                 }
 
-                if (_allApps == null || _allApps.Count == 0) return;
+                if (_allTimes == null || _allTimes.Count == 0) return;
 
                 // 2. Đổ card
-                foreach (var ap in _allApps)
+                foreach (var ts in _allTimes)
                 {
                     ucAppItem card = new ucAppItem();
 
                     // Mode DoctorSchedule sẽ hiện nút Xóa/Quản lý slot trống
-                    card.SetupCard(ap, ucAppItem.AppCardMode.DoctorSchedule);
+                    card.SetupCard(ts, ucAppItem.AppCardMode.DoctorSchedule);
 
                     card.Margin = new Padding(20, 10, 20, 10);
 

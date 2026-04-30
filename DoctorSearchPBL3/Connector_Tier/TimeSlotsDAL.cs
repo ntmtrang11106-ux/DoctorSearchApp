@@ -121,6 +121,42 @@ namespace DAL_Tier
             }
         }
 
+        // 7. Lấy toàn bộ danh sách (Dùng cho Admin hoặc thống kê)
+        public List<TimeSlotsDTO> GetAll()
+        {
+            try
+            {
+                return _context.TimeSlots
+                    .Where(s => s.IsDeleted == false)
+                    .OrderByDescending(s => s.WorkDate)
+                    .ThenBy(s => s.StartTime)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi GetAll (DAL): " + ex.Message);
+                return new List<TimeSlotsDTO>();
+            }
+        }
+
+        // 8. Lấy danh sách lịch theo DoctorId (Để hiển thị lịch cá nhân)
+        public List<TimeSlotsDTO> GetByDoctorId(int doctorId)
+        {
+            try
+            {
+                return _context.TimeSlots
+                    .Where(s => s.DoctorId == doctorId && s.IsDeleted == false)
+                    .OrderByDescending(s => s.WorkDate)
+                    .ThenBy(s => s.StartTime)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi GetByDoctorId (DAL): " + ex.Message);
+                return new List<TimeSlotsDTO>();
+            }
+        }
+
         // Trong TimeSlotDAL.cs
         // Thêm hàm này để xử lý tạo hàng loạt lịch cho bác sĩ
         public bool AddRange(List<TimeSlotsDTO> list)
