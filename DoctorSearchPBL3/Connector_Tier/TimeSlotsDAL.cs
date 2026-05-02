@@ -1,4 +1,5 @@
 ﻿using DTO_Tier;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,33 @@ namespace DAL_Tier
         {
             _context = new AppDbContext();
         }
+        public List<TimeSlotsDTO> GetAvailableSlots(int doctorId, DateTime fromDate, DateTime toDate)
+        {
+            // Truy vấn trực tiếp từ DbSet<TimeSlotsDTO>
+            return _context.TimeSlots
+                .Include(t => t.Room) // QUAN TRỌNG: Nạp bảng Room đi kèm với TimeSlot
+                .Where(t => t.DoctorId == doctorId &&
+                            t.Status == "Open" &&
+                            t.IsDeleted == false &&
+                            t.BookedCount < t.MaxAppointments &&
+                            t.WorkDate >= fromDate.Date &&
+                            t.WorkDate <= toDate.Date)
+                .OrderBy(t => t.WorkDate)
+                .ThenBy(t => t.StartTime)
+                .ToList();
+        }
+
+        public TimeSlotsDTO GetSlotForBooking(int timeSlotId)
+        {
+            // Sử dụng Include để nạp các bảng liên quan nhằm lấy dữ liệu Snapshot
+            return _context.TimeSlots
+                .Include(ts => ts.Doctor).ThenInclude(d => d.User)
+                .Include(ts => ts.Doctor).ThenInclude(d => d.Department)
+                .Include(ts => ts.Room)
+                .FirstOrDefault(ts => ts.Id == timeSlotId && !ts.IsDeleted);
+        }
+
+        /////////////////////////////////////////////////
 
         // 1. Thêm khung giờ (Dùng WorkDate theo SQL)
         public bool AddSingle(TimeSlotsDTO slot)

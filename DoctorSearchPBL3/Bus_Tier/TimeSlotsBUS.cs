@@ -9,6 +9,18 @@ namespace BUS_Tier
     public class TimeSlotBUS
     {
         private readonly TimeSlotDAL _dal = new TimeSlotDAL();
+        public List<TimeSlotsDTO> GetFilteredSlotsForPatient(int doctorId, DateTime fromDate, DateTime toDate)
+        {
+            if (fromDate.Date > toDate.Date)
+            {
+                return new List<TimeSlotsDTO>();
+            }
+
+            // Trả về thẳng danh sách từ DAL, trong mỗi phần tử đã có object Room
+            return _dal.GetAvailableSlots(doctorId, fromDate, toDate);
+        }
+
+        ///////////////////////////////////
 
         // --- HÀM KIỂM TRA CHUNG (Validation) ---
         // Nhân đưa các kiểm tra logic vào đây để UI gọn hơn

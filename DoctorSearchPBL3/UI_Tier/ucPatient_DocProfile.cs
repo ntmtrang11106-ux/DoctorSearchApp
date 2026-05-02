@@ -150,8 +150,15 @@ namespace UI_Tier
         {
             try
             {
+                // Lấy giá trị từ giao diện
+                DateTime fromDate = dateTimePicker3.Value;
+                DateTime toDate = dateTimePicker4.Value;
+
                 // Giả sử ông có biến _doctorId từ Form đăng nhập truyền vào
-                _allTimes = _bus.GetTimeSlotsByDoctor(_doctorId); // Nên OrderBy StartTime ở đây nếu BUS chưa làm
+                _allTimes = _bus.GetFilteredSlotsForPatient(_doctorId, fromDate, toDate); // Nên OrderBy StartTime ở đây nếu BUS chưa làm
+                                                                                          // Sau khi có dữ liệu mới thì vẽ lại giao diện
+                DisplayPage();
+
             }
             catch (Exception ex)
             {
@@ -173,7 +180,18 @@ namespace UI_Tier
                     control.Dispose();
                 }
 
-                if (_allTimes == null || _allTimes.Count == 0) return;
+                if (_allTimes == null || _allTimes.Count == 0)
+                {
+                    Label lblEmpty = new Label();
+                    lblEmpty.Text = "Chưa có lịch hẹn"; // Nội dung bạn muốn hiển thị
+                    lblEmpty.Font = new Font("Segoe UI", 12, FontStyle.Italic);
+                    lblEmpty.ForeColor = Color.Gray;
+                    lblEmpty.TextAlign = ContentAlignment.MiddleCenter;
+                    lblEmpty.Size = new Size(flpAppItem.Width - 40, 100); // Kích thước khung thông báo
+
+                    flpAppItem.Controls.Add(lblEmpty);
+                    return;
+                }
 
                 // 2. Đổ card
                 foreach (var ts in _allTimes)
@@ -192,7 +210,7 @@ namespace UI_Tier
                     flpAppItem.Controls.Add(card);
 
                     // Mẹo: Ép lại Width một lần nữa sau khi Add để đảm bảo nó nhận đúng size của cha
-                    card.Width = flpAppItem.Width- 80;
+                    card.Width = flpAppItem.Width - 80;
                 }
             }
             catch (Exception ex)
@@ -205,5 +223,15 @@ namespace UI_Tier
             }
         }
         #endregion
+
+        private void dateTimePicker3_ValueChanged(object sender, EventArgs e)
+        {
+            InitData();
+        }
+
+        private void dateTimePicker4_ValueChanged(object sender, EventArgs e)
+        {
+            InitData();
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DAL_Tier;
 using DTO_Tier;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,55 @@ namespace BUS_Tier
         private readonly AppointmentDAL _appointmentDAL = new AppointmentDAL();
         private readonly TimeSlotDAL _timeSlotDAL = new TimeSlotDAL();
 
+
+        public string BookAppointment(int patientId, int timeSlotId, string reason)
+        {
+            try
+            {
+                // 1. Kiểm tra triệu chứng (tối đa 500 ký tự)
+                if (!string.IsNullOrEmpty(reason) && reason.Length > 500)
+                    return "Triệu chứng không được vượt quá 500 ký tự.";
+
+                // 2. Lấy thông tin qua DAL (Thay vì dùng _context trực tiếp)
+                var slot = _timeSlotDAL.GetSlotForBooking(timeSlotId);
+
+                if (slot == null)
+                    return "Không tìm thấy lịch khám này.";
+
+                // 3. Kiểm tra logic "Full" dựa trên MaxAppointments
+                if (slot.Status == "Full" || slot.BookedCount >= slot.MaxAppointments)
+                {
+                    return "Lịch khám này đã đủ số lượng người đăng ký (Full).";
+                }
+
+                // 4. Chuẩn bị DTO kèm dữ liệu Snapshot
+                // Truy xuất thông tin từ các object liên quan có sẵn trong slot
+                var appointmentDto = new AppointmentsDTO
+                {
+                    PatientId = patientId,
+                    DoctorId = slot.DoctorId,
+                    TimeSlotId = timeSlotId,
+                    Reason = reason,
+                    // Lấy thông tin từ các bảng liên quan để lưu Snapshot
+                    DoctorNameSnapshot = slot.Doctor?.User?.FullName ?? "N/A",
+                    DepartmentNameSnapshot = slot.Doctor?.Department?.DepartmentName ?? "N/A",
+                    RoomNameSnapshot = slot.Room?.RoomName ?? "N/A",
+                    FeeSnapshot = slot.Doctor?.ConsultationFee ?? 0
+                };
+
+                // 5. Gọi DAL để thực hiện lưu (bao gồm logic tăng BookedCount và Update Status lên Full)
+                bool isSuccess = _appointmentDAL.CreateAppointment(appointmentDto);
+
+                return isSuccess ? "SUCCESS" : "Đặt lịch thất bại (Lịch có thể đã vừa đầy hoặc bị đóng).";
+            }
+            catch (Exception ex)
+            {
+                // Ghi log ex ở đây nếu cần
+                return "Lỗi hệ thống: " + ex.Message;
+            }
+        }
+
+        ///////////////////////////////////////
         public List<AppointmentsDTO> GetAll()
         {
             return _appointmentDAL.GetAllAppointments();

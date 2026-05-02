@@ -363,6 +363,7 @@
             dateTimePicker3.Name = "dateTimePicker3";
             dateTimePicker3.Size = new Size(295, 47);
             dateTimePicker3.TabIndex = 52;
+            dateTimePicker3.ValueChanged += dateTimePicker3_ValueChanged;
             // 
             // dateTimePicker4
             // 
