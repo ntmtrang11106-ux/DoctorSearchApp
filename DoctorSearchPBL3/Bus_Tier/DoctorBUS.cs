@@ -1,6 +1,5 @@
 using DAL_Tier;
 using DTO_Tier;
-using static Microsoft.Data.SqlClient.Internal.SqlClientEventSource;
 
 namespace BUS_Tier
 {
@@ -11,35 +10,17 @@ namespace BUS_Tier
         /// <summary>
         /// Lấy toàn bộ danh sách bác sĩ đã được lọc (Active, Approved, Not Deleted)
         /// </summary>
-        //public List<DoctorDTO> GetListDoctors()
-        //{
-        //    return doctorDAL.GetAllDoctors();
-        //}
-
         public List<DoctorDTO> GetListDoctors()
         {
             try
             {
-                // 1. Gọi DAL để lấy dữ liệu
                 var list = doctorDAL.GetAllDoctors();
-
-                // 2. Kiểm tra nếu danh sách trả về bị null
-                if (list == null)
-                {
-                    // Trả về danh sách rỗng thay vì null để UI không bị lỗi Crash (NullReferenceException)
-                    return new List<DoctorDTO>();
-                }
-
-                // 3. Bạn có thể thực hiện kiểm tra thêm tại đây 
-                // Ví dụ: Chỉ trả về bác sĩ nếu có thông tin User đi kèm (đề phòng dữ liệu rác)
+                if (list == null) return new List<DoctorDTO>();
                 var validatedList = list.Where(d => d.User != null).ToList();
-
                 return validatedList;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // Ghi log lỗi (nếu có hệ thống log) và trả về danh sách rỗng để bảo vệ ứng dụng
-                // Console.WriteLine(ex.Message);
                 return new List<DoctorDTO>();
             }
         }
@@ -47,56 +28,22 @@ namespace BUS_Tier
         /// <summary>
         /// Logic tìm kiếm bác sĩ kết hợp lọc và sắp xếp
         /// </summary>
-        /// <param name="keyword">Tên bác sĩ</param>
-        /// <param name="departmentNames">Danh sách các chuyên khoa được chọn</param>
-        /// <param name="gender">Giới tính (Nam/Nữ/Tất cả)</param>
-        /// <param name="sortType">Kiểu sắp xếp</param>
         public List<DoctorDTO> SearchDoctors(string keyword, List<string> selectedDepts, string gender, string sortType)
         {
-            // Logic nghiệp vụ: 
-            // 1. Chuẩn hóa từ khóa: xóa khoảng trắng thừa
             string cleanKeyword = string.IsNullOrWhiteSpace(keyword) ? null : keyword.Trim();
-
-            // 2. Xử lý chuyên khoa: Nếu chọn "Tất cả" hoặc không chọn gì, truyền null vào DAL để lấy hết
             List<string> filterDepts = null;
             if (selectedDepts != null && selectedDepts.Count > 0 && !selectedDepts.Contains("Tất cả"))
             {
                 filterDepts = selectedDepts;
             }
-
-            // 3. Giới tính: Nếu là "Tất cả", truyền null
             string filterGender = (gender == "Tất cả") ? null : gender;
-
-            // Gọi DAL để thực hiện truy vấn
             return doctorDAL.SearchDoctors(cleanKeyword, filterDepts, filterGender, sortType);
         }
+
         public int GetDoctorIdByUserId(int userId)
         {
             return doctorDAL.GetDoctorIdByUserId(userId);
         }
-
-        /////////////////////////////////////////////////
-
-
-
-        //     /// <summary>
-        //     /// Tìm kiếm bác sĩ nâng cao: lọc theo tên, chuyên khoa, giới tính và sắp xếp.
-        //     /// Sử dụng trực tiếp hàm SearchDoctors của DAL để tối ưu hiệu năng (Filter tại Database).
-        //     /// </summary>
-        //public List<DoctorDTO> SearchDoctors(string? keyword, List<string>? departments, string? gender, string? sortType)
-        //{
-        //     // Tầng BUS có thể xử lý chuẩn hóa dữ liệu đầu vào trước khi gọi DAL
-        //     string? normalizedKeyword = string.IsNullOrWhiteSpace(keyword) ? null : keyword.Trim();
-
-        //     return doctorDAL.SearchDoctors(normalizedKeyword, departments, gender, sortType);
-        //}
-
-        //public List<DoctorDTO> SearchDoctorsByName(string name)
-        //{
-        //    return doctorDAL.GetAllDoctors()
-        //        .Where(d => d.User != null && d.User.FullName.Contains(name, StringComparison.OrdinalIgnoreCase))
-        //        .ToList();
-        //}
 
         /// <summary>
         /// Cập nhật thông tin bác sĩ với các ràng buộc nghiệp vụ (Validation)
@@ -107,19 +54,14 @@ namespace BUS_Tier
             {
                 return "Số năm kinh nghiệm không hợp lệ!";
             }
-
             if (doctor.User == null || string.IsNullOrWhiteSpace(doctor.User.FullName))
             {
                 return "Tên bác sĩ không được để trống!";
             }
-
             bool result = doctorDAL.UpdateDoctor(doctor);
             return result ? "Cập nhật thành công!" : "Cập nhật thất bại, vui lòng kiểm tra lại!";
         }
 
-        /// <summary>
-        /// Lấy DoctorId dựa trên UserId của tài khoản đang đăng nhập
-        /// </summary>
         public void CalculateDoctorStats(DoctorDTO doctor)
         {
             if (doctor.Reviews == null || !doctor.Reviews.Any())
@@ -128,10 +70,15 @@ namespace BUS_Tier
                 doctor.AverageRating = 0;
                 return;
             }
-
             var validReviews = doctor.Reviews.Where(r => r.IsVisible && !r.IsDeleted).ToList();
             doctor.TotalReviews = validReviews.Count;
             doctor.AverageRating = validReviews.Any() ? Math.Round(validReviews.Average(r => r.Rating), 1) : 0;
+        }
+
+        public List<ReviewsDTO> GetDoctorReviews(int doctorId)
+        {
+            if (doctorId <= 0) return new List<ReviewsDTO>();
+            return doctorDAL.GetDoctorReviews(doctorId);
         }
     }
 }

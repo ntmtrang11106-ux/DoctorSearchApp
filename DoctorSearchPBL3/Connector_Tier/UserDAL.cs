@@ -1,4 +1,4 @@
-﻿using DTO_Tier;
+using DTO_Tier;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -110,6 +110,9 @@ namespace DAL_Tier
         public bool IsPhoneExists(string phone)
             => _context.Users.Any(u => u.PhoneNumber == phone && !u.IsDeleted);
 
+        public bool IsPhoneExists(string phone, int excludeUserId)
+            => _context.Users.Any(u => u.PhoneNumber == phone && u.Id != excludeUserId && !u.IsDeleted);
+
         // SỬA ĐỔI: Chỉ lấy User theo Phone, việc check Pass sẽ làm ở BUS
         public UserDTO? GetUserByPhone(string phone)
         {
@@ -128,6 +131,42 @@ namespace DAL_Tier
                 .FirstOrDefault(u => u.PhoneNumber == phone
                                   && !u.IsDeleted
                                   && u.Status == "Active");
+        }
+
+        public bool ChangePassword(int userId, string newHashedPassword)
+        {
+            try
+            {
+                var user = _context.Users.Find(userId);
+                if (user == null) return false;
+
+                user.Password = newHashedPassword;
+                user.UpdatedAt = DateTime.Now;
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool UpdateAvatar(int userId, string imagePath)
+        {
+            try
+            {
+                var user = _context.Users.Find(userId);
+                if (user == null) return false;
+
+                user.Picture = imagePath;
+                user.UpdatedAt = DateTime.Now;
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

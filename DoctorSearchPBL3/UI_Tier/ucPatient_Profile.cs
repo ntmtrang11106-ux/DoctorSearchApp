@@ -28,22 +28,22 @@ namespace UI_Tier
             SetEditMode(false, "basic");
             SetEditMode(false, "medical");
 
-            // Wire up Load event
+            // Wire up events
             this.HandleCreated += (s, e) => LoadPatientData();
+            picAvatar.Cursor = Cursors.Hand;
+            picAvatar.Click += picAvatar_Click;
+            dtpBirthday.ValueChanged += dtpBirthday_ValueChanged;
         }
 
         private void LoadPatientData()
         {
             int profileId = DTO_Tier.GlobalAccount.GetProfileId();
             
-            // For testing/development: if no one is logged in, try to load the first patient from DB
+            // Nếu chưa đăng nhập (profileId = 0), không tự động load tài khoản đầu tiên nữa
             if (profileId <= 0)
             {
-                using (var db = new DAL_Tier.AppDbContext())
-                {
-                    var firstPatient = db.Patients.FirstOrDefault(p => !p.IsDeleted);
-                    if (firstPatient != null) profileId = firstPatient.Id;
-                }
+                LoadPlaceholderData();
+                return;
             }
 
             _currentPatient = _patientBUS.GetPatientProfile(profileId);
@@ -53,12 +53,11 @@ namespace UI_Tier
                 txtFullName.Text = _currentPatient.User.FullName;
                 lblPatientName.Text = _currentPatient.User.FullName;
                 txtPhone.Text = _currentPatient.User.PhoneNumber;
-                txtEmail.Text = ""; // SQL doesn't have Email yet
-                txtBirthday.Text = _currentPatient.User.Dob?.ToString("dd/MM/yyyy") ?? "";
+                dtpBirthday.Value = _currentPatient.User.Dob ?? DateTime.Now;
                 txtGender.Text = _currentPatient.User.Gender ?? "";
                 txtCCCD.Text = _currentPatient.User.CCCD ?? "";
                 txtBHYT.Text = _currentPatient.InsuranceCode ?? "";
-                txtPatientID.Text = _currentPatient.MedicalCode ?? $"BN-{_currentPatient.Id:D4}";
+                txtPatientID.Text = _currentPatient.MedicalCode ?? ""; // Không tự để BN-0001 nếu DB trống
                 txtEmergencyContact.Text = _currentPatient.EmergencyContactName ?? "";
                 txtEmergencyPhone.Text = _currentPatient.EmergencyContactPhone ?? "";
                 txtAddress.Text = _currentPatient.User.Residential_Address ?? "";
@@ -66,9 +65,14 @@ namespace UI_Tier
                 // Parse Note for medical info
                 ParseMedicalNote(_currentPatient.Note);
 
-                if (!string.IsNullOrEmpty(_currentPatient.User.Picture))
+                string picPath = _currentPatient.User.Picture;
+                if (!string.IsNullOrEmpty(picPath) && File.Exists(picPath))
                 {
-                    try { picAvatar.ImageLocation = _currentPatient.User.Picture; } catch { }
+                    picAvatar.ImageLocation = picPath;
+                }
+                else
+                {
+                    LoadDefaultAvatar();
                 }
             }
             else
@@ -79,27 +83,20 @@ namespace UI_Tier
 
         private void ParseMedicalNote(string note)
         {
-            if (string.IsNullOrEmpty(note)) return;
-
-            // Simple parsing: "BT: O | AL: None | MH: History"
-            var parts = note.Split('|');
-            foreach (var part in parts)
+            if (string.IsNullOrEmpty(note)) 
             {
-                var kv = part.Split(':');
-                if (kv.Length == 2)
-                {
-                    string key = kv[0].Trim();
-                    string val = kv[1].Trim();
-                    if (key == "BT") txtBloodType.Text = val;
-                    else if (key == "AL") txtAllergy.Text = val;
-                    else if (key == "MH") txtMedicalHistory.Text = val;
-                }
+                txtMedicalHistory.Text = "";
+                return;
             }
+
+            // Bây giờ ô Note chỉ chứa trực tiếp Tiền sử bệnh
+            txtMedicalHistory.Text = note;
         }
 
         private string GenerateMedicalNote()
         {
-            return $"BT: {txtBloodType.Text} | AL: {txtAllergy.Text} | MH: {txtMedicalHistory.Text}";
+            // Chỉ trả về nội dung của Tiền sử bệnh để lưu vào ô Note
+            return txtMedicalHistory.Text.Trim();
         }
 
         private void LoadPlaceholderData()
@@ -107,8 +104,7 @@ namespace UI_Tier
             txtFullName.Text = "Nguyễn Văn Minh";
             lblPatientName.Text = "Nguyễn Văn Minh";
             txtPhone.Text = "0987654321";
-            txtEmail.Text = "nguyenvanminh@email.com";
-            txtBirthday.Text = "15/05/1990";
+            dtpBirthday.Value = new DateTime(1990, 5, 15);
             txtGender.Text = "Nam";
             txtCCCD.Text = "001234567890";
             txtBHYT.Text = "DN1234567890123";
@@ -118,7 +114,6 @@ namespace UI_Tier
             txtAddress.Text = "123 Đường Láng, Đống Đa, Hà Nội";
 
             txtBloodType.Text = "O";
-            txtAllergy.Text = "Không có dị ứng thuốc";
             txtMedicalHistory.Text = "Viêm dạ dày mãn tính năm 2020";
 
             // Load default image if possible
@@ -133,27 +128,33 @@ namespace UI_Tier
             if (section == "basic")
             {
                 txtFullName.ReadOnly = !isEditing;
+                txtFullName.Enabled = isEditing;
                 txtPhone.ReadOnly = !isEditing;
-                txtEmail.ReadOnly = !isEditing;
-                txtBirthday.ReadOnly = !isEditing;
-                txtGender.ReadOnly = !isEditing;
-                txtCCCD.ReadOnly = !isEditing;
-                txtBHYT.ReadOnly = !isEditing;
-                txtPatientID.ReadOnly = !isEditing;
-                txtEmergencyContact.ReadOnly = !isEditing;
-                txtEmergencyPhone.ReadOnly = !isEditing;
+                txtPhone.Enabled = isEditing;
                 txtAddress.ReadOnly = !isEditing;
+                txtAddress.Enabled = isEditing;
+                dtpBirthday.Enabled = isEditing;
+                txtGender.ReadOnly = !isEditing;
+                txtGender.Enabled = isEditing;
+                txtCCCD.ReadOnly = !isEditing;
+                txtCCCD.Enabled = isEditing;
+                txtBHYT.ReadOnly = !isEditing;
+                txtBHYT.Enabled = isEditing;
+                txtPatientID.ReadOnly = true; 
+                txtPatientID.Enabled = false; // Luôn tắt để không có con trỏ |
+                txtEmergencyContact.ReadOnly = !isEditing;
+                txtEmergencyContact.Enabled = isEditing;
+                txtEmergencyPhone.ReadOnly = !isEditing;
+                txtEmergencyPhone.Enabled = isEditing;
 
                 // Toggle colors to indicate editability
                 Color bg = isEditing ? Color.White : Color.FromArgb(248, 249, 250);
                 txtFullName.BackColor = bg;
                 txtPhone.BackColor = bg;
-                txtEmail.BackColor = bg;
-                txtBirthday.BackColor = bg;
                 txtGender.BackColor = bg;
                 txtCCCD.BackColor = bg;
                 txtBHYT.BackColor = bg;
-                txtPatientID.BackColor = bg;
+                txtPatientID.BackColor = Color.FromArgb(248, 249, 250);
                 txtEmergencyContact.BackColor = bg;
                 txtEmergencyPhone.BackColor = bg;
                 txtAddress.BackColor = bg;
@@ -164,12 +165,12 @@ namespace UI_Tier
             else if (section == "medical")
             {
                 txtBloodType.ReadOnly = !isEditing;
-                txtAllergy.ReadOnly = !isEditing;
+                txtBloodType.Enabled = isEditing;
                 txtMedicalHistory.ReadOnly = !isEditing;
+                txtMedicalHistory.Enabled = isEditing;
 
                 Color bg = isEditing ? Color.White : Color.FromArgb(248, 249, 250);
                 txtBloodType.BackColor = bg;
-                txtAllergy.BackColor = bg;
                 txtMedicalHistory.BackColor = bg;
 
                 pnlMedicalActions.Visible = isEditing;
@@ -212,6 +213,7 @@ namespace UI_Tier
                 // Gather Basic Info
                 _currentPatient.User.FullName = txtFullName.Text;
                 _currentPatient.User.PhoneNumber = txtPhone.Text;
+                _currentPatient.User.Dob = dtpBirthday.Value;
                 _currentPatient.User.Gender = txtGender.Text;
                 _currentPatient.User.CCCD = txtCCCD.Text;
                 _currentPatient.User.Residential_Address = txtAddress.Text;
@@ -220,7 +222,7 @@ namespace UI_Tier
                 _currentPatient.EmergencyContactName = txtEmergencyContact.Text;
                 _currentPatient.EmergencyContactPhone = txtEmergencyPhone.Text;
 
-                if (DateTime.TryParse(txtBirthday.Text, out DateTime dob))
+                if (DateTime.TryParse(dtpBirthday.Value.ToString("dd/MM/yyyy"), out DateTime dob))
                     _currentPatient.User.Dob = dob;
 
                 string result = _patientBUS.UpdatePatientProfile(_currentPatient);
@@ -228,11 +230,12 @@ namespace UI_Tier
                 {
                     SetEditMode(false, "basic");
                     lblPatientName.Text = txtFullName.Text;
-                    MessageBox.Show("Đã lưu thông tin cá nhân!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Cập nhật thông tin cá nhân thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
-                    MessageBox.Show(result, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // Hiển thị chi tiết lỗi từ BUS (Trùng SĐT, Thiếu số điện thoại khẩn cấp,...)
+                    MessageBox.Show(result, "Lỗi cập nhật", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             else if (btn == btnSaveMedical) {
@@ -251,41 +254,50 @@ namespace UI_Tier
                 }
             }
             else if (btn == btnSavePass) {
-                if (string.IsNullOrEmpty(txtCurrentPass.Text)) {
-                    MessageBox.Show("Vui lòng nhập mật khẩu hiện tại!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-                if (string.IsNullOrEmpty(txtNewPass.Text) || txtNewPass.Text.Length < 6) {
-                    MessageBox.Show("Mật khẩu mới phải có ít nhất 6 ký tự!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
                 if (txtNewPass.Text != txtConfirmPass.Text) {
                     MessageBox.Show("Xác nhận mật khẩu không khớp!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // Password change logic (using UserBUS/SecurityHelper)
-                // Note: You might need to add a ChangePassword method to UserBUS if not exists
-                // For now, I'll use a direct context update or assume UserBUS can handle it.
-                // Assuming UserBUS has a way to verify and update pass.
+                string result = _userBUS.ChangePassword(_currentPatient.UserId, txtCurrentPass.Text, txtNewPass.Text);
                 
-                using (var db = new DAL_Tier.AppDbContext())
+                if (result == "Success")
                 {
-                    var user = db.Users.Find(_currentPatient.UserId);
-                    if (user != null)
+                    ShowChangePassword(false);
+                    MessageBox.Show("Đổi mật khẩu thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show(result, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void picAvatar_Click(object sender, EventArgs e)
+        {
+            if (_currentPatient == null) return;
+
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
+                ofd.Title = "Chọn ảnh đại diện mới";
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    string imagePath = ofd.FileName;
+                    // In a real app, you might want to copy the image to a local folder
+                    // For now, we'll just save the path
+                    string result = _userBUS.UpdateAvatar(_currentPatient.UserId, imagePath);
+
+                    if (result == "Success")
                     {
-                        if (BUS_Tier.UserBUS.SecurityHelper.VerifyPassword(txtCurrentPass.Text, user.Password))
-                        {
-                            user.Password = BUS_Tier.UserBUS.SecurityHelper.HashPassword(txtNewPass.Text);
-                            user.UpdatedAt = DateTime.Now;
-                            db.SaveChanges();
-                            ShowChangePassword(false);
-                            MessageBox.Show("Đổi mật khẩu thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Mật khẩu hiện tại không chính xác!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
+                        picAvatar.ImageLocation = imagePath;
+                        _currentPatient.User.Picture = imagePath;
+                        MessageBox.Show("Cập nhật ảnh đại diện thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show(result, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -347,6 +359,44 @@ namespace UI_Tier
         private void Button_Paint(object sender, PaintEventArgs e)
         {
             UIHelper.btn_Paint(sender, e);
+        }
+        private void LoadDefaultAvatar()
+        {
+            try
+            {
+                string defaultPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources_Images", "default.jpg");
+                if (File.Exists(defaultPath))
+                {
+                    picAvatar.ImageLocation = defaultPath;
+                }
+                else
+                {
+                    picAvatar.Image = null; // Hoặc một ảnh mặc định từ Resources nếu cần
+                }
+                picAvatar.SizeMode = PictureBoxSizeMode.Zoom;
+            }
+            catch { }
+        }
+        private void dtpBirthday_ValueChanged(object sender, EventArgs e)
+        {
+            int age = _userBUS.CalculateAge(dtpBirthday.Value);
+
+            if (age < 16)
+            {
+                // Khóa ô nhập CCCD và hiển thị trạng thái như màn Register
+                txtCCCD.Text = "Chưa đủ tuổi";
+                txtCCCD.Enabled = false;
+                txtCCCD.BackColor = Color.FromArgb(241, 243, 245); 
+            }
+            else
+            {
+                // Mở khóa nếu từ 16 tuổi trở lên
+                if (txtCCCD.Text == "Chưa đủ tuổi") txtCCCD.Text = "";
+                txtCCCD.Enabled = true; // Lưu ý: khi ở chế độ ReadOnly thì Enabled vẫn có thể true nhưng k sửa đc
+                // Chỉ thực sự cho sửa nếu đang trong mode Edit
+                // Logic này sẽ được SetEditMode quản lý thêm
+                txtCCCD.BackColor = Color.White;
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using BUS_Tier;
+using BUS_Tier;
 using DTO_Tier;
 using DAL_Tier;
 using System;
@@ -103,6 +103,9 @@ namespace UI_Tier
                 }
                 catch (Exception ex) { }
             }
+
+            // 10. Tải danh sách đánh giá
+            LoadReviews();
         }
 
         private void ucPatient_DocProfile_Load(object sender, EventArgs e)
@@ -232,6 +235,46 @@ namespace UI_Tier
         private void dateTimePicker4_ValueChanged(object sender, EventArgs e)
         {
             InitData();
+        }
+
+        private void LoadReviews()
+        {
+            try
+            {
+                flpReview.SuspendLayout();
+                flpReview.Controls.Clear();
+
+                DoctorBUS docBus = new DoctorBUS();
+                var reviews = docBus.GetDoctorReviews(_doctorId);
+
+                if (reviews == null || !reviews.Any())
+                {
+                    Label lblNoReview = new Label();
+                    lblNoReview.Text = "Chưa có đánh giá nào từ bệnh nhân.";
+                    lblNoReview.Font = new Font("Segoe UI", 10, FontStyle.Italic);
+                    lblNoReview.ForeColor = Color.Gray;
+                    lblNoReview.Size = new Size(flpReview.Width - 40, 50);
+                    lblNoReview.TextAlign = ContentAlignment.MiddleCenter;
+                    flpReview.Controls.Add(lblNoReview);
+                    return;
+                }
+
+                foreach (var rev in reviews)
+                {
+                    ucReviewItem item = new ucReviewItem();
+                    item.SetReviewData(rev);
+                    item.Width = flpReview.Width - 50; // Chừa lề cho thanh cuộn
+                    flpReview.Controls.Add(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi LoadReviews: " + ex.Message);
+            }
+            finally
+            {
+                flpReview.ResumeLayout();
+            }
         }
     }
 }

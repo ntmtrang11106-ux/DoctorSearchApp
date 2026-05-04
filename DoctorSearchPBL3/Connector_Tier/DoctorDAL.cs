@@ -93,5 +93,16 @@ namespace DAL_Tier
                 _ => result.OrderByDescending(d => d.CreatedAt).ToList()
             };
         }
+
+        public List<ReviewsDTO> GetDoctorReviews(int doctorId)
+        {
+            using var context = new AppDbContext();
+            return context.Reviews
+                .Include(r => r.Patient)
+                    .ThenInclude(p => p.User)
+                .Where(r => r.DoctorId == doctorId && r.IsVisible && !r.IsDeleted)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToList();
+        }
     }
 }

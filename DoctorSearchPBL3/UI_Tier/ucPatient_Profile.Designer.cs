@@ -38,34 +38,30 @@ namespace UI_Tier
             btnSaveMedical = new Button();
             txtMedicalHistory = new TextBox();
             lblMedicalHistory = new Label();
-            txtAllergy = new TextBox();
-            lblAllergy = new Label();
             txtBloodType = new TextBox();
             lblBloodType = new Label();
             btnEditMedical = new Button();
+            lblBHYT = new Label();
+            txtBHYT = new TextBox();
             lblMedicalTitle = new Label();
             pnlBasicInfo = new Panel();
             pnlBasicInfoActions = new Panel();
             btnCancelBasicInfo = new Button();
             btnSaveBasicInfo = new Button();
-            txtAddress = new TextBox();
-            lblAddress = new Label();
             txtEmergencyPhone = new TextBox();
             lblEmergencyPhone = new Label();
             txtEmergencyContact = new TextBox();
             lblEmergencyContact = new Label();
             txtPatientID = new TextBox();
             lblPatientID = new Label();
-            txtBHYT = new TextBox();
-            lblBHYT = new Label();
             txtCCCD = new TextBox();
             lblCCCD = new Label();
             txtGender = new TextBox();
             lblGender = new Label();
-            txtBirthday = new TextBox();
+            dtpBirthday = new DateTimePicker();
             lblBirthday = new Label();
-            txtEmail = new TextBox();
-            lblEmail = new Label();
+            txtAddress = new TextBox();
+            lblAddress = new Label();
             txtPhone = new TextBox();
             lblPhone = new Label();
             txtFullName = new TextBox();
@@ -109,7 +105,7 @@ namespace UI_Tier
             pnlSecurity.Controls.Add(btnChangePassword);
             pnlSecurity.Controls.Add(lblSecurityTitle);
             pnlSecurity.Dock = DockStyle.Top;
-            pnlSecurity.Location = new Point(52, 1724);
+            pnlSecurity.Location = new Point(52, 1516);
             pnlSecurity.Margin = new Padding(0, 0, 0, 38);
             pnlSecurity.Name = "pnlSecurity";
             pnlSecurity.Size = new Size(2093, 567);
@@ -298,17 +294,17 @@ namespace UI_Tier
             pnlMedicalProfile.Controls.Add(pnlMedicalActions);
             pnlMedicalProfile.Controls.Add(txtMedicalHistory);
             pnlMedicalProfile.Controls.Add(lblMedicalHistory);
-            pnlMedicalProfile.Controls.Add(txtAllergy);
-            pnlMedicalProfile.Controls.Add(lblAllergy);
             pnlMedicalProfile.Controls.Add(txtBloodType);
             pnlMedicalProfile.Controls.Add(lblBloodType);
             pnlMedicalProfile.Controls.Add(btnEditMedical);
+            pnlMedicalProfile.Controls.Add(lblBHYT);
+            pnlMedicalProfile.Controls.Add(txtBHYT);
             pnlMedicalProfile.Controls.Add(lblMedicalTitle);
             pnlMedicalProfile.Dock = DockStyle.Top;
-            pnlMedicalProfile.Location = new Point(52, 1017);
+            pnlMedicalProfile.Location = new Point(52, 868);
             pnlMedicalProfile.Margin = new Padding(0, 0, 0, 38);
             pnlMedicalProfile.Name = "pnlMedicalProfile";
-            pnlMedicalProfile.Size = new Size(2093, 707);
+            pnlMedicalProfile.Size = new Size(2093, 648);
             pnlMedicalProfile.TabIndex = 1;
             pnlMedicalProfile.Paint += SectionPanel_Paint;
             // 
@@ -316,10 +312,10 @@ namespace UI_Tier
             // 
             pnlMedicalActions.Controls.Add(btnCancelMedical);
             pnlMedicalActions.Controls.Add(btnSaveMedical);
-            pnlMedicalActions.Location = new Point(38, 617);
+            pnlMedicalActions.Location = new Point(44, 558);
             pnlMedicalActions.Margin = new Padding(4);
             pnlMedicalActions.Name = "pnlMedicalActions";
-            pnlMedicalActions.Size = new Size(494, 77);
+            pnlMedicalActions.Size = new Size(566, 77);
             pnlMedicalActions.TabIndex = 27;
             pnlMedicalActions.Visible = false;
             // 
@@ -330,7 +326,7 @@ namespace UI_Tier
             btnCancelMedical.FlatStyle = FlatStyle.Flat;
             btnCancelMedical.Font = new Font("Segoe UI", 11F);
             btnCancelMedical.ForeColor = Color.FromArgb(73, 80, 87);
-            btnCancelMedical.Location = new Point(332, 6);
+            btnCancelMedical.Location = new Point(378, 6);
             btnCancelMedical.Margin = new Padding(4);
             btnCancelMedical.Name = "btnCancelMedical";
             btnCancelMedical.Size = new Size(156, 64);
@@ -350,7 +346,7 @@ namespace UI_Tier
             btnSaveMedical.Location = new Point(6, 6);
             btnSaveMedical.Margin = new Padding(4);
             btnSaveMedical.Name = "btnSaveMedical";
-            btnSaveMedical.Size = new Size(312, 64);
+            btnSaveMedical.Size = new Size(357, 64);
             btnSaveMedical.TabIndex = 0;
             btnSaveMedical.Text = "💾  Cập nhật hồ sơ y tế";
             btnSaveMedical.UseVisualStyleBackColor = false;
@@ -363,7 +359,7 @@ namespace UI_Tier
             txtMedicalHistory.BackColor = Color.FromArgb(248, 249, 250);
             txtMedicalHistory.BorderStyle = BorderStyle.FixedSingle;
             txtMedicalHistory.Font = new Font("Segoe UI", 12F);
-            txtMedicalHistory.Location = new Point(455, 269);
+            txtMedicalHistory.Location = new Point(455, 219);
             txtMedicalHistory.Margin = new Padding(4);
             txtMedicalHistory.Multiline = true;
             txtMedicalHistory.Name = "txtMedicalHistory";
@@ -376,39 +372,17 @@ namespace UI_Tier
             lblMedicalHistory.AutoSize = true;
             lblMedicalHistory.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
             lblMedicalHistory.ForeColor = Color.FromArgb(73, 80, 87);
-            lblMedicalHistory.Location = new Point(494, 224);
+            lblMedicalHistory.Location = new Point(455, 169);
             lblMedicalHistory.Margin = new Padding(4, 0, 4, 0);
             lblMedicalHistory.Name = "lblMedicalHistory";
             lblMedicalHistory.Size = new Size(174, 37);
             lblMedicalHistory.TabIndex = 20;
             lblMedicalHistory.Text = "Tiền sử bệnh";
             // 
-            // txtAllergy
-            // 
-            txtAllergy.Font = new Font("Segoe UI", 12F);
-            txtAllergy.Location = new Point(1271, 147);
-            txtAllergy.Margin = new Padding(4);
-            txtAllergy.Name = "txtAllergy";
-            txtAllergy.ReadOnly = true;
-            txtAllergy.Size = new Size(735, 50);
-            txtAllergy.TabIndex = 19;
-            // 
-            // lblAllergy
-            // 
-            lblAllergy.AutoSize = true;
-            lblAllergy.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblAllergy.ForeColor = Color.FromArgb(73, 80, 87);
-            lblAllergy.Location = new Point(1183, 102);
-            lblAllergy.Margin = new Padding(4, 0, 4, 0);
-            lblAllergy.Name = "lblAllergy";
-            lblAllergy.Size = new Size(99, 37);
-            lblAllergy.TabIndex = 18;
-            lblAllergy.Text = "Dị ứng";
-            // 
             // txtBloodType
             // 
             txtBloodType.Font = new Font("Segoe UI", 12F);
-            txtBloodType.Location = new Point(455, 147);
+            txtBloodType.Location = new Point(455, 98);
             txtBloodType.Margin = new Padding(4);
             txtBloodType.Name = "txtBloodType";
             txtBloodType.ReadOnly = true;
@@ -420,7 +394,7 @@ namespace UI_Tier
             lblBloodType.AutoSize = true;
             lblBloodType.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
             lblBloodType.ForeColor = Color.FromArgb(73, 80, 87);
-            lblBloodType.Location = new Point(494, 102);
+            lblBloodType.Location = new Point(455, 48);
             lblBloodType.Margin = new Padding(4, 0, 4, 0);
             lblBloodType.Name = "lblBloodType";
             lblBloodType.Size = new Size(155, 37);
@@ -445,6 +419,28 @@ namespace UI_Tier
             btnEditMedical.UseVisualStyleBackColor = true;
             btnEditMedical.Click += btnEdit_Click;
             // 
+            // lblBHYT
+            // 
+            lblBHYT.AutoSize = true;
+            lblBHYT.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblBHYT.ForeColor = Color.FromArgb(73, 80, 87);
+            lblBHYT.Location = new Point(1271, 48);
+            lblBHYT.Margin = new Padding(4, 0, 4, 0);
+            lblBHYT.Name = "lblBHYT";
+            lblBHYT.Size = new Size(170, 37);
+            lblBHYT.TabIndex = 16;
+            lblBHYT.Text = "Số thẻ BHYT";
+            // 
+            // txtBHYT
+            // 
+            txtBHYT.Font = new Font("Segoe UI", 12F);
+            txtBHYT.Location = new Point(1271, 98);
+            txtBHYT.Margin = new Padding(4);
+            txtBHYT.Name = "txtBHYT";
+            txtBHYT.ReadOnly = true;
+            txtBHYT.Size = new Size(735, 50);
+            txtBHYT.TabIndex = 17;
+            // 
             // lblMedicalTitle
             // 
             lblMedicalTitle.AutoSize = true;
@@ -461,24 +457,20 @@ namespace UI_Tier
             // 
             pnlBasicInfo.BackColor = Color.White;
             pnlBasicInfo.Controls.Add(pnlBasicInfoActions);
-            pnlBasicInfo.Controls.Add(txtAddress);
-            pnlBasicInfo.Controls.Add(lblAddress);
             pnlBasicInfo.Controls.Add(txtEmergencyPhone);
             pnlBasicInfo.Controls.Add(lblEmergencyPhone);
             pnlBasicInfo.Controls.Add(txtEmergencyContact);
             pnlBasicInfo.Controls.Add(lblEmergencyContact);
             pnlBasicInfo.Controls.Add(txtPatientID);
             pnlBasicInfo.Controls.Add(lblPatientID);
-            pnlBasicInfo.Controls.Add(txtBHYT);
-            pnlBasicInfo.Controls.Add(lblBHYT);
             pnlBasicInfo.Controls.Add(txtCCCD);
             pnlBasicInfo.Controls.Add(lblCCCD);
             pnlBasicInfo.Controls.Add(txtGender);
             pnlBasicInfo.Controls.Add(lblGender);
-            pnlBasicInfo.Controls.Add(txtBirthday);
+            pnlBasicInfo.Controls.Add(dtpBirthday);
             pnlBasicInfo.Controls.Add(lblBirthday);
-            pnlBasicInfo.Controls.Add(txtEmail);
-            pnlBasicInfo.Controls.Add(lblEmail);
+            pnlBasicInfo.Controls.Add(txtAddress);
+            pnlBasicInfo.Controls.Add(lblAddress);
             pnlBasicInfo.Controls.Add(txtPhone);
             pnlBasicInfo.Controls.Add(lblPhone);
             pnlBasicInfo.Controls.Add(txtFullName);
@@ -492,7 +484,7 @@ namespace UI_Tier
             pnlBasicInfo.Location = new Point(52, 38);
             pnlBasicInfo.Margin = new Padding(0, 0, 0, 38);
             pnlBasicInfo.Name = "pnlBasicInfo";
-            pnlBasicInfo.Size = new Size(2093, 979);
+            pnlBasicInfo.Size = new Size(2093, 830);
             pnlBasicInfo.TabIndex = 0;
             pnlBasicInfo.Paint += SectionPanel_Paint;
             // 
@@ -500,10 +492,10 @@ namespace UI_Tier
             // 
             pnlBasicInfoActions.Controls.Add(btnCancelBasicInfo);
             pnlBasicInfoActions.Controls.Add(btnSaveBasicInfo);
-            pnlBasicInfoActions.Location = new Point(32, 887);
+            pnlBasicInfoActions.Location = new Point(44, 731);
             pnlBasicInfoActions.Margin = new Padding(4);
             pnlBasicInfoActions.Name = "pnlBasicInfoActions";
-            pnlBasicInfoActions.Size = new Size(455, 77);
+            pnlBasicInfoActions.Size = new Size(475, 77);
             pnlBasicInfoActions.TabIndex = 26;
             pnlBasicInfoActions.Visible = false;
             // 
@@ -514,7 +506,7 @@ namespace UI_Tier
             btnCancelBasicInfo.FlatStyle = FlatStyle.Flat;
             btnCancelBasicInfo.Font = new Font("Segoe UI", 11F);
             btnCancelBasicInfo.ForeColor = Color.FromArgb(73, 80, 87);
-            btnCancelBasicInfo.Location = new Point(247, 6);
+            btnCancelBasicInfo.Location = new Point(304, 9);
             btnCancelBasicInfo.Margin = new Padding(4);
             btnCancelBasicInfo.Name = "btnCancelBasicInfo";
             btnCancelBasicInfo.Size = new Size(156, 64);
@@ -534,42 +526,17 @@ namespace UI_Tier
             btnSaveBasicInfo.Location = new Point(6, 6);
             btnSaveBasicInfo.Margin = new Padding(4);
             btnSaveBasicInfo.Name = "btnSaveBasicInfo";
-            btnSaveBasicInfo.Size = new Size(234, 64);
+            btnSaveBasicInfo.Size = new Size(277, 64);
             btnSaveBasicInfo.TabIndex = 0;
             btnSaveBasicInfo.Text = "💾  Lưu thay đổi";
             btnSaveBasicInfo.UseVisualStyleBackColor = false;
             btnSaveBasicInfo.Click += btnSave_Click;
             btnSaveBasicInfo.Paint += Button_Paint;
             // 
-            // txtAddress
-            // 
-            txtAddress.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            txtAddress.BackColor = Color.FromArgb(248, 249, 250);
-            txtAddress.BorderStyle = BorderStyle.FixedSingle;
-            txtAddress.Font = new Font("Segoe UI", 12F);
-            txtAddress.Location = new Point(455, 819);
-            txtAddress.Margin = new Padding(4);
-            txtAddress.Name = "txtAddress";
-            txtAddress.ReadOnly = true;
-            txtAddress.Size = new Size(1551, 50);
-            txtAddress.TabIndex = 25;
-            // 
-            // lblAddress
-            // 
-            lblAddress.AutoSize = true;
-            lblAddress.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblAddress.ForeColor = Color.FromArgb(73, 80, 87);
-            lblAddress.Location = new Point(455, 778);
-            lblAddress.Margin = new Padding(4, 0, 4, 0);
-            lblAddress.Name = "lblAddress";
-            lblAddress.Size = new Size(100, 37);
-            lblAddress.TabIndex = 24;
-            lblAddress.Text = "Địa chỉ";
-            // 
             // txtEmergencyPhone
             // 
             txtEmergencyPhone.Font = new Font("Segoe UI", 12F);
-            txtEmergencyPhone.Location = new Point(1271, 659);
+            txtEmergencyPhone.Location = new Point(455, 296);
             txtEmergencyPhone.Margin = new Padding(4);
             txtEmergencyPhone.Name = "txtEmergencyPhone";
             txtEmergencyPhone.ReadOnly = true;
@@ -581,7 +548,7 @@ namespace UI_Tier
             lblEmergencyPhone.AutoSize = true;
             lblEmergencyPhone.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
             lblEmergencyPhone.ForeColor = Color.FromArgb(73, 80, 87);
-            lblEmergencyPhone.Location = new Point(1271, 609);
+            lblEmergencyPhone.Location = new Point(455, 250);
             lblEmergencyPhone.Margin = new Padding(4, 0, 4, 0);
             lblEmergencyPhone.Name = "lblEmergencyPhone";
             lblEmergencyPhone.Size = new Size(271, 37);
@@ -591,7 +558,7 @@ namespace UI_Tier
             // txtEmergencyContact
             // 
             txtEmergencyContact.Font = new Font("Segoe UI", 12F);
-            txtEmergencyContact.Location = new Point(455, 659);
+            txtEmergencyContact.Location = new Point(455, 538);
             txtEmergencyContact.Margin = new Padding(4);
             txtEmergencyContact.Name = "txtEmergencyContact";
             txtEmergencyContact.ReadOnly = true;
@@ -603,7 +570,7 @@ namespace UI_Tier
             lblEmergencyContact.AutoSize = true;
             lblEmergencyContact.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
             lblEmergencyContact.ForeColor = Color.FromArgb(73, 80, 87);
-            lblEmergencyContact.Location = new Point(455, 609);
+            lblEmergencyContact.Location = new Point(455, 493);
             lblEmergencyContact.Margin = new Padding(4, 0, 4, 0);
             lblEmergencyContact.Name = "lblEmergencyContact";
             lblEmergencyContact.Size = new Size(300, 37);
@@ -631,28 +598,6 @@ namespace UI_Tier
             lblPatientID.Size = new Size(194, 37);
             lblPatientID.TabIndex = 18;
             lblPatientID.Text = "Mã bệnh nhân";
-            // 
-            // txtBHYT
-            // 
-            txtBHYT.Font = new Font("Segoe UI", 12F);
-            txtBHYT.Location = new Point(455, 538);
-            txtBHYT.Margin = new Padding(4);
-            txtBHYT.Name = "txtBHYT";
-            txtBHYT.ReadOnly = true;
-            txtBHYT.Size = new Size(735, 50);
-            txtBHYT.TabIndex = 17;
-            // 
-            // lblBHYT
-            // 
-            lblBHYT.AutoSize = true;
-            lblBHYT.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblBHYT.ForeColor = Color.FromArgb(73, 80, 87);
-            lblBHYT.Location = new Point(455, 493);
-            lblBHYT.Margin = new Padding(4, 0, 4, 0);
-            lblBHYT.Name = "lblBHYT";
-            lblBHYT.Size = new Size(170, 37);
-            lblBHYT.TabIndex = 16;
-            lblBHYT.Text = "Số thẻ BHYT";
             // 
             // txtCCCD
             // 
@@ -698,15 +643,17 @@ namespace UI_Tier
             lblGender.TabIndex = 12;
             lblGender.Text = "Giới tính";
             // 
-            // txtBirthday
+            // dtpBirthday
             // 
-            txtBirthday.Font = new Font("Segoe UI", 12F);
-            txtBirthday.Location = new Point(1271, 294);
-            txtBirthday.Margin = new Padding(4);
-            txtBirthday.Name = "txtBirthday";
-            txtBirthday.ReadOnly = true;
-            txtBirthday.Size = new Size(735, 50);
-            txtBirthday.TabIndex = 11;
+            dtpBirthday.CalendarFont = new Font("Segoe UI", 12F);
+            dtpBirthday.CustomFormat = "dd / MM / yyyy";
+            dtpBirthday.Font = new Font("Segoe UI", 12F);
+            dtpBirthday.Format = DateTimePickerFormat.Custom;
+            dtpBirthday.Location = new Point(1271, 294);
+            dtpBirthday.Margin = new Padding(4);
+            dtpBirthday.Name = "dtpBirthday";
+            dtpBirthday.Size = new Size(735, 50);
+            dtpBirthday.TabIndex = 11;
             // 
             // lblBirthday
             // 
@@ -720,27 +667,27 @@ namespace UI_Tier
             lblBirthday.TabIndex = 10;
             lblBirthday.Text = "Ngày sinh";
             // 
-            // txtEmail
+            // txtAddress
             // 
-            txtEmail.Font = new Font("Segoe UI", 12F);
-            txtEmail.Location = new Point(455, 294);
-            txtEmail.Margin = new Padding(4);
-            txtEmail.Name = "txtEmail";
-            txtEmail.ReadOnly = true;
-            txtEmail.Size = new Size(735, 50);
-            txtEmail.TabIndex = 9;
+            txtAddress.Font = new Font("Segoe UI", 12F);
+            txtAddress.Location = new Point(455, 659);
+            txtAddress.Margin = new Padding(4);
+            txtAddress.Name = "txtAddress";
+            txtAddress.ReadOnly = true;
+            txtAddress.Size = new Size(1551, 50);
+            txtAddress.TabIndex = 9;
             // 
-            // lblEmail
+            // lblAddress
             // 
-            lblEmail.AutoSize = true;
-            lblEmail.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblEmail.ForeColor = Color.FromArgb(73, 80, 87);
-            lblEmail.Location = new Point(455, 250);
-            lblEmail.Margin = new Padding(4, 0, 4, 0);
-            lblEmail.Name = "lblEmail";
-            lblEmail.Size = new Size(83, 37);
-            lblEmail.TabIndex = 8;
-            lblEmail.Text = "Email";
+            lblAddress.AutoSize = true;
+            lblAddress.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblAddress.ForeColor = Color.FromArgb(73, 80, 87);
+            lblAddress.Location = new Point(455, 609);
+            lblAddress.Margin = new Padding(4, 0, 4, 0);
+            lblAddress.Name = "lblAddress";
+            lblAddress.Size = new Size(100, 37);
+            lblAddress.TabIndex = 8;
+            lblAddress.Text = "Địa chỉ";
             // 
             // txtPhone
             // 
@@ -874,9 +821,8 @@ namespace UI_Tier
         private Label lblFullName;
         private TextBox txtPhone;
         private Label lblPhone;
-        private TextBox txtEmail;
-        private Label lblEmail;
-        private TextBox txtBirthday;
+        private TextBox txtAddress;
+        private DateTimePicker dtpBirthday;
         private Label lblBirthday;
         private TextBox txtGender;
         private Label lblGender;
@@ -890,7 +836,6 @@ namespace UI_Tier
         private Label lblEmergencyContact;
         private TextBox txtEmergencyPhone;
         private Label lblEmergencyPhone;
-        private TextBox txtAddress;
         private Label lblAddress;
         private Panel pnlBasicInfoActions;
         private Button btnSaveBasicInfo;
@@ -901,8 +846,6 @@ namespace UI_Tier
         private Button btnEditMedical;
         private TextBox txtBloodType;
         private Label lblBloodType;
-        private TextBox txtAllergy;
-        private Label lblAllergy;
         private TextBox txtMedicalHistory;
         private Label lblMedicalHistory;
         private Panel pnlMedicalActions;

@@ -1,4 +1,4 @@
-﻿using BUS_Tier;
+using BUS_Tier;
 using DTO_Tier;
 using System;
 using System.Collections.Generic;
@@ -263,11 +263,17 @@ namespace UI_Tier
                 currentArt.Dispose();
             }
 
-            // 2. Hiện lại thằng SearchDoc (vốn đã được cache trong Dictionary hoặc biến _currentUC)
-            // Giả sử cái SearchDoc của bác đang được lưu trong _tabMapping[pnlSearchDoc]
+            // 2. Hiện lại thằng Home và làm mới dữ liệu
             if (_tabMapping.ContainsKey(pnlHome))
             {
                 _currentUC = _tabMapping[pnlHome];
+                
+                // Ép kiểu để gọi hàm InitData làm mới lượt xem
+                if (_currentUC is ucPatient_Article artList)
+                {
+                    artList.InitData();
+                }
+
                 _currentUC.Visible = true;
                 _currentUC.BringToFront();
 

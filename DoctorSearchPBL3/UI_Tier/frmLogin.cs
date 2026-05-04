@@ -1,4 +1,4 @@
-﻿using BUS_Tier;
+using BUS_Tier;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -126,27 +126,19 @@ namespace UI_Tier
             string phone = txtUsername.Text.Trim();
             string pass = txtPassword.Text.Trim();
 
-            int userId;
-            string message;
+            int userId, profileId;
+            string fullName, message;
 
-            // 1. Gọi BUS để kiểm tra tài khoản (User)
-            // Giả sử hàm Login trả về Role (Doctor/Patient/Admin)
-            string role = _userBUS.Login(phone, pass, out userId, out message);
+            // 1. Gọi BUS để kiểm tra tài khoản (User) và lấy toàn bộ thông tin định danh
+            string role = _userBUS.Login(phone, pass, out userId, out profileId, out fullName, out message);
 
             if (!string.IsNullOrEmpty(role))
             {
-                // 2. ĐỔI ID: Lấy ProfileId tương ứng với vai trò
-                // Chúng ta gọi hàm này từ BUS để lấy DoctorId hoặc PatientId
-                int profileId = _userBUS.GetProfileIdByRole(userId, role);
-
-                // 3. LƯU VÀO DTO: Cất vào GlobalAccount để dùng toàn app
-                // Giả sử bạn lấy thêm được FullName từ UserDTO
-                string fullName = "Người dùng"; // Hoặc lấy từ object User trả về
+                // 2. LƯU VÀO DTO: Cất vào GlobalAccount để dùng toàn app
                 DTO_Tier.GlobalAccount.SetLoggedInAccount(userId, profileId, role, fullName);
 
-                // 4. ĐIỀU HƯỚNG: Dùng if-else như bạn mong muốn
+                // 3. ĐIỀU HƯỚNG
                 this.Hide();
-
                 if (role == "Patient")
                 {
                     frmPatient f = new frmPatient();

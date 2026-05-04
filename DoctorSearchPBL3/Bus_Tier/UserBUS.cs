@@ -1,4 +1,4 @@
-﻿using DAL_Tier;
+using DAL_Tier;
 using DTO_Tier;
 using System;
 using System.Security.Cryptography;
@@ -100,44 +100,36 @@ namespace BUS_Tier
         //    return "";
         //}
 
-        public string Login(string phone, string pass, out int loggedInId, out string msg)
+        public string Login(string phone, string pass, out int userId, out int profileId, out string fullName, out string msg)
         {
-            loggedInId = 0;
+            userId = 0;
+            profileId = 0;
+            fullName = "";
             msg = "";
 
-            // 1. Lấy thông tin User từ DB qua SĐT (Hàm này bạn đã sửa ở UserDAL để lấy theo Phone)
             var user = _userDAL.GetUserForLogin(phone);
 
-            // 2. Kiểm tra User tồn tại VÀ so khớp mật khẩu đã băm
-            // BCrypt.Verify sẽ lấy 'pass' (chưa băm) so sánh với 'user.Password' (đã băm trong DB)
             if (user != null && SecurityHelper.VerifyPassword(pass, user.Password))
             {
-                // 3. Nếu mật khẩu đúng, bắt đầu phân quyền để lấy ID vai trò tương ứng
+                userId = user.Id;
+                fullName = user.FullName;
+
                 if (user.Role == "Doctor")
                 {
                     var doctor = _context.Doctors.FirstOrDefault(d => d.UserId == user.Id);
-                    if (doctor != null)
-                    {
-                        loggedInId = doctor.Id; // Trả về DoctorId (ví dụ: 1)
-                    }
+                    if (doctor != null) profileId = doctor.Id;
                 }
                 else if (user.Role == "Patient")
                 {
                     var patient = _context.Patients.FirstOrDefault(p => p.UserId == user.Id);
-                    if (patient != null)
-                    {
-                        loggedInId = patient.Id; // Trả về PatientId
-                    }
+                    if (patient != null) profileId = patient.Id;
                 }
-                else if (user.Role == "Admin")
+                else
                 {
-                    // Nếu bạn có bảng Admin riêng thì tìm tương tự, 
-                    // nếu không thì dùng luôn UserId
-                    loggedInId = user.Id;
+                    profileId = user.Id;
                 }
 
-                // 4. Kiểm tra xem đã lấy được ID định danh chưa
-                if (loggedInId > 0)
+                if (profileId > 0)
                 {
                     msg = "Đăng nhập thành công!";
                     return user.Role;
@@ -149,7 +141,6 @@ namespace BUS_Tier
                 }
             }
 
-            // 5. Nếu không tìm thấy User hoặc mật khẩu sai
             msg = "Số điện thoại hoặc mật khẩu không chính xác!";
             return "";
         }
@@ -258,6 +249,33 @@ namespace BUS_Tier
             int age = DateTime.Now.Year - dob.Year;
             if (dob > DateTime.Now.AddYears(-age)) age--;
             return age;
+        }
+
+        public string ChangePassword(int userId, string currentPass, string newPass)
+        {
+            if (userId <= 0) return "ID người dùng không hợp lệ.";
+            if (string.IsNullOrWhiteSpace(currentPass)) return "Vui lòng nhập mật khẩu hiện tại.";
+            if (string.IsNullOrWhiteSpace(newPass) || newPass.Length < 6) return "Mật khẩu mới phải có ít nhất 6 ký tự.";
+
+            var user = _context.Users.Find(userId);
+            if (user == null) return "Người dùng không tồn tại.";
+
+            if (!SecurityHelper.VerifyPassword(currentPass, user.Password))
+                return "Mật khẩu hiện tại không chính xác.";
+
+            string newHashedPass = SecurityHelper.HashPassword(newPass);
+            bool success = _userDAL.ChangePassword(userId, newHashedPass);
+
+            return success ? "Success" : "Lỗi hệ thống khi đổi mật khẩu.";
+        }
+
+        public string UpdateAvatar(int userId, string imagePath)
+        {
+            if (userId <= 0) return "ID người dùng không hợp lệ.";
+            if (string.IsNullOrWhiteSpace(imagePath)) return "Đường dẫn ảnh không hợp lệ.";
+
+            bool success = _userDAL.UpdateAvatar(userId, imagePath);
+            return success ? "Success" : "Lỗi hệ thống khi cập nhật ảnh đại diện.";
         }
 
         public static class SecurityHelper
