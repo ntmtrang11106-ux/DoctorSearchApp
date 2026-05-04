@@ -1,69 +1,49 @@
-﻿using DTO_Tier;
-using Microsoft.EntityFrameworkCore;
+using DAL_Tier;
+using DTO_Tier;
+using System;
+using System.Collections.Generic;
 
-namespace DAL_Tier
+namespace BUS_Tier
 {
-    public class PatientDAL
+    public class PatientBUS
     {
-        private readonly AppDbContext _context;
-        public PatientDAL() => _context = new AppDbContext();
-
-        public int GetPatientIdByUserId(int userId)
-        {
-            using (var db = new AppDbContext())
-            {
-                // Tìm bệnh nhân dựa trên UserId và đảm bảo bệnh nhân chưa bị xóa (IsDeleted)
-                var patient = db.Patients.FirstOrDefault(p => p.UserId == userId && !p.IsDeleted);
-
-                // Nếu tìm thấy trả về Id của Patient, ngược lại trả về 0
-                return patient != null ? patient.Id : 0;
-            }
-        }
+        private readonly PatientDAL _patientDAL = new PatientDAL();
 
         public PatientDTO? GetPatientProfile(int patientId)
         {
-            return _context.Patients
-                .Include(p => p.User)
-                .AsNoTracking()
-                .FirstOrDefault(p => p.Id == patientId && !p.IsDeleted);
+            if (patientId <= 0) return null;
+            return _patientDAL.GetPatientProfile(patientId);
+        }
+
+        public int GetPatientIdByUserId(int userId)
+        {
+            if (userId <= 0) return 0;
+            return _patientDAL.GetPatientIdByUserId(userId);
+        }
+
+        public string UpdatePatientProfile(PatientDTO patient)
+        {
+            // Basic validation
+            if (patient == null) return "Dữ liệu không hợp lệ.";
+            if (patient.User == null) return "Thông tin người dùng không hợp lệ.";
+            
+            if (string.IsNullOrWhiteSpace(patient.User.FullName))
+                return "Họ tên không được để trống.";
+            
+            if (string.IsNullOrWhiteSpace(patient.User.PhoneNumber))
+                return "Số điện thoại không được để trống.";
+
+            if (patient.User.PhoneNumber.Length < 10)
+                return "Số điện thoại không hợp lệ.";
+
+            bool success = _patientDAL.UpdatePatientProfile(patient);
+            return success ? "Success" : "Lỗi hệ thống khi cập nhật hồ sơ.";
         }
 
         public List<AppointmentsDTO> GetPatientAppointments(int patientId)
         {
-            return _context.Appointments
-                .AsNoTracking()
-                .Include(a => a.TimeSlot)
-                .Include(a => a.Doctor).ThenInclude(d => d.User)
-                .Where(a => a.PatientId == patientId)
-                .OrderByDescending(a => a.CreatedAt)
-                .ToList();
-        }
-
-        public bool CreateAppointment(AppointmentsDTO app)
-        {
-            using var transaction = _context.Database.BeginTransaction();
-            try
-            {
-                var slot = _context.TimeSlots.Find(app.TimeSlotId);
-                if (slot == null || slot.BookedCount >= slot.MaxAppointments || slot.Status == "Full")
-                    return false;
-
-                app.CreatedAt = DateTime.Now;
-                app.Status = "Pending";
-                _context.Appointments.Add(app);
-
-                slot.BookedCount++;
-                if (slot.BookedCount == slot.MaxAppointments) slot.Status = "Full";
-
-                _context.SaveChanges();
-                transaction.Commit();
-                return true;
-            }
-            catch
-            {
-                transaction.Rollback();
-                return false;
-            }
+            if (patientId <= 0) return new List<AppointmentsDTO>();
+            return _patientDAL.GetPatientAppointments(patientId);
         }
     }
 }

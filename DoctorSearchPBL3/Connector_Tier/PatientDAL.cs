@@ -1,4 +1,4 @@
-﻿using DTO_Tier;
+using DTO_Tier;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL_Tier
@@ -14,6 +14,51 @@ namespace DAL_Tier
                 .Include(p => p.User)
                 .AsNoTracking()
                 .FirstOrDefault(p => p.Id == patientId && !p.IsDeleted);
+        }
+
+        public int GetPatientIdByUserId(int userId)
+        {
+            var patient = _context.Patients.FirstOrDefault(p => p.UserId == userId && !p.IsDeleted);
+            return patient?.Id ?? 0;
+        }
+
+        public bool UpdatePatientProfile(PatientDTO updatedPatient)
+        {
+            try
+            {
+                var existingPatient = _context.Patients
+                    .Include(p => p.User)
+                    .FirstOrDefault(p => p.Id == updatedPatient.Id);
+
+                if (existingPatient == null) return false;
+
+                // Update User info
+                if (existingPatient.User != null && updatedPatient.User != null)
+                {
+                    existingPatient.User.FullName = updatedPatient.User.FullName;
+                    existingPatient.User.PhoneNumber = updatedPatient.User.PhoneNumber;
+                    existingPatient.User.Dob = updatedPatient.User.Dob;
+                    existingPatient.User.Gender = updatedPatient.User.Gender;
+                    existingPatient.User.CCCD = updatedPatient.User.CCCD;
+                    existingPatient.User.Residential_Address = updatedPatient.User.Residential_Address;
+                    existingPatient.User.UpdatedAt = DateTime.Now;
+                }
+
+                // Update Patient info
+                existingPatient.MedicalCode = updatedPatient.MedicalCode;
+                existingPatient.InsuranceCode = updatedPatient.InsuranceCode;
+                existingPatient.EmergencyContactName = updatedPatient.EmergencyContactName;
+                existingPatient.EmergencyContactPhone = updatedPatient.EmergencyContactPhone;
+                existingPatient.Note = updatedPatient.Note;
+                existingPatient.UpdatedAt = DateTime.Now;
+
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public List<AppointmentsDTO> GetPatientAppointments(int patientId)
