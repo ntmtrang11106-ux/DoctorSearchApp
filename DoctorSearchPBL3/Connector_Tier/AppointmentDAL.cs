@@ -72,12 +72,25 @@ namespace DAL_Tier
         //////////////////////////////////////////////////
 
 
+        public AppointmentsDTO GetById(int appointmentId)
+        {
+            try
+            {
+                return _context.Appointments.AsNoTracking().FirstOrDefault(a => a.Id == appointmentId);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         // 1. Lấy danh sách lịch hẹn
         public List<AppointmentsDTO> GetAllAppointments()
         {
             try
             {
                 return _context.Appointments
+                    .AsNoTracking()
                     .Include(a => a.Patient).ThenInclude(p => p.User)
                     .Include(a => a.Doctor).ThenInclude(d => d.User)
                     .Include(a => a.TimeSlot)
@@ -174,6 +187,103 @@ namespace DAL_Tier
                             app.TimeSlot.BookedCount -= 1;
                     }
 
+                    _context.SaveChanges();
+                    transaction.Commit();
+                    return true;
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+            }
+        }
+        // 5. Lấy danh sách lịch hẹn của một bệnh nhân với một bác sĩ cụ thể, lọc theo ngày và giờ
+        public List<AppointmentsDTO> GetPatientAppointmentsFiltered(int patientId, int doctorId, DateTime fromDate, DateTime toDate, TimeSpan fromTime, TimeSpan toTime)
+        {
+            try
+            {
+                return _context.Appointments
+                    .AsNoTracking()
+                    .Include(a => a.TimeSlot)
+                    .Include(a => a.Doctor).ThenInclude(d => d.User)
+                    .Where(a => a.PatientId == patientId && a.DoctorId == doctorId)
+                    .Where(a => a.TimeSlot.WorkDate >= fromDate.Date && a.TimeSlot.WorkDate <= toDate.Date)
+                    .Where(a => a.TimeSlot.StartTime >= fromTime && a.TimeSlot.EndTime <= toTime)
+                    .OrderByDescending(a => a.TimeSlot.WorkDate)
+                    .ThenBy(a => a.TimeSlot.StartTime)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi GetPatientAppointmentsFiltered: " + ex.Message);
+                return new List<AppointmentsDTO>();
+            }
+        }
+        public bool UpdateAppointment(int appointmentId, int newTimeSlotId, string newReason)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var app = _context.Appointments.Include(a => a.TimeSlot).FirstOrDefault(a => a.Id == appointmentId);
+                    if (app == null) return false;
+
+                    // Nếu đổi khung giờ
+                    if (app.TimeSlotId != newTimeSlotId)
+                    {
+                        // 1. Giải phóng khung giờ cũ
+                        if (app.TimeSlot != null)
+                        {
+                            app.TimeSlot.BookedCount = Math.Max(0, app.TimeSlot.BookedCount - 1);
+                            if (app.TimeSlot.BookedCount < app.TimeSlot.MaxAppointments)
+                                app.TimeSlot.Status = "Open";
+                        }
+
+                        // 2. Kiểm tra và chiếm khung giờ mới
+                        var newSlot = _context.TimeSlots.FirstOrDefault(ts => ts.Id == newTimeSlotId && !ts.IsDeleted);
+                        if (newSlot == null || (newSlot.Status != "Open" && newSlot.Id != app.TimeSlotId)) return false;
+
+                        newSlot.BookedCount += 1;
+                        if (newSlot.BookedCount >= newSlot.MaxAppointments)
+                            newSlot.Status = "Full";
+
+                        app.TimeSlotId = newTimeSlotId;
+                    }
+
+                    app.Reason = newReason;
+                    app.UpdatedAt = DateTime.Now;
+
+                    _context.SaveChanges();
+                    transaction.Commit();
+                    return true;
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+            }
+        }
+
+        public bool DeleteAppointment(int appointmentId)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var app = _context.Appointments.Include(a => a.TimeSlot).FirstOrDefault(a => a.Id == appointmentId);
+                    if (app == null) return false;
+
+                    // Giải phóng khung giờ
+                    if (app.TimeSlot != null)
+                    {
+                        app.TimeSlot.BookedCount = Math.Max(0, app.TimeSlot.BookedCount - 1);
+                        if (app.TimeSlot.BookedCount < app.TimeSlot.MaxAppointments)
+                            app.TimeSlot.Status = "Open";
+                    }
+
+                    _context.Appointments.Remove(app);
                     _context.SaveChanges();
                     transaction.Commit();
                     return true;

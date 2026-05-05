@@ -1,4 +1,4 @@
-﻿using DAL_Tier;
+using DAL_Tier;
 using DTO_Tier;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -138,12 +138,35 @@ namespace BUS_Tier
 
         public bool AcceptAppointment(int appointmentId)
         {
+            // 1. Kiểm tra trạng thái hiện tại (Logic nghiệp vụ)
+            var app = _appointmentDAL.GetById(appointmentId);
+            if (app == null || app.Status != "Pending") return false;
+
             return _appointmentDAL.UpdateStatusToAccept(appointmentId);
         }
 
         public bool RejectAppointment(int appointmentId)
         {
+            // 1. Kiểm tra trạng thái hiện tại
+            var app = _appointmentDAL.GetById(appointmentId);
+            if (app == null || app.Status != "Pending") return false;
+
             return _appointmentDAL.UpdateStatusToReject(appointmentId);
+        }
+
+        public List<AppointmentsDTO> GetFilteredAppointmentsForPatient(int patientId, int doctorId, DateTime fromDate, DateTime toDate, TimeSpan fromTime, TimeSpan toTime)
+        {
+            if (patientId <= 0 || doctorId <= 0) return new List<AppointmentsDTO>();
+            return _appointmentDAL.GetPatientAppointmentsFiltered(patientId, doctorId, fromDate, toDate, fromTime, toTime);
+        }
+        public bool UpdateAppointment(int appointmentId, int newTimeSlotId, string newReason)
+        {
+            return _appointmentDAL.UpdateAppointment(appointmentId, newTimeSlotId, newReason);
+        }
+
+        public bool DeleteAppointment(int appointmentId)
+        {
+            return _appointmentDAL.DeleteAppointment(appointmentId);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using DTO_Tier;
+using DTO_Tier;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -181,6 +181,24 @@ namespace DAL_Tier
             catch (Exception ex)
             {
                 Console.WriteLine("Lỗi GetByDoctorId (DAL): " + ex.Message);
+                return new List<TimeSlotsDTO>();
+            }
+        }
+
+        // 9. Lấy toàn bộ khung giờ của bác sĩ trong 1 ngày (Bao gồm cả Full/Open để hiển thị UI Đặt lịch)
+        public List<TimeSlotsDTO> GetSlotsByDoctorAndDate(int doctorId, DateTime date)
+        {
+            try
+            {
+                return _context.TimeSlots
+                    .Include(s => s.Room)
+                    .Where(s => s.DoctorId == doctorId && s.WorkDate.Date == date.Date && s.IsDeleted == false)
+                    .OrderBy(s => s.StartTime)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi GetSlotsByDoctorAndDate (DAL): " + ex.Message);
                 return new List<TimeSlotsDTO>();
             }
         }

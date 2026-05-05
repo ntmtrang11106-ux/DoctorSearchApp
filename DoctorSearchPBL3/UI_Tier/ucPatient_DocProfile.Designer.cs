@@ -49,6 +49,10 @@ namespace UI_Tier
             lblTotalReviews = new Label();
             panel2 = new Panel();
             panel4 = new Panel();
+            label12 = new Label();
+            label11 = new Label();
+            dtpEndTime = new DateTimePicker();
+            dtpStartTime = new DateTimePicker();
             label9 = new Label();
             dateTimePicker3 = new DateTimePicker();
             dateTimePicker4 = new DateTimePicker();
@@ -59,6 +63,7 @@ namespace UI_Tier
             label1 = new Label();
             lblBio = new Label();
             panel5 = new Panel();
+            btnBook = new Button();
             btnWriteReview = new Button();
             flpReview = new FlowLayoutPanel();
             label10 = new Label();
@@ -300,6 +305,11 @@ namespace UI_Tier
             // panel4
             // 
             panel4.BorderStyle = BorderStyle.FixedSingle;
+            panel4.Controls.Add(btnBook);
+            panel4.Controls.Add(label12);
+            panel4.Controls.Add(label11);
+            panel4.Controls.Add(dtpEndTime);
+            panel4.Controls.Add(dtpStartTime);
             panel4.Controls.Add(label9);
             panel4.Controls.Add(dateTimePicker3);
             panel4.Controls.Add(dateTimePicker4);
@@ -312,15 +322,61 @@ namespace UI_Tier
             panel4.Size = new Size(1020, 391);
             panel4.TabIndex = 2;
             // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Font = new Font("Segoe UI", 11F);
+            label12.Location = new Point(573, 155);
+            label12.Name = "label12";
+            label12.Size = new Size(72, 41);
+            label12.TabIndex = 59;
+            label12.Text = "Đến";
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Font = new Font("Segoe UI", 11F);
+            label11.Location = new Point(64, 155);
+            label11.Name = "label11";
+            label11.Size = new Size(52, 41);
+            label11.TabIndex = 58;
+            label11.Text = "Từ";
+            // 
+            // dtpEndTime
+            // 
+            dtpEndTime.CustomFormat = "HH:mm";
+            dtpEndTime.Font = new Font("Segoe UI", 11F);
+            dtpEndTime.Format = DateTimePickerFormat.Custom;
+            dtpEndTime.Location = new Point(670, 150);
+            dtpEndTime.Name = "dtpEndTime";
+            dtpEndTime.ShowUpDown = true;
+            dtpEndTime.Size = new Size(150, 47);
+            dtpEndTime.TabIndex = 57;
+            dtpEndTime.Value = new DateTime(2024, 1, 1, 23, 59, 0, 0);
+            //dtpEndTime.ValueChanged += dtpEndTime_ValueChanged;
+            // 
+            // dtpStartTime
+            // 
+            dtpStartTime.CustomFormat = "HH:mm";
+            dtpStartTime.Font = new Font("Segoe UI", 11F);
+            dtpStartTime.Format = DateTimePickerFormat.Custom;
+            dtpStartTime.Location = new Point(159, 150);
+            dtpStartTime.Name = "dtpStartTime";
+            dtpStartTime.ShowUpDown = true;
+            dtpStartTime.Size = new Size(150, 47);
+            dtpStartTime.TabIndex = 56;
+            dtpStartTime.Value = new DateTime(2024, 1, 1, 0, 0, 0, 0);
+            //dtpStartTime.ValueChanged += dtpStartTime_ValueChanged;
+            // 
             // label9
             // 
             label9.AutoSize = true;
             label9.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label9.Location = new Point(22, 16);
             label9.Name = "label9";
-            label9.Size = new Size(385, 45);
+            label9.Size = new Size(394, 45);
             label9.TabIndex = 55;
-            label9.Text = "Danh sách lịch hẹn trống";
+            label9.Text = "Lịch hẹn của tôi với bác sĩ";
             // 
             // dateTimePicker3
             // 
@@ -360,9 +416,9 @@ namespace UI_Tier
             flpAppItem.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             flpAppItem.AutoScroll = true;
             flpAppItem.FlowDirection = FlowDirection.TopDown;
-            flpAppItem.Location = new Point(0, 156);
+            flpAppItem.Location = new Point(0, 215);
             flpAppItem.Name = "flpAppItem";
-            flpAppItem.Size = new Size(1018, 233);
+            flpAppItem.Size = new Size(1018, 174);
             flpAppItem.TabIndex = 0;
             // 
             // label2
@@ -419,6 +475,23 @@ namespace UI_Tier
             panel5.Name = "panel5";
             panel5.Size = new Size(2019, 756);
             panel5.TabIndex = 3;
+            // 
+            // btnBook
+            // 
+            btnBook.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnBook.BackColor = Color.FromArgb(37, 99, 235);
+            btnBook.Cursor = Cursors.Hand;
+            btnBook.FlatAppearance.BorderSize = 0;
+            btnBook.FlatStyle = FlatStyle.Flat;
+            btnBook.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            btnBook.ForeColor = Color.WhiteSmoke;
+            btnBook.Location = new Point(675, 5);
+            btnBook.Name = "btnBook";
+            btnBook.Size = new Size(312, 71);
+            btnBook.TabIndex = 58;
+            btnBook.Text = " Đặt lịch ngay";
+            btnBook.UseVisualStyleBackColor = false;
+            //btnBook.Click += btnBook_Click;
             // 
             // btnWriteReview
             // 
@@ -513,6 +586,11 @@ namespace UI_Tier
         private Label label10;
         private Button btnBack;
         private Button btnWriteReview;
+        private Button btnBook;
         private Label label1;
+        private Label label12;
+        private Label label11;
+        private DateTimePicker dtpEndTime;
+        private DateTimePicker dtpStartTime;
     }
 }

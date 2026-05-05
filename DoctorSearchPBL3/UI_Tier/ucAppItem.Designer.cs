@@ -1,4 +1,4 @@
-﻿namespace UI_Tier
+namespace UI_Tier
 {
     partial class ucAppItem
     {
@@ -43,6 +43,7 @@
             btnRate = new Button();
             btnBook = new Button();
             btnRemove = new Button();
+            btnEdit = new Button();
             btnCancel = new Button();
             ttAction = new ToolTip(components);
             flpAction.SuspendLayout();
@@ -100,15 +101,14 @@
             // 
             // btnStatus
             // 
-            btnStatus.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnStatus.BackColor = Color.PaleGreen;
             btnStatus.FlatAppearance.BorderSize = 0;
             btnStatus.FlatStyle = FlatStyle.Flat;
-            btnStatus.Font = new Font("Segoe UI", 12F);
+            btnStatus.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnStatus.ForeColor = Color.DarkGreen;
-            btnStatus.Location = new Point(1139, 96);
+            btnStatus.Location = new Point(400, 80);
             btnStatus.Name = "btnStatus";
-            btnStatus.Size = new Size(254, 55);
+            btnStatus.Size = new Size(200, 60);
             btnStatus.TabIndex = 9;
             btnStatus.Text = "Thành công";
             btnStatus.UseVisualStyleBackColor = false;
@@ -143,7 +143,7 @@
             btnAccept.FlatStyle = FlatStyle.Flat;
             btnAccept.Font = new Font("Segoe MDL2 Assets", 20F);
             btnAccept.ForeColor = Color.Green;
-            btnAccept.Location = new Point(70, 5);
+            btnAccept.Location = new Point(70, 7);
             btnAccept.Margin = new Padding(70, 5, 0, 0);
             btnAccept.Name = "btnAccept";
             btnAccept.Size = new Size(80, 80);
@@ -163,12 +163,13 @@
             flpAction.Controls.Add(btnRate);
             flpAction.Controls.Add(btnBook);
             flpAction.Controls.Add(btnRemove);
+            flpAction.Controls.Add(btnEdit);
             flpAction.Controls.Add(btnCancel);
             flpAction.Controls.Add(btnAccept);
             flpAction.FlowDirection = FlowDirection.RightToLeft;
-            flpAction.Location = new Point(1337, 75);
+            flpAction.Location = new Point(1156, 68);
             flpAction.Name = "flpAction";
-            flpAction.Size = new Size(900, 85);
+            flpAction.Size = new Size(980, 90);
             flpAction.TabIndex = 15;
             flpAction.WrapContents = false;
             // 
@@ -180,7 +181,7 @@
             btnViewRecord.FlatStyle = FlatStyle.Flat;
             btnViewRecord.Font = new Font("Segoe MDL2 Assets", 18F);
             btnViewRecord.ForeColor = Color.DodgerBlue;
-            btnViewRecord.Location = new Point(820, 5);
+            btnViewRecord.Location = new Point(900, 7);
             btnViewRecord.Margin = new Padding(70, 5, 0, 0);
             btnViewRecord.Name = "btnViewRecord";
             btnViewRecord.Size = new Size(80, 80);
@@ -198,7 +199,7 @@
             btnRate.FlatStyle = FlatStyle.Flat;
             btnRate.Font = new Font("Segoe MDL2 Assets", 18F);
             btnRate.ForeColor = Color.Goldenrod;
-            btnRate.Location = new Point(670, 5);
+            btnRate.Location = new Point(750, 7);
             btnRate.Margin = new Padding(70, 5, 0, 0);
             btnRate.Name = "btnRate";
             btnRate.Size = new Size(80, 80);
@@ -216,7 +217,7 @@
             btnBook.FlatStyle = FlatStyle.Flat;
             btnBook.Font = new Font("Segoe MDL2 Assets", 18F);
             btnBook.ForeColor = Color.DodgerBlue;
-            btnBook.Location = new Point(520, 5);
+            btnBook.Location = new Point(600, 7);
             btnBook.Margin = new Padding(70, 5, 0, 0);
             btnBook.Name = "btnBook";
             btnBook.Size = new Size(80, 80);
@@ -230,20 +231,39 @@
             // 
             btnRemove.AccessibleDescription = "C";
             btnRemove.Anchor = AnchorStyles.None;
-            btnRemove.BackColor = Color.LightGoldenrodYellow;
+            btnRemove.BackColor = Color.FromArgb(255, 252, 235);
             btnRemove.FlatAppearance.BorderSize = 0;
             btnRemove.FlatStyle = FlatStyle.Flat;
-            btnRemove.Font = new Font("Segoe MDL2 Assets", 18F);
-            btnRemove.ForeColor = Color.Goldenrod;
-            btnRemove.Location = new Point(370, 5);
-            btnRemove.Margin = new Padding(70, 5, 0, 0);
+            btnRemove.Font = new Font("Segoe MDL2 Assets", 20F);
+            btnRemove.ForeColor = Color.FromArgb(217, 119, 6);
+            btnRemove.Location = new Point(445, 5);
+            btnRemove.Margin = new Padding(30, 5, 0, 0);
             btnRemove.Name = "btnRemove";
-            btnRemove.Size = new Size(80, 80);
+            btnRemove.Size = new Size(85, 85);
             btnRemove.TabIndex = 16;
             btnRemove.Text = "";
-            btnRemove.TextAlign = ContentAlignment.MiddleRight;
             ttAction.SetToolTip(btnRemove, "Xóa lịch hẹn");
             btnRemove.UseVisualStyleBackColor = false;
+            btnRemove.Click += btnRemove_Click;
+            // 
+            // btnEdit
+            // 
+            btnEdit.AccessibleDescription = "C";
+            btnEdit.Anchor = AnchorStyles.None;
+            btnEdit.BackColor = Color.FromArgb(239, 250, 255);
+            btnEdit.FlatAppearance.BorderSize = 0;
+            btnEdit.FlatStyle = FlatStyle.Flat;
+            btnEdit.Font = new Font("Segoe MDL2 Assets", 20F);
+            btnEdit.ForeColor = Color.FromArgb(37, 99, 235);
+            btnEdit.Location = new Point(330, 5);
+            btnEdit.Margin = new Padding(30, 5, 0, 0);
+            btnEdit.Name = "btnEdit";
+            btnEdit.Size = new Size(85, 85);
+            btnEdit.TabIndex = 20;
+            btnEdit.Text = "";
+            ttAction.SetToolTip(btnEdit, "Chỉnh sửa lịch hẹn");
+            btnEdit.UseVisualStyleBackColor = false;
+            btnEdit.Click += btnEdit_Click;
             // 
             // btnCancel
             // 
@@ -253,7 +273,7 @@
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe MDL2 Assets", 20F);
             btnCancel.ForeColor = Color.DarkRed;
-            btnCancel.Location = new Point(220, 5);
+            btnCancel.Location = new Point(220, 7);
             btnCancel.Margin = new Padding(70, 5, 0, 0);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(80, 80);
@@ -286,7 +306,7 @@
             Controls.Add(lblPhoneNumber);
             Controls.Add(lblName);
             Name = "ucAppItem";
-            Size = new Size(2297, 252);
+            Size = new Size(2155, 252);
             Load += ucAppItem_Load;
             flpAction.ResumeLayout(false);
             ResumeLayout(false);
@@ -307,6 +327,7 @@
         private FlowLayoutPanel flpAction;
         private Button btnCancel;
         private Button btnRemove;
+        private Button btnEdit;
         private Button btnBook;
         private ToolTip ttAction;
         private Button btnRate;

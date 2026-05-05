@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Reflection;
@@ -92,6 +92,20 @@ namespace UI_Tier
 
             // "N0" giúp tự động thêm dấu chấm phân cách hàng nghìn (VD: 500.000)
             return price.Value.ToString("N0") + " đ";
+        }
+        public static void DrawControlBorder(object sender, PaintEventArgs e, int radius, Color borderColor, int borderSize)
+        {
+            Control ctrl = (Control)sender;
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            Rectangle rect = new Rectangle(0, 0, ctrl.Width - 1, ctrl.Height - 1);
+            using (GraphicsPath path = GetRoundedPath(rect, radius))
+            {
+                using (Pen pen = new Pen(borderColor, borderSize))
+                {
+                    pen.Alignment = PenAlignment.Inset;
+                    e.Graphics.DrawPath(pen, path);
+                }
+            }
         }
     }
 }

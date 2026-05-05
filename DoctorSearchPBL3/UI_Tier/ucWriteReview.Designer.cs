@@ -18,10 +18,6 @@ namespace UI_Tier
             panelHeader = new Panel();
             btnClose = new Button();
             lblTitle = new Label();
-            panelDoctor = new Panel();
-            lblDept = new Label();
-            lblDocName = new Label();
-            picDoc = new PictureBox();
             label1 = new Label();
             flpStars = new FlowLayoutPanel();
             lblStar1 = new Label();
@@ -37,11 +33,15 @@ namespace UI_Tier
             lblTip = new Label();
             btnSubmit = new Button();
             btnCancel = new Button();
+            pnlDoctorInfo = new Panel();
+            pictureBox1 = new PictureBox();
+            lblDocDept = new Label();
+            label3 = new Label();
             panelHeader.SuspendLayout();
-            panelDoctor.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)picDoc).BeginInit();
             flpStars.SuspendLayout();
             panelTip.SuspendLayout();
+            pnlDoctorInfo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // panelHeader
@@ -76,49 +76,9 @@ namespace UI_Tier
             lblTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             lblTitle.Location = new Point(30, 20);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(295, 51);
+            lblTitle.Size = new Size(291, 51);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Đánh giá bác sĩ";
-            // 
-            // panelDoctor
-            // 
-            panelDoctor.BackColor = Color.FromArgb(248, 250, 252);
-            panelDoctor.Controls.Add(lblDept);
-            panelDoctor.Controls.Add(lblDocName);
-            panelDoctor.Controls.Add(picDoc);
-            panelDoctor.Location = new Point(40, 100);
-            panelDoctor.Name = "panelDoctor";
-            panelDoctor.Size = new Size(720, 140);
-            panelDoctor.TabIndex = 1;
-            // 
-            // lblDept
-            // 
-            lblDept.AutoSize = true;
-            lblDept.ForeColor = Color.DodgerBlue;
-            lblDept.Location = new Point(140, 80);
-            lblDept.Name = "lblDept";
-            lblDept.Size = new Size(116, 32);
-            lblDept.TabIndex = 2;
-            lblDept.Text = "Tim mạch";
-            // 
-            // lblDocName
-            // 
-            lblDocName.AutoSize = true;
-            lblDocName.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
-            lblDocName.Location = new Point(140, 30);
-            lblDocName.Name = "lblDocName";
-            lblDocName.Size = new Size(286, 41);
-            lblDocName.TabIndex = 1;
-            lblDocName.Text = "BS. Nguyễn Văn An";
-            // 
-            // picDoc
-            // 
-            picDoc.Location = new Point(20, 20);
-            picDoc.Name = "picDoc";
-            picDoc.Size = new Size(100, 100);
-            picDoc.SizeMode = PictureBoxSizeMode.Zoom;
-            picDoc.TabIndex = 0;
-            picDoc.TabStop = false;
             // 
             // label1
             // 
@@ -126,7 +86,7 @@ namespace UI_Tier
             label1.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
             label1.Location = new Point(40, 260);
             label1.Name = "label1";
-            label1.Size = new Size(215, 37);
+            label1.Size = new Size(236, 37);
             label1.TabIndex = 2;
             label1.Text = "Mức độ hài lòng *";
             // 
@@ -234,7 +194,7 @@ namespace UI_Tier
             label2.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
             label2.Location = new Point(40, 440);
             label2.Name = "label2";
-            label2.Size = new Size(297, 37);
+            label2.Size = new Size(347, 37);
             label2.TabIndex = 5;
             label2.Text = "Nhận xét (không bắt buộc)";
             // 
@@ -258,7 +218,7 @@ namespace UI_Tier
             lblCharCount.ForeColor = Color.Gray;
             lblCharCount.Location = new Point(40, 750);
             lblCharCount.Name = "lblCharCount";
-            lblCharCount.Size = new Size(141, 32);
+            lblCharCount.Size = new Size(148, 32);
             lblCharCount.TabIndex = 7;
             lblCharCount.Text = "0/1000 ký tự";
             // 
@@ -288,7 +248,7 @@ namespace UI_Tier
             btnSubmit.BackColor = Color.FromArgb(37, 99, 235);
             btnSubmit.FlatAppearance.BorderSize = 0;
             btnSubmit.FlatStyle = FlatStyle.Flat;
-            btnSubmit.Font = new Font("Segoe UI Bold", 11F, FontStyle.Bold);
+            btnSubmit.Font = new Font("Microsoft Sans Serif", 11F, FontStyle.Bold);
             btnSubmit.ForeColor = Color.White;
             btnSubmit.Location = new Point(40, 980);
             btnSubmit.Name = "btnSubmit";
@@ -302,7 +262,7 @@ namespace UI_Tier
             btnCancel.BackColor = Color.FromArgb(241, 245, 249);
             btnCancel.FlatAppearance.BorderSize = 0;
             btnCancel.FlatStyle = FlatStyle.Flat;
-            btnCancel.Font = new Font("Segoe UI Bold", 11F, FontStyle.Bold);
+            btnCancel.Font = new Font("Microsoft Sans Serif", 11F, FontStyle.Bold);
             btnCancel.Location = new Point(620, 980);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(140, 60);
@@ -311,11 +271,54 @@ namespace UI_Tier
             btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
             // 
+            // pnlDoctorInfo
+            // 
+            pnlDoctorInfo.BackColor = Color.FromArgb(243, 248, 255);
+            pnlDoctorInfo.Controls.Add(pictureBox1);
+            pnlDoctorInfo.Controls.Add(lblDocDept);
+            pnlDoctorInfo.Controls.Add(label3);
+            pnlDoctorInfo.Location = new Point(30, 86);
+            pnlDoctorInfo.Name = "pnlDoctorInfo";
+            pnlDoctorInfo.Size = new Size(767, 171);
+            pnlDoctorInfo.TabIndex = 16;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Location = new Point(30, 25);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(120, 114);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 3;
+            pictureBox1.TabStop = false;
+            // 
+            // lblDocDept
+            // 
+            lblDocDept.AutoSize = true;
+            lblDocDept.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblDocDept.ForeColor = Color.FromArgb(37, 99, 235);
+            lblDocDept.Location = new Point(180, 75);
+            lblDocDept.Name = "lblDocDept";
+            lblDocDept.Size = new Size(137, 37);
+            lblDocDept.TabIndex = 2;
+            lblDocDept.Text = "Tim mạch";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Microsoft Sans Serif", 13F, FontStyle.Bold);
+            label3.ForeColor = Color.FromArgb(31, 41, 55);
+            label3.Location = new Point(180, 25);
+            label3.Name = "label3";
+            label3.Size = new Size(339, 39);
+            label3.TabIndex = 1;
+            label3.Text = "BS. Nguyễn Văn An";
+            // 
             // ucWriteReview
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
+            Controls.Add(pnlDoctorInfo);
             Controls.Add(btnCancel);
             Controls.Add(btnSubmit);
             Controls.Add(panelTip);
@@ -325,18 +328,17 @@ namespace UI_Tier
             Controls.Add(lblRatingText);
             Controls.Add(flpStars);
             Controls.Add(label1);
-            Controls.Add(panelDoctor);
             Controls.Add(panelHeader);
             Name = "ucWriteReview";
             Size = new Size(800, 1100);
             Load += ucWriteReview_Load;
             panelHeader.ResumeLayout(false);
             panelHeader.PerformLayout();
-            panelDoctor.ResumeLayout(false);
-            panelDoctor.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)picDoc).EndInit();
             flpStars.ResumeLayout(false);
             panelTip.ResumeLayout(false);
+            pnlDoctorInfo.ResumeLayout(false);
+            pnlDoctorInfo.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -344,10 +346,6 @@ namespace UI_Tier
         private Panel panelHeader;
         private Label lblTitle;
         private Button btnClose;
-        private Panel panelDoctor;
-        private PictureBox picDoc;
-        private Label lblDocName;
-        private Label lblDept;
         private Label label1;
         private FlowLayoutPanel flpStars;
         private Label lblStar1;
@@ -357,11 +355,15 @@ namespace UI_Tier
         private Label lblStar5;
         private Label lblRatingText;
         private Label label2;
-        private RichTextBox txtComment;
         private Label lblCharCount;
         private Panel panelTip;
         private Label lblTip;
         private Button btnSubmit;
         private Button btnCancel;
+        private Panel pnlDoctorInfo;
+        private Label lblDocDept;
+        private Label label3;
+        private PictureBox pictureBox1;
+        public RichTextBox txtComment;
     }
 }

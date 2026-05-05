@@ -1,4 +1,4 @@
-﻿using BUS_Tier;
+using BUS_Tier;
 using DTO_Tier;
 using System;
 using System.Collections.Generic;
@@ -16,9 +16,17 @@ namespace UI_Tier
         private int _appointmentId; // Lưu ID để dùng khi bấm nút
         private int _timeslotId; // Lưu ID để dùng khi bấm nút
 
-        // Khai báo delegate để load lại danh sách sau khi update thành công
         public delegate void OnActionSuccess();
         public OnActionSuccess RefreshData;
+
+        public event EventHandler AppointmentDeleted;
+        public event EventHandler<AppointmentsDTO> AppointmentEdited;
+
+        private AppointmentsDTO _currentAppData;
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowDoctorInfo { get; set; } = true;
 
         // Enum để xác định chế độ hiển thị của card, giúp tái sử dụng cho nhiều mục đích khác nhau
         public enum AppCardMode
@@ -76,23 +84,72 @@ namespace UI_Tier
             {
                 btn.Visible = false;
             }
-            btnAccept.Visible = (mode == AppCardMode.DoctorView && status == "Pending");
-            btnCancel.Visible = (mode == AppCardMode.DoctorView && status == "Pending");
-            //btnRemove.Visible = (mode == AppCardMode.DoctorView && status == "Open"); // tạm k cho hiện vì chỉ admin ms đổi đc
-            btnBook.Visible = (mode == AppCardMode.DoctorSchedule && status == "Open");
-            btnRate.Visible = (mode == AppCardMode.HistoryView && status == "Completed") || (mode == AppCardMode.DoctorView && status == "Completed");
-            btnViewRecord.Visible = (mode == AppCardMode.HistoryView && status == "Completed") || (mode == AppCardMode.DoctorView && status == "Confirmed");
+            // 2. Logic cho Bệnh nhân (PatientView / HistoryView)
+            if (mode == AppCardMode.PatientView || mode == AppCardMode.HistoryView)
+            {
+                if (status == "Pending")
+                {
+                    btnEdit.Visible = true;
+                    btnRemove.Visible = true;
+                }
+                else if (status == "Confirmed")
+                {
+                    btnEdit.Visible = false;
+                    btnRemove.Visible = false;
+                    
+                    // Cho phép xem bệnh án nếu đã duyệt
+                    // btnViewRecord.Visible = true;
+                }
+                else if (status == "Completed" || status == "Cancelled")
+                {
+                    btnEdit.Visible = false;
+                    btnRemove.Visible = true; // Cho phép xóa khỏi danh sách hiển thị
+                    
+                    if (status == "Completed")
+                    {
+                        btnViewRecord.Visible = true;
+                    }
+                }
+            }
+
+            // 3. Logic cho Bác sĩ (DoctorView)
+            if (mode == AppCardMode.DoctorView)
+            {
+                btnAccept.Visible = (status == "Pending");
+                btnCancel.Visible = (status == "Pending");
+                btnRate.Visible = (status == "Completed");
+                btnViewRecord.Visible = (status == "Completed" || status == "Confirmed");
+            }
+            
+            // 4. Logic cho Đặt lịch (DoctorSchedule)
+            if (mode == AppCardMode.DoctorSchedule)
+            {
+                btnBook.Visible = (status == "Open");
+            }
         }
 
         // Thiết lập dữ liệu cho card dựa trên AppointmentsDTO và chế độ hiển thị
         public void SetupCard(AppointmentsDTO data, AppCardMode mode)
         {
+            _currentAppData = data;
             _appointmentId = data.Id;
 
             // 1. Phân biệt hiển thị Tên
             if (mode == AppCardMode.PatientView || mode == AppCardMode.HistoryView)
             {
-                lblName.Text = "BS. " + (data.Doctor?.User?.FullName ?? "N/A");
+                string position = data.Doctor?.Position ?? "BS.";
+                string fullName = data.Doctor?.User?.FullName ?? "N/A";
+                
+                // Tránh lặp "BS. BS."
+                if (!string.IsNullOrEmpty(position) && fullName.StartsWith(position, StringComparison.OrdinalIgnoreCase))
+                {
+                    lblName.Text = fullName;
+                }
+                else
+                {
+                    lblName.Text = $"{position} {fullName}".Trim();
+                }
+
                 lblPhoneNumber.Text = data.Doctor?.User?.PhoneNumber ?? "N/A";
             }
             else
@@ -122,6 +179,22 @@ namespace UI_Tier
 
             // 4. PHÂN CHIA NÚT BẤM (QUAN TRỌNG NHẤT)
             SetupButtons(mode, data.Status);
+
+            // 5. Ẩn bớt thông tin dư thừa dựa trên cấu hình (Thường dùng trong hồ sơ bác sĩ)
+            if (!ShowDoctorInfo)
+            {
+                lblName.Visible = false;
+                lblPhoneNumber.Visible = false;
+                label2.Visible = false;
+                lblSymptoms.Visible = false;
+            }
+            else
+            {
+                lblName.Visible = true;
+                lblPhoneNumber.Visible = true;
+                label2.Visible = (data.Status != "Open");
+                lblSymptoms.Visible = (data.Status != "Open");
+            }
         }
 
         // Thiết lập dữ liệu cho card dựa trên TimeSlotsDTO và chế độ hiển thị (Dành cho DoctorSchedule)
@@ -146,6 +219,7 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(btnAccept, 40);
             UIHelper.ApplyRoundedRegion(btnCancel, 40);
             UIHelper.ApplyRoundedRegion(btnRemove, 40);
+            UIHelper.ApplyRoundedRegion(btnEdit, 40);
             UIHelper.ApplyRoundedRegion(btnBook, 40);
             UIHelper.ApplyRoundedRegion(btnRate, 40);
 
@@ -157,13 +231,6 @@ namespace UI_Tier
 
         private void btnAccept_Click(object sender, EventArgs e)
         {
-            // SỬA TẠI ĐÂY: So sánh đúng với chữ đang hiển thị trên giao diện
-            if (btnStatus.Text != "Chờ duyệt")
-            {
-                MessageBox.Show("Lịch hẹn này đã được xử lý!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                return;
-            }
-
             if (MessageBox.Show("Chấp nhận lịch này?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 AppointmentBUS bus = new AppointmentBUS();
@@ -185,13 +252,6 @@ namespace UI_Tier
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            // SỬA TẠI ĐÂY: So sánh với "Chờ duyệt"
-            if (btnStatus.Text != "Chờ duyệt")
-            {
-                MessageBox.Show("Lịch hẹn này đã được xử lý!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                return;
-            }
-
             if (MessageBox.Show("Từ chối lịch hẹn này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 AppointmentBUS bus = new AppointmentBUS();
@@ -207,6 +267,32 @@ namespace UI_Tier
                     MessageBox.Show("Đã hủy lịch hẹn thành công!");
                     RefreshData?.Invoke();
                 }
+            }
+        }
+
+        private void btnRemove_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Bạn có chắc chắn muốn hủy lịch hẹn này không?", "Xác nhận hủy", 
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                AppointmentBUS bus = new AppointmentBUS();
+                if (bus.DeleteAppointment(_appointmentId))
+                {
+                    MessageBox.Show("Đã hủy lịch hẹn thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    AppointmentDeleted?.Invoke(this, EventArgs.Empty);
+                }
+                else
+                {
+                    MessageBox.Show("Hủy lịch hẹn thất bại. Vui lòng thử lại sau.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            if (_currentAppData != null)
+            {
+                AppointmentEdited?.Invoke(this, _currentAppData);
             }
         }
     }

@@ -42,27 +42,31 @@ namespace UI_Tier
         {
             // Bo góc
             UIHelper.ApplyRoundedRegion(this, 20);
-            UIHelper.ApplyRoundedRegion(panelDoctor, 15);
+            this.BackColor = Color.FromArgb(252, 252, 255); // Màu xanh/xám cực nhạt
+            this.Paint += (s, ev) => UIHelper.uc_Paint(s, ev, 20, Color.FromArgb(226, 232, 240), 2); // Viền xám nhạt
+
             UIHelper.ApplyRoundedRegion(txtComment, 10);
             UIHelper.ApplyRoundedRegion(panelTip, 10);
             UIHelper.ApplyRoundedRegion(btnSubmit, 10);
             UIHelper.ApplyRoundedRegion(btnCancel, 10);
-            UIHelper.ApplyRoundedRegion(picDoc, picDoc.Width / 2);
+
+            UIHelper.ApplyRoundedRegion(pnlDoctorInfo, 15);
+            UIHelper.ApplyRoundedRegion(pictureBox1, pictureBox1.Width / 2);
 
             // Đổ dữ liệu bác sĩ
             if (_doctor != null)
             {
-                lblDocName.Text = (_doctor.Position + " " + _doctor.User?.FullName).Trim();
-                lblDept.Text    = _doctor.Department?.DepartmentName ?? "Chuyên khoa";
+                label3.Text = (_doctor.Position + " " + _doctor.User?.FullName).Trim();
+                lblDocDept.Text = _doctor.Department?.DepartmentName ?? "Chuyên khoa";
 
-                string fileName  = string.IsNullOrWhiteSpace(_doctor.User?.Picture) ? "default.jpg" : _doctor.User.Picture.Trim();
+                string fileName = string.IsNullOrWhiteSpace(_doctor.User?.Picture) ? "default.jpg" : _doctor.User.Picture.Trim();
                 string imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources_Images", fileName);
                 if (File.Exists(imagePath))
                 {
                     try
                     {
                         using (FileStream fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
-                            picDoc.Image = new Bitmap(fs);
+                            pictureBox1.Image = new Bitmap(fs);
                     }
                     catch { }
                 }

@@ -1,0 +1,519 @@
+namespace UI_Tier
+{
+    partial class ucBookingDialog
+    {
+        private System.ComponentModel.IContainer components = null;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        private void InitializeComponent()
+        {
+            pnlHeader = new Panel();
+            lblTitle = new Label();
+            lblSubTitle = new Label();
+            btnClose = new Button();
+            picIcon = new PictureBox();
+            pnlDoctorInfo = new Panel();
+            lblDocDept = new Label();
+            lblDocName = new Label();
+            picDocAvatar = new PictureBox();
+            lblDateTitle = new Label();
+            lblDateIcon = new Label();
+            dtpDate = new DateTimePicker();
+            lblTimeTitle = new Label();
+            flpTimeSlots = new FlowLayoutPanel();
+            pnlLegend = new Panel();
+            lblLegendSelected = new Label();
+            picLegendSelected = new PictureBox();
+            lblLegendAvailable = new Label();
+            picLegendAvailable = new PictureBox();
+            lblLegendBooked = new Label();
+            picLegendBooked = new PictureBox();
+            lblReasonTitle = new Label();
+            lblReasonIcon = new Label();
+            txtReason = new RichTextBox();
+            lblCharCount = new Label();
+            pnlNotice = new Panel();
+            lblNoticeText = new Label();
+            lblNoticeTitle = new Label();
+            picNoticeIcon = new PictureBox();
+            btnConfirm = new Button();
+            btnCancel = new Button();
+            label1 = new Label();
+            label2 = new Label();
+            label3 = new Label();
+            pnlHeader.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picIcon).BeginInit();
+            pnlDoctorInfo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picDocAvatar).BeginInit();
+            pnlLegend.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picLegendSelected).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)picLegendAvailable).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)picLegendBooked).BeginInit();
+            pnlNotice.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picNoticeIcon).BeginInit();
+            SuspendLayout();
+            // 
+            // pnlHeader
+            // 
+            pnlHeader.BackColor = Color.FromArgb(37, 99, 235);
+            pnlHeader.Controls.Add(lblTitle);
+            pnlHeader.Controls.Add(lblSubTitle);
+            pnlHeader.Controls.Add(btnClose);
+            pnlHeader.Controls.Add(picIcon);
+            pnlHeader.Dock = DockStyle.Top;
+            pnlHeader.Location = new Point(0, 0);
+            pnlHeader.Name = "pnlHeader";
+            pnlHeader.Size = new Size(950, 150);
+            pnlHeader.TabIndex = 0;
+            pnlHeader.MouseDown += panelHeader_MouseDown;
+            pnlHeader.MouseMove += panelHeader_MouseMove;
+            // 
+            // lblTitle
+            // 
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            lblTitle.ForeColor = Color.White;
+            lblTitle.Location = new Point(140, 35);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(340, 65);
+            lblTitle.TabIndex = 1;
+            lblTitle.Text = "Đặt lịch khám";
+            // 
+            // lblSubTitle
+            // 
+            lblSubTitle.AutoSize = true;
+            lblSubTitle.Font = new Font("Segoe UI", 10F);
+            lblSubTitle.ForeColor = Color.FromArgb(219, 234, 254);
+            lblSubTitle.Location = new Point(142, 95);
+            lblSubTitle.Name = "lblSubTitle";
+            lblSubTitle.Size = new Size(395, 37);
+            lblSubTitle.TabIndex = 2;
+            lblSubTitle.Text = "Chọn thời gian phù hợp với bạn";
+            // 
+            // btnClose
+            // 
+            btnClose.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnClose.Cursor = Cursors.Hand;
+            btnClose.FlatAppearance.BorderSize = 0;
+            btnClose.FlatStyle = FlatStyle.Flat;
+            btnClose.Font = new Font("Segoe MDL2 Assets", 14F);
+            btnClose.ForeColor = Color.White;
+            btnClose.Location = new Point(870, 20);
+            btnClose.Name = "btnClose";
+            btnClose.Size = new Size(60, 60);
+            btnClose.TabIndex = 0;
+            btnClose.Text = "";
+            btnClose.UseVisualStyleBackColor = true;
+            btnClose.Click += btnCancel_Click;
+            // 
+            // picIcon
+            // 
+            picIcon.BackColor = Color.White;
+            picIcon.Location = new Point(40, 35);
+            picIcon.Name = "picIcon";
+            picIcon.Size = new Size(80, 80);
+            picIcon.TabIndex = 3;
+            picIcon.TabStop = false;
+            // 
+            // pnlDoctorInfo
+            // 
+            pnlDoctorInfo.BackColor = Color.FromArgb(243, 248, 255);
+            pnlDoctorInfo.Controls.Add(lblDocDept);
+            pnlDoctorInfo.Controls.Add(lblDocName);
+            pnlDoctorInfo.Controls.Add(picDocAvatar);
+            pnlDoctorInfo.Location = new Point(40, 180);
+            pnlDoctorInfo.Name = "pnlDoctorInfo";
+            pnlDoctorInfo.Size = new Size(870, 180);
+            pnlDoctorInfo.TabIndex = 15;
+            // 
+            // lblDocDept
+            // 
+            lblDocDept.AutoSize = true;
+            lblDocDept.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblDocDept.ForeColor = Color.FromArgb(37, 99, 235);
+            lblDocDept.Location = new Point(180, 75);
+            lblDocDept.Name = "lblDocDept";
+            lblDocDept.Size = new Size(137, 37);
+            lblDocDept.TabIndex = 2;
+            lblDocDept.Text = "Tim mạch";
+            // 
+            // lblDocName
+            // 
+            lblDocName.AutoSize = true;
+            lblDocName.Font = new Font("Microsoft Sans Serif", 13F, FontStyle.Bold);
+            lblDocName.ForeColor = Color.FromArgb(31, 41, 55);
+            lblDocName.Location = new Point(180, 25);
+            lblDocName.Name = "lblDocName";
+            lblDocName.Size = new Size(339, 39);
+            lblDocName.TabIndex = 1;
+            lblDocName.Text = "BS. Nguyễn Văn An";
+            // 
+            // picDocAvatar
+            // 
+            picDocAvatar.Location = new Point(30, 25);
+            picDocAvatar.Name = "picDocAvatar";
+            picDocAvatar.Size = new Size(130, 130);
+            picDocAvatar.SizeMode = PictureBoxSizeMode.StretchImage;
+            picDocAvatar.TabIndex = 0;
+            picDocAvatar.TabStop = false;
+            // 
+            // lblDateTitle
+            // 
+            lblDateTitle.AutoSize = true;
+            lblDateTitle.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            lblDateTitle.ForeColor = Color.FromArgb(31, 41, 55);
+            lblDateTitle.Location = new Point(100, 390);
+            lblDateTitle.Name = "lblDateTitle";
+            lblDateTitle.Size = new Size(270, 41);
+            lblDateTitle.TabIndex = 1;
+            lblDateTitle.Text = "Chọn ngày khám *";
+            // 
+            // lblDateIcon
+            // 
+            lblDateIcon.AutoSize = true;
+            lblDateIcon.Font = new Font("Segoe MDL2 Assets", 12F);
+            lblDateIcon.ForeColor = Color.FromArgb(37, 99, 235);
+            lblDateIcon.Location = new Point(40, 395);
+            lblDateIcon.Name = "lblDateIcon";
+            lblDateIcon.Size = new Size(46, 32);
+            lblDateIcon.TabIndex = 12;
+            lblDateIcon.Text = "";
+            // 
+            // dtpDate
+            // 
+            dtpDate.CustomFormat = "dd/MM/yyyy";
+            dtpDate.Font = new Font("Segoe UI", 12F);
+            dtpDate.Format = DateTimePickerFormat.Custom;
+            dtpDate.Location = new Point(40, 445);
+            dtpDate.Name = "dtpDate";
+            dtpDate.Size = new Size(870, 50);
+            dtpDate.TabIndex = 2;
+            dtpDate.ValueChanged += dtpDate_ValueChanged;
+            // 
+            // lblTimeTitle
+            // 
+            lblTimeTitle.AutoSize = true;
+            lblTimeTitle.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            lblTimeTitle.ForeColor = Color.FromArgb(31, 41, 55);
+            lblTimeTitle.Location = new Point(100, 530);
+            lblTimeTitle.Name = "lblTimeTitle";
+            lblTimeTitle.Size = new Size(247, 41);
+            lblTimeTitle.TabIndex = 3;
+            lblTimeTitle.Text = "Chọn giờ khám *";
+            // 
+            // flpTimeSlots
+            // 
+            flpTimeSlots.ForeColor = Color.Gray;
+            flpTimeSlots.Location = new Point(40, 585);
+            flpTimeSlots.Name = "flpTimeSlots";
+            flpTimeSlots.Size = new Size(870, 300);
+            flpTimeSlots.TabIndex = 4;
+            // 
+            // pnlLegend
+            // 
+            pnlLegend.Controls.Add(lblLegendSelected);
+            pnlLegend.Controls.Add(picLegendSelected);
+            pnlLegend.Controls.Add(lblLegendAvailable);
+            pnlLegend.Controls.Add(picLegendAvailable);
+            pnlLegend.Controls.Add(lblLegendBooked);
+            pnlLegend.Controls.Add(picLegendBooked);
+            pnlLegend.Location = new Point(40, 895);
+            pnlLegend.Name = "pnlLegend";
+            pnlLegend.Size = new Size(870, 60);
+            pnlLegend.TabIndex = 5;
+            // 
+            // lblLegendSelected
+            // 
+            lblLegendSelected.AutoSize = true;
+            lblLegendSelected.Font = new Font("Segoe UI", 9F);
+            lblLegendSelected.Location = new Point(40, 15);
+            lblLegendSelected.Name = "lblLegendSelected";
+            lblLegendSelected.Size = new Size(103, 32);
+            lblLegendSelected.TabIndex = 1;
+            lblLegendSelected.Text = "Đã chọn";
+            // 
+            // picLegendSelected
+            // 
+            picLegendSelected.BackColor = Color.FromArgb(37, 99, 235);
+            picLegendSelected.Location = new Point(0, 18);
+            picLegendSelected.Name = "picLegendSelected";
+            picLegendSelected.Size = new Size(25, 25);
+            picLegendSelected.TabIndex = 0;
+            picLegendSelected.TabStop = false;
+            // 
+            // lblLegendAvailable
+            // 
+            lblLegendAvailable.AutoSize = true;
+            lblLegendAvailable.Font = new Font("Segoe UI", 9F);
+            lblLegendAvailable.Location = new Point(205, 15);
+            lblLegendAvailable.Name = "lblLegendAvailable";
+            lblLegendAvailable.Size = new Size(122, 32);
+            lblLegendAvailable.TabIndex = 3;
+            lblLegendAvailable.Text = "Còn trống";
+            // 
+            // picLegendAvailable
+            // 
+            picLegendAvailable.BackColor = Color.White;
+            picLegendAvailable.BorderStyle = BorderStyle.FixedSingle;
+            picLegendAvailable.Location = new Point(165, 18);
+            picLegendAvailable.Name = "picLegendAvailable";
+            picLegendAvailable.Size = new Size(25, 25);
+            picLegendAvailable.TabIndex = 2;
+            picLegendAvailable.TabStop = false;
+            // 
+            // lblLegendBooked
+            // 
+            lblLegendBooked.AutoSize = true;
+            lblLegendBooked.Font = new Font("Segoe UI", 9F);
+            lblLegendBooked.Location = new Point(380, 15);
+            lblLegendBooked.Name = "lblLegendBooked";
+            lblLegendBooked.Size = new Size(84, 32);
+            lblLegendBooked.TabIndex = 5;
+            lblLegendBooked.Text = "Đã đặt";
+            // 
+            // picLegendBooked
+            // 
+            picLegendBooked.BackColor = Color.FromArgb(243, 244, 246);
+            picLegendBooked.Location = new Point(340, 18);
+            picLegendBooked.Name = "picLegendBooked";
+            picLegendBooked.Size = new Size(25, 25);
+            picLegendBooked.TabIndex = 4;
+            picLegendBooked.TabStop = false;
+            // 
+            // lblReasonTitle
+            // 
+            lblReasonTitle.AutoSize = true;
+            lblReasonTitle.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            lblReasonTitle.ForeColor = Color.FromArgb(31, 41, 55);
+            lblReasonTitle.Location = new Point(100, 970);
+            lblReasonTitle.Name = "lblReasonTitle";
+            lblReasonTitle.Size = new Size(183, 41);
+            lblReasonTitle.TabIndex = 6;
+            lblReasonTitle.Text = "Lý do khám ";
+            // 
+            // lblReasonIcon
+            // 
+            lblReasonIcon.AutoSize = true;
+            lblReasonIcon.Font = new Font("Segoe MDL2 Assets", 12F);
+            lblReasonIcon.ForeColor = Color.FromArgb(37, 99, 235);
+            lblReasonIcon.Location = new Point(40, 975);
+            lblReasonIcon.Name = "lblReasonIcon";
+            lblReasonIcon.Size = new Size(0, 32);
+            lblReasonIcon.TabIndex = 14;
+            // 
+            // txtReason
+            // 
+            txtReason.BackColor = SystemColors.Window;
+            txtReason.BorderStyle = BorderStyle.None;
+            txtReason.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtReason.ForeColor = Color.Gray;
+            txtReason.Location = new Point(40, 1025);
+            txtReason.Name = "txtReason";
+            txtReason.Size = new Size(870, 150);
+            txtReason.TabIndex = 7;
+            txtReason.Text = "Vui lòng mô tả lý do bạn cần khám bệnh...";
+            txtReason.TextChanged += txtReason_TextChanged;
+            // 
+            // lblCharCount
+            // 
+            lblCharCount.AutoSize = true;
+            lblCharCount.Font = new Font("Segoe UI", 9F);
+            lblCharCount.ForeColor = Color.Gray;
+            lblCharCount.Location = new Point(40, 1185);
+            lblCharCount.Name = "lblCharCount";
+            lblCharCount.Size = new Size(135, 32);
+            lblCharCount.TabIndex = 8;
+            lblCharCount.Text = "0/500 ký tự";
+            // 
+            // pnlNotice
+            // 
+            pnlNotice.BackColor = Color.FromArgb(255, 251, 235);
+            pnlNotice.Controls.Add(lblNoticeText);
+            pnlNotice.Controls.Add(lblNoticeTitle);
+            pnlNotice.Controls.Add(picNoticeIcon);
+            pnlNotice.Location = new Point(40, 1240);
+            pnlNotice.Name = "pnlNotice";
+            pnlNotice.Size = new Size(870, 200);
+            pnlNotice.TabIndex = 9;
+            // 
+            // lblNoticeText
+            // 
+            lblNoticeText.AutoSize = true;
+            lblNoticeText.Font = new Font("Segoe UI", 9.5F);
+            lblNoticeText.ForeColor = Color.FromArgb(146, 64, 14);
+            lblNoticeText.Location = new Point(100, 70);
+            lblNoticeText.Name = "lblNoticeText";
+            lblNoticeText.Size = new Size(562, 108);
+            lblNoticeText.TabIndex = 1;
+            lblNoticeText.Text = "• Vui lòng đến trước giờ hẹn 10-15 phút\r\n• Mang theo CMND/CCCD và thẻ BHYT (nếu có)\r\n• Lịch hẹn cần được bác sĩ xác nhận";
+            // 
+            // lblNoticeTitle
+            // 
+            lblNoticeTitle.AutoSize = true;
+            lblNoticeTitle.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Bold);
+            lblNoticeTitle.ForeColor = Color.FromArgb(146, 64, 14);
+            lblNoticeTitle.Location = new Point(100, 25);
+            lblNoticeTitle.Name = "lblNoticeTitle";
+            lblNoticeTitle.Size = new Size(241, 31);
+            lblNoticeTitle.TabIndex = 0;
+            lblNoticeTitle.Text = "Lưu ý quan trọng:";
+            // 
+            // picNoticeIcon
+            // 
+            picNoticeIcon.Location = new Point(30, 25);
+            picNoticeIcon.Name = "picNoticeIcon";
+            picNoticeIcon.Size = new Size(40, 40);
+            picNoticeIcon.TabIndex = 2;
+            picNoticeIcon.TabStop = false;
+            // 
+            // btnConfirm
+            // 
+            btnConfirm.BackColor = Color.FromArgb(37, 99, 235);
+            btnConfirm.Cursor = Cursors.Hand;
+            btnConfirm.FlatAppearance.BorderSize = 0;
+            btnConfirm.FlatStyle = FlatStyle.Flat;
+            btnConfirm.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            btnConfirm.ForeColor = Color.White;
+            btnConfirm.Location = new Point(40, 1460);
+            btnConfirm.Name = "btnConfirm";
+            btnConfirm.Size = new Size(720, 80);
+            btnConfirm.TabIndex = 10;
+            btnConfirm.Text = "  Xác nhận đặt lịch";
+            btnConfirm.UseVisualStyleBackColor = false;
+            btnConfirm.Click += btnConfirm_Click;
+            // 
+            // btnCancel
+            // 
+            btnCancel.BackColor = Color.FromArgb(243, 244, 246);
+            btnCancel.Cursor = Cursors.Hand;
+            btnCancel.FlatAppearance.BorderSize = 0;
+            btnCancel.FlatStyle = FlatStyle.Flat;
+            btnCancel.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            btnCancel.ForeColor = Color.FromArgb(31, 41, 55);
+            btnCancel.Location = new Point(780, 1460);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Size = new Size(130, 80);
+            btnCancel.TabIndex = 11;
+            btnCancel.Text = "Hủy";
+            btnCancel.UseVisualStyleBackColor = false;
+            btnCancel.Click += btnCancel_Click;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(279, 975);
+            label1.Name = "label1";
+            label1.Size = new Size(197, 32);
+            label1.TabIndex = 16;
+            label1.Text = "(không bắt buộc)";
+            // 
+            // label2
+            // 
+            label2.Font = new Font("Segoe MDL2 Assets", 27F);
+            label2.ForeColor = Color.DimGray;
+            label2.Location = new Point(17, 498);
+            label2.Margin = new Padding(0);
+            label2.Name = "label2";
+            label2.Size = new Size(92, 84);
+            label2.TabIndex = 17;
+            label2.Text = "🕓";
+            // 
+            // label3
+            // 
+            label3.Font = new Font("Segoe MDL2 Assets", 27F);
+            label3.ForeColor = Color.DimGray;
+            label3.Location = new Point(17, 942);
+            label3.Margin = new Padding(0);
+            label3.Name = "label3";
+            label3.Size = new Size(80, 91);
+            label3.TabIndex = 18;
+            label3.Text = "📄";
+            // 
+            // ucBookingDialog
+            // 
+            AutoScaleDimensions = new SizeF(13F, 32F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.White;
+            Controls.Add(label3);
+            Controls.Add(label2);
+            Controls.Add(label1);
+            Controls.Add(pnlDoctorInfo);
+            Controls.Add(lblReasonIcon);
+            Controls.Add(lblDateIcon);
+            Controls.Add(btnCancel);
+            Controls.Add(btnConfirm);
+            Controls.Add(pnlNotice);
+            Controls.Add(lblCharCount);
+            Controls.Add(txtReason);
+            Controls.Add(lblReasonTitle);
+            Controls.Add(pnlLegend);
+            Controls.Add(flpTimeSlots);
+            Controls.Add(lblTimeTitle);
+            Controls.Add(dtpDate);
+            Controls.Add(lblDateTitle);
+            Controls.Add(pnlHeader);
+            Name = "ucBookingDialog";
+            Size = new Size(950, 1560);
+            Load += ucBookingDialog_Load;
+            pnlHeader.ResumeLayout(false);
+            pnlHeader.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)picIcon).EndInit();
+            pnlDoctorInfo.ResumeLayout(false);
+            pnlDoctorInfo.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)picDocAvatar).EndInit();
+            pnlLegend.ResumeLayout(false);
+            pnlLegend.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)picLegendSelected).EndInit();
+            ((System.ComponentModel.ISupportInitialize)picLegendAvailable).EndInit();
+            ((System.ComponentModel.ISupportInitialize)picLegendBooked).EndInit();
+            pnlNotice.ResumeLayout(false);
+            pnlNotice.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)picNoticeIcon).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
+        }
+
+        private Panel pnlHeader;
+        private Label lblTitle;
+        private Label lblSubTitle;
+        private Button btnClose;
+        private PictureBox picIcon;
+        private Panel pnlDoctorInfo;
+        private PictureBox picDocAvatar;
+        private Label lblDocName;
+        private Label lblDocDept;
+        private Label lblDateTitle;
+        private Label lblDateIcon;
+        private DateTimePicker dtpDate;
+        private Label lblTimeTitle;
+        private FlowLayoutPanel flpTimeSlots;
+        private Panel pnlLegend;
+        private Label lblLegendSelected;
+        private PictureBox picLegendSelected;
+        private Label lblLegendAvailable;
+        private PictureBox picLegendAvailable;
+        private Label lblLegendBooked;
+        private PictureBox picLegendBooked;
+        private Label lblReasonTitle;
+        private Label lblReasonIcon;
+        private RichTextBox txtReason;
+        private Label lblCharCount;
+        private Panel pnlNotice;
+        private Label lblNoticeText;
+        private Label lblNoticeTitle;
+        private PictureBox picNoticeIcon;
+        private Button btnConfirm;
+        private Button btnCancel;
+        private Label label1;
+        private Label label2;
+        private Label label3;
+    }
+}

@@ -1,4 +1,4 @@
-﻿using BUS_Tier;
+using BUS_Tier;
 using DTO_Tier;
 using System;
 using System.Collections.Generic;
@@ -63,6 +63,24 @@ namespace UI_Tier
                 ucAppItem card = new ucAppItem();
                 card.SetupCard(ap, ucAppItem.AppCardMode.PatientView);
                 card.Margin = new Padding(20, 10, 20, 10);
+
+                // Thêm handler Xóa/Sửa
+                card.AppointmentDeleted += (s, ev) => InitData();
+                card.AppointmentEdited += (s, appData) => {
+                    // Cần bác sĩ từ data của app
+                    if (appData.Doctor == null) return;
+                    ucBookingDialog editUc = new ucBookingDialog(appData.Doctor);
+                    editUc.SetEditData(appData);
+
+                    editUc.Location = new Point((this.Width - editUc.Width) / 2, (this.Height - editUc.Height) / 2);
+                    editUc.AppointmentBooked += (s2, ev2) => InitData();
+                    editUc.CloseRequested += (s2, ev2) => {
+                        this.Controls.Remove(editUc);
+                        editUc.Dispose();
+                    };
+                    this.Controls.Add(editUc);
+                    editUc.BringToFront();
+                };
 
                 flpAppItem.Controls.Add(card);
             }

@@ -111,6 +111,13 @@ namespace UI_Tier
 
             // 10. Tải danh sách đánh giá
             LoadReviews();
+            
+            // Đăng ký sự kiện nút Đặt lịch ngay
+            btnBook.Click += btnBook_Click;
+            
+            // Đăng ký sự kiện lọc theo thời gian
+            dtpStartTime.ValueChanged += (s, e) => InitData();
+            dtpEndTime.ValueChanged += (s, e) => InitData();
         }
 
         private void ucPatient_DocProfile_Load(object sender, EventArgs e)
@@ -189,27 +196,48 @@ namespace UI_Tier
             uc.BringToFront();
         }
 
-        #region Xử lí flpAppItem, lưu ý cái này chỉ để thử form chứ chưa lọc, muốn lọc data thì code mấy tầng trên
-        private TimeSlotBUS _bus = new TimeSlotBUS();
-        private List<TimeSlotsDTO> _allTimes = new List<TimeSlotsDTO>();
+        private void btnBook_Click(object sender, EventArgs e)
+        {
+            if (_currentDoctor == null) return;
+
+            ucBookingDialog uc = new ucBookingDialog(_currentDoctor);
+            uc.Location = new Point((this.Width - uc.Width) / 2, (this.Height - uc.Height) / 2);
+            
+            uc.AppointmentBooked += (s, ev) => InitData();
+            uc.CloseRequested += (s, ev) => {
+                this.Controls.Remove(uc);
+                uc.Dispose();
+            };
+
+            this.Controls.Add(uc);
+            uc.BringToFront();
+        }
+
+        #region Xử lí flpAppItem
+        private AppointmentBUS _appBus = new AppointmentBUS();
+        private List<AppointmentsDTO> _myAppointments = new List<AppointmentsDTO>();
 
         public void InitData()
         {
             try
             {
-                // Lấy giá trị từ giao diện
+                // 1. Lấy thông tin từ giao diện
                 DateTime fromDate = dateTimePicker3.Value;
                 DateTime toDate = dateTimePicker4.Value;
+                TimeSpan fromTime = dtpStartTime.Value.TimeOfDay;
+                TimeSpan toTime = dtpEndTime.Value.TimeOfDay;
 
-                // Giả sử ông có biến _doctorId từ Form đăng nhập truyền vào
-                _allTimes = _bus.GetFilteredSlotsForPatient(_doctorId, fromDate, toDate); // Nên OrderBy StartTime ở đây nếu BUS chưa làm
-                                                                                          // Sau khi có dữ liệu mới thì vẽ lại giao diện
+                // 2. Lấy ID bệnh nhân đang đăng nhập
+                int currentPatientId = GlobalAccount.GetProfileId();
+
+                // 3. Lấy danh sách lịch hẹn của TÔI với bác sĩ NÀY
+                _myAppointments = _appBus.GetFilteredAppointmentsForPatient(currentPatientId, _doctorId, fromDate, toDate, fromTime, toTime);
+                
                 DisplayPage();
-
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Lỗi InitData: " + ex.Message);
+                MessageBox.Show("Lỗi tải dữ liệu lịch hẹn: " + ex.Message);
             }
         }
 
@@ -227,42 +255,56 @@ namespace UI_Tier
                     control.Dispose();
                 }
 
-                if (_allTimes == null || _allTimes.Count == 0)
+                if (_myAppointments == null || _myAppointments.Count == 0)
                 {
                     Label lblEmpty = new Label();
-                    lblEmpty.Text = "Chưa có lịch hẹn"; // Nội dung bạn muốn hiển thị
+                    lblEmpty.Text = "Bạn chưa có lịch hẹn nào với bác sĩ này";
                     lblEmpty.Font = new Font("Segoe UI", 12, FontStyle.Italic);
                     lblEmpty.ForeColor = Color.Gray;
                     lblEmpty.TextAlign = ContentAlignment.MiddleCenter;
-                    lblEmpty.Size = new Size(flpAppItem.Width - 40, 100); // Kích thước khung thông báo
+                    lblEmpty.Size = new Size(flpAppItem.Width - 40, 100);
 
                     flpAppItem.Controls.Add(lblEmpty);
                     return;
                 }
 
-                // 2. Đổ card
-                foreach (var ts in _allTimes)
+                // 2. Đổ card lịch hẹn
+                foreach (var app in _myAppointments)
                 {
                     ucAppItem card = new ucAppItem();
+                    card.ShowDoctorInfo = false; // Ẩn tên/SĐT bác sĩ vì đang ở trong trang của bác sĩ đó rồi
 
-                    // Mode DoctorSchedule sẽ hiện nút Xóa/Quản lý slot trống
-                    card.SetupCard(ts, ucAppItem.AppCardMode.DoctorSchedule);
+                    // Sử dụng mode PatientView để xem/sửa/xóa lịch của mình
+                    card.SetupCard(app, ucAppItem.AppCardMode.PatientView);
 
-                    card.Margin = new Padding(20, 10, 20, 10);
+                    // Xử lý sự kiện Xóa
+                    card.AppointmentDeleted += (s, ev) => InitData();
 
-                    // Dùng ClientSize.Width cho chuẩn xác vùng chứa
-                    card.Width = flpAppItem.Width - 80;
+                    // Xử lý sự kiện Chỉnh sửa
+                    card.AppointmentEdited += (s, appData) => {
+                        if (_currentDoctor == null) return;
+                        ucBookingDialog editUc = new ucBookingDialog(_currentDoctor);
+                        editUc.SetEditData(appData); // Chuyển sang chế độ Sửa
 
+                        editUc.Location = new Point((this.Width - editUc.Width) / 2, (this.Height - editUc.Height) / 2);
+                        editUc.AppointmentBooked += (s2, ev2) => InitData();
+                        editUc.CloseRequested += (s2, ev2) => {
+                            this.Controls.Remove(editUc);
+                            editUc.Dispose();
+                        };
+                        this.Controls.Add(editUc);
+                        editUc.BringToFront();
+                    };
+
+                    card.Margin = new Padding(10, 5, 10, 5);
+                    card.Width = flpAppItem.Width - 40;
                     card.Visible = true;
                     flpAppItem.Controls.Add(card);
-
-                    // Mẹo: Ép lại Width một lần nữa sau khi Add để đảm bảo nó nhận đúng size của cha
-                    card.Width = flpAppItem.Width - 80;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi hiển thị lịch trình: " + ex.Message);
+                MessageBox.Show("Lỗi hiển thị danh sách lịch hẹn: " + ex.Message);
             }
             finally
             {
@@ -279,6 +321,25 @@ namespace UI_Tier
         private void dateTimePicker4_ValueChanged(object sender, EventArgs e)
         {
             InitData();
+        }
+
+        private void btnBook_Click1(object sender, EventArgs e)
+        {
+            if (_currentDoctor == null) return;
+
+            ucBookingDialog bookUc = new ucBookingDialog(_currentDoctor);
+            bookUc.Location = new Point((this.Width - bookUc.Width) / 2, (this.Height - bookUc.Height) / 2);
+            
+            // Khi đặt lịch xong thì load lại danh sách
+            bookUc.AppointmentBooked += (s2, ev2) => InitData();
+            
+            bookUc.CloseRequested += (s2, ev2) => {
+                this.Controls.Remove(bookUc);
+                bookUc.Dispose();
+            };
+
+            this.Controls.Add(bookUc);
+            bookUc.BringToFront();
         }
 
         private void LoadReviews()

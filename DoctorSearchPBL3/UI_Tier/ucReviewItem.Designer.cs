@@ -104,37 +104,36 @@ namespace UI_Tier
             // 
             // btnEdit
             // 
-            btnEdit.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnEdit.Cursor = Cursors.Hand;
+            btnEdit.AccessibleDescription = "C";
+            btnEdit.Anchor = AnchorStyles.None;
+            btnEdit.BackColor = Color.FromArgb(239, 250, 255);
             btnEdit.FlatAppearance.BorderSize = 0;
-            btnEdit.FlatAppearance.MouseOverBackColor = Color.FromArgb(219, 234, 254);
             btnEdit.FlatStyle = FlatStyle.Flat;
-            btnEdit.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnEdit.Font = new Font("Segoe MDL2 Assets", 20F);
             btnEdit.ForeColor = Color.FromArgb(37, 99, 235);
-            btnEdit.Location = new Point(980, 20);
+            btnEdit.Location = new Point(974, 25);
+            btnEdit.Margin = new Padding(30, 5, 0, 0);
             btnEdit.Name = "btnEdit";
-            btnEdit.Size = new Size(83, 85);
-            btnEdit.TabIndex = 7;
-            btnEdit.Text = "✏";
+            btnEdit.Size = new Size(85, 85);
+            btnEdit.TabIndex = 21;
+            btnEdit.Text = "";
             btnEdit.UseVisualStyleBackColor = false;
-            btnEdit.Visible = false;
             // 
             // btnDelete
             // 
             btnDelete.AccessibleDescription = "C";
             btnDelete.Anchor = AnchorStyles.None;
-            btnDelete.BackColor = Color.LightGoldenrodYellow;
+            btnDelete.BackColor = Color.FromArgb(255, 252, 235);
             btnDelete.FlatAppearance.BorderSize = 0;
             btnDelete.FlatStyle = FlatStyle.Flat;
-            btnDelete.Font = new Font("Segoe MDL2 Assets", 18F);
-            btnDelete.ForeColor = Color.Goldenrod;
-            btnDelete.Location = new Point(1092, 25);
-            btnDelete.Margin = new Padding(70, 5, 0, 0);
+            btnDelete.Font = new Font("Segoe MDL2 Assets", 20F);
+            btnDelete.ForeColor = Color.FromArgb(217, 119, 6);
+            btnDelete.Location = new Point(1089, 25);
+            btnDelete.Margin = new Padding(30, 5, 0, 0);
             btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(80, 80);
-            btnDelete.TabIndex = 17;
+            btnDelete.Size = new Size(85, 85);
+            btnDelete.TabIndex = 22;
             btnDelete.Text = "";
-            btnDelete.TextAlign = ContentAlignment.MiddleRight;
             btnDelete.UseVisualStyleBackColor = false;
             // 
             // ucReviewItem
@@ -165,7 +164,7 @@ namespace UI_Tier
         private Label lblComment;
         private Panel panelLine;
         private Label lblYourReview;
-        private Button btnEdit;
         private Button btnDelete;
+        private Button btnEdit;
     }
 }

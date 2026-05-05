@@ -1,4 +1,4 @@
-﻿using DAL_Tier;
+using DAL_Tier;
 using DTO_Tier;
 using System;
 using System.Collections.Generic;
@@ -242,6 +242,12 @@ namespace BUS_Tier
             return list.OrderByDescending(s => s.WorkDate)
                        .ThenBy(s => s.StartTime)
                        .ToList();
+        }
+
+        public List<TimeSlotsDTO> GetSlotsByDoctorAndDate(int doctorId, DateTime date)
+        {
+            if (doctorId <= 0) return new List<TimeSlotsDTO>();
+            return _dal.GetSlotsByDoctorAndDate(doctorId, date);
         }
     }
 }
