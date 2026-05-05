@@ -21,12 +21,15 @@ namespace UI_Tier
             lblDate = new Label();
             lblComment = new Label();
             panelLine = new Panel();
+            lblYourReview = new Label();
+            btnEdit = new Button();
+            btnDelete = new Button();
             SuspendLayout();
             // 
             // lblAvatar
             // 
             lblAvatar.BackColor = Color.LightGray;
-            lblAvatar.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            lblAvatar.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblAvatar.ForeColor = Color.DimGray;
             lblAvatar.Location = new Point(20, 20);
             lblAvatar.Name = "lblAvatar";
@@ -38,59 +41,110 @@ namespace UI_Tier
             // lblName
             // 
             lblName.AutoSize = true;
-            lblName.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblName.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblName.Location = new Point(100, 20);
             lblName.Name = "lblName";
-            lblName.Size = new Size(230, 37);
+            lblName.Size = new Size(294, 50);
             lblName.TabIndex = 1;
             lblName.Text = "Nguyễn Thị Lan";
             // 
             // lblRating
             // 
             lblRating.AutoSize = true;
-            lblRating.Font = new Font("Segoe UI", 10F);
+            lblRating.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblRating.ForeColor = Color.Orange;
-            lblRating.Location = new Point(100, 60);
+            lblRating.Location = new Point(100, 70);
             lblRating.Name = "lblRating";
-            lblRating.Size = new Size(118, 37);
+            lblRating.Size = new Size(155, 45);
             lblRating.TabIndex = 2;
             lblRating.Text = "★★★★★";
             // 
             // lblDate
             // 
             lblDate.AutoSize = true;
-            lblDate.Font = new Font("Segoe UI", 9F);
+            lblDate.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblDate.ForeColor = Color.Gray;
-            lblDate.Location = new Point(230, 63);
+            lblDate.Location = new Point(282, 70);
             lblDate.Name = "lblDate";
-            lblDate.Size = new Size(135, 32);
+            lblDate.Size = new Size(182, 45);
             lblDate.TabIndex = 3;
             lblDate.Text = "2026-03-20";
             // 
             // lblComment
             // 
-            lblComment.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            lblComment.Font = new Font("Segoe UI", 10F);
-            lblComment.Location = new Point(100, 110);
+            lblComment.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblComment.Location = new Point(100, 128);
             lblComment.Name = "lblComment";
-            lblComment.Size = new Size(850, 80);
+            lblComment.Size = new Size(900, 100);
             lblComment.TabIndex = 4;
             lblComment.Text = "Bác sĩ rất tận tâm và chuyên nghiệp. Giải thích rõ ràng về tình trạng bệnh.";
             // 
             // panelLine
             // 
-            panelLine.BackColor = Color.FromArgb(240, 240, 240);
+            panelLine.BackColor = Color.FromArgb(200, 200, 200);
             panelLine.Dock = DockStyle.Bottom;
-            panelLine.Location = new Point(0, 208);
+            panelLine.Location = new Point(0, 251);
             panelLine.Name = "panelLine";
-            panelLine.Size = new Size(1000, 2);
+            panelLine.Size = new Size(1195, 2);
             panelLine.TabIndex = 5;
+            // 
+            // lblYourReview
+            // 
+            lblYourReview.AutoSize = true;
+            lblYourReview.BackColor = Color.FromArgb(220, 235, 255);
+            lblYourReview.Font = new Font("Segoe UI Semibold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblYourReview.ForeColor = Color.FromArgb(20, 100, 255);
+            lblYourReview.Location = new Point(410, 25);
+            lblYourReview.Name = "lblYourReview";
+            lblYourReview.Padding = new Padding(8, 4, 8, 4);
+            lblYourReview.Size = new Size(245, 45);
+            lblYourReview.TabIndex = 6;
+            lblYourReview.Text = "Đánh giá của bạn";
+            lblYourReview.Visible = false;
+            // 
+            // btnEdit
+            // 
+            btnEdit.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnEdit.Cursor = Cursors.Hand;
+            btnEdit.FlatAppearance.BorderSize = 0;
+            btnEdit.FlatAppearance.MouseOverBackColor = Color.FromArgb(219, 234, 254);
+            btnEdit.FlatStyle = FlatStyle.Flat;
+            btnEdit.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnEdit.ForeColor = Color.FromArgb(37, 99, 235);
+            btnEdit.Location = new Point(980, 20);
+            btnEdit.Name = "btnEdit";
+            btnEdit.Size = new Size(83, 85);
+            btnEdit.TabIndex = 7;
+            btnEdit.Text = "✏";
+            btnEdit.UseVisualStyleBackColor = false;
+            btnEdit.Visible = false;
+            // 
+            // btnDelete
+            // 
+            btnDelete.AccessibleDescription = "C";
+            btnDelete.Anchor = AnchorStyles.None;
+            btnDelete.BackColor = Color.LightGoldenrodYellow;
+            btnDelete.FlatAppearance.BorderSize = 0;
+            btnDelete.FlatStyle = FlatStyle.Flat;
+            btnDelete.Font = new Font("Segoe MDL2 Assets", 18F);
+            btnDelete.ForeColor = Color.Goldenrod;
+            btnDelete.Location = new Point(1092, 25);
+            btnDelete.Margin = new Padding(70, 5, 0, 0);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(80, 80);
+            btnDelete.TabIndex = 17;
+            btnDelete.Text = "";
+            btnDelete.TextAlign = ContentAlignment.MiddleRight;
+            btnDelete.UseVisualStyleBackColor = false;
             // 
             // ucReviewItem
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
+            Controls.Add(btnDelete);
+            Controls.Add(btnEdit);
+            Controls.Add(lblYourReview);
             Controls.Add(panelLine);
             Controls.Add(lblComment);
             Controls.Add(lblDate);
@@ -98,7 +152,7 @@ namespace UI_Tier
             Controls.Add(lblName);
             Controls.Add(lblAvatar);
             Name = "ucReviewItem";
-            Size = new Size(1000, 210);
+            Size = new Size(1195, 253);
             Load += ucReviewItem_Load;
             ResumeLayout(false);
             PerformLayout();
@@ -110,5 +164,8 @@ namespace UI_Tier
         private Label lblDate;
         private Label lblComment;
         private Panel panelLine;
+        private Label lblYourReview;
+        private Button btnEdit;
+        private Button btnDelete;
     }
 }

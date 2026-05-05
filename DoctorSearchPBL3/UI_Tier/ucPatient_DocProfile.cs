@@ -25,9 +25,11 @@ namespace UI_Tier
         // Hàm này dùng để "đổ" dữ liệu từ đối tượng Doctor vào các Label
 
         private int _doctorId; // Lưu ID bác sĩ để dùng cho việc lấy lịch trình sau này
+        private DoctorDTO _currentDoctor; // Lưu để truyền cho Form đánh giá
 
         public void SetDoctorData(DoctorDTO doctor)
         {
+            _currentDoctor = doctor;
             _doctorId = doctor.Id; // Lưu ID bác sĩ để sử dụng sau này
 
             /// 1. Tên Bác sĩ: Kết hợp Chức danh + Họ tên
@@ -39,7 +41,7 @@ namespace UI_Tier
                 ? fullName
                 : $"{position} {fullName}";
 
-            //2. Nơi làm việc (Tên phòng khám hoặc bệnh viện)
+            //2. Số điện thoại
             lblPhone.Text = doctor.User?.PhoneNumber ?? "Chưa cập nhật";
 
             //3. Chuyên khoa (Tên chuyên khoa hoặc "Chưa cập nhật" nếu không có)
@@ -82,6 +84,9 @@ namespace UI_Tier
             //8.Kinh nghiệm
             lblEx.Text = $"{doctor.ExperienceYears ?? 0} năm kinh nghiệm";
 
+            //Biography
+            lblBio.Text = doctor.Biography ?? "Chưa cập nhật";
+
             // 9. Hình ảnh
             // --- XỬ LÝ HÌNH ẢNH ---
             // Kiểm tra null hoặc rỗng để dùng ảnh mặc định
@@ -111,6 +116,7 @@ namespace UI_Tier
         private void ucPatient_DocProfile_Load(object sender, EventArgs e)
         {
             UIHelper.ApplyRoundedRegion(picDoctor, 175); // Bo tròn ảnh bác sĩ
+            UIHelper.ApplyRoundedRegion(btnWriteReview, 8); // Bo tròn nhẹ nút đánh giá
 
             flpAppItem.Dock = DockStyle.None; // Tạm bỏ dock
             //flpAppItem.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
@@ -132,6 +138,15 @@ namespace UI_Tier
                         card.Width = flpAppItem.Width - 80;
                     }
                 }
+
+                // Cập nhật độ rộng cho các đánh giá khi resize
+                foreach (Control ctrl in flpReview.Controls)
+                {
+                    if (ctrl is var review)
+                    {
+                        review.Width = flpReview.ClientSize.Width - 40;
+                    }
+                }
             };
         }
 
@@ -143,6 +158,35 @@ namespace UI_Tier
             {
                 main.BackToDoctorList();
             }
+        }
+
+        private void btnWriteReview_Click(object sender, EventArgs e)
+        {
+            if (_currentDoctor == null) return;
+
+            // 1. Tạo UserControl đánh giá
+            ucWriteReview uc = new ucWriteReview(_currentDoctor);
+            
+            // 2. Vị trí ở giữa UserControl hiện tại
+            uc.Location = new Point(
+                (this.Width - uc.Width) / 2,
+                (this.Height - uc.Height) / 2
+            );
+
+            // 3. Đăng ký sự kiện
+            uc.ReviewSubmitted += (s, ev) => {
+                LoadReviews(); // Tải lại danh sách đánh giá
+            };
+
+            // 3. Xử lý khi nhấn Hủy/Đóng
+            uc.CloseRequested += (s, ev) => {
+                this.Controls.Remove(uc);
+                uc.Dispose();
+            };
+
+            // 4. Thêm vào Controls và đưa lên trên cùng
+            this.Controls.Add(uc);
+            uc.BringToFront();
         }
 
         #region Xử lí flpAppItem, lưu ý cái này chỉ để thử form chứ chưa lọc, muốn lọc data thì code mấy tầng trên
@@ -247,23 +291,44 @@ namespace UI_Tier
                 DoctorBUS docBus = new DoctorBUS();
                 var reviews = docBus.GetDoctorReviews(_doctorId);
 
+                // Cập nhật lại số liệu trên Header
+                if (reviews != null && reviews.Any())
+                {
+                    double avg = reviews.Average(r => r.Rating);
+                    lblRating.Text      = avg.ToString("0.0");
+                    lblTotalReviews.Text = $"{reviews.Count} đánh giá";
+                }
+                else
+                {
+                    lblRating.Text      = "0.0";
+                    lblTotalReviews.Text = "0 đánh giá";
+                }
+
                 if (reviews == null || !reviews.Any())
                 {
                     Label lblNoReview = new Label();
-                    lblNoReview.Text = "Chưa có đánh giá nào từ bệnh nhân.";
-                    lblNoReview.Font = new Font("Segoe UI", 10, FontStyle.Italic);
+                    lblNoReview.Text      = "Chưa có đánh giá nào từ bệnh nhân.";
+                    lblNoReview.Font      = new Font("Segoe UI", 10, FontStyle.Italic);
                     lblNoReview.ForeColor = Color.Gray;
-                    lblNoReview.Size = new Size(flpReview.Width - 40, 50);
+                    lblNoReview.Size      = new Size(flpReview.Width - 40, 50);
                     lblNoReview.TextAlign = ContentAlignment.MiddleCenter;
                     flpReview.Controls.Add(lblNoReview);
                     return;
                 }
 
+                // ID bệnh nhân đang đăng nhập
+                int currentPatientId = GlobalAccount.GetProfileId();
+
                 foreach (var rev in reviews)
                 {
                     ucReviewItem item = new ucReviewItem();
-                    item.SetReviewData(rev);
-                    item.Width = flpReview.Width - 50; // Chừa lề cho thanh cuộn
+                    item.SetReviewData(rev, _currentDoctor, currentPatientId);
+                    item.Width = flpReview.ClientSize.Width - 40;
+
+                    // Tải lại danh sách khi xóa hoặc sửa thành công
+                    item.ReviewDeleted += (s, ev) => LoadReviews();
+                    item.ReviewEdited  += (s, ev) => LoadReviews();
+
                     flpReview.Controls.Add(item);
                 }
             }
@@ -276,5 +341,6 @@ namespace UI_Tier
                 flpReview.ResumeLayout();
             }
         }
+
     }
 }

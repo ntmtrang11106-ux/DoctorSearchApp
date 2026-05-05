@@ -49,6 +49,27 @@ namespace DAL_Tier
             }
         }
 
+        public bool UpdateRating(int doctorId, double avgRating, int totalReviews)
+        {
+            using var context = new AppDbContext();
+            try
+            {
+                var doctor = context.Doctors.Find(doctorId);
+                if (doctor == null) return false;
+
+                doctor.AverageRating = avgRating;
+                doctor.TotalReviews = totalReviews;
+                doctor.UpdatedAt = DateTime.Now;
+
+                return context.SaveChanges() > 0;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Lỗi UpdateRating: " + ex.Message);
+                return false;
+            }
+        }
+
         public List<DoctorDTO> SearchDoctors(string? keyword, List<string>? departmentNames, string? gender, string? sortType)
         {
             using var context = new AppDbContext();

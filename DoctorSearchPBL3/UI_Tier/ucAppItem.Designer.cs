@@ -228,6 +228,7 @@
             // 
             // btnRemove
             // 
+            btnRemove.AccessibleDescription = "C";
             btnRemove.Anchor = AnchorStyles.None;
             btnRemove.BackColor = Color.LightGoldenrodYellow;
             btnRemove.FlatAppearance.BorderSize = 0;

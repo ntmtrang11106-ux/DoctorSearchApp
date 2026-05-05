@@ -54,6 +54,22 @@ namespace UI_Tier
             //    MessageBox.Show("Lỗi khi kiểm tra dữ liệu: " + ex.Message);
             //}
             //}
+
+            using (var context = new DAL_Tier.AppDbContext())
+            {
+                try
+                {
+                    // Tự động cập nhật Database Schema và Seed dữ liệu (chỉ thêm nếu thiếu)
+                    DAL_Tier.DbSeeder.Seed(context, false);
+                }
+                catch (Exception ex)
+                {
+                    var inner = ex.InnerException;
+                    while (inner?.InnerException != null) inner = inner.InnerException;
+                    MessageBox.Show("LỖI KHỞI TẠO CSDL:\n" + (inner?.Message ?? ex.Message), "Database Sync Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();

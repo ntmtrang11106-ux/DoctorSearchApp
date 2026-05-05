@@ -1,4 +1,4 @@
-﻿namespace UI_Tier
+namespace UI_Tier
 {
     partial class ucPatient_DocProfile
     {
@@ -48,9 +48,6 @@
             lblRating = new Label();
             lblTotalReviews = new Label();
             panel2 = new Panel();
-            panel5 = new Panel();
-            flpReview = new FlowLayoutPanel();
-            label10 = new Label();
             panel4 = new Panel();
             label9 = new Label();
             dateTimePicker3 = new DateTimePicker();
@@ -59,13 +56,18 @@
             flpAppItem = new FlowLayoutPanel();
             label2 = new Label();
             panel3 = new Panel();
+            label1 = new Label();
             lblBio = new Label();
+            panel5 = new Panel();
+            btnWriteReview = new Button();
+            flpReview = new FlowLayoutPanel();
+            label10 = new Label();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picDoctor).BeginInit();
             panel2.SuspendLayout();
-            panel5.SuspendLayout();
             panel4.SuspendLayout();
             panel3.SuspendLayout();
+            panel5.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -254,79 +256,46 @@
             // 
             // label6
             // 
-            label6.Font = new Font("Segoe MDL2 Assets", 15F);
+            label6.AutoSize = true;
+            label6.Font = new Font("Segoe MDL2 Assets", 12F);
             label6.ForeColor = Color.Gold;
-            label6.Location = new Point(341, 11);
-            label6.Margin = new Padding(4, 0, 4, 0);
+            label6.Location = new Point(259, 395);
             label6.Name = "label6";
-            label6.Size = new Size(65, 64);
+            label6.Size = new Size(46, 32);
             label6.TabIndex = 40;
             label6.Text = "";
             // 
             // lblRating
             // 
             lblRating.AutoSize = true;
-            lblRating.Font = new Font("Segoe UI", 11F);
-            lblRating.ForeColor = Color.DimGray;
-            lblRating.Location = new Point(413, 11);
+            lblRating.Font = new Font("Microsoft Sans Serif", 11F, FontStyle.Bold);
+            lblRating.ForeColor = Color.FromArgb(64, 64, 64);
+            lblRating.Location = new Point(311, 391);
             lblRating.Name = "lblRating";
-            lblRating.Size = new Size(97, 41);
+            lblRating.Size = new Size(60, 36);
             lblRating.TabIndex = 31;
-            lblRating.Text = "label1";
+            lblRating.Text = "4.8";
             // 
             // lblTotalReviews
             // 
             lblTotalReviews.AutoSize = true;
-            lblTotalReviews.Location = new Point(516, 20);
+            lblTotalReviews.ForeColor = Color.Gray;
+            lblTotalReviews.Location = new Point(411, 395);
             lblTotalReviews.Name = "lblTotalReviews";
-            lblTotalReviews.Size = new Size(78, 32);
+            lblTotalReviews.Size = new Size(167, 32);
             lblTotalReviews.TabIndex = 34;
-            lblTotalReviews.Text = "label2";
+            lblTotalReviews.Text = "(127 đánh giá)";
             // 
             // panel2
             // 
-            panel2.Controls.Add(panel5);
             panel2.Controls.Add(panel4);
             panel2.Controls.Add(panel3);
+            panel2.Controls.Add(panel5);
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(0, 424);
             panel2.Name = "panel2";
             panel2.Size = new Size(2019, 756);
             panel2.TabIndex = 1;
-            // 
-            // panel5
-            // 
-            panel5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            panel5.BorderStyle = BorderStyle.FixedSingle;
-            panel5.Controls.Add(flpReview);
-            panel5.Controls.Add(label10);
-            panel5.Controls.Add(label6);
-            panel5.Controls.Add(lblRating);
-            panel5.Controls.Add(lblTotalReviews);
-            panel5.Location = new Point(3, 452);
-            panel5.Name = "panel5";
-            panel5.Size = new Size(991, 301);
-            panel5.TabIndex = 3;
-            // 
-            // flpReview
-            // 
-            flpReview.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            flpReview.AutoScroll = true;
-            flpReview.FlowDirection = FlowDirection.TopDown;
-            flpReview.Location = new Point(3, 66);
-            flpReview.Name = "flpReview";
-            flpReview.Size = new Size(983, 236);
-            flpReview.TabIndex = 4;
-            // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label10.Location = new Point(51, 7);
-            label10.Name = "label10";
-            label10.Size = new Size(151, 45);
-            label10.TabIndex = 56;
-            label10.Text = "Đánh giá";
             // 
             // panel4
             // 
@@ -338,9 +307,9 @@
             panel4.Controls.Add(flpAppItem);
             panel4.Controls.Add(label2);
             panel4.Dock = DockStyle.Right;
-            panel4.Location = new Point(999, 0);
+            panel4.Location = new Point(999, 365);
             panel4.Name = "panel4";
-            panel4.Size = new Size(1020, 756);
+            panel4.Size = new Size(1020, 391);
             panel4.TabIndex = 2;
             // 
             // label9
@@ -393,7 +362,7 @@
             flpAppItem.FlowDirection = FlowDirection.TopDown;
             flpAppItem.Location = new Point(0, 156);
             flpAppItem.Name = "flpAppItem";
-            flpAppItem.Size = new Size(1018, 598);
+            flpAppItem.Size = new Size(1018, 233);
             flpAppItem.TabIndex = 0;
             // 
             // label2
@@ -408,23 +377,84 @@
             // 
             // panel3
             // 
-            panel3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             panel3.BorderStyle = BorderStyle.FixedSingle;
+            panel3.Controls.Add(label1);
             panel3.Controls.Add(lblBio);
-            panel3.Location = new Point(3, 0);
+            panel3.Dock = DockStyle.Top;
+            panel3.Location = new Point(0, 0);
             panel3.Name = "panel3";
-            panel3.Size = new Size(990, 456);
+            panel3.Size = new Size(2019, 365);
             panel3.TabIndex = 1;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Location = new Point(27, 17);
+            label1.Name = "label1";
+            label1.Size = new Size(192, 50);
+            label1.TabIndex = 1;
+            label1.Text = "Giới thiệu";
             // 
             // lblBio
             // 
             lblBio.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblBio.Font = new Font("Segoe UI", 10F);
-            lblBio.Location = new Point(51, 28);
+            lblBio.Location = new Point(27, 82);
             lblBio.Name = "lblBio";
-            lblBio.Size = new Size(906, 382);
+            lblBio.Size = new Size(1959, 270);
             lblBio.TabIndex = 0;
             lblBio.Text = resources.GetString("lblBio.Text");
+            // 
+            // panel5
+            // 
+            panel5.Controls.Add(btnWriteReview);
+            panel5.Controls.Add(flpReview);
+            panel5.Controls.Add(label10);
+            panel5.Controls.Add(label6);
+            panel5.Controls.Add(lblRating);
+            panel5.Controls.Add(lblTotalReviews);
+            panel5.Dock = DockStyle.Fill;
+            panel5.Location = new Point(0, 0);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(2019, 756);
+            panel5.TabIndex = 3;
+            // 
+            // btnWriteReview
+            // 
+            btnWriteReview.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnWriteReview.BackColor = Color.FromArgb(37, 99, 235);
+            btnWriteReview.Cursor = Cursors.Hand;
+            btnWriteReview.FlatAppearance.BorderSize = 0;
+            btnWriteReview.FlatStyle = FlatStyle.Flat;
+            btnWriteReview.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            btnWriteReview.ForeColor = Color.WhiteSmoke;
+            btnWriteReview.Location = new Point(669, 380);
+            btnWriteReview.Name = "btnWriteReview";
+            btnWriteReview.Size = new Size(312, 71);
+            btnWriteReview.TabIndex = 57;
+            btnWriteReview.Text = " Viết đánh giá";
+            btnWriteReview.UseVisualStyleBackColor = false;
+            btnWriteReview.Click += btnWriteReview_Click;
+            // 
+            // flpReview
+            // 
+            flpReview.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            flpReview.AutoScroll = true;
+            flpReview.Location = new Point(28, 459);
+            flpReview.Name = "flpReview";
+            flpReview.Size = new Size(965, 294);
+            flpReview.TabIndex = 4;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label10.Location = new Point(28, 387);
+            label10.Name = "label10";
+            label10.Size = new Size(187, 50);
+            label10.TabIndex = 56;
+            label10.Text = "Đánh giá ";
             // 
             // ucPatient_DocProfile
             // 
@@ -440,11 +470,12 @@
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)picDoctor).EndInit();
             panel2.ResumeLayout(false);
-            panel5.ResumeLayout(false);
-            panel5.PerformLayout();
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
             panel3.ResumeLayout(false);
+            panel3.PerformLayout();
+            panel5.ResumeLayout(false);
+            panel5.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -481,5 +512,7 @@
         private Panel panel5;
         private Label label10;
         private Button btnBack;
+        private Button btnWriteReview;
+        private Label label1;
     }
 }

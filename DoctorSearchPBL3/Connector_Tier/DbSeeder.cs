@@ -21,28 +21,40 @@ namespace DAL_Tier
             context.Database.Migrate();
 
             // 1. Departments
-            if (!context.Departments.Any())
+            var departments = new[] {
+                new DepartmentDTO { DepartmentName = "Nội khoa", Description = "Khám và điều trị nội khoa", DisplayOrder = 1, IsActive = true, CreatedAt = DateTime.Now },
+                new DepartmentDTO { DepartmentName = "Tim mạch", Description = "Khám chuyên khoa tim mạch", DisplayOrder = 2, IsActive = true, CreatedAt = DateTime.Now },
+                new DepartmentDTO { DepartmentName = "Nhi khoa", Description = "Khám cho trẻ em", DisplayOrder = 3, IsActive = true, CreatedAt = DateTime.Now },
+                new DepartmentDTO { DepartmentName = "Da liễu", Description = "Khám bệnh về da", DisplayOrder = 4, IsActive = true, CreatedAt = DateTime.Now }
+            };
+
+            foreach (var dep in departments)
             {
-                context.Departments.AddRange(
-                    new DepartmentDTO { DepartmentName = "Nội khoa", Description = "Khám và điều trị nội khoa", DisplayOrder = 1, IsActive = true, CreatedAt = DateTime.Now },
-                    new DepartmentDTO { DepartmentName = "Tim mạch", Description = "Khám chuyên khoa tim mạch", DisplayOrder = 2, IsActive = true, CreatedAt = DateTime.Now },
-                    new DepartmentDTO { DepartmentName = "Nhi khoa", Description = "Khám cho trẻ em", DisplayOrder = 3, IsActive = true, CreatedAt = DateTime.Now },
-                    new DepartmentDTO { DepartmentName = "Da liễu", Description = "Khám bệnh về da", DisplayOrder = 4, IsActive = true, CreatedAt = DateTime.Now }
-                );
-                context.SaveChanges();
+                if (!context.Departments.Any(d => d.DepartmentName == dep.DepartmentName))
+                {
+                    context.Departments.Add(dep);
+                }
             }
+            context.SaveChanges();
+            
             var depList = context.Departments.OrderBy(d => d.Id).ToList();
 
             // 2. Rooms
-            if (!context.Rooms.Any())
+            var rooms = new[] {
+                new RoomDTO { RoomCode = "P101", RoomName = "Phòng khám 101", Floor = "1", DepartmentId = depList[0].Id },
+                new RoomDTO { RoomCode = "P201", RoomName = "Phòng khám 201", Floor = "2", DepartmentId = depList[0].Id },
+                new RoomDTO { RoomCode = "P301", RoomName = "Phòng khám 301", Floor = "3", DepartmentId = depList[2].Id }
+            };
+
+            foreach (var room in rooms)
             {
-                context.Rooms.AddRange(
-                    new RoomDTO { RoomCode = "P101", RoomName = "Phòng khám 101", Floor = "1", DepartmentId = depList[0].Id },
-                    new RoomDTO { RoomCode = "P201", RoomName = "Phòng khám 201", Floor = "2", DepartmentId = depList[0].Id },
-                    new RoomDTO { RoomCode = "P301", RoomName = "Phòng khám 301", Floor = "3", DepartmentId = depList[2].Id }
-                );
-                context.SaveChanges();
+                if (!context.Rooms.Any(r => r.RoomCode == room.RoomCode))
+                {
+                    context.Rooms.Add(room);
+                }
             }
+            context.SaveChanges();
+            
             var roomList = context.Rooms.OrderBy(r => r.Id).ToList();
 
             // 3. Admin user
@@ -75,7 +87,7 @@ namespace DAL_Tier
                 string phone = $"090{i}";
                 if (!context.Users.Any(u => u.PhoneNumber == phone))
                 {
-                    var user = new UserDTO // Đã thêm khai báo 'var'
+                    var user = new UserDTO 
                     {
                         FullName = docNames[i],
                         Role = "Doctor",
@@ -94,7 +106,7 @@ namespace DAL_Tier
                     context.Doctors.Add(new DoctorDTO
                     {
                         UserId = user.Id,
-                        DepartmentId = depList[i % depList.Count].Id, // Đổi depts thành depList
+                        DepartmentId = depList[i % depList.Count].Id,
                         Position = "Bác sĩ chuyên khoa",
                         LicenseNumber = $"LIC-{user.Id:000}",
                         ConsultationFee = 150000,
@@ -111,7 +123,7 @@ namespace DAL_Tier
             // 5. Patients
             if (!context.Users.Any(u => u.PhoneNumber == "070"))
             {
-                var patientUser = new UserDTO // Thêm biến hứng User
+                var patientUser = new UserDTO 
                 {
                     FullName = "Nguyễn Thị Mai Trang",
                     Role = "Patient",
@@ -152,30 +164,6 @@ namespace DAL_Tier
                 context.SaveChanges();
             }
 
-            // 7. Appointments (Phải chạy sau khi đã có Patient, Doctor và Slot)
-            if (!context.Appointments.Any())
-            {
-                var patient = context.Patients.First();
-                var doctor = context.Doctors.Include(d => d.User).Include(d => d.Department).First();
-                var slot = context.TimeSlots.FirstOrDefault(s => s.DoctorId == doctor.Id);
-
-                if (slot != null)
-                {
-                    context.Appointments.Add(new AppointmentsDTO
-                    {
-                        PatientId = patient.Id,
-                        DoctorId = doctor.Id,
-                        TimeSlotId = slot.Id,
-                        Reason = "Đau bụng kéo dài",
-                        Status = "Pending",
-                        DoctorNameSnapshot = doctor.User.FullName,
-                        DepartmentNameSnapshot = doctor.Department.DepartmentName,
-                        FeeSnapshot = doctor.ConsultationFee,
-                        CreatedAt = DateTime.Now
-                    });
-                    context.SaveChanges();
-                }
-            }
             // 7. Appointments (Dữ liệu mẫu phong phú hơn)
             if (!context.Appointments.Any())
             {
@@ -185,85 +173,116 @@ namespace DAL_Tier
 
                 if (doctors.Any() && slots.Any())
                 {
-                    // Danh sách các trạng thái và lý do mẫu
                     var appointmentData = new List<AppointmentsDTO>
-                {
-                    // Ca 1: Đang chờ xác nhận
-                    new AppointmentsDTO
                     {
-                        PatientId = patient.Id,
-                        DoctorId = doctors[0].Id,
-                        TimeSlotId = slots.FirstOrDefault(s => s.DoctorId == doctors[0].Id)?.Id ?? slots[0].Id,
-                        Reason = "Khám định kỳ hàng tháng",
-                        Status = "Pending",
-                        DoctorNameSnapshot = doctors[0].User.FullName,
-                        DepartmentNameSnapshot = doctors[0].Department.DepartmentName,
-                        FeeSnapshot = doctors[0].ConsultationFee,
-                        CreatedAt = DateTime.Now.AddHours(-2)
-                    },
-                    // Ca 2: Đã xác nhận (Confirmed)
-                    new AppointmentsDTO
-                    {
-                        PatientId = patient.Id,
-                        DoctorId = doctors[1 % doctors.Count].Id,
-                        TimeSlotId = slots.FirstOrDefault(s => s.DoctorId == doctors[1 % doctors.Count].Id)?.Id ?? slots[0].Id,
-                        Reason = "Tư vấn sức khỏe tim mạch",
-                        Status = "Confirmed",
-                        DoctorNameSnapshot = doctors[1 % doctors.Count].User.FullName,
-                        DepartmentNameSnapshot = doctors[1 % doctors.Count].Department.DepartmentName,
-                        FeeSnapshot = doctors[1 % doctors.Count].ConsultationFee,
-                        CreatedAt = DateTime.Now.AddDays(-1)
-                    },
-                    // Ca 3: Đã hoàn thành (Completed) - Thường đi kèm với MedicalRecord sau này
-                    new AppointmentsDTO
-                    {
-                        PatientId = patient.Id,
-                        DoctorId = doctors[0].Id,
-                        TimeSlotId = slots[0].Id,
-                        Reason = "Kiểm tra đau dạ dày",
-                        Status = "Completed",
-                        DoctorNameSnapshot = doctors[0].User.FullName,
-                        DepartmentNameSnapshot = doctors[0].Department.DepartmentName,
-                        FeeSnapshot = doctors[0].ConsultationFee,
-                        CreatedAt = DateTime.Now.AddDays(-5)
-                    }
-                };
+                        new AppointmentsDTO
+                        {
+                            PatientId = patient.Id,
+                            DoctorId = doctors[0].Id,
+                            TimeSlotId = slots.FirstOrDefault(s => s.DoctorId == doctors[0].Id)?.Id ?? slots[0].Id,
+                            Reason = "Khám định kỳ hàng tháng",
+                            Status = "Pending",
+                            DoctorNameSnapshot = doctors[0].User.FullName,
+                            DepartmentNameSnapshot = doctors[0].Department.DepartmentName,
+                            FeeSnapshot = doctors[0].ConsultationFee,
+                            CreatedAt = DateTime.Now.AddHours(-2)
+                        },
+                        new AppointmentsDTO
+                        {
+                            PatientId = patient.Id,
+                            DoctorId = doctors[1 % doctors.Count].Id,
+                            TimeSlotId = slots.FirstOrDefault(s => s.DoctorId == doctors[1 % doctors.Count].Id)?.Id ?? slots[0].Id,
+                            Reason = "Tư vấn sức khỏe tim mạch",
+                            Status = "Confirmed",
+                            DoctorNameSnapshot = doctors[1 % doctors.Count].User.FullName,
+                            DepartmentNameSnapshot = doctors[1 % doctors.Count].Department.DepartmentName,
+                            FeeSnapshot = doctors[1 % doctors.Count].ConsultationFee,
+                            CreatedAt = DateTime.Now.AddDays(-1)
+                        },
+                        new AppointmentsDTO
+                        {
+                            PatientId = patient.Id,
+                            DoctorId = doctors[0].Id,
+                            TimeSlotId = slots[0].Id,
+                            Reason = "Kiểm tra đau dạ dày",
+                            Status = "Completed",
+                            DoctorNameSnapshot = doctors[0].User.FullName,
+                            DepartmentNameSnapshot = doctors[0].Department.DepartmentName,
+                            FeeSnapshot = doctors[0].ConsultationFee,
+                            CreatedAt = DateTime.Now.AddDays(-5)
+                        }
+                    };
 
-                context.Appointments.AddRange(appointmentData);
-                context.SaveChanges();
+                    context.Appointments.AddRange(appointmentData);
+                    context.SaveChanges();
                 }
             }
 
-     
-
             // 8. Contents
-            if (!context.Contents.Any())
+            var contents = new[] {
+                new ContentDTO
+                {
+                    AuthorAdminId = admin.Id,
+                    Title = "Thông báo thay đổi giờ khám ngày lễ",
+                    Summary = "Bệnh viện điều chỉnh giờ tiếp nhận bệnh nhân.",
+                    Body = "Nội dung thông báo chi tiết...",
+                    ContentType = "HospitalNotice",
+                    Status = "Published",
+                    IsPinned = true,
+                    PublishedAt = DateTime.Now
+                },
+                new ContentDTO
+                {
+                    DepartmentId = depList[0].Id,
+                    AuthorAdminId = admin.Id,
+                    Title = "Hướng dẫn khám Nội khoa",
+                    Summary = "Quy trình thăm khám tại khoa Nội.",
+                    Body = "Nội dung hướng dẫn chi tiết...",
+                    ContentType = "DepartmentGuide",
+                    Status = "Published",
+                    PublishedAt = DateTime.Now
+                }
+            };
+
+            foreach (var content in contents)
             {
-                context.Contents.AddRange(
-                    new ContentDTO
+                if (!context.Contents.Any(c => c.Title == content.Title))
+                {
+                    context.Contents.Add(content);
+                }
+            }
+            context.SaveChanges();
+
+            // 9. Reviews (Test data)
+            if (!context.Reviews.Any())
+            {
+                var patient = context.Patients.First();
+                var doctors = context.Doctors.ToList();
+
+                if (doctors.Count >= 2)
+                {
+                    var reviews = new List<ReviewsDTO>
                     {
-                        AuthorAdminId = admin.Id,
-                        Title = "Thông báo thay đổi giờ khám ngày lễ",
-                        Summary = "Bệnh viện điều chỉnh giờ tiếp nhận bệnh nhân.",
-                        Body = "Nội dung thông báo chi tiết...",
-                        ContentType = "HospitalNotice",
-                        Status = "Published",
-                        IsPinned = true,
-                        PublishedAt = DateTime.Now
-                    },
-                    new ContentDTO
+                        new ReviewsDTO { PatientId = patient.Id, DoctorId = doctors[0].Id, Rating = 5, Comment = "Bác sĩ rất nhiệt tình và chuyên nghiệp!", CreatedAt = DateTime.Now.AddDays(-10) },
+                        new ReviewsDTO { PatientId = patient.Id, DoctorId = doctors[0].Id, Rating = 4, Comment = "Khám kỹ, tư vấn tận tâm.", CreatedAt = DateTime.Now.AddDays(-5) },
+                        new ReviewsDTO { PatientId = patient.Id, DoctorId = doctors[1].Id, Rating = 5, Comment = "Rất hài lòng với dịch vụ.", CreatedAt = DateTime.Now.AddDays(-2) }
+                    };
+
+                    context.Reviews.AddRange(reviews);
+                    context.SaveChanges();
+
+                    // Update Doctor ratings snapshot
+                    foreach (var doc in doctors)
                     {
-                        DepartmentId = depList[0].Id,
-                        AuthorAdminId = admin.Id,
-                        Title = "Hướng dẫn khám Nội khoa",
-                        Summary = "Quy trình thăm khám tại khoa Nội.",
-                        Body = "Nội dung hướng dẫn chi tiết...",
-                        ContentType = "DepartmentGuide",
-                        Status = "Published",
-                        PublishedAt = DateTime.Now
+                        var docReviews = context.Reviews.Where(r => r.DoctorId == doc.Id && !r.IsDeleted).ToList();
+                        if (docReviews.Any())
+                        {
+                            doc.TotalReviews = docReviews.Count;
+                            doc.AverageRating = docReviews.Average(r => r.Rating);
+                        }
                     }
-                );
-                context.SaveChanges();
+                    context.SaveChanges();
+                }
             }
         }
     }
