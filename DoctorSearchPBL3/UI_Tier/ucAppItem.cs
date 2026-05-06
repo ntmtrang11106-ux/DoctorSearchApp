@@ -115,10 +115,24 @@ namespace UI_Tier
             // 3. Logic cho Bác sĩ (DoctorView)
             if (mode == AppCardMode.DoctorView)
             {
-                btnAccept.Visible = (status == "Pending");
-                btnCancel.Visible = (status == "Pending");
-                btnRate.Visible = (status == "Completed");
-                btnViewRecord.Visible = (status == "Completed" || status == "Confirmed");
+                if (status == "Pending")
+                {
+                    btnAccept.Visible = true;
+                    btnCancel.Visible = true;
+                }
+                else if (status == "Confirmed")
+                {
+                    // Đã duyệt -> Không hiện nút nào
+                }
+                else if (status == "Cancelled")
+                {
+                    btnRemove.Visible = true; // Hiện nút Xóa
+                }
+                else if (status == "Completed")
+                {
+                    btnRemove.Visible = true;    // Hiện nút Xóa
+                    btnViewRecord.Visible = true; // Hiện nút Xem bệnh án
+                }
             }
             
             // 4. Logic cho Đặt lịch (DoctorSchedule)

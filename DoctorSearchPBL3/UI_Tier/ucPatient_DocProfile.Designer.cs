@@ -48,7 +48,13 @@ namespace UI_Tier
             lblRating = new Label();
             lblTotalReviews = new Label();
             panel2 = new Panel();
+            tlpContent = new TableLayoutPanel();
+            panel5 = new Panel();
+            btnWriteReview = new Button();
+            flpReview = new FlowLayoutPanel();
+            label10 = new Label();
             panel4 = new Panel();
+            btnBook = new Button();
             label12 = new Label();
             label11 = new Label();
             dtpEndTime = new DateTimePicker();
@@ -62,17 +68,13 @@ namespace UI_Tier
             panel3 = new Panel();
             label1 = new Label();
             lblBio = new Label();
-            panel5 = new Panel();
-            btnBook = new Button();
-            btnWriteReview = new Button();
-            flpReview = new FlowLayoutPanel();
-            label10 = new Label();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picDoctor).BeginInit();
             panel2.SuspendLayout();
+            tlpContent.SuspendLayout();
+            panel5.SuspendLayout();
             panel4.SuspendLayout();
             panel3.SuspendLayout();
-            panel5.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -264,7 +266,7 @@ namespace UI_Tier
             label6.AutoSize = true;
             label6.Font = new Font("Segoe MDL2 Assets", 12F);
             label6.ForeColor = Color.Gold;
-            label6.Location = new Point(259, 395);
+            label6.Location = new Point(250, 25);
             label6.Name = "label6";
             label6.Size = new Size(46, 32);
             label6.TabIndex = 40;
@@ -275,7 +277,7 @@ namespace UI_Tier
             lblRating.AutoSize = true;
             lblRating.Font = new Font("Microsoft Sans Serif", 11F, FontStyle.Bold);
             lblRating.ForeColor = Color.FromArgb(64, 64, 64);
-            lblRating.Location = new Point(311, 391);
+            lblRating.Location = new Point(300, 21);
             lblRating.Name = "lblRating";
             lblRating.Size = new Size(60, 36);
             lblRating.TabIndex = 31;
@@ -285,7 +287,7 @@ namespace UI_Tier
             // 
             lblTotalReviews.AutoSize = true;
             lblTotalReviews.ForeColor = Color.Gray;
-            lblTotalReviews.Location = new Point(411, 395);
+            lblTotalReviews.Location = new Point(400, 25);
             lblTotalReviews.Name = "lblTotalReviews";
             lblTotalReviews.Size = new Size(167, 32);
             lblTotalReviews.TabIndex = 34;
@@ -293,14 +295,79 @@ namespace UI_Tier
             // 
             // panel2
             // 
-            panel2.Controls.Add(panel4);
+            panel2.Controls.Add(tlpContent);
             panel2.Controls.Add(panel3);
-            panel2.Controls.Add(panel5);
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(0, 424);
             panel2.Name = "panel2";
-            panel2.Size = new Size(2019, 756);
+            panel2.Size = new Size(2019, 1071);
             panel2.TabIndex = 1;
+            // 
+            // tlpContent
+            // 
+            tlpContent.ColumnCount = 2;
+            tlpContent.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 49.975235F));
+            tlpContent.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50.024765F));
+            tlpContent.Controls.Add(panel5, 0, 0);
+            tlpContent.Controls.Add(panel4, 1, 0);
+            tlpContent.Dock = DockStyle.Fill;
+            tlpContent.Location = new Point(0, 365);
+            tlpContent.Name = "tlpContent";
+            tlpContent.RowCount = 1;
+            tlpContent.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tlpContent.Size = new Size(2019, 706);
+            tlpContent.TabIndex = 3;
+            // 
+            // panel5
+            // 
+            panel5.Controls.Add(btnWriteReview);
+            panel5.Controls.Add(flpReview);
+            panel5.Controls.Add(label10);
+            panel5.Controls.Add(label6);
+            panel5.Controls.Add(lblRating);
+            panel5.Controls.Add(lblTotalReviews);
+            panel5.Dock = DockStyle.Fill;
+            panel5.Location = new Point(3, 3);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(1003, 700);
+            panel5.TabIndex = 3;
+            // 
+            // btnWriteReview
+            // 
+            btnWriteReview.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnWriteReview.BackColor = Color.FromArgb(37, 99, 235);
+            btnWriteReview.Cursor = Cursors.Hand;
+            btnWriteReview.FlatAppearance.BorderSize = 0;
+            btnWriteReview.FlatStyle = FlatStyle.Flat;
+            btnWriteReview.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            btnWriteReview.ForeColor = Color.WhiteSmoke;
+            btnWriteReview.Location = new Point(678, 11);
+            btnWriteReview.Name = "btnWriteReview";
+            btnWriteReview.Padding = new Padding(5);
+            btnWriteReview.Size = new Size(312, 71);
+            btnWriteReview.TabIndex = 57;
+            btnWriteReview.Text = " Viết đánh giá";
+            btnWriteReview.UseVisualStyleBackColor = false;
+            btnWriteReview.Click += btnWriteReview_Click;
+            // 
+            // flpReview
+            // 
+            flpReview.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            flpReview.AutoScroll = true;
+            flpReview.Location = new Point(25, 105);
+            flpReview.Name = "flpReview";
+            flpReview.Size = new Size(965, 585);
+            flpReview.TabIndex = 4;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label10.Location = new Point(25, 17);
+            label10.Name = "label10";
+            label10.Size = new Size(187, 50);
+            label10.TabIndex = 56;
+            label10.Text = "Đánh giá ";
             // 
             // panel4
             // 
@@ -316,11 +383,28 @@ namespace UI_Tier
             panel4.Controls.Add(label8);
             panel4.Controls.Add(flpAppItem);
             panel4.Controls.Add(label2);
-            panel4.Dock = DockStyle.Right;
-            panel4.Location = new Point(999, 365);
+            panel4.Dock = DockStyle.Fill;
+            panel4.Location = new Point(1012, 3);
             panel4.Name = "panel4";
-            panel4.Size = new Size(1020, 391);
+            panel4.Size = new Size(1004, 700);
             panel4.TabIndex = 2;
+            // 
+            // btnBook
+            // 
+            btnBook.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnBook.BackColor = Color.FromArgb(37, 99, 235);
+            btnBook.Cursor = Cursors.Hand;
+            btnBook.FlatAppearance.BorderSize = 0;
+            btnBook.FlatStyle = FlatStyle.Flat;
+            btnBook.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            btnBook.ForeColor = Color.WhiteSmoke;
+            btnBook.Location = new Point(675, 9);
+            btnBook.Name = "btnBook";
+            btnBook.Padding = new Padding(5);
+            btnBook.Size = new Size(312, 71);
+            btnBook.TabIndex = 58;
+            btnBook.Text = " Đặt lịch ngay";
+            btnBook.UseVisualStyleBackColor = false;
             // 
             // label12
             // 
@@ -353,7 +437,6 @@ namespace UI_Tier
             dtpEndTime.Size = new Size(150, 47);
             dtpEndTime.TabIndex = 57;
             dtpEndTime.Value = new DateTime(2024, 1, 1, 23, 59, 0, 0);
-            //dtpEndTime.ValueChanged += dtpEndTime_ValueChanged;
             // 
             // dtpStartTime
             // 
@@ -366,7 +449,6 @@ namespace UI_Tier
             dtpStartTime.Size = new Size(150, 47);
             dtpStartTime.TabIndex = 56;
             dtpStartTime.Value = new DateTime(2024, 1, 1, 0, 0, 0, 0);
-            //dtpStartTime.ValueChanged += dtpStartTime_ValueChanged;
             // 
             // label9
             // 
@@ -416,9 +498,9 @@ namespace UI_Tier
             flpAppItem.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             flpAppItem.AutoScroll = true;
             flpAppItem.FlowDirection = FlowDirection.TopDown;
-            flpAppItem.Location = new Point(0, 215);
+            flpAppItem.Location = new Point(22, 215);
             flpAppItem.Name = "flpAppItem";
-            flpAppItem.Size = new Size(1018, 174);
+            flpAppItem.Size = new Size(965, 474);
             flpAppItem.TabIndex = 0;
             // 
             // label2
@@ -462,73 +544,6 @@ namespace UI_Tier
             lblBio.TabIndex = 0;
             lblBio.Text = resources.GetString("lblBio.Text");
             // 
-            // panel5
-            // 
-            panel5.Controls.Add(btnWriteReview);
-            panel5.Controls.Add(flpReview);
-            panel5.Controls.Add(label10);
-            panel5.Controls.Add(label6);
-            panel5.Controls.Add(lblRating);
-            panel5.Controls.Add(lblTotalReviews);
-            panel5.Dock = DockStyle.Fill;
-            panel5.Location = new Point(0, 0);
-            panel5.Name = "panel5";
-            panel5.Size = new Size(2019, 756);
-            panel5.TabIndex = 3;
-            // 
-            // btnBook
-            // 
-            btnBook.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnBook.BackColor = Color.FromArgb(37, 99, 235);
-            btnBook.Cursor = Cursors.Hand;
-            btnBook.FlatAppearance.BorderSize = 0;
-            btnBook.FlatStyle = FlatStyle.Flat;
-            btnBook.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            btnBook.ForeColor = Color.WhiteSmoke;
-            btnBook.Location = new Point(675, 5);
-            btnBook.Name = "btnBook";
-            btnBook.Size = new Size(312, 71);
-            btnBook.TabIndex = 58;
-            btnBook.Text = " Đặt lịch ngay";
-            btnBook.UseVisualStyleBackColor = false;
-            //btnBook.Click += btnBook_Click;
-            // 
-            // btnWriteReview
-            // 
-            btnWriteReview.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnWriteReview.BackColor = Color.FromArgb(37, 99, 235);
-            btnWriteReview.Cursor = Cursors.Hand;
-            btnWriteReview.FlatAppearance.BorderSize = 0;
-            btnWriteReview.FlatStyle = FlatStyle.Flat;
-            btnWriteReview.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            btnWriteReview.ForeColor = Color.WhiteSmoke;
-            btnWriteReview.Location = new Point(669, 380);
-            btnWriteReview.Name = "btnWriteReview";
-            btnWriteReview.Size = new Size(312, 71);
-            btnWriteReview.TabIndex = 57;
-            btnWriteReview.Text = " Viết đánh giá";
-            btnWriteReview.UseVisualStyleBackColor = false;
-            btnWriteReview.Click += btnWriteReview_Click;
-            // 
-            // flpReview
-            // 
-            flpReview.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            flpReview.AutoScroll = true;
-            flpReview.Location = new Point(28, 459);
-            flpReview.Name = "flpReview";
-            flpReview.Size = new Size(965, 294);
-            flpReview.TabIndex = 4;
-            // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label10.Location = new Point(28, 387);
-            label10.Name = "label10";
-            label10.Size = new Size(187, 50);
-            label10.TabIndex = 56;
-            label10.Text = "Đánh giá ";
-            // 
             // ucPatient_DocProfile
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
@@ -537,18 +552,19 @@ namespace UI_Tier
             Controls.Add(panel2);
             Controls.Add(panel1);
             Name = "ucPatient_DocProfile";
-            Size = new Size(2019, 1180);
+            Size = new Size(2019, 1495);
             Load += ucPatient_DocProfile_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)picDoctor).EndInit();
             panel2.ResumeLayout(false);
+            tlpContent.ResumeLayout(false);
+            panel5.ResumeLayout(false);
+            panel5.PerformLayout();
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
-            panel5.ResumeLayout(false);
-            panel5.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -575,6 +591,7 @@ namespace UI_Tier
         private Panel panel3;
         private FlowLayoutPanel flpAppItem;
         private Panel panel4;
+        private TableLayoutPanel tlpContent;
         private Label lblBio;
         private DateTimePicker dateTimePicker3;
         private DateTimePicker dateTimePicker4;

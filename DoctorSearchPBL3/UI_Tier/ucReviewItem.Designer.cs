@@ -22,8 +22,8 @@ namespace UI_Tier
             lblComment = new Label();
             panelLine = new Panel();
             lblYourReview = new Label();
-            btnEdit = new Button();
-            btnDelete = new Button();
+            lblEdit = new Label();
+            lblDelete = new Label();
             SuspendLayout();
             // 
             // lblAvatar
@@ -72,10 +72,12 @@ namespace UI_Tier
             // 
             // lblComment
             // 
+            lblComment.AutoSize = true;
             lblComment.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblComment.Location = new Point(100, 128);
+            lblComment.Location = new Point(24, 131);
+            lblComment.MaximumSize = new Size(1000, 0);
             lblComment.Name = "lblComment";
-            lblComment.Size = new Size(900, 100);
+            lblComment.Size = new Size(982, 90);
             lblComment.TabIndex = 4;
             lblComment.Text = "Bác sĩ rất tận tâm và chuyên nghiệp. Giải thích rõ ràng về tình trạng bệnh.";
             // 
@@ -83,9 +85,9 @@ namespace UI_Tier
             // 
             panelLine.BackColor = Color.FromArgb(200, 200, 200);
             panelLine.Dock = DockStyle.Bottom;
-            panelLine.Location = new Point(0, 251);
+            panelLine.Location = new Point(0, 235);
             panelLine.Name = "panelLine";
-            panelLine.Size = new Size(1195, 2);
+            panelLine.Size = new Size(1326, 2);
             panelLine.TabIndex = 5;
             // 
             // lblYourReview
@@ -102,47 +104,39 @@ namespace UI_Tier
             lblYourReview.Text = "Đánh giá của bạn";
             lblYourReview.Visible = false;
             // 
-            // btnEdit
+            // lblEdit
             // 
-            btnEdit.AccessibleDescription = "C";
-            btnEdit.Anchor = AnchorStyles.None;
-            btnEdit.BackColor = Color.FromArgb(239, 250, 255);
-            btnEdit.FlatAppearance.BorderSize = 0;
-            btnEdit.FlatStyle = FlatStyle.Flat;
-            btnEdit.Font = new Font("Segoe MDL2 Assets", 20F);
-            btnEdit.ForeColor = Color.FromArgb(37, 99, 235);
-            btnEdit.Location = new Point(974, 25);
-            btnEdit.Margin = new Padding(30, 5, 0, 0);
-            btnEdit.Name = "btnEdit";
-            btnEdit.Size = new Size(85, 85);
-            btnEdit.TabIndex = 21;
-            btnEdit.Text = "";
-            btnEdit.UseVisualStyleBackColor = false;
+            lblEdit.BackColor = Color.FromArgb(239, 250, 255);
+            lblEdit.Cursor = Cursors.Hand;
+            lblEdit.Font = new Font("Segoe MDL2 Assets", 20F);
+            lblEdit.ForeColor = Color.FromArgb(37, 99, 235);
+            lblEdit.Location = new Point(1116, 20);
+            lblEdit.Name = "lblEdit";
+            lblEdit.Size = new Size(85, 85);
+            lblEdit.TabIndex = 21;
+            lblEdit.Text = "";
+            lblEdit.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // btnDelete
+            // lblDelete
             // 
-            btnDelete.AccessibleDescription = "C";
-            btnDelete.Anchor = AnchorStyles.None;
-            btnDelete.BackColor = Color.FromArgb(255, 252, 235);
-            btnDelete.FlatAppearance.BorderSize = 0;
-            btnDelete.FlatStyle = FlatStyle.Flat;
-            btnDelete.Font = new Font("Segoe MDL2 Assets", 20F);
-            btnDelete.ForeColor = Color.FromArgb(217, 119, 6);
-            btnDelete.Location = new Point(1089, 25);
-            btnDelete.Margin = new Padding(30, 5, 0, 0);
-            btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(85, 85);
-            btnDelete.TabIndex = 22;
-            btnDelete.Text = "";
-            btnDelete.UseVisualStyleBackColor = false;
+            lblDelete.BackColor = Color.FromArgb(255, 252, 235);
+            lblDelete.Cursor = Cursors.Hand;
+            lblDelete.Font = new Font("Segoe MDL2 Assets", 20F);
+            lblDelete.ForeColor = Color.FromArgb(217, 119, 6);
+            lblDelete.Location = new Point(1222, 20);
+            lblDelete.Name = "lblDelete";
+            lblDelete.Size = new Size(85, 85);
+            lblDelete.TabIndex = 22;
+            lblDelete.Text = "";
+            lblDelete.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // ucReviewItem
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            Controls.Add(btnDelete);
-            Controls.Add(btnEdit);
+            Controls.Add(lblDelete);
+            Controls.Add(lblEdit);
             Controls.Add(lblYourReview);
             Controls.Add(panelLine);
             Controls.Add(lblComment);
@@ -151,7 +145,7 @@ namespace UI_Tier
             Controls.Add(lblName);
             Controls.Add(lblAvatar);
             Name = "ucReviewItem";
-            Size = new Size(1195, 253);
+            Size = new Size(1326, 237);
             Load += ucReviewItem_Load;
             ResumeLayout(false);
             PerformLayout();
@@ -164,7 +158,7 @@ namespace UI_Tier
         private Label lblComment;
         private Panel panelLine;
         private Label lblYourReview;
-        private Button btnDelete;
-        private Button btnEdit;
+        private Label lblDelete;
+        private Label lblEdit;
     }
 }

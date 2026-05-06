@@ -64,6 +64,17 @@ namespace UI_Tier
                 card.SetupCard(ap, ucAppItem.AppCardMode.PatientView);
                 card.Margin = new Padding(20, 10, 20, 10);
 
+                // CAN THIỆP BỐ CỤC TỪ BÊN NGOÀI ĐỂ TRÁNH ĐÈ CHỮ
+                var btnStatus = card.Controls.Find("btnStatus", true).FirstOrDefault();
+                if (btnStatus != null) btnStatus.Location = new Point(1900, 95);
+
+                var lblName = card.Controls.Find("lblName", true).FirstOrDefault();
+                if (lblName != null) lblName.MaximumSize = new Size(0, 0); // Cho phép tên trải dài hết cỡ
+                var lblSymptoms = card.Controls.Find("lblSymptoms", true).FirstOrDefault();
+                if (lblSymptoms != null) lblSymptoms.Location = new Point(1240, 95); // Cho phép tên trải dài hết cỡ
+                var label2 = card.Controls.Find("label2", true).FirstOrDefault();
+                if (label2 != null) label2.Location = new Point(1140, 65); // Cho phép tên trải dài hết cỡ
+                
                 // Thêm handler Xóa/Sửa
                 card.AppointmentDeleted += (s, ev) => InitData();
                 card.AppointmentEdited += (s, appData) => {

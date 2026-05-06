@@ -12,11 +12,51 @@ namespace DAL_Tier
         // Trong DoctorDAL.cs
         public int GetDoctorIdByUserId(int userId)
         {
-            using (var db = new AppDbContext()) // Hoặc cách gọi DB của nhóm
+            using (var db = new AppDbContext()) 
             {
                 var doctor = db.Doctors.FirstOrDefault(d => d.UserId == userId);
                 return doctor != null ? doctor.Id : 0;
             }
+        }
+
+        public DoctorDTO GetDoctorById(int doctorId)
+        {
+            using var context = new AppDbContext();
+            return context.Doctors
+                .Include(d => d.User)
+                .Include(d => d.Department)
+                .Include(d => d.Reviews)
+                .FirstOrDefault(d => d.Id == doctorId);
+        }
+
+        public List<AppointmentsDTO> GetTodayAppointments(int doctorId)
+        {
+            using var context = new AppDbContext();
+            DateTime today = DateTime.Today;
+            return context.Appointments
+                .Include(a => a.Patient).ThenInclude(p => p.User)
+                .Include(a => a.TimeSlot)
+                .Where(a => a.DoctorId == doctorId && a.TimeSlot.WorkDate == today)
+                .OrderBy(a => a.TimeSlot.StartTime)
+                .ToList();
+        }
+
+        public int GetTotalPatientsCount(int doctorId)
+        {
+            using var context = new AppDbContext();
+            return context.Appointments
+                .Where(a => a.DoctorId == doctorId)
+                .Select(a => a.PatientId)
+                .Distinct()
+                .Count();
+        }
+
+        public int GetPendingAppointmentsCount(int doctorId)
+        {
+            using var context = new AppDbContext();
+            return context.Appointments
+                .Where(a => a.DoctorId == doctorId && a.Status == "Pending")
+                .Count();
         }
         public List<DoctorDTO> GetAllDoctors()
         {

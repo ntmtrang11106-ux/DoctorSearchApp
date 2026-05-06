@@ -45,6 +45,30 @@ namespace BUS_Tier
             return doctorDAL.GetDoctorIdByUserId(userId);
         }
 
+        public DoctorDTO GetDoctorById(int doctorId)
+        {
+            if (doctorId <= 0) return null;
+            return doctorDAL.GetDoctorById(doctorId);
+        }
+
+        public List<AppointmentsDTO> GetTodayAppointments(int doctorId)
+        {
+            if (doctorId <= 0) return new List<AppointmentsDTO>();
+            return doctorDAL.GetTodayAppointments(doctorId);
+        }
+
+        public int GetTotalPatientsCount(int doctorId)
+        {
+            if (doctorId <= 0) return 0;
+            return doctorDAL.GetTotalPatientsCount(doctorId);
+        }
+
+        public int GetPendingAppointmentsCount(int doctorId)
+        {
+            if (doctorId <= 0) return 0;
+            return doctorDAL.GetPendingAppointmentsCount(doctorId);
+        }
+
         /// <summary>
         /// Cập nhật thông tin bác sĩ với các ràng buộc nghiệp vụ (Validation)
         /// </summary>

@@ -1,4 +1,6 @@
-﻿using System;
+using BUS_Tier;
+using DTO_Tier;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,15 +15,7 @@ namespace UI_Tier
         public frmDoctor()
         {
             InitializeComponent();
-
-            UIHelper.ApplyRoundedRegion(btnLogout, 15);
-
-            // Add main card in panel
-            pnMain.Controls.Clear();
-            ucDoctor_Appointment AppointmentControl = new ucDoctor_Appointment();
-            AppointmentControl.Dock = DockStyle.Fill; // Đảm bảo UserControl chiếm toàn bộ pnMain
-            pnMain.Controls.Add(AppointmentControl);
-
+            UIHelper.SetDoubleBuffered(this);
         }
 
         // Override CreateParams để bật WS_EX_COMPOSITED, giúp giảm nhấp nháy khi vẽ lại Form
@@ -35,23 +29,106 @@ namespace UI_Tier
             }
         }
 
+        #region Xử lý các click trên menu (Tabs)
 
-        /// <summary>
-        /// Hàm dùng chung để thay đổi nội dung hiển thị trong panel chính (pnMain).
-        /// Việc dùng hàm này giúp giải phóng bộ nhớ (Dispose) các Control cũ, tránh giật lag.
-        /// </summary>
-        private void ShowUserControl(UserControl uc)
+        private Color _activeBack = Color.FromArgb(206, 225, 255); // Màu xanh nhạt
+        private Color _normalBack = Color.Transparent;
+        private Color _activeText = Color.FromArgb(0, 98, 255); // Màu xanh đậm
+        private Color _normalText = SystemColors.ControlDarkDark;
+
+        private Dictionary<Panel, Type> _tabTypeMapping = new Dictionary<Panel, Type>();
+        private Dictionary<Panel, UserControl> _tabMapping = new Dictionary<Panel, UserControl>();
+        private UserControl _currentUC = null;
+
+        private void InitTabs()
         {
-            // Giải phóng các control cũ để tối ưu RAM
-            foreach (Control ctrl in pnMain.Controls)
+            _tabTypeMapping.Add(pnlOverview, typeof(ucDoctor_Overview));
+            _tabTypeMapping.Add(pnlAppointment, typeof(ucDoctor_Appointment));
+
+            foreach (var pnl in _tabTypeMapping.Keys)
             {
-                ctrl.Dispose();
+                pnl.Click += PanelTab_Click;
+                pnl.Cursor = Cursors.Hand;
+                foreach (Control child in pnl.Controls)
+                {
+                    child.Click += PanelTab_Click;
+                    child.Cursor = Cursors.Hand;
+                }
+            }
+        }
+
+        private void PanelTab_Click(object sender, EventArgs e)
+        {
+            Control ctrl = sender as Control;
+            Panel clickedPanel = (ctrl is Panel) ? (Panel)ctrl : (Panel)ctrl.Parent;
+
+            if (clickedPanel == null || !_tabTypeMapping.ContainsKey(clickedPanel)) return;
+
+            if (!_tabMapping.ContainsKey(clickedPanel))
+            {
+                UserControl uc = (UserControl)Activator.CreateInstance(_tabTypeMapping[clickedPanel]);
+                
+                // Nếu là tab Tổng quan, nạp dữ liệu bác sĩ ngay
+                if (uc is ucDoctor_Overview overview)
+                {
+                    int docId = GlobalAccount.GetProfileId();
+                    DoctorBUS bus = new DoctorBUS();
+                    var doctor = bus.GetDoctorById(docId);
+                    if (doctor != null) overview.SetDoctorData(doctor);
+                }
+
+                uc.Dock = DockStyle.Fill;
+                uc.Visible = false;
+                pnMain.Controls.Add(uc);
+                _tabMapping.Add(clickedPanel, uc);
             }
 
-            pnMain.Controls.Clear();
-            uc.Dock = DockStyle.Fill;
-            pnMain.Controls.Add(uc);
+            UserControl selectedUC = _tabMapping[clickedPanel];
+            if (_currentUC == selectedUC) return;
+
+            if (_currentUC != null) _currentUC.Visible = false;
+            selectedUC.Visible = true;
+            selectedUC.BringToFront();
+            _currentUC = selectedUC;
+
+            UpdateLabelStyles(clickedPanel);
         }
+
+        public void SwitchToTab(string tabName)
+        {
+            Panel targetPanel = null;
+            if (tabName == "Overview") targetPanel = pnlOverview;
+            else if (tabName == "Appointment") targetPanel = pnlAppointment;
+
+            if (targetPanel != null)
+            {
+                PanelTab_Click(targetPanel, EventArgs.Empty);
+            }
+        }
+
+        private void UpdateLabelStyles(Panel activePanel)
+        {
+            foreach (var panel in _tabTypeMapping.Keys)
+            {
+                if (panel == activePanel)
+                {
+                    panel.BackColor = _activeBack;
+                    foreach (Control child in panel.Controls)
+                    {
+                        if (child is Label label) label.ForeColor = _activeText;
+                    }
+                }
+                else
+                {
+                    panel.BackColor = _normalBack;
+                    foreach (Control child in panel.Controls)
+                    {
+                        if (child is Label label) label.ForeColor = _normalText;
+                    }
+                }
+            }
+        }
+        #endregion
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
@@ -60,14 +137,17 @@ namespace UI_Tier
 
         private void frmDoctor_Load(object sender, EventArgs e)
         {
+            UIHelper.ApplyRoundedRegion(btnLogout, 15);
+            UIHelper.ApplyRoundedRegion(pnlOverview, 20);
+            UIHelper.ApplyRoundedRegion(pnlAppointment, 20);
 
+            InitTabs();
+            PanelTab_Click(pnlOverview, EventArgs.Empty); // Mặc định mở Tổng quan
         }
 
-        // Hàm này dùng để hiển thị hộp thoại (UserControl) dưới dạng Overlay (nền mờ phía sau)
         public void ShowOverlay(UserControl ucDialog)
         {
-            // Vô hiệu hóa các control phía sau (nếu cần)
-            foreach (Control ctrl in pnMain.Controls) { ctrl.Enabled=false; }
+            foreach (Control ctrl in pnMain.Controls) { ctrl.Enabled = false; }
 
             if (ucDialog is ucTimeSlotDialog dialog)
             {
@@ -75,31 +155,24 @@ namespace UI_Tier
             }
 
             ucDialog.Name = "ucDialog";
-            // Căn giữa hộp thoại
             ucDialog.Location = new Point(
                 (this.ClientSize.Width - ucDialog.Width) / 2,
                 (this.ClientSize.Height - ucDialog.Height) / 2
             );
-            // Nếu muốn khi resize form hộp thoại vẫn ở giữa
             ucDialog.Anchor = AnchorStyles.None;
 
-            // 3. Add vào Form
             this.Controls.Add(ucDialog);
-            ucDialog.BringToFront(); // Đưa lên lớp trên cùng
+            ucDialog.BringToFront();
         }
+
         private void CloseModalLogic(object sender, EventArgs e)
         {
             UserControl uc = sender as UserControl;
             if (uc != null)
             {
-                // Gỡ sự kiện để tránh rò rỉ bộ nhớ (Memory Leak)
                 if (uc is ucTimeSlotDialog ucApp) ucApp.OnCloseModal -= CloseModalLogic;
-
-                // Xóa UC khỏi Form
                 this.Controls.Remove(uc);
-                uc.Dispose(); // Hủy hẳn để giải phóng RAM
-
-                // Kích hoạt lại các control phía sau
+                uc.Dispose();
                 foreach (Control ctrl in pnMain.Controls) { ctrl.Enabled = true; }
             }
         }

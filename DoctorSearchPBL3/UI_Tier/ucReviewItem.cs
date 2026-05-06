@@ -55,14 +55,14 @@ namespace UI_Tier
             // 6. Nếu đây là đánh giá của mình → hiện badge + 2 nút
             bool isOwner = (review.PatientId == currentPatientId);
             lblYourReview.Visible = isOwner;
-            btnEdit.Visible       = isOwner;
-            btnDelete.Visible     = isOwner;
+            lblEdit.Visible       = isOwner;
+            lblDelete.Visible     = isOwner;
 
             // 7. Wire-up sự kiện (tránh đăng ký nhiều lần)
-            btnEdit.Click   -= BtnEdit_Click;
-            btnDelete.Click -= BtnDelete_Click;
-            btnEdit.Click   += BtnEdit_Click;
-            btnDelete.Click += BtnDelete_Click;
+            lblEdit.Click   -= BtnEdit_Click;
+            lblDelete.Click -= BtnDelete_Click;
+            lblEdit.Click   += BtnEdit_Click;
+            lblDelete.Click += BtnDelete_Click;
         }
 
         // ── Overload tương thích ngược (không cần owner check) ──
@@ -76,6 +76,8 @@ namespace UI_Tier
         // ────────────────────────────────────────────────────────────────────
         private void ucReviewItem_Load(object sender, EventArgs e)
         {
+            this.Margin = new Padding(5, 5, 5, 10);
+            UIHelper.ApplyRoundedRegion(this, 15);
             UIHelper.ApplyRoundedRegion(lblAvatar, lblAvatar.Width / 2);
 
             Color[] softColors = {
@@ -97,6 +99,13 @@ namespace UI_Tier
             int index = rnd.Next(softColors.Length);
             lblAvatar.BackColor = softColors[index];
             lblAvatar.ForeColor = textColors[index];
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            // Vẽ viền nhẹ cho từng ô đánh giá
+            UIHelper.DrawControlBorder(this, e, 15, Color.FromArgb(235, 238, 242), 2);
         }
 
         // ────────────────────────────────────────────────────────────────────

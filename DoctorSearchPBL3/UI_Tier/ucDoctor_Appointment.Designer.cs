@@ -148,9 +148,9 @@
             label2.Font = new Font("Segoe UI", 13F, FontStyle.Italic);
             label2.Location = new Point(56, 84);
             label2.Name = "label2";
-            label2.Size = new Size(542, 47);
+            label2.Size = new Size(678, 47);
             label2.TabIndex = 1;
-            label2.Text = "Tạo và quản lý khung giờ của bạn";
+            label2.Text = "Xem và quản lý các lịch hẹn với bệnh nhân";
             // 
             // label1
             // 

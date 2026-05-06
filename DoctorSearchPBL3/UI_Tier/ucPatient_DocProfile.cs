@@ -125,6 +125,10 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(picDoctor, 175); // Bo tròn ảnh bác sĩ
             UIHelper.ApplyRoundedRegion(btnWriteReview, 8); // Bo tròn nhẹ nút đánh giá
 
+            // Áp dụng bo góc cho 2 mảng chính (Reviews bên trái, Lịch hẹn bên phải)
+            UIHelper.ApplyRoundedRegion(panel4, 25);
+            UIHelper.ApplyRoundedRegion(panel5, 25);
+
             flpAppItem.Dock = DockStyle.None; // Tạm bỏ dock
             //flpAppItem.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 
@@ -134,15 +138,17 @@ namespace UI_Tier
 
             DisplayPage();
 
-            //MessageBox.Show($"height: {flpAppItem.Height}, width: {flpAppItem.Width}");
-
+            // Cập nhật bo góc và kích thước item khi Resize
             this.Resize += (s, ev) =>
             {
+                UIHelper.ApplyRoundedRegion(panel4, 25);
+                UIHelper.ApplyRoundedRegion(panel5, 25);
+
                 foreach (Control ctrl in flpAppItem.Controls)
                 {
                     if (ctrl is ucAppItem card)
                     {
-                        card.Width = flpAppItem.Width - 80;
+                        card.Width = flpAppItem.Width - 40;
                     }
                 }
 
@@ -277,6 +283,10 @@ namespace UI_Tier
                     // Sử dụng mode PatientView để xem/sửa/xóa lịch của mình
                     card.SetupCard(app, ucAppItem.AppCardMode.PatientView);
 
+                    // CAN THIỆP BỐ CỤC TỪ BÊN NGOÀI
+                    var btnStatus = card.Controls.Find("btnStatus", true).FirstOrDefault();
+                    if (btnStatus != null) btnStatus.Location = new Point(400, 95);
+
                     // Xử lý sự kiện Xóa
                     card.AppointmentDeleted += (s, ev) => InitData();
 
@@ -365,17 +375,17 @@ namespace UI_Tier
                     lblTotalReviews.Text = "0 đánh giá";
                 }
 
-                if (reviews == null || !reviews.Any())
-                {
-                    Label lblNoReview = new Label();
-                    lblNoReview.Text      = "Chưa có đánh giá nào từ bệnh nhân.";
-                    lblNoReview.Font      = new Font("Segoe UI", 10, FontStyle.Italic);
-                    lblNoReview.ForeColor = Color.Gray;
-                    lblNoReview.Size      = new Size(flpReview.Width - 40, 50);
-                    lblNoReview.TextAlign = ContentAlignment.MiddleCenter;
-                    flpReview.Controls.Add(lblNoReview);
-                    return;
-                }
+                //if (reviews == null || !reviews.Any())
+                //{
+                //    Label lblNoReview = new Label();
+                //    lblNoReview.Text      = "Chưa có đánh giá nào từ bệnh nhân.";
+                //    lblNoReview.Font      = new Font("Segoe UI", 10, FontStyle.Italic);
+                //    lblNoReview.ForeColor = Color.Gray;
+                //    lblNoReview.Size      = new Size(flpReview.Width - 40, 50);
+                //    lblNoReview.TextAlign = ContentAlignment.MiddleCenter;
+                //    flpReview.Controls.Add(lblNoReview);
+                //    return;
+                //}
 
                 // ID bệnh nhân đang đăng nhập
                 int currentPatientId = GlobalAccount.GetProfileId();
@@ -384,7 +394,7 @@ namespace UI_Tier
                 {
                     ucReviewItem item = new ucReviewItem();
                     item.SetReviewData(rev, _currentDoctor, currentPatientId);
-                    item.Width = flpReview.ClientSize.Width - 40;
+                    //item.Width = flpReview.ClientSize.Width - 40;
 
                     // Tải lại danh sách khi xóa hoặc sửa thành công
                     item.ReviewDeleted += (s, ev) => LoadReviews();

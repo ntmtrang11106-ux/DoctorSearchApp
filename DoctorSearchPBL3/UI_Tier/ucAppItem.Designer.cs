@@ -93,7 +93,7 @@ namespace UI_Tier
             // 
             lblSymptoms.Font = new Font("Segoe UI", 11F);
             lblSymptoms.ImageAlign = ContentAlignment.MiddleLeft;
-            lblSymptoms.Location = new Point(957, 80);
+            lblSymptoms.Location = new Point(1117, 80);
             lblSymptoms.Name = "lblSymptoms";
             lblSymptoms.Size = new Size(553, 131);
             lblSymptoms.TabIndex = 7;
@@ -106,7 +106,7 @@ namespace UI_Tier
             btnStatus.FlatStyle = FlatStyle.Flat;
             btnStatus.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnStatus.ForeColor = Color.DarkGreen;
-            btnStatus.Location = new Point(400, 80);
+            btnStatus.Location = new Point(1543, 80);
             btnStatus.Name = "btnStatus";
             btnStatus.Size = new Size(200, 60);
             btnStatus.TabIndex = 9;
@@ -117,7 +117,7 @@ namespace UI_Tier
             // 
             label2.Font = new Font("Segoe MDL2 Assets", 27F);
             label2.ForeColor = Color.DimGray;
-            label2.Location = new Point(859, 68);
+            label2.Location = new Point(1013, 75);
             label2.Margin = new Padding(0);
             label2.Name = "label2";
             label2.Size = new Size(100, 100);
@@ -167,7 +167,7 @@ namespace UI_Tier
             flpAction.Controls.Add(btnCancel);
             flpAction.Controls.Add(btnAccept);
             flpAction.FlowDirection = FlowDirection.RightToLeft;
-            flpAction.Location = new Point(1156, 68);
+            flpAction.Location = new Point(1186, 82);
             flpAction.Name = "flpAction";
             flpAction.Size = new Size(980, 90);
             flpAction.TabIndex = 15;
@@ -306,7 +306,7 @@ namespace UI_Tier
             Controls.Add(lblPhoneNumber);
             Controls.Add(lblName);
             Name = "ucAppItem";
-            Size = new Size(2155, 252);
+            Size = new Size(2186, 252);
             Load += ucAppItem_Load;
             flpAction.ResumeLayout(false);
             ResumeLayout(false);
