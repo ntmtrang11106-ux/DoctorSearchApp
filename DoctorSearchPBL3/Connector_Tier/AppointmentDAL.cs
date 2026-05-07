@@ -104,6 +104,48 @@ namespace DAL_Tier
             }
         }
 
+        // Lấy danh sách lịch hẹn của một bác sĩ cụ thể
+        public List<AppointmentsDTO> GetAppointmentsByDoctorId(int doctorId)
+        {
+            try
+            {
+                return _context.Appointments
+                    .AsNoTracking()
+                    .Include(a => a.Patient).ThenInclude(p => p.User)
+                    .Include(a => a.Doctor).ThenInclude(d => d.User)
+                    .Include(a => a.TimeSlot)
+                    .Where(a => a.DoctorId == doctorId)
+                    .OrderByDescending(a => a.CreatedAt)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi GetAppointmentsByDoctorId: " + ex.Message);
+                return new List<AppointmentsDTO>();
+            }
+        }
+
+        // Lấy danh sách lịch hẹn của một bệnh nhân cụ thể
+        public List<AppointmentsDTO> GetAppointmentsByPatientId(int patientId)
+        {
+            try
+            {
+                return _context.Appointments
+                    .AsNoTracking()
+                    .Include(a => a.Patient).ThenInclude(p => p.User)
+                    .Include(a => a.Doctor).ThenInclude(d => d.User)
+                    .Include(a => a.TimeSlot)
+                    .Where(a => a.PatientId == patientId)
+                    .OrderByDescending(a => a.CreatedAt)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi GetAppointmentsByPatientId: " + ex.Message);
+                return new List<AppointmentsDTO>();
+            }
+        }
+
         // 2. Tạo lịch hẹn mới (Khớp với các cột Snapshot trong SQL)
         //public bool CreateAppointment(AppointmentsDTO app)
         //{
@@ -293,6 +335,29 @@ namespace DAL_Tier
                     transaction.Rollback();
                     return false;
                 }
+            }
+        }
+
+        public AppointmentsDTO CheckPatientOverlap(int patientId, int timeSlotId, int excludeAppointmentId = -1)
+        {
+            try
+            {
+                var targetSlot = _context.TimeSlots.AsNoTracking().FirstOrDefault(ts => ts.Id == timeSlotId);
+                if (targetSlot == null) return null;
+
+                return _context.Appointments
+                    .AsNoTracking()
+                    .Include(a => a.TimeSlot)
+                    .FirstOrDefault(a => a.PatientId == patientId
+                                     && a.Id != excludeAppointmentId
+                                     && a.Status != "Cancelled"
+                                     && a.TimeSlot.WorkDate == targetSlot.WorkDate
+                                     && a.TimeSlot.StartTime == targetSlot.StartTime
+                                     && a.TimeSlot.EndTime == targetSlot.EndTime);
+            }
+            catch
+            {
+                return null;
             }
         }
     }

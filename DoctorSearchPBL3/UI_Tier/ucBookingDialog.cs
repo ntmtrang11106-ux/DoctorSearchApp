@@ -220,6 +220,25 @@ namespace UI_Tier
                 return;
             }
 
+            // 1. Kiểm tra trùng lịch (Loại trừ lịch đang sửa nếu có)
+            var conflict = _appointmentBUS.CheckPatientOverlap(patientId, _selectedTimeSlotId, _editAppointmentId);
+            if (conflict != null)
+            {
+                string conflictMsg = $"Bạn đã có một lịch hẹn vào khung giờ này ({conflict.TimeSlot.StartTime:hh\\:mm} - {conflict.TimeSlot.EndTime:hh\\:mm} ngày {conflict.TimeSlot.WorkDate:dd/MM/yyyy}).\n\nBạn có muốn thay thế lịch hẹn cũ bằng lịch hẹn mới này không?";
+                var diagResult = MessageBox.Show(conflictMsg, "Trùng lịch hẹn", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (diagResult == DialogResult.Yes)
+                {
+                    // Xóa lịch cũ trước khi đặt/cập nhật lịch mới
+                    _appointmentBUS.DeleteAppointment(conflict.Id);
+                }
+                else
+                {
+                    return; // Dừng lại để user chọn khung giờ khác
+                }
+            }
+
+            // 2. Thực hiện Đặt hoặc Cập nhật
             if (_editAppointmentId != -1)
             {
                 if (_appointmentBUS.UpdateAppointment(_editAppointmentId, _selectedTimeSlotId, reason))

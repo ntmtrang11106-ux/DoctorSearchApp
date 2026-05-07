@@ -67,6 +67,18 @@ namespace BUS_Tier
             return _appointmentDAL.GetAllAppointments();
         }
 
+        public List<AppointmentsDTO> GetAppointmentsByDoctorId(int doctorId)
+        {
+            if (doctorId <= 0) return new List<AppointmentsDTO>();
+            return _appointmentDAL.GetAppointmentsByDoctorId(doctorId);
+        }
+
+        public List<AppointmentsDTO> GetAppointmentsByPatientId(int patientId)
+        {
+            if (patientId <= 0) return new List<AppointmentsDTO>();
+            return _appointmentDAL.GetAppointmentsByPatientId(patientId);
+        }
+
         public string CreateRepeatingAppointments(AppointmentsDTO baseApp, List<DateTime> selectedDates)
         {
             // 1. Kiểm tra ngày trong quá khứ
@@ -167,6 +179,16 @@ namespace BUS_Tier
         public bool DeleteAppointment(int appointmentId)
         {
             return _appointmentDAL.DeleteAppointment(appointmentId);
+        }
+
+        public AppointmentsDTO CheckPatientOverlap(int patientId, int timeSlotId)
+        {
+            return _appointmentDAL.CheckPatientOverlap(patientId, timeSlotId);
+        }
+
+        public AppointmentsDTO CheckPatientOverlap(int patientId, int timeSlotId, int excludeAppointmentId = -1)
+        {
+            return _appointmentDAL.CheckPatientOverlap(patientId, timeSlotId, excludeAppointmentId);
         }
     }
 }

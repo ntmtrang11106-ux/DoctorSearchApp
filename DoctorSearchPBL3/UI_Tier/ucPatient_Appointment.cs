@@ -24,11 +24,20 @@ namespace UI_Tier
         private int _pageSize = 10;     // Số lượng 1 trang
         private int _currentPage = 1;  // Trang hiện tại
 
+        private int _patientId = 0;
+
+        public void SetPatientId(int id)
+        {
+            _patientId = id;
+            InitData();
+        }
+
         public void InitData()
         {
             try
             {
-                _allApps = _bus.GetAll();
+                int currentId = _patientId > 0 ? _patientId : GlobalAccount.GetProfileId();
+                _allApps = _bus.GetAppointmentsByPatientId(currentId);
                 _currentPage = 1; // Reset về trang 1
                 DisplayPage(_currentPage);
             }
@@ -63,6 +72,10 @@ namespace UI_Tier
                 ucAppItem card = new ucAppItem();
                 card.SetupCard(ap, ucAppItem.AppCardMode.PatientView);
                 card.Margin = new Padding(20, 10, 20, 10);
+
+                // Ép chiều ngang Full Width (trừ đi 40px cho thanh cuộn và lề)
+                card.Width = flpAppItem.ClientSize.Width - 40;
+                card.Height = 252;
 
                 // CAN THIỆP BỐ CỤC TỪ BÊN NGOÀI ĐỂ TRÁNH ĐÈ CHỮ
                 var btnStatus = card.Controls.Find("btnStatus", true).FirstOrDefault();
@@ -118,7 +131,7 @@ namespace UI_Tier
                 {
                     if (ctrl is ucAppItem card)
                     {
-                        card.Width = flpAppItem.Width - 80;
+                        card.Width = flpAppItem.ClientSize.Width - 40;
                     }
                 }
             };

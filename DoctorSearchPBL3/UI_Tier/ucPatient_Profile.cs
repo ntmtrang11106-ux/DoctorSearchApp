@@ -29,13 +29,13 @@ namespace UI_Tier
             SetEditMode(false, "medical");
 
             // Wire up events
-            this.HandleCreated += (s, e) => LoadPatientData();
+            this.HandleCreated += (s, e) => InitData();
             picAvatar.Cursor = Cursors.Hand;
             picAvatar.Click += picAvatar_Click;
             dtpBirthday.ValueChanged += dtpBirthday_ValueChanged;
         }
 
-        private void LoadPatientData()
+        public void InitData()
         {
             int profileId = DTO_Tier.GlobalAccount.GetProfileId();
             

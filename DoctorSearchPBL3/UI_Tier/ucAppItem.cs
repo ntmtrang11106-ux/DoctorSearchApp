@@ -80,7 +80,7 @@ namespace UI_Tier
         private void SetupButtons(AppCardMode mode, string status)
         {
             // Dọn dẹp các nút trước khi hiện cái cần thiết
-            foreach (Button btn in new Button[] { btnAccept, btnCancel, btnRemove, btnBook, btnRate, btnViewRecord })
+            foreach (Button btn in new Button[] { btnAccept, btnCancel, btnRemove, btnBook, btnRate, btnViewRecord, btnEdit })
             {
                 btn.Visible = false;
             }
@@ -169,6 +169,7 @@ namespace UI_Tier
             else
             {
                 lblName.Text = data.Patient?.User?.FullName ?? "Bệnh nhân chưa đặt";
+                lblPhoneNumber.Text = data.Patient?.User?.PhoneNumber ?? "0000000000";
             }
 
             label2.Visible = lblSymptoms.Visible = (data.Status != "Open");

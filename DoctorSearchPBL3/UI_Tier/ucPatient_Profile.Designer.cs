@@ -99,7 +99,6 @@ namespace UI_Tier
             // pnlSecurity
             // 
             pnlSecurity.BackColor = Color.White;
-            pnlSecurity.Controls.Add(pnlPassActions);
             pnlSecurity.Controls.Add(pnlChangePassword);
             pnlSecurity.Controls.Add(lblSecurityHint);
             pnlSecurity.Controls.Add(btnChangePassword);
@@ -108,7 +107,7 @@ namespace UI_Tier
             pnlSecurity.Location = new Point(52, 1516);
             pnlSecurity.Margin = new Padding(0, 0, 0, 38);
             pnlSecurity.Name = "pnlSecurity";
-            pnlSecurity.Size = new Size(2093, 567);
+            pnlSecurity.Size = new Size(2093, 579);
             pnlSecurity.TabIndex = 2;
             pnlSecurity.Paint += SectionPanel_Paint;
             // 
@@ -116,7 +115,7 @@ namespace UI_Tier
             // 
             pnlPassActions.Controls.Add(btnCancelPass);
             pnlPassActions.Controls.Add(btnSavePass);
-            pnlPassActions.Location = new Point(39, 469);
+            pnlPassActions.Location = new Point(52, 373);
             pnlPassActions.Margin = new Padding(4);
             pnlPassActions.Name = "pnlPassActions";
             pnlPassActions.Size = new Size(585, 77);
@@ -158,6 +157,7 @@ namespace UI_Tier
             // 
             // pnlChangePassword
             // 
+            pnlChangePassword.Controls.Add(pnlPassActions);
             pnlChangePassword.Controls.Add(txtConfirmPass);
             pnlChangePassword.Controls.Add(lblConfirmPass);
             pnlChangePassword.Controls.Add(txtNewPass);
@@ -167,7 +167,7 @@ namespace UI_Tier
             pnlChangePassword.Location = new Point(38, 90);
             pnlChangePassword.Margin = new Padding(4);
             pnlChangePassword.Name = "pnlChangePassword";
-            pnlChangePassword.Size = new Size(1373, 361);
+            pnlChangePassword.Size = new Size(1373, 462);
             pnlChangePassword.TabIndex = 3;
             pnlChangePassword.Visible = false;
             // 

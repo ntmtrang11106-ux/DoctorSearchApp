@@ -80,6 +80,17 @@ namespace UI_Tier
             }
 
             UserControl selectedUC = _tabMapping[clickedPanel];
+            
+            // Tự động làm mới dữ liệu nếu là tab Lịch hẹn hoặc Hồ sơ
+            if (selectedUC is ucPatient_Appointment appointment)
+            {
+                appointment.InitData();
+            }
+            else if (selectedUC is ucPatient_Profile profile)
+            {
+                profile.InitData();
+            }
+
             if (_currentUC == selectedUC) return;
 
             // 3. Hiển thị

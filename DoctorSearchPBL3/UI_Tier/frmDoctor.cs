@@ -76,6 +76,11 @@ namespace UI_Tier
                     var doctor = bus.GetDoctorById(docId);
                     if (doctor != null) overview.SetDoctorData(doctor);
                 }
+                else if (uc is ucDoctor_Appointment appointment)
+                {
+                    int docId = GlobalAccount.GetProfileId();
+                    appointment.SetDoctorId(docId);
+                }
 
                 uc.Dock = DockStyle.Fill;
                 uc.Visible = false;
