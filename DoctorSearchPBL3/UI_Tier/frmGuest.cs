@@ -1,82 +1,72 @@
-﻿using BUS_Tier;
+using BUS_Tier;
 using DTO_Tier;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Text;
-using System.Windows.Forms;
 
 namespace UI_Tier
 {
     public partial class frmGuest : Form
     {
-        // 1. Khai báo BUS để tìm kiếm tổng hợp (Cái này Trang mới viết này)
-        private SearchBUS _searchBUS = new SearchBUS();
+        private readonly SearchBUS _searchBUS = new SearchBUS();
+        private readonly DoctorBUS _doctorBus = new DoctorBUS();
+        private readonly ContentBUS _contentBus = new ContentBUS();
+        private readonly DepartmentBUS _departmentBus = new DepartmentBUS();
 
-        // Khai báo một lần ở cấp độ class để tái sử dụng
-        private DoctorBUS _bus = new DoctorBUS();
+        private readonly CheckedListBox _clbGuestDepartments = new CheckedListBox();
+        private readonly ComboBox _cboGuestGender = new ComboBox();
+        private readonly ComboBox _cboGuestDoctorSort = new ComboBox();
+        private readonly ComboBox _cboGuestContentSort = new ComboBox();
 
-        private ContentBUS _articleBus = new ContentBUS();
-
-        private List<DoctorDTO> _allDoctors = new List<DoctorDTO>();
-        private int _pageSize = 8;     // Số lượng 1 trang
-        private int _currentPage = 1;  // Trang hiện tại
+        private List<DoctorDTO> _allDoctors = new();
+        private readonly int _pageSize = 8;
+        private int _currentPage = 1;
 
         public frmGuest()
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
-
-            // Bo góc cho Button Đăng nhập
             UIHelper.ApplyRoundedRegion(btnLogin, 15);
-
         }
 
-
-        // Override CreateParams để bật WS_EX_COMPOSITED, giúp giảm nhấp nháy khi vẽ lại Form
         protected override CreateParams CreateParams
         {
             get
             {
                 CreateParams cp = base.CreateParams;
-                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
+                cp.ExStyle |= 0x02000000;
                 return cp;
             }
         }
 
-        private void flowLayoutPanel2_Paint(object sender, PaintEventArgs e)
+        private void frmGuest_Load(object sender, EventArgs e)
         {
-
+            BuildGuestFilters();
+            InitData();
         }
 
-        // Hàm này gọi 1 lần lúc Load Form để lấy hết data từ DB về máy
+        private void flowLayoutPanel2_Paint(object sender, PaintEventArgs e)
+        {
+        }
+
         public void InitData()
         {
             try
             {
-                // 1. Nạp Bác sĩ (Trang làm rồi)
-                _allDoctors = _bus.GetListDoctors();
+                _allDoctors = _doctorBus.GetListDoctors();
+                _currentPage = 1;
                 DisplayPage(_currentPage);
 
-                // 2. Nạp Bài viết (Mới thêm nè)
-                // Gọi ArticleBUS để lấy dữ liệu ban đầu
-                var initialArticles = _articleBus.GetInitialArticles();
+                var initialContents = _contentBus.GetInitialContents();
+                flpArticles.Controls.Clear();
 
-                //flpArticles.Controls.Clear();
-                foreach (var art in initialArticles)
+                foreach (var content in initialContents)
                 {
-                    UCCardArticle ucArt = new UCCardArticle();
-                    ucArt.SetData(art);
-                    // Gán Margin cho đẹp, đồng bộ với Card Bác sĩ
-                    ucArt.Margin = new Padding(15);
-                    //flpArticles.Controls.Add(ucArt);
+                    var card = new UCCardArticle();
+                    card.SetData(content);
+                    card.Margin = new Padding(15);
+                    flpArticles.Controls.Add(card);
                 }
 
-                // Cập nhật số lượng lên tab cho chuyên nghiệp
-                //tabPage2.Text = $"Bài viết ({initialArticles.Count})";
+                tabPage1.Text = $"Bác sĩ ({_allDoctors.Count})";
+                tabPage2.Text = $"Bài viết ({initialContents.Count})";
             }
             catch (Exception ex)
             {
@@ -84,63 +74,46 @@ namespace UI_Tier
             }
         }
 
-        // Hàm này dùng để vẽ 8 ông bác sĩ lên FlowLayoutPanel dựa vào số trang
         public void DisplayPage(int pageNumber)
         {
-            flpDoctors.SuspendLayout(); // Tạm dừng vẽ giao diện
+            flpDoctors.SuspendLayout();
 
             while (flpDoctors.Controls.Count > 0)
             {
                 var control = flpDoctors.Controls[0];
                 flpDoctors.Controls.RemoveAt(0);
-                control.Dispose(); // Xóa hẳn khỏi bộ nhớ
+                control.Dispose();
             }
 
-            if (_allDoctors == null || _allDoctors.Count == 0) return;
+            if (_allDoctors.Count == 0)
+            {
+                lblPageStatus.Text = "Trang 0 / 0";
+                flpDoctors.ResumeLayout();
+                return;
+            }
 
-            // Tính toán vị trí bắt đầu và kết thúc
-            // Trang 1: lấy từ 0 đến 7
-            // Trang 2: lấy từ 8 đến 15
             int startIndex = (pageNumber - 1) * _pageSize;
-
-            // Lấy ra 8 ông (hoặc ít hơn nếu là trang cuối)
             var pageItems = _allDoctors.Skip(startIndex).Take(_pageSize).ToList();
 
-            foreach (var doc in pageItems)
+            foreach (var doctor in pageItems)
             {
-                UCCardDoctor card = new UCCardDoctor();
-                card.SetDoctorData(doc);
+                var card = new UCCardDoctor();
+                card.SetDoctorData(doctor);
                 card.Margin = new Padding(25);
                 flpDoctors.Controls.Add(card);
             }
 
-            // Cập nhật cái nhãn hiển thị số trang (ví dụ: Trang 1 / 10)
             int totalPages = (int)Math.Ceiling((double)_allDoctors.Count / _pageSize);
             lblPageStatus.Text = $"Trang {_currentPage} / {totalPages}";
-
-            flpDoctors.ResumeLayout(); // Cho phép vẽ lại giao diện
+            flpDoctors.ResumeLayout();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            // 1. Khởi tạo Form Login
-            frmLogin loginForm = new frmLogin();
-
-            // 2. Ẩn Form hiện tại (frmGuest)
-            this.Hide();
-
-            // 3. Hiển thị Form Login
+            var loginForm = new frmLogin();
+            Hide();
             loginForm.ShowDialog();
-            // Dùng ShowDialog để nó chặn không cho tương tác với Form cũ 
-            // hoặc dùng loginForm.Show() nếu muốn mở tự do.
-
-            // 4. (Tùy chọn) Sau khi đóng Login thì hiện lại Guest
-            this.Show();
-        }
-
-        private void frmGuest_Load(object sender, EventArgs e)
-        {
-            InitData();
+            Show();
         }
 
         private void lblPrev_Click(object sender, EventArgs e)
@@ -164,71 +137,194 @@ namespace UI_Tier
 
         private void txtSearchBar_TextChanged(object sender, EventArgs e)
         {
-            // 1. Kiểm tra độ dài từ khóa
-            if (txtSearchBar.Text.Trim().Length > 0 && txtSearchBar.Text.Trim().Length < 2)
+            string keyword = txtSearchBar.Text.Trim();
+
+            if (string.IsNullOrEmpty(keyword))
             {
-                // Hiện dấu chấm than đỏ báo lỗi
-                errorProvider1.SetError(txtSearchBar, "Vui lòng nhập ít nhất 2 ký tự để tìm kiếm!");
-                return; // Dừng lại không tìm kiếm
+                errorProvider1.SetError(txtSearchBar, "");
+                RunGuestSearch();
+                return;
+            }
+
+            if (keyword.Length >= 2)
+            {
+                errorProvider1.SetError(txtSearchBar, "");
+                RunGuestSearch();
             }
             else
             {
-                // Xóa dấu báo lỗi nếu đã nhập đủ hoặc để trống
-                errorProvider1.SetError(txtSearchBar, "");
+                errorProvider1.SetError(txtSearchBar, "Vui lòng nhập ít nhất 2 ký tự!");
             }
         }
 
         private void txtSearchBar_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            if (e.KeyCode != Keys.Enter)
             {
-                e.SuppressKeyPress = true;
-                string keyword = txtSearchBar.Text.Trim();
-
-                if (keyword.Length < 2 && keyword.Length > 0)
-                {
-                    errorProvider1.SetError(txtSearchBar, "Vui lòng nhập ít nhất 2 ký tự!");
-                    return;
-                }
-
-                List<string> selectedSpecs = new List<string>();
-                string gender = null;
-                string sortDoc = "Rating";
-                string sortArt = "Newest";
-
-                ExecuteUI_Search(keyword, selectedSpecs, gender, sortDoc, sortArt);
+                return;
             }
-        } // <--- DẤU NGOẶC NÀY CỰC KỲ QUAN TRỌNG, PHẢI ĐÓNG Ở ĐÂY!
 
-        //Bây giờ mới viết hàm ExecuteUI_Search nằm RIÊNG BIỆT ra ngoài
-        private void ExecuteUI_Search(string key, List<string> specs, string gen, string sDoc, string sArt)
+            e.SuppressKeyPress = true;
+            string keyword = txtSearchBar.Text.Trim();
+
+            if (keyword.Length is > 0 and < 2)
+            {
+                errorProvider1.SetError(txtSearchBar, "Vui lòng nhập ít nhất 2 ký tự!");
+                return;
+            }
+
+            RunGuestSearch();
+        }
+
+        private void ExecuteUI_Search(
+            string keyword,
+            List<string> departments,
+            string gender,
+            string doctorSort,
+            string contentSort)
         {
-            var result = _searchBUS.ExecuteIntegratedSearch(key, specs, gen, sDoc, sArt);
+            var result = _searchBUS.ExecuteIntegratedSearch(
+                keyword,
+                departments,
+                gender,
+                doctorSort,
+                contentSort);
 
-            List<DoctorDTO> doctors = result.doctors;
-            List<ContentDTO> articles = result.contents;
+            _allDoctors = result.doctors;
+            _currentPage = 1;
+            DisplayPage(_currentPage);
 
-            // Đổ Bác sĩ
-            flpDoctors.Controls.Clear();
-            foreach (var doc in doctors)
-            {
-                UCCardDoctor uc = new UCCardDoctor();
-                uc.SetDoctorData(doc); // Dùng đúng tên hàm SetDoctorData của Trang nhé
-                flpDoctors.Controls.Add(uc);
-            }
-
-            // Đổ Bài viết
             flpArticles.Controls.Clear();
-            foreach (var art in articles)
+            foreach (var content in result.contents)
             {
-                UCCardArticle ucArt = new UCCardArticle();
-                ucArt.SetData(art);
-                flpArticles.Controls.Add(ucArt);
+                var card = new UCCardArticle();
+                card.SetData(content);
+                card.Margin = new Padding(15);
+                flpArticles.Controls.Add(card);
             }
 
-            // Cập nhật Tab (Nhớ kiểm tra tên tabPage1, tabPage2 của Trang nhé)
-            tabPage1.Text = $"Bác sĩ ({doctors.Count})";
-            tabPage2.Text = $"Bài viết ({articles.Count})";
+            tabPage1.Text = $"Bác sĩ ({result.doctors.Count})";
+            tabPage2.Text = $"Bài viết ({result.contents.Count})";
+        }
+
+        private void BuildGuestFilters()
+        {
+            flpFilter.SuspendLayout();
+            flpFilter.Controls.Clear();
+            flpFilter.WrapContents = false;
+            flpFilter.AutoScroll = true;
+
+            ConfigureDepartmentFilter();
+            ConfigureCombo(_cboGuestGender, new[] { "Tất cả", "Nam", "Nữ" });
+            ConfigureCombo(_cboGuestDoctorSort, new[]
+            {
+                "Rating cao đến thấp",
+                "Giá khám thấp đến cao",
+                "Giá khám cao đến thấp",
+                "Năm kinh nghiệm cao đến thấp"
+            });
+            ConfigureCombo(_cboGuestContentSort, new[]
+            {
+                "Mới nhất",
+                "Xem nhiều nhất",
+                "Xem ít nhất"
+            });
+
+            flpFilter.Controls.Add(CreateFilterPanel("Chuyên khoa", _clbGuestDepartments, 320));
+            flpFilter.Controls.Add(CreateFilterPanel("Giới tính", _cboGuestGender, 180));
+            flpFilter.Controls.Add(CreateFilterPanel("Sort bác sĩ", _cboGuestDoctorSort, 260));
+            flpFilter.Controls.Add(CreateFilterPanel("Sort bài viết", _cboGuestContentSort, 220));
+
+            _clbGuestDepartments.ItemCheck += (_, _) => BeginInvoke(new Action(RunGuestSearch));
+            _cboGuestGender.SelectedIndexChanged += (_, _) => RunGuestSearch();
+            _cboGuestDoctorSort.SelectedIndexChanged += (_, _) => RunGuestSearch();
+            _cboGuestContentSort.SelectedIndexChanged += (_, _) => RunGuestSearch();
+
+            flpFilter.ResumeLayout();
+        }
+
+        private void ConfigureDepartmentFilter()
+        {
+            _clbGuestDepartments.Items.Clear();
+            _clbGuestDepartments.CheckOnClick = true;
+            _clbGuestDepartments.Font = new Font("Segoe UI", 9.5F);
+            _clbGuestDepartments.IntegralHeight = false;
+            _clbGuestDepartments.Height = 88;
+
+            foreach (var department in _departmentBus.GetDepartmentsForUI())
+            {
+                _clbGuestDepartments.Items.Add(department.DepartmentName);
+            }
+        }
+
+        private static void ConfigureCombo(ComboBox comboBox, IEnumerable<string> items)
+        {
+            comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox.Font = new Font("Segoe UI", 10F);
+            comboBox.Items.Clear();
+            comboBox.Items.AddRange(items.Cast<object>().ToArray());
+            if (comboBox.Items.Count > 0)
+            {
+                comboBox.SelectedIndex = 0;
+            }
+        }
+
+        private static Panel CreateFilterPanel(string title, Control control, int width)
+        {
+            var panel = new Panel
+            {
+                Width = width,
+                Height = 100,
+                Margin = new Padding(10, 6, 10, 6)
+            };
+
+            var label = new Label
+            {
+                Text = title,
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                AutoSize = false,
+                Width = width,
+                Height = 24,
+                Location = new Point(0, 0)
+            };
+
+            control.Width = width;
+            control.Location = new Point(0, 30);
+            if (control is ComboBox combo)
+            {
+                combo.Height = 40;
+            }
+
+            panel.Controls.Add(label);
+            panel.Controls.Add(control);
+            return panel;
+        }
+
+        private void RunGuestSearch()
+        {
+            var keyword = txtSearchBar.Text.Trim();
+            var selectedDepartments = _clbGuestDepartments.CheckedItems
+                .Cast<object>()
+                .Select(item => item.ToString())
+                .Where(text => !string.IsNullOrWhiteSpace(text))
+                .Select(text => text!)
+                .ToList();
+
+            var gender = _cboGuestGender.SelectedItem?.ToString() ?? "Tất cả";
+            var doctorSort = _cboGuestDoctorSort.SelectedItem?.ToString() ?? "Rating cao đến thấp";
+            var contentSort = _cboGuestContentSort.SelectedItem?.ToString() ?? "Mới nhất";
+
+            if (string.IsNullOrWhiteSpace(keyword) &&
+                selectedDepartments.Count == 0 &&
+                gender == "Tất cả" &&
+                doctorSort == "Rating cao đến thấp" &&
+                contentSort == "Mới nhất")
+            {
+                InitData();
+                return;
+            }
+
+            ExecuteUI_Search(keyword, selectedDepartments, gender, doctorSort, contentSort);
         }
     }
 }

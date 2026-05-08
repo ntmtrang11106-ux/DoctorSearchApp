@@ -1,131 +1,57 @@
-﻿//using BUS_Tier;
-//using DTO_Tier;
-//using System;
-//using System.Collections.Generic;
-//using System.ComponentModel;
-//using System.Data;
-//using System.Drawing;
-//using System.Text;
-//using System.Windows.Forms;
-
-//namespace UI_Tier
+﻿//public List<DoctorDTO> SearchDoctors(string? keyword, List<string>? departmentNames, string? gender, string? sortType)
 //{
-//    public partial class ucPatient_SearchDoc : UserControl
+//    // Dùng context cục bộ để đảm bảo an toàn dữ liệu và hiệu năng
+//    using var context = new AppDbContext();
+
+//    // 1. Khởi tạo truy vấn cơ bản với các điều kiện bắt buộc
+//    var query = context.Doctors
+//        .Include(d => d.User)
+//        .Include(d => d.Department)
+//        .Include(d => d.Reviews)
+//        .Where(d => d.IsApproved && d.IsActive && !d.IsDeleted)
+//        .AsQueryable();
+
+//    // 2. Lọc theo TỪ KHÓA (Nâng cấp: Tìm trên nhiều trường)
+//    if (!string.IsNullOrWhiteSpace(keyword))
 //    {
-//        // Khai báo một lần ở cấp độ class để tái sử dụng
-//        private DoctorBUS _bus = new DoctorBUS();
-
-//        private List<DoctorDTO> _allDoctors = new List<DoctorDTO>();
-//        private int _pageSize = 8;     // Số lượng 1 trang
-//        private int _currentPage = 1;  // Trang hiện tại
-
-//        public ucPatient_SearchDoc()
-//        {
-//            InitializeComponent();
-//            UIHelper.SetDoubleBuffered(this);
-//        }
-
-//        // Override CreateParams để bật WS_EX_COMPOSITED, giúp giảm nhấp nháy khi vẽ lại UserControl
-//        protected override CreateParams CreateParams
-//        {
-//            get
-//            {
-//                CreateParams cp = base.CreateParams;
-//                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
-//                return cp;
-//            }
-//        }
-
-//        public void InitData()
-//        {
-//            try
-//            {
-//                _allDoctors = _bus.GetListDoctors();
-//                _currentPage = 1; // Reset về trang 1
-//                DisplayPage(_currentPage);
-//            }
-//            catch (Exception ex)
-//            {
-//                MessageBox.Show("Lỗi: " + ex.Message);
-//            }
-//        }
-
-//        // Hàm này dùng để vẽ 8 ông bác sĩ lên FlowLayoutPanel dựa vào số trang
-//        public void DisplayPage(int pageNumber)
-//        {
-//            flpDoctors.SuspendLayout(); // Tạm dừng vẽ giao diện
-
-//            while (flpDoctors.Controls.Count > 0)
-//            {
-//                var control = flpDoctors.Controls[0];
-//                flpDoctors.Controls.RemoveAt(0);
-//                control.Dispose(); // Xóa hẳn khỏi bộ nhớ
-//            }
-
-//            if (_allDoctors == null || _allDoctors.Count == 0) return;
-
-//            // Tính toán vị trí bắt đầu và kết thúc
-//            // Trang 1: lấy từ 0 đến 7
-//            // Trang 2: lấy từ 8 đến 15
-//            int startIndex = (pageNumber - 1) * _pageSize;
-
-//            // Lấy ra 8 ông (hoặc ít hơn nếu là trang cuối)
-//            var pageItems = _allDoctors.Skip(startIndex).Take(_pageSize).ToList();
-
-//            foreach (var doc in pageItems)
-//            {
-//                UCCardDoctor card = new UCCardDoctor();
-//                card.SetDoctorData(doc);
-//                card.Margin = new Padding(25);
-//                flpDoctors.Controls.Add(card);
-//            }
-
-//            // Cập nhật cái nhãn hiển thị số trang (ví dụ: Trang 1 / 10)
-//            int totalPages = (int)Math.Ceiling((double)_allDoctors.Count / _pageSize);
-//            lblPageStatus.Text = $"Trang {_currentPage} / {totalPages}";
-
-//            flpDoctors.ResumeLayout(); // Cho phép vẽ lại giao diện
-//        }
-
-//        private void button1_Click(object sender, EventArgs e)
-//        {
-//            // 1. Khởi tạo Form Login
-//            frmLogin loginForm = new frmLogin();
-
-//            // 2. Ẩn Form hiện tại (frmGuest)
-//            this.Hide();
-
-//            // 3. Hiển thị Form Login
-//            loginForm.ShowDialog();
-//            // Dùng ShowDialog để nó chặn không cho tương tác với Form cũ 
-//            // hoặc dùng loginForm.Show() nếu muốn mở tự do.
-
-//            // 4. (Tùy chọn) Sau khi đóng Login thì hiện lại Guest
-//            this.Show();
-//        }
-
-//        private void ucPatient_SearchDoc_Load(object sender, EventArgs e)
-//        {
-//            InitData();
-//        }
-
-//        private void lblPrev_Click(object sender, EventArgs e)
-//        {
-//            if (_currentPage > 1)
-//            {
-//                _currentPage--;
-//                DisplayPage(_currentPage);
-//            }
-//        }
-
-//        private void lblNext_Click(object sender, EventArgs e)
-//        {
-//            int totalPages = (int)Math.Ceiling((double)_allDoctors.Count / _pageSize);
-//            if (_currentPage < totalPages)
-//            {
-//                _currentPage++;
-//                DisplayPage(_currentPage);
-//            }
-//        }
+//        string k = keyword.Trim().ToLower();
+//        query = query.Where(d => d.User.FullName.ToLower().Contains(k)
+//                              || d.Department.DepartmentName.ToLower().Contains(k)
+//                              || d.Biography.ToLower().Contains(k));
 //    }
+
+//    // 3. Lọc theo GIỚI TÍNH
+//    if (!string.IsNullOrWhiteSpace(gender) && gender != "Tất cả")
+//        query = query.Where(d => d.User.Gender == gender);
+
+//    // 4. Lọc theo KHOA (Department)
+//    if (departmentNames != null && departmentNames.Any() && !departmentNames.Contains("Tất cả"))
+//        query = query.Where(d => d.Department != null && departmentNames.Contains(d.Department.DepartmentName));
+
+//    // Thực thi truy vấn và đưa về RAM để xử lý logic phức tạp (Client-side)
+//    var result = query.ToList();
+
+//    // 5. Tính toán Rating và Review (Logic nghiệp vụ)
+//    foreach (var doctor in result)
+//    {
+//        var visibleReviews = doctor.Reviews?.Where(r => r.IsVisible && !r.IsDeleted).ToList() ?? new List<ReviewsDTO>();
+//        doctor.TotalReviews = visibleReviews.Count;
+//        doctor.AverageRating = visibleReviews.Any() ? Math.Round(visibleReviews.Average(r => r.Rating), 1) : 0;
+//    }
+
+//    // 6. Sắp xếp THÔNG MINH và tránh xung đột
+//    return sortType switch
+//    {
+//        "Giá khám thấp đến cao" => result.OrderBy(d => d.ConsultationFee ?? decimal.MaxValue).ToList(),
+//        "Giá khám cao đến thấp" => result.OrderByDescending(d => d.ConsultationFee ?? 0).ToList(),
+//        "Năm kinh nghiệm cao đến thấp" => result.OrderByDescending(d => d.ExperienceYears ?? 0).ToList(),
+//        "Rating cao đến thấp" => result.OrderByDescending(d => d.AverageRating).ToList(),
+
+//        // MẶC ĐỊNH hoặc Sắp xếp theo ĐỘ LIÊN QUAN khi có keyword
+//        _ => !string.IsNullOrWhiteSpace(keyword)
+//             ? result.OrderByDescending(d => d.User.FullName.StartsWith(keyword, StringComparison.OrdinalIgnoreCase))
+//                     .ThenByDescending(d => d.User.FullName.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+//                     .ToList()
+//             : result.OrderByDescending(d => d.CreatedAt).ToList()
+//    };
 //}

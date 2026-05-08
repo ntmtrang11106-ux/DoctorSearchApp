@@ -10,17 +10,17 @@ namespace UI_Tier
 {
     public partial class frmDoctor : Form
     {
+        private readonly ucDoctor_Appointment _appointmentControl = new ucDoctor_Appointment();
+        private readonly ucSearchWorkspace _searchControl = new ucSearchWorkspace();
+
         public frmDoctor()
         {
             InitializeComponent();
 
             UIHelper.ApplyRoundedRegion(btnLogout, 15);
-
-            // Add main card in panel
-            pnMain.Controls.Clear();
-            ucDoctor_Appointment AppointmentControl = new ucDoctor_Appointment();
-            AppointmentControl.Dock = DockStyle.Fill; // Đảm bảo UserControl chiếm toàn bộ pnMain
-            pnMain.Controls.Add(AppointmentControl);
+            UIHelper.ApplyRoundedRegion(btnAppointments, 15);
+            UIHelper.ApplyRoundedRegion(btnSearch, 15);
+            ShowUserControl(_appointmentControl);
 
         }
 
@@ -61,6 +61,16 @@ namespace UI_Tier
         private void frmDoctor_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnAppointments_Click(object sender, EventArgs e)
+        {
+            ShowUserControl(_appointmentControl);
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            ShowUserControl(_searchControl);
         }
 
         // Hàm này dùng để hiển thị hộp thoại (UserControl) dưới dạng Overlay (nền mờ phía sau)

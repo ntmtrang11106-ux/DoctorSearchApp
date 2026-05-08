@@ -6,7 +6,7 @@ namespace BUS_Tier
     public class SearchBUS
     {
         private readonly DoctorDAL _doctorDAL = new DoctorDAL();
-        private readonly ContentDAL _articleDAL = new ContentDAL();
+        private readonly ContentDAL _contentDAL = new ContentDAL();
 
         public (List<DoctorDTO> doctors, List<ContentDTO> contents) ExecuteIntegratedSearch(
             string? keyword,
@@ -16,9 +16,27 @@ namespace BUS_Tier
             string? sortContent)
         {
             var doctors = _doctorDAL.SearchDoctors(keyword, departments, gender, sortDoctor);
-            var contents = _articleDAL.SearchContents(keyword, departments, sortContent);
+            var contents = _contentDAL.SearchContents(keyword, departments, sortContent);
 
             return (doctors, contents);
+        }
+
+        public List<DoctorDTO> ExecuteDoctorOnlySearch(
+            string? keyword,
+            List<string>? departments,
+            string? gender,
+            string? sortDoctor)
+        {
+            return _doctorDAL.SearchDoctors(keyword, departments, gender, sortDoctor);
+        }
+
+        public List<ContentDTO> ExecuteContentOnlySearch(
+            string? keyword,
+            List<string>? departments,
+            string? sortContent,
+            string? contentType = null)
+        {
+            return _contentDAL.SearchContents(keyword, departments, sortContent, contentType);
         }
     }
 }

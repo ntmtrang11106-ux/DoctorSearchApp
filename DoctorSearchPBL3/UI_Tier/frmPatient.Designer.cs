@@ -231,7 +231,7 @@
             label7.Name = "label7";
             label7.Size = new Size(175, 47);
             label7.TabIndex = 2;
-            label7.Text = "Tìm bác sĩ";
+            label7.Text = "Tìm kiếm";
             // 
             // label2
             // 

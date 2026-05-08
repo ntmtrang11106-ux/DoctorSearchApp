@@ -41,22 +41,13 @@ namespace UI_Tier
             lblPrev = new Label();
             lblNext = new Label();
             flpFilter = new FlowLayoutPanel();
-            btnAll = new Button();
-            btnCardiology = new Button();
-            btnInternalMedicine = new Button();
-            btnSurgery = new Button();
-            btnObstetrics = new Button();
-            btnDermatology = new Button();
-            btnENT = new Button();
-            btnOphthalmology = new Button();
-            btnPediatrics = new Button();
             pictureBox2 = new PictureBox();
             pictureBox1 = new PictureBox();
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
-            flpDoctors = new FlowLayoutPanel();
             tabPage2 = new TabPage();
             flpArticles = new FlowLayoutPanel();
+            flpDoctors = new FlowLayoutPanel();
             panel3 = new Panel();
             label2 = new Label();
             label1 = new Label();
@@ -103,11 +94,11 @@ namespace UI_Tier
             txtSearchBar.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtSearchBar.Location = new Point(144, 21);
             txtSearchBar.Name = "txtSearchBar";
-            txtSearchBar.PlaceholderText = "Tìm kiếm tên bác sĩ ...";
-            txtSearchBar.Size = new Size(1653, 57);
+            txtSearchBar.PlaceholderText = "Tìm bác sĩ, khoa hoặc nội dung...";
+            txtSearchBar.Size = new Size(1653, 44);
             txtSearchBar.TabIndex = 1;
             txtSearchBar.TextChanged += txtSearchBar_TextChanged;
-            //txtSearchBar.KeyDown += txtSearchBar_KeyDown;
+            txtSearchBar.KeyDown += txtSearchBar_KeyDown;
             // 
             // pnlSearch
             // 
@@ -143,7 +134,7 @@ namespace UI_Tier
             lblPageStatus.Location = new Point(1379, 14);
             lblPageStatus.Name = "lblPageStatus";
             lblPageStatus.RightToLeft = RightToLeft.No;
-            lblPageStatus.Size = new Size(67, 41);
+            lblPageStatus.Size = new Size(49, 30);
             lblPageStatus.TabIndex = 2;
             lblPageStatus.Text = "1/...";
             // 
@@ -154,7 +145,7 @@ namespace UI_Tier
             lblPrev.Font = new Font("Segoe UI", 11F);
             lblPrev.Location = new Point(1140, 14);
             lblPrev.Name = "lblPrev";
-            lblPrev.Size = new Size(219, 41);
+            lblPrev.Size = new Size(160, 30);
             lblPrev.TabIndex = 1;
             lblPrev.Text = "Trang trước <<";
             lblPrev.Click += lblPrev_Click;
@@ -166,7 +157,7 @@ namespace UI_Tier
             lblNext.Font = new Font("Segoe UI", 11F);
             lblNext.Location = new Point(1554, 14);
             lblNext.Name = "lblNext";
-            lblNext.Size = new Size(194, 41);
+            lblNext.Size = new Size(141, 30);
             lblNext.TabIndex = 0;
             lblNext.Text = ">> Trang sau";
             lblNext.Click += lblNext_Click;
@@ -174,112 +165,12 @@ namespace UI_Tier
             // flpFilter
             // 
             flpFilter.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            flpFilter.Controls.Add(btnAll);
-            flpFilter.Controls.Add(btnCardiology);
-            flpFilter.Controls.Add(btnInternalMedicine);
-            flpFilter.Controls.Add(btnSurgery);
-            flpFilter.Controls.Add(btnObstetrics);
-            flpFilter.Controls.Add(btnDermatology);
-            flpFilter.Controls.Add(btnENT);
-            flpFilter.Controls.Add(btnOphthalmology);
-            flpFilter.Controls.Add(btnPediatrics);
             flpFilter.Location = new Point(144, 91);
             flpFilter.Name = "flpFilter";
             flpFilter.Padding = new Padding(10);
             flpFilter.Size = new Size(1687, 132);
             flpFilter.TabIndex = 3;
             flpFilter.Paint += flowLayoutPanel2_Paint;
-            // 
-            // btnAll
-            // 
-            btnAll.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnAll.ForeColor = Color.Black;
-            btnAll.Location = new Point(13, 13);
-            btnAll.Name = "btnAll";
-            btnAll.Size = new Size(255, 55);
-            btnAll.TabIndex = 0;
-            btnAll.Text = "Tất cả";
-            btnAll.UseVisualStyleBackColor = true;
-            // 
-            // btnCardiology
-            // 
-            btnCardiology.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnCardiology.Location = new Point(274, 13);
-            btnCardiology.Name = "btnCardiology";
-            btnCardiology.Size = new Size(255, 55);
-            btnCardiology.TabIndex = 3;
-            btnCardiology.Text = "Tim mạch";
-            btnCardiology.UseVisualStyleBackColor = true;
-            // 
-            // btnInternalMedicine
-            // 
-            btnInternalMedicine.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnInternalMedicine.Location = new Point(535, 13);
-            btnInternalMedicine.Name = "btnInternalMedicine";
-            btnInternalMedicine.Size = new Size(255, 55);
-            btnInternalMedicine.TabIndex = 3;
-            btnInternalMedicine.Text = "Nội khoa";
-            btnInternalMedicine.UseVisualStyleBackColor = true;
-            // 
-            // btnSurgery
-            // 
-            btnSurgery.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnSurgery.Location = new Point(796, 13);
-            btnSurgery.Name = "btnSurgery";
-            btnSurgery.Size = new Size(255, 55);
-            btnSurgery.TabIndex = 3;
-            btnSurgery.Text = "Ngoại khoa";
-            btnSurgery.UseVisualStyleBackColor = true;
-            // 
-            // btnObstetrics
-            // 
-            btnObstetrics.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnObstetrics.Location = new Point(1057, 13);
-            btnObstetrics.Name = "btnObstetrics";
-            btnObstetrics.Size = new Size(255, 55);
-            btnObstetrics.TabIndex = 3;
-            btnObstetrics.Text = "Sản khoa";
-            btnObstetrics.UseVisualStyleBackColor = true;
-            // 
-            // btnDermatology
-            // 
-            btnDermatology.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnDermatology.Location = new Point(1318, 13);
-            btnDermatology.Name = "btnDermatology";
-            btnDermatology.Size = new Size(255, 55);
-            btnDermatology.TabIndex = 3;
-            btnDermatology.Text = "Da liễu";
-            btnDermatology.UseVisualStyleBackColor = true;
-            // 
-            // btnENT
-            // 
-            btnENT.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnENT.Location = new Point(13, 74);
-            btnENT.Name = "btnENT";
-            btnENT.Size = new Size(255, 55);
-            btnENT.TabIndex = 3;
-            btnENT.Text = "Tai mũi họng";
-            btnENT.UseVisualStyleBackColor = true;
-            // 
-            // btnOphthalmology
-            // 
-            btnOphthalmology.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnOphthalmology.Location = new Point(274, 74);
-            btnOphthalmology.Name = "btnOphthalmology";
-            btnOphthalmology.Size = new Size(255, 55);
-            btnOphthalmology.TabIndex = 3;
-            btnOphthalmology.Text = "Mắt";
-            btnOphthalmology.UseVisualStyleBackColor = true;
-            // 
-            // btnPediatrics
-            // 
-            btnPediatrics.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnPediatrics.Location = new Point(535, 74);
-            btnPediatrics.Name = "btnPediatrics";
-            btnPediatrics.Size = new Size(255, 55);
-            btnPediatrics.TabIndex = 3;
-            btnPediatrics.Text = "Nhi khoa";
-            btnPediatrics.UseVisualStyleBackColor = true;
             // 
             // pictureBox2
             // 
@@ -313,6 +204,7 @@ namespace UI_Tier
             // 
             // tabPage1
             // 
+            tabPage1.Controls.Add(flpDoctors);
             tabPage1.Location = new Point(4, 37);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
@@ -320,15 +212,6 @@ namespace UI_Tier
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Bác sĩ";
             tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // flpDoctors
-            // 
-            flpDoctors.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            flpDoctors.AutoScroll = true;
-            flpDoctors.Location = new Point(0, 617);
-            flpDoctors.Name = "flpDoctors";
-            flpDoctors.Size = new Size(1845, 359);
-            flpDoctors.TabIndex = 4;
             // 
             // tabPage2
             // 
@@ -338,7 +221,7 @@ namespace UI_Tier
             tabPage2.Padding = new Padding(3);
             tabPage2.Size = new Size(1855, 400);
             tabPage2.TabIndex = 1;
-            tabPage2.Text = "Bài viết";
+            tabPage2.Text = "Nội dung";
             tabPage2.UseVisualStyleBackColor = true;
             // 
             // flpArticles
@@ -348,6 +231,15 @@ namespace UI_Tier
             flpArticles.Name = "flpArticles";
             flpArticles.Size = new Size(1849, 394);
             flpArticles.TabIndex = 0;
+            // 
+            // flpDoctors
+            // 
+            flpDoctors.Dock = DockStyle.Fill;
+            flpDoctors.AutoScroll = true;
+            flpDoctors.Location = new Point(3, 3);
+            flpDoctors.Name = "flpDoctors";
+            flpDoctors.Size = new Size(1849, 394);
+            flpDoctors.TabIndex = 4;
             // 
             // panel3
             // 
@@ -367,7 +259,7 @@ namespace UI_Tier
             label2.Font = new Font("Segoe UI", 13F, FontStyle.Italic);
             label2.Location = new Point(56, 84);
             label2.Name = "label2";
-            label2.Size = new Size(880, 47);
+            label2.Size = new Size(645, 36);
             label2.TabIndex = 1;
             label2.Text = "Đặt lịch khám nhanh chóng, tư vấn chuyên khoa tiện lợi";
             // 
@@ -377,9 +269,9 @@ namespace UI_Tier
             label1.Font = new Font("Segoe UI", 17F, FontStyle.Bold);
             label1.Location = new Point(43, 12);
             label1.Name = "label1";
-            label1.Size = new Size(735, 62);
+            label1.Size = new Size(535, 46);
             label1.TabIndex = 0;
-            label1.Text = "Tìm kiếm bác sĩ phù hợp với bạn";
+            label1.Text = "Tìm kiếm bác sĩ và nội dung phù hợp";
             // 
             // errorProvider1
             // 
@@ -387,14 +279,14 @@ namespace UI_Tier
             // 
             // frmGuest
             // 
-            AutoScaleDimensions = new SizeF(15F, 37F);
+            AutoScaleDimensions = new SizeF(11F, 28F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(1845, 977);
             Controls.Add(panel3);
+            Controls.Add(tabControl1);
             Controls.Add(pnlSearch);
             Controls.Add(panel1);
-            Controls.Add(flpDoctors);
             Cursor = Cursors.SizeAll;
             Font = new Font("Segoe UI", 10.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Name = "frmGuest";
@@ -425,15 +317,6 @@ namespace UI_Tier
         private Panel pnlSearch;
         private PictureBox pictureBox1;
         private PictureBox pictureBox2;
-        private Button btnSurgery;
-        private Button btnInternalMedicine;
-        private Button btnDermatology;
-        private Button btnAll;
-        private Button btnCardiology;
-        private Button btnPediatrics;
-        private Button btnENT;
-        private Button btnObstetrics;
-        private Button btnOphthalmology;
         private Panel panel3;
         private Label label1;
         private Label label2;

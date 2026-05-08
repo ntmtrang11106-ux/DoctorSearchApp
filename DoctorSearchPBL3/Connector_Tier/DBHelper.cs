@@ -1,6 +1,8 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Globalization;
+using System.Text;
 
 namespace DAL_Tier
 {
@@ -89,6 +91,28 @@ namespace DAL_Tier
                 System.Diagnostics.Debug.WriteLine("Lỗi Transaction: " + ex.Message);
                 return false;
             }
+        }
+        public static string RemoveDiacritics(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return string.Empty;
+
+            // Chuyển về dạng FormD để tách các dấu ra khỏi chữ cái gốc
+            string normalizedString = text.Normalize(NormalizationForm.FormD);
+            StringBuilder stringBuilder = new StringBuilder();
+
+            foreach (var c in normalizedString)
+            {
+                UnicodeCategory unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                // Chỉ giữ lại các ký tự không phải là dấu (NonSpacingMark)
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            // Sau khi gỡ dấu, cần xử lý riêng chữ 'đ' và chuyển về viết thường
+            string result = stringBuilder.ToString().Normalize(NormalizationForm.FormC).ToLower();
+            return result.Replace('đ', 'd').Replace('Đ', 'd');
         }
     }
 }

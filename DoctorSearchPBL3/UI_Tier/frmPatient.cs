@@ -44,7 +44,7 @@ namespace UI_Tier
         {
             // Chỉ đăng ký Type, chưa "new" cái nào hết -> App mở lên cực nhanh!
             _tabTypeMapping.Add(pnlHome, typeof(ucPatient_Article));
-            //_tabTypeMapping.Add(pnlSearchDoc, typeof(ucPatient_SearchDoc));
+            _tabTypeMapping.Add(pnlSearchDoc, typeof(ucSearchWorkspace));
             _tabTypeMapping.Add(pnlAppointment, typeof(ucPatient_Appointment));
             _tabTypeMapping.Add(pnlChat, typeof(ucPatient_Chat));
             _tabTypeMapping.Add(pnlProfile, typeof(ucPatient_Profile));

@@ -45,9 +45,9 @@ namespace UI_Tier
                     int specs = context.Departments.Count();
                     //int locs = context.Locations.Count();
                 //int ds = context.DoctorSpecialties.Count();
-                int arts = context.Contents.Count();
+                int contents = context.Contents.Count();
 
-                MessageBox.Show($"Seed check:\nUsers: {users}\nDoctors: {doctors}\nSpecialties: {specs}\nArticles: {arts}");
+                MessageBox.Show($"Seed check:\nUsers: {users}\nDoctors: {doctors}\nDepartments: {specs}\nContents: {contents}");
             }
             catch (Exception ex)
             {

@@ -29,7 +29,7 @@ namespace UI_Tier
 
                 // 2. Chuyên khoa (Department) - Lấy từ quan hệ Content -> Department
                 // Hiển thị dòng chữ nhỏ dưới tiêu đề như "Ai bt chuyên khoa gì..."
-                lblSpecialities.Text = content.Department?.DepartmentName ?? "Chưa cập nhật";
+                lblSpecialities.Text = content.Department?.DepartmentName ?? "Thông báo chung";
                 lblSpecialities.BringToFront();
 
                 // 3. Tóm tắt nội dung
@@ -47,7 +47,7 @@ namespace UI_Tier
                 lblDate.Text = "Ngày đăng: " + content.CreatedAt.ToString("dd/MM/yyyy");
 
                 // 5. Tác giả - DÙNG ?. ĐỂ CHẶN LỖI MẤT BÀI THỨ 5
-                lblAuthor.Text = "Tác giả: " + content.AuthorAdmin?.User.FullName ?? "Admin";
+                lblAuthor.Text = "Tác giả: " + (content.AuthorAdmin?.User?.FullName ?? "Admin");
                 lblAuthor.BringToFront();
 
                 // 5. Xử lý ảnh (Thumbnail)

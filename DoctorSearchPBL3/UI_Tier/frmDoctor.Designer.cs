@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
+            btnSearch = new Button();
+            btnAppointments = new Button();
             btnLogout = new Button();
             pnMain = new Panel();
             panel1.SuspendLayout();
@@ -37,11 +39,41 @@
             // panel1
             // 
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            panel1.Controls.Add(btnSearch);
+            panel1.Controls.Add(btnAppointments);
             panel1.Controls.Add(btnLogout);
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
             panel1.Size = new Size(2188, 115);
             panel1.TabIndex = 2;
+            // 
+            // btnSearch
+            // 
+            btnSearch.BackColor = Color.White;
+            btnSearch.FlatStyle = FlatStyle.Flat;
+            btnSearch.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnSearch.ForeColor = Color.FromArgb(24, 112, 255);
+            btnSearch.Location = new Point(252, 23);
+            btnSearch.Name = "btnSearch";
+            btnSearch.Size = new Size(170, 65);
+            btnSearch.TabIndex = 4;
+            btnSearch.Text = "Tìm kiếm";
+            btnSearch.UseVisualStyleBackColor = false;
+            btnSearch.Click += btnSearch_Click;
+            // 
+            // btnAppointments
+            // 
+            btnAppointments.BackColor = Color.White;
+            btnAppointments.FlatStyle = FlatStyle.Flat;
+            btnAppointments.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnAppointments.ForeColor = Color.FromArgb(24, 112, 255);
+            btnAppointments.Location = new Point(44, 23);
+            btnAppointments.Name = "btnAppointments";
+            btnAppointments.Size = new Size(180, 65);
+            btnAppointments.TabIndex = 3;
+            btnAppointments.Text = "Lịch hẹn";
+            btnAppointments.UseVisualStyleBackColor = false;
+            btnAppointments.Click += btnAppointments_Click;
             // 
             // btnLogout
             // 
@@ -89,5 +121,7 @@
         private Button btnLogout;
         private Button button1;
         private Panel pnMain;
+        private Button btnSearch;
+        private Button btnAppointments;
     }
 }

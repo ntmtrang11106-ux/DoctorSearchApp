@@ -30,7 +30,7 @@ namespace UI_Tier
         {
             try
             {
-                _allArt = _bus.GetInitialArticles();
+                _allArt = _bus.GetInitialContents();
                 _currentPage = 1; // Reset về trang 1
                 DisplayPage(_currentPage);
             }
