@@ -33,6 +33,30 @@ namespace UI_Tier
             picAvatar.Cursor = Cursors.Hand;
             picAvatar.Click += picAvatar_Click;
             dtpBirthday.ValueChanged += dtpBirthday_ValueChanged;
+            AttachReadOnlyHandlers();
+        }
+
+        private void AttachReadOnlyHandlers()
+        {
+            txtFullName.Enter += TextBox_Enter;
+            txtPhone.Enter += TextBox_Enter;
+            txtGender.Enter += TextBox_Enter;
+            txtCCCD.Enter += TextBox_Enter;
+            txtAddress.Enter += TextBox_Enter;
+            txtBHYT.Enter += TextBox_Enter;
+            txtPatientID.Enter += TextBox_Enter;
+            txtEmergencyContact.Enter += TextBox_Enter;
+            txtEmergencyPhone.Enter += TextBox_Enter;
+            txtBloodType.Enter += TextBox_Enter;
+            txtMedicalHistory.Enter += TextBox_Enter;
+        }
+
+        private void TextBox_Enter(object sender, EventArgs e)
+        {
+            if (sender is TextBox tb && tb.ReadOnly)
+            {
+                pnlMain.Focus();
+            }
         }
 
         public void InitData()
@@ -128,53 +152,45 @@ namespace UI_Tier
             if (section == "basic")
             {
                 txtFullName.ReadOnly = !isEditing;
-                txtFullName.Enabled = isEditing;
                 txtPhone.ReadOnly = !isEditing;
-                txtPhone.Enabled = isEditing;
                 txtAddress.ReadOnly = !isEditing;
-                txtAddress.Enabled = isEditing;
                 dtpBirthday.Enabled = isEditing;
                 txtGender.ReadOnly = !isEditing;
-                txtGender.Enabled = isEditing;
                 txtCCCD.ReadOnly = !isEditing;
-                txtCCCD.Enabled = isEditing;
                 txtBHYT.ReadOnly = !isEditing;
-                txtBHYT.Enabled = isEditing;
                 txtPatientID.ReadOnly = true; 
-                txtPatientID.Enabled = false; // Luôn tắt để không có con trỏ |
                 txtEmergencyContact.ReadOnly = !isEditing;
-                txtEmergencyContact.Enabled = isEditing;
                 txtEmergencyPhone.ReadOnly = !isEditing;
-                txtEmergencyPhone.Enabled = isEditing;
 
-                // Toggle colors to indicate editability
-                Color bg = isEditing ? Color.White : Color.FromArgb(248, 249, 250);
+                Color bg = isEditing ? Color.White : Color.FromArgb(250, 251, 252);
                 txtFullName.BackColor = bg;
                 txtPhone.BackColor = bg;
                 txtGender.BackColor = bg;
                 txtCCCD.BackColor = bg;
                 txtBHYT.BackColor = bg;
-                txtPatientID.BackColor = Color.FromArgb(248, 249, 250);
+                txtPatientID.BackColor = Color.FromArgb(250, 251, 252);
                 txtEmergencyContact.BackColor = bg;
                 txtEmergencyPhone.BackColor = bg;
                 txtAddress.BackColor = bg;
 
                 pnlBasicInfoActions.Visible = isEditing;
                 btnEditBasicInfo.Visible = !isEditing;
+                
+                if (isEditing) txtFullName.Focus();
             }
             else if (section == "medical")
             {
                 txtBloodType.ReadOnly = !isEditing;
-                txtBloodType.Enabled = isEditing;
                 txtMedicalHistory.ReadOnly = !isEditing;
-                txtMedicalHistory.Enabled = isEditing;
 
-                Color bg = isEditing ? Color.White : Color.FromArgb(248, 249, 250);
+                Color bg = isEditing ? Color.White : Color.FromArgb(250, 251, 252);
                 txtBloodType.BackColor = bg;
                 txtMedicalHistory.BackColor = bg;
 
                 pnlMedicalActions.Visible = isEditing;
                 btnEditMedical.Visible = !isEditing;
+
+                if (isEditing) txtBloodType.Focus();
             }
         }
 
@@ -348,11 +364,20 @@ namespace UI_Tier
             Rectangle rect = new Rectangle(0, 0, pnl.Width - 1, pnl.Height - 1);
             using (var path = UIHelper.GetRoundedPath(rect, 20))
             {
-                using (Pen pen = new Pen(Color.FromArgb(232, 235, 239), 1))
+                using (Pen pen = new Pen(Color.FromArgb(226, 232, 240), 1))
                 {
                     pen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
                     e.Graphics.DrawPath(pen, path);
                 }
+            }
+
+            // Draw accent line at the top
+            Color accentColor = Color.FromArgb(37, 99, 235); // Blue
+            if (pnl == pnlSecurity) accentColor = Color.FromArgb(244, 63, 94); // Rose
+            
+            using (Pen accentPen = new Pen(accentColor, 6))
+            {
+                e.Graphics.DrawLine(accentPen, 20, 0, pnl.Width - 20, 0);
             }
         }
 

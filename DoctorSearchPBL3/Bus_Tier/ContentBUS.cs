@@ -1,4 +1,4 @@
-﻿using DAL_Tier;
+using DAL_Tier;
 using DTO_Tier;
 using System.Collections.Generic;
 
@@ -11,6 +11,11 @@ namespace BUS_Tier
         public List<ContentDTO> GetInitialArticles()
         {
             return _contentDAL.GetAllContents();
+        }
+
+        public List<ContentDTO> SearchArticles(string keyword, List<string> departmentNames, string sortType)
+        {
+            return _contentDAL.SearchContents(keyword, departmentNames, sortType);
         }
 
         public string ValidateArticle(ContentDTO article)

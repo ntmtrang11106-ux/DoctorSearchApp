@@ -278,6 +278,12 @@ namespace BUS_Tier
             return success ? "Success" : "Lỗi hệ thống khi cập nhật ảnh đại diện.";
         }
 
+        public bool UpdateUser(UserDTO user)
+        {
+            if (user == null || user.Id <= 0) return false;
+            return _userDAL.UpdateUser(user);
+        }
+
         public static class SecurityHelper
         {
             private const int SaltSize = 16; // 128 bit

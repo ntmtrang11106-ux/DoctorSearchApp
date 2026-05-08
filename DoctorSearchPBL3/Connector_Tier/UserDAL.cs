@@ -168,5 +168,29 @@ namespace DAL_Tier
                 return false;
             }
         }
+
+        public bool UpdateUser(UserDTO userDto)
+        {
+            try
+            {
+                var user = _context.Users.Find(userDto.Id);
+                if (user == null) return false;
+
+                user.FullName = userDto.FullName;
+                user.PhoneNumber = userDto.PhoneNumber;
+                user.Dob = userDto.Dob;
+                user.Gender = userDto.Gender;
+                user.CCCD = userDto.CCCD;
+                user.Residential_Address = userDto.Residential_Address;
+                user.UpdatedAt = DateTime.Now;
+
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

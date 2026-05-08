@@ -43,7 +43,10 @@ namespace UI_Tier
         private void InitTabs()
         {
             _tabTypeMapping.Add(pnlOverview, typeof(ucDoctor_Overview));
+            _tabTypeMapping.Add(pnlArticle, typeof(ucPatient_Article));
             _tabTypeMapping.Add(pnlAppointment, typeof(ucDoctor_Appointment));
+            _tabTypeMapping.Add(pnlChat, typeof(ucPatient_Chat));
+            _tabTypeMapping.Add(pnlProfile, typeof(ucDoctor_Profile));
 
             foreach (var pnl in _tabTypeMapping.Keys)
             {
@@ -103,7 +106,10 @@ namespace UI_Tier
         {
             Panel targetPanel = null;
             if (tabName == "Overview") targetPanel = pnlOverview;
+            else if (tabName == "Article") targetPanel = pnlArticle;
             else if (tabName == "Appointment") targetPanel = pnlAppointment;
+            else if (tabName == "Chat") targetPanel = pnlChat;
+            else if (tabName == "Profile") targetPanel = pnlProfile;
 
             if (targetPanel != null)
             {
@@ -175,10 +181,77 @@ namespace UI_Tier
             UserControl uc = sender as UserControl;
             if (uc != null)
             {
-                if (uc is ucTimeSlotDialog ucApp) ucApp.OnCloseModal -= CloseModalLogic;
+                if (uc is ucTimeSlotDialog ucTS) ucTS.OnCloseModal -= CloseModalLogic;
+                
                 this.Controls.Remove(uc);
                 uc.Dispose();
+                
+                // Re-enable all panels in pnMain
                 foreach (Control ctrl in pnMain.Controls) { ctrl.Enabled = true; }
+            }
+        }
+        public async void OpenArticleDetail(ContentDTO art)
+        {
+            try
+            {
+                if (art == null) return;
+
+                // 1. Hide current UC
+                if (_currentUC != null) _currentUC.Visible = false;
+
+                ucArticleDetail detail = new ucArticleDetail();
+                detail.Dock = DockStyle.Fill;
+
+                // Increase virtual view count for immediate feedback
+                art.ViewCount++;
+                detail.SetData(art);
+
+                pnMain.Controls.Add(detail);
+                detail.BringToFront();
+
+                // 2. Background update for view count
+                ContentBUS bus = new ContentBUS();
+                await Task.Run(() => bus.IncrementViewAsync(art.Id));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error opening article detail: " + ex.Message);
+                if (pnMain.Controls.Count == 0 && _currentUC != null) _currentUC.Visible = true;
+            }
+        }
+
+        public void BackToArticleList()
+        {
+            // 1. Find and remove Article Detail UC
+            ucArticleDetail currentArt = null;
+            foreach (Control ctrl in pnMain.Controls)
+            {
+                if (ctrl is ucArticleDetail)
+                {
+                    currentArt = (ucArticleDetail)ctrl;
+                    break;
+                }
+            }
+
+            if (currentArt != null)
+            {
+                pnMain.Controls.Remove(currentArt);
+                currentArt.Dispose();
+            }
+
+            // 2. Show Article List tab
+            if (_tabMapping.ContainsKey(pnlArticle))
+            {
+                _currentUC = _tabMapping[pnlArticle];
+                
+                if (_currentUC is ucPatient_Article artList)
+                {
+                    artList.InitData();
+                }
+
+                _currentUC.Visible = true;
+                _currentUC.BringToFront();
+                UpdateLabelStyles(pnlArticle);
             }
         }
     }

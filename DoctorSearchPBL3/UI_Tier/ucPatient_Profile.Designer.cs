@@ -19,10 +19,10 @@ namespace UI_Tier
         {
             pnlMain = new Panel();
             pnlSecurity = new Panel();
+            pnlChangePassword = new Panel();
             pnlPassActions = new Panel();
             btnCancelPass = new Button();
             btnSavePass = new Button();
-            pnlChangePassword = new Panel();
             txtConfirmPass = new TextBox();
             lblConfirmPass = new Label();
             txtNewPass = new TextBox();
@@ -72,8 +72,8 @@ namespace UI_Tier
             lblBasicInfoTitle = new Label();
             pnlMain.SuspendLayout();
             pnlSecurity.SuspendLayout();
-            pnlPassActions.SuspendLayout();
             pnlChangePassword.SuspendLayout();
+            pnlPassActions.SuspendLayout();
             pnlMedicalProfile.SuspendLayout();
             pnlMedicalActions.SuspendLayout();
             pnlBasicInfo.SuspendLayout();
@@ -111,50 +111,6 @@ namespace UI_Tier
             pnlSecurity.TabIndex = 2;
             pnlSecurity.Paint += SectionPanel_Paint;
             // 
-            // pnlPassActions
-            // 
-            pnlPassActions.Controls.Add(btnCancelPass);
-            pnlPassActions.Controls.Add(btnSavePass);
-            pnlPassActions.Location = new Point(52, 373);
-            pnlPassActions.Margin = new Padding(4);
-            pnlPassActions.Name = "pnlPassActions";
-            pnlPassActions.Size = new Size(585, 77);
-            pnlPassActions.TabIndex = 35;
-            // 
-            // btnCancelPass
-            // 
-            btnCancelPass.BackColor = Color.FromArgb(241, 243, 245);
-            btnCancelPass.FlatAppearance.BorderSize = 0;
-            btnCancelPass.FlatStyle = FlatStyle.Flat;
-            btnCancelPass.Font = new Font("Segoe UI", 11F);
-            btnCancelPass.ForeColor = Color.FromArgb(73, 80, 87);
-            btnCancelPass.Location = new Point(312, 6);
-            btnCancelPass.Margin = new Padding(4);
-            btnCancelPass.Name = "btnCancelPass";
-            btnCancelPass.Size = new Size(156, 64);
-            btnCancelPass.TabIndex = 1;
-            btnCancelPass.Text = "✕  Hủy";
-            btnCancelPass.UseVisualStyleBackColor = false;
-            btnCancelPass.Click += btnCancel_Click;
-            btnCancelPass.Paint += Button_Paint;
-            // 
-            // btnSavePass
-            // 
-            btnSavePass.BackColor = Color.FromArgb(0, 120, 215);
-            btnSavePass.FlatAppearance.BorderSize = 0;
-            btnSavePass.FlatStyle = FlatStyle.Flat;
-            btnSavePass.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
-            btnSavePass.ForeColor = Color.White;
-            btnSavePass.Location = new Point(6, 6);
-            btnSavePass.Margin = new Padding(4);
-            btnSavePass.Name = "btnSavePass";
-            btnSavePass.Size = new Size(286, 64);
-            btnSavePass.TabIndex = 0;
-            btnSavePass.Text = "💾  Lưu mật khẩu mới";
-            btnSavePass.UseVisualStyleBackColor = false;
-            btnSavePass.Click += btnSave_Click;
-            btnSavePass.Paint += Button_Paint;
-            // 
             // pnlChangePassword
             // 
             pnlChangePassword.Controls.Add(pnlPassActions);
@@ -170,6 +126,50 @@ namespace UI_Tier
             pnlChangePassword.Size = new Size(1373, 462);
             pnlChangePassword.TabIndex = 3;
             pnlChangePassword.Visible = false;
+            // 
+            // pnlPassActions
+            // 
+            pnlPassActions.Controls.Add(btnCancelPass);
+            pnlPassActions.Controls.Add(btnSavePass);
+            pnlPassActions.Location = new Point(52, 373);
+            pnlPassActions.Margin = new Padding(4);
+            pnlPassActions.Name = "pnlPassActions";
+            pnlPassActions.Size = new Size(585, 77);
+            pnlPassActions.TabIndex = 35;
+            // 
+            // btnCancelPass
+            // 
+            btnCancelPass.BackColor = Color.FromArgb(241, 245, 249);
+            btnCancelPass.FlatAppearance.BorderSize = 0;
+            btnCancelPass.FlatStyle = FlatStyle.Flat;
+            btnCancelPass.Font = new Font("Segoe UI", 11F);
+            btnCancelPass.ForeColor = Color.FromArgb(100, 116, 139);
+            btnCancelPass.Location = new Point(312, 6);
+            btnCancelPass.Margin = new Padding(4);
+            btnCancelPass.Name = "btnCancelPass";
+            btnCancelPass.Size = new Size(156, 64);
+            btnCancelPass.TabIndex = 1;
+            btnCancelPass.Text = "✕  Hủy";
+            btnCancelPass.UseVisualStyleBackColor = false;
+            btnCancelPass.Click += btnCancel_Click;
+            btnCancelPass.Paint += Button_Paint;
+            // 
+            // btnSavePass
+            // 
+            btnSavePass.BackColor = Color.FromArgb(37, 99, 235);
+            btnSavePass.FlatAppearance.BorderSize = 0;
+            btnSavePass.FlatStyle = FlatStyle.Flat;
+            btnSavePass.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            btnSavePass.ForeColor = Color.White;
+            btnSavePass.Location = new Point(6, 6);
+            btnSavePass.Margin = new Padding(4);
+            btnSavePass.Name = "btnSavePass";
+            btnSavePass.Size = new Size(286, 64);
+            btnSavePass.TabIndex = 0;
+            btnSavePass.Text = "💾  Lưu mật khẩu mới";
+            btnSavePass.UseVisualStyleBackColor = false;
+            btnSavePass.Click += btnSave_Click;
+            btnSavePass.Paint += Button_Paint;
             // 
             // txtConfirmPass
             // 
@@ -265,8 +265,8 @@ namespace UI_Tier
             btnChangePassword.FlatAppearance.BorderSize = 0;
             btnChangePassword.FlatStyle = FlatStyle.Flat;
             btnChangePassword.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            btnChangePassword.ForeColor = Color.FromArgb(0, 105, 217);
-            btnChangePassword.Location = new Point(1768, 13);
+            btnChangePassword.ForeColor = Color.FromArgb(37, 99, 235);
+            btnChangePassword.Location = new Point(1744, 26);
             btnChangePassword.Margin = new Padding(4);
             btnChangePassword.Name = "btnChangePassword";
             btnChangePassword.Size = new Size(321, 51);
@@ -321,11 +321,11 @@ namespace UI_Tier
             // 
             // btnCancelMedical
             // 
-            btnCancelMedical.BackColor = Color.FromArgb(241, 243, 245);
+            btnCancelMedical.BackColor = Color.FromArgb(241, 245, 249);
             btnCancelMedical.FlatAppearance.BorderSize = 0;
             btnCancelMedical.FlatStyle = FlatStyle.Flat;
             btnCancelMedical.Font = new Font("Segoe UI", 11F);
-            btnCancelMedical.ForeColor = Color.FromArgb(73, 80, 87);
+            btnCancelMedical.ForeColor = Color.FromArgb(100, 116, 139);
             btnCancelMedical.Location = new Point(378, 6);
             btnCancelMedical.Margin = new Padding(4);
             btnCancelMedical.Name = "btnCancelMedical";
@@ -338,7 +338,7 @@ namespace UI_Tier
             // 
             // btnSaveMedical
             // 
-            btnSaveMedical.BackColor = Color.FromArgb(0, 120, 215);
+            btnSaveMedical.BackColor = Color.FromArgb(37, 99, 235);
             btnSaveMedical.FlatAppearance.BorderSize = 0;
             btnSaveMedical.FlatStyle = FlatStyle.Flat;
             btnSaveMedical.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
@@ -408,8 +408,8 @@ namespace UI_Tier
             btnEditMedical.FlatAppearance.BorderSize = 0;
             btnEditMedical.FlatStyle = FlatStyle.Flat;
             btnEditMedical.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            btnEditMedical.ForeColor = Color.FromArgb(0, 105, 217);
-            btnEditMedical.Location = new Point(1856, 16);
+            btnEditMedical.ForeColor = Color.FromArgb(37, 99, 235);
+            btnEditMedical.Location = new Point(1832, 26);
             btnEditMedical.Margin = new Padding(4);
             btnEditMedical.Name = "btnEditMedical";
             btnEditMedical.Size = new Size(233, 51);
@@ -501,11 +501,11 @@ namespace UI_Tier
             // 
             // btnCancelBasicInfo
             // 
-            btnCancelBasicInfo.BackColor = Color.FromArgb(241, 243, 245);
+            btnCancelBasicInfo.BackColor = Color.FromArgb(241, 245, 249);
             btnCancelBasicInfo.FlatAppearance.BorderSize = 0;
             btnCancelBasicInfo.FlatStyle = FlatStyle.Flat;
             btnCancelBasicInfo.Font = new Font("Segoe UI", 11F);
-            btnCancelBasicInfo.ForeColor = Color.FromArgb(73, 80, 87);
+            btnCancelBasicInfo.ForeColor = Color.FromArgb(100, 116, 139);
             btnCancelBasicInfo.Location = new Point(304, 9);
             btnCancelBasicInfo.Margin = new Padding(4);
             btnCancelBasicInfo.Name = "btnCancelBasicInfo";
@@ -518,7 +518,7 @@ namespace UI_Tier
             // 
             // btnSaveBasicInfo
             // 
-            btnSaveBasicInfo.BackColor = Color.FromArgb(0, 120, 215);
+            btnSaveBasicInfo.BackColor = Color.FromArgb(37, 99, 235);
             btnSaveBasicInfo.FlatAppearance.BorderSize = 0;
             btnSaveBasicInfo.FlatStyle = FlatStyle.Flat;
             btnSaveBasicInfo.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
@@ -762,8 +762,8 @@ namespace UI_Tier
             btnEditBasicInfo.FlatAppearance.BorderSize = 0;
             btnEditBasicInfo.FlatStyle = FlatStyle.Flat;
             btnEditBasicInfo.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            btnEditBasicInfo.ForeColor = Color.FromArgb(0, 105, 217);
-            btnEditBasicInfo.Location = new Point(1796, 19);
+            btnEditBasicInfo.ForeColor = Color.FromArgb(37, 99, 235);
+            btnEditBasicInfo.Location = new Point(1768, 9);
             btnEditBasicInfo.Margin = new Padding(4);
             btnEditBasicInfo.Name = "btnEditBasicInfo";
             btnEditBasicInfo.Size = new Size(297, 100);
@@ -796,9 +796,9 @@ namespace UI_Tier
             pnlMain.ResumeLayout(false);
             pnlSecurity.ResumeLayout(false);
             pnlSecurity.PerformLayout();
-            pnlPassActions.ResumeLayout(false);
             pnlChangePassword.ResumeLayout(false);
             pnlChangePassword.PerformLayout();
+            pnlPassActions.ResumeLayout(false);
             pnlMedicalProfile.ResumeLayout(false);
             pnlMedicalProfile.PerformLayout();
             pnlMedicalActions.ResumeLayout(false);

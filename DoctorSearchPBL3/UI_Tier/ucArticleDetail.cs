@@ -1,4 +1,4 @@
-﻿using DTO_Tier;
+using DTO_Tier;
 using System;
 using System.Drawing;
 using System.IO;
@@ -82,13 +82,18 @@ namespace UI_Tier
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            // Tìm Form chứa User Control này (chính là frmPatient)
+            // Tìm Form chứa User Control này
             Form parentForm = this.FindForm();
 
             if (parentForm is frmPatient mainForm)
             {
-                // Gọi hàm quay lại trang danh sách bài viết
+                // Gọi hàm quay lại trang danh sách bài viết bên bệnh nhân
                 mainForm.BackToHome();
+            }
+            else if (parentForm is frmDoctor docForm)
+            {
+                // Gọi hàm quay lại trang danh sách bài viết bên bác sĩ
+                docForm.BackToArticleList();
             }
         }
     }

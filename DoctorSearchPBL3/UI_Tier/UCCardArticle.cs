@@ -1,4 +1,4 @@
-﻿using DTO_Tier;
+using DTO_Tier;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -110,6 +110,10 @@ namespace UI_Tier
             if (parentForm is frmPatient main)
             {
                 main.OpenArticleDetail(_currentArt);
+            }
+            else if (parentForm is frmDoctor docMain)
+            {
+                docMain.OpenArticleDetail(_currentArt);
             }
         }
     }

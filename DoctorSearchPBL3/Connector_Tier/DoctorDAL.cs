@@ -77,14 +77,61 @@ namespace DAL_Tier
             using var context = new AppDbContext();
             try
             {
-                // Cập nhật thời gian UpdatedAt trước khi lưu
-                doctor.UpdatedAt = DateTime.Now;
-                _context.Doctors.Update(doctor);
-                return _context.SaveChanges() > 0;
+                var existingDoctor = context.Doctors.Find(doctor.Id);
+                if (existingDoctor == null) return false;
+
+                // Update fields
+                existingDoctor.Position = doctor.Position;
+                existingDoctor.Biography = doctor.Biography;
+                existingDoctor.ConsultationFee = doctor.ConsultationFee;
+                existingDoctor.ExperienceYears = doctor.ExperienceYears;
+                existingDoctor.UpdatedAt = DateTime.Now;
+
+                return context.SaveChanges() > 0;
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("Lỗi UpdateDoctor: " + ex.Message);
+                return false;
+            }
+        }
+
+        public bool UpdateDoctorProfile(DoctorDTO doctor)
+        {
+            using var context = new AppDbContext();
+            using var transaction = context.Database.BeginTransaction();
+            try
+            {
+                var existingDoctor = context.Doctors.Include(d => d.User).FirstOrDefault(d => d.Id == doctor.Id);
+                if (existingDoctor == null) return false;
+
+                // Update User info
+                if (doctor.User != null && existingDoctor.User != null)
+                {
+                    existingDoctor.User.FullName = doctor.User.FullName;
+                    existingDoctor.User.PhoneNumber = doctor.User.PhoneNumber;
+                    existingDoctor.User.Dob = doctor.User.Dob;
+                    existingDoctor.User.Gender = doctor.User.Gender;
+                    existingDoctor.User.CCCD = doctor.User.CCCD;
+                    existingDoctor.User.Residential_Address = doctor.User.Residential_Address;
+                    existingDoctor.User.UpdatedAt = DateTime.Now;
+                }
+
+                // Update Doctor info
+                existingDoctor.Position = doctor.Position;
+                existingDoctor.Biography = doctor.Biography;
+                existingDoctor.ConsultationFee = doctor.ConsultationFee;
+                existingDoctor.ExperienceYears = doctor.ExperienceYears;
+                existingDoctor.UpdatedAt = DateTime.Now;
+
+                bool success = context.SaveChanges() > 0;
+                transaction.Commit();
+                return success;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                System.Diagnostics.Debug.WriteLine("Lỗi UpdateDoctorProfile: " + ex.Message);
                 return false;
             }
         }
