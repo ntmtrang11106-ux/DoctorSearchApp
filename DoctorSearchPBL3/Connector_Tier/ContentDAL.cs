@@ -5,7 +5,7 @@ namespace DAL_Tier
 {
     public class ContentDAL
     {
-        public List<ContentDTO> SearchContents(string? keyword, List<string>? departmentNames, string? sortType)
+        public List<ContentDTO> SearchContents(string? keyword, List<string>? departmentNames, string? contentType, string? sortType)
         {
             using var context = new AppDbContext();
 
@@ -19,6 +19,11 @@ namespace DAL_Tier
             if (!string.IsNullOrWhiteSpace(keyword))
             {
                 query = query.Where(c => c.Title.Contains(keyword));
+            }
+
+            if (!string.IsNullOrWhiteSpace(contentType) && contentType != "Tất cả")
+            {
+                query = query.Where(c => c.ContentType == contentType);
             }
 
             if (departmentNames != null && departmentNames.Any() && !departmentNames.Contains("Tất cả"))

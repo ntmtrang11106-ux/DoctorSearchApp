@@ -44,9 +44,9 @@ namespace UI_Tier
 
         private void InitTabs()
         {
-            // Chỉ đăng ký Type, chưa "new" cái nào hết -> App mở lên cực nhanh!
-            _tabTypeMapping.Add(pnlHome, typeof(ucPatient_Article));
-            _tabTypeMapping.Add(pnlSearchDoc, typeof(ucPatient_SearchDoc));
+            // Cả Trang chủ và Tìm bác sĩ đều dùng chung bộ Tìm kiếm tích hợp
+            _tabTypeMapping.Add(pnlHome, typeof(ucGuest_IntegratedSearch));
+            _tabTypeMapping.Add(pnlSearchDoc, typeof(ucGuest_IntegratedSearch));
             _tabTypeMapping.Add(pnlAppointment, typeof(ucPatient_Appointment));
             _tabTypeMapping.Add(pnlChat, typeof(ucPatient_Chat));
             _tabTypeMapping.Add(pnlProfile, typeof(ucPatient_Profile));
@@ -68,10 +68,9 @@ namespace UI_Tier
 
             if (clickedPanel == null || !_tabTypeMapping.ContainsKey(clickedPanel)) return;
 
-            // 2. LAZY LOADING: Nếu chưa có Instance thì mới khởi tạo
+            // 2. LAZY LOADING
             if (!_tabMapping.ContainsKey(clickedPanel))
             {
-                // Dùng Reflection để tạo instance từ Type (đúng chất dân kỹ thuật)
                 UserControl uc = (UserControl)Activator.CreateInstance(_tabTypeMapping[clickedPanel]);
                 uc.Dock = DockStyle.Fill;
                 uc.Visible = false;
@@ -81,8 +80,14 @@ namespace UI_Tier
 
             UserControl selectedUC = _tabMapping[clickedPanel];
             
+            // Cấu hình Tab mặc định nếu là bộ tìm kiếm (Mỗi bên giữ trạng thái riêng)
+            if (selectedUC is ucGuest_IntegratedSearch search)
+            {
+                search.HideTabs(); // Ẩn tab nội bộ vì Patient đã có menu ngoài
+                search.SetActiveTab(clickedPanel == pnlSearchDoc);
+            }
             // Tự động làm mới dữ liệu nếu là tab Lịch hẹn hoặc Hồ sơ
-            if (selectedUC is ucPatient_Appointment appointment)
+            else if (selectedUC is ucPatient_Appointment appointment)
             {
                 appointment.InitData();
             }
@@ -91,7 +96,7 @@ namespace UI_Tier
                 profile.InitData();
             }
 
-            if (_currentUC == selectedUC) return;
+            if (_currentUC == selectedUC && selectedUC is not ucGuest_IntegratedSearch) return;
 
             // 3. Hiển thị
             if (_currentUC != null) _currentUC.Visible = false;
@@ -280,9 +285,9 @@ namespace UI_Tier
                 _currentUC = _tabMapping[pnlHome];
                 
                 // Ép kiểu để gọi hàm InitData làm mới lượt xem
-                if (_currentUC is ucPatient_Article artList)
+                if (_currentUC is ucGuest_IntegratedSearch search)
                 {
-                    artList.InitData();
+                    search.ExecuteSearch();
                 }
 
                 _currentUC.Visible = true;

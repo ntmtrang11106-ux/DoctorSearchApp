@@ -43,7 +43,7 @@ namespace UI_Tier
         private void InitTabs()
         {
             _tabTypeMapping.Add(pnlOverview, typeof(ucDoctor_Overview));
-            _tabTypeMapping.Add(pnlArticle, typeof(ucPatient_Article));
+            _tabTypeMapping.Add(pnlArticle, typeof(ucGuest_IntegratedSearch));
             _tabTypeMapping.Add(pnlAppointment, typeof(ucDoctor_Appointment));
             _tabTypeMapping.Add(pnlChat, typeof(ucPatient_Chat));
             _tabTypeMapping.Add(pnlProfile, typeof(ucDoctor_Profile));
@@ -71,7 +71,7 @@ namespace UI_Tier
             {
                 UserControl uc = (UserControl)Activator.CreateInstance(_tabTypeMapping[clickedPanel]);
                 
-                // Nếu là tab Tổng quan, nạp dữ liệu bác sĩ ngay
+                // Cấu hình ban đầu cho UC
                 if (uc is ucDoctor_Overview overview)
                 {
                     int docId = GlobalAccount.GetProfileId();
@@ -92,7 +92,15 @@ namespace UI_Tier
             }
 
             UserControl selectedUC = _tabMapping[clickedPanel];
-            if (_currentUC == selectedUC) return;
+
+            // Cấu hình nếu là bộ tìm kiếm tích hợp
+            if (selectedUC is ucGuest_IntegratedSearch search)
+            {
+                search.HideTabs(); // Ẩn tab nội bộ
+                search.SetActiveTab(false); // Luôn hiện tab Bài viết cho trang này
+            }
+
+            if (_currentUC == selectedUC && selectedUC is not ucGuest_IntegratedSearch) return;
 
             if (_currentUC != null) _currentUC.Visible = false;
             selectedUC.Visible = true;
@@ -244,9 +252,9 @@ namespace UI_Tier
             {
                 _currentUC = _tabMapping[pnlArticle];
                 
-                if (_currentUC is ucPatient_Article artList)
+                if (_currentUC is ucGuest_IntegratedSearch search)
                 {
-                    artList.InitData();
+                    search.ExecuteSearch();
                 }
 
                 _currentUC.Visible = true;

@@ -13,9 +13,9 @@ namespace BUS_Tier
             return _contentDAL.GetAllContents();
         }
 
-        public List<ContentDTO> SearchArticles(string keyword, List<string> departmentNames, string sortType)
+        public List<ContentDTO> SearchContents(string keyword, List<string> departmentNames, string contentType, string sortType)
         {
-            return _contentDAL.SearchContents(keyword, departmentNames, sortType);
+            return _contentDAL.SearchContents(keyword, departmentNames, contentType, sortType);
         }
 
         public string ValidateArticle(ContentDTO article)

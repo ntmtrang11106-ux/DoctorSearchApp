@@ -12,6 +12,13 @@ namespace UI_Tier
         public static GraphicsPath GetRoundedPath(Rectangle rect, int radius)
         {
             GraphicsPath path = new GraphicsPath();
+            // Safeguard: If radius is 0, return a simple rectangle to avoid GDI+ error
+            if (radius <= 0)
+            {
+                path.AddRectangle(rect);
+                return path;
+            }
+
             float curveSize = radius * 2F;
             path.StartFigure();
             path.AddArc(rect.X, rect.Y, curveSize, curveSize, 180, 90);

@@ -12,11 +12,12 @@ namespace BUS_Tier
             string? keyword,
             List<string>? departments,
             string? gender,
+            string? contentType,
             string? sortDoctor,
             string? sortContent)
         {
             var doctors = _doctorDAL.SearchDoctors(keyword, departments, gender, sortDoctor);
-            var contents = _articleDAL.SearchContents(keyword, departments, sortContent);
+            var contents = _articleDAL.SearchContents(keyword, departments, contentType, sortContent);
 
             return (doctors, contents);
         }

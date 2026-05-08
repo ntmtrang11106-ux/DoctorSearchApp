@@ -1,4 +1,4 @@
-﻿using BUS_Tier;
+using BUS_Tier;
 using DTO_Tier;
 using System;
 using System.Collections.Generic;
@@ -12,96 +12,109 @@ namespace UI_Tier
 {
     public partial class ucPatient_SearchDoc : UserControl
     {
-        // Khai báo một lần ở cấp độ class để tái sử dụng
         private DoctorBUS _bus = new DoctorBUS();
-
+        private DepartmentBUS _deptBus = new DepartmentBUS();
         private List<DoctorDTO> _allDoctors = new List<DoctorDTO>();
-        private int _pageSize = 8;     // Số lượng 1 trang
-        private int _currentPage = 1;  // Trang hiện tại
+        private int _pageSize = 8;
+        private int _currentPage = 1;
 
         public ucPatient_SearchDoc()
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
+            SetupUI();
         }
 
-        // Override CreateParams để bật WS_EX_COMPOSITED, giúp giảm nhấp nháy khi vẽ lại UserControl
-        protected override CreateParams CreateParams
+        private void SetupUI()
         {
-            get
+            // Populate Gender
+            cboGender.Items.Clear();
+            cboGender.Items.Add("Tất cả");
+            cboGender.Items.Add("Nam");
+            cboGender.Items.Add("Nữ");
+            cboGender.SelectedIndex = 0;
+
+            // Populate Sort
+            cboSort.Items.Clear();
+            cboSort.Items.Add("Mới nhất");
+            cboSort.Items.Add("Giá khám thấp đến cao");
+            cboSort.Items.Add("Giá khám cao đến thấp");
+            cboSort.Items.Add("Năm kinh nghiệm cao đến thấp");
+            cboSort.Items.Add("Rating cao đến thấp");
+            cboSort.SelectedIndex = 0;
+
+            LoadDepartments();
+        }
+
+        private void LoadDepartments()
+        {
+            var depts = _deptBus.GetDepartmentsForUI();
+            flpFilter.Controls.Clear();
+            
+            CheckBox chkAll = new CheckBox { Text = "Tất cả", AutoSize = true, Tag = "Tất cả", Checked = true };
+            chkAll.CheckedChanged += (s, e) => ExecuteSearch();
+            flpFilter.Controls.Add(chkAll);
+
+            foreach (var dept in depts)
             {
-                CreateParams cp = base.CreateParams;
-                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
-                return cp;
+                CheckBox chk = new CheckBox { Text = dept.DepartmentName, AutoSize = true, Tag = dept.DepartmentName };
+                chk.CheckedChanged += (s, e) => ExecuteSearch();
+                flpFilter.Controls.Add(chk);
             }
         }
 
         public void InitData()
         {
-            try
-            {
-                _allDoctors = _bus.GetListDoctors();
-                _currentPage = 1; // Reset về trang 1
-                DisplayPage(_currentPage);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi: " + ex.Message);
-            }
+            ExecuteSearch();
         }
 
-        // Hàm này dùng để vẽ 8 ông bác sĩ lên FlowLayoutPanel dựa vào số trang
-        public void DisplayPage(int pageNumber)
+        private void ExecuteSearch()
         {
-            flpDoctors.SuspendLayout(); // Tạm dừng vẽ giao diện
+            string keyword = txtSearchBar.Text.Trim();
+            string gender = cboGender.SelectedItem?.ToString();
+            if (gender == "Tất cả") gender = null;
+            string sortType = cboSort.SelectedItem?.ToString();
 
-            while (flpDoctors.Controls.Count > 0)
+            List<string> selectedDepts = new List<string>();
+            foreach (Control ctrl in flpFilter.Controls)
             {
-                var control = flpDoctors.Controls[0];
-                flpDoctors.Controls.RemoveAt(0);
-                control.Dispose(); // Xóa hẳn khỏi bộ nhớ
+                if (ctrl is CheckBox chk && chk.Checked)
+                {
+                    selectedDepts.Add(chk.Tag.ToString());
+                }
             }
 
-            if (_allDoctors == null || _allDoctors.Count == 0) return;
+            _allDoctors = _bus.SearchDoctors(keyword, selectedDepts, gender, sortType);
+            _currentPage = 1;
+            DisplayPage(_currentPage);
+        }
 
-            // Tính toán vị trí bắt đầu và kết thúc
-            // Trang 1: lấy từ 0 đến 7
-            // Trang 2: lấy từ 8 đến 15
+        public void DisplayPage(int pageNumber)
+        {
+            flpDoctors.SuspendLayout();
+            flpDoctors.Controls.Clear();
+
+            if (_allDoctors == null || _allDoctors.Count == 0)
+            {
+                // Show no results message
+                return;
+            }
+
             int startIndex = (pageNumber - 1) * _pageSize;
-
-            // Lấy ra 8 ông (hoặc ít hơn nếu là trang cuối)
             var pageItems = _allDoctors.Skip(startIndex).Take(_pageSize).ToList();
 
             foreach (var doc in pageItems)
             {
                 UCCardDoctor card = new UCCardDoctor();
                 card.SetDoctorData(doc);
-                card.Margin = new Padding(25);
+                card.Margin = new Padding(15);
                 flpDoctors.Controls.Add(card);
             }
 
-            // Cập nhật cái nhãn hiển thị số trang (ví dụ: Trang 1 / 10)
             int totalPages = (int)Math.Ceiling((double)_allDoctors.Count / _pageSize);
-            lblPageStatus.Text = $"Trang {_currentPage} / {totalPages}";
+            lblPageStatus.Text = $"Trang {_currentPage} / {Math.Max(1, totalPages)}";
 
-            flpDoctors.ResumeLayout(); // Cho phép vẽ lại giao diện
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            // 1. Khởi tạo Form Login
-            frmLogin loginForm = new frmLogin();
-
-            // 2. Ẩn Form hiện tại (frmGuest)
-            this.Hide();
-
-            // 3. Hiển thị Form Login
-            loginForm.ShowDialog();
-            // Dùng ShowDialog để nó chặn không cho tương tác với Form cũ 
-            // hoặc dùng loginForm.Show() nếu muốn mở tự do.
-
-            // 4. (Tùy chọn) Sau khi đóng Login thì hiện lại Guest
-            this.Show();
+            flpDoctors.ResumeLayout();
         }
 
         private void ucPatient_SearchDoc_Load(object sender, EventArgs e)
@@ -126,6 +139,21 @@ namespace UI_Tier
                 _currentPage++;
                 DisplayPage(_currentPage);
             }
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            ExecuteSearch();
+        }
+
+        private void cboGender_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ExecuteSearch();
+        }
+
+        private void cboSort_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ExecuteSearch();
         }
     }
 }
