@@ -47,6 +47,9 @@ namespace UI_Tier
             txtPosition.Enter += TextBox_Enter;
             txtSpecialty.Enter += TextBox_Enter;
             txtLicense.Enter += TextBox_Enter;
+            txtConsultationFee.Enter += TextBox_Enter;
+            txtExperienceYears.Enter += TextBox_Enter;
+            txtBiography.Enter += TextBox_Enter;
         }
 
         private void TextBox_Enter(object sender, EventArgs e)
@@ -75,7 +78,10 @@ namespace UI_Tier
                 txtAddress.Text = _currentDoctor.User.Residential_Address ?? "";
                 txtPosition.Text = _currentDoctor.Position ?? "";
                 txtSpecialty.Text = _currentDoctor.Department?.DepartmentName ?? "Chuyên khoa";
-                txtLicense.Text = $"DR-{_currentDoctor.Id:D4}";
+                txtLicense.Text = _currentDoctor.LicenseNumber ?? $"DR-{_currentDoctor.Id:D4}";
+                txtExperienceYears.Text = _currentDoctor.ExperienceYears?.ToString() ?? "0";
+                txtConsultationFee.Text = _currentDoctor.ConsultationFee?.ToString("N0") ?? "0";
+                txtBiography.Text = _currentDoctor.Biography ?? "";
 
                 string picPath = _currentDoctor.User.Picture;
                 if (!string.IsNullOrEmpty(picPath) && File.Exists(picPath))
@@ -96,25 +102,42 @@ namespace UI_Tier
         {
             if (section == "basic")
             {
+                // Editable fields
                 txtFullName.ReadOnly = !isEdit;
                 txtPhone.ReadOnly = !isEdit;
                 txtGender.ReadOnly = !isEdit;
                 txtCCCD.ReadOnly = !isEdit;
                 txtAddress.ReadOnly = !isEdit;
                 dtpBirthday.Enabled = isEdit;
-                
+                txtConsultationFee.ReadOnly = !isEdit;
+                txtBiography.ReadOnly = !isEdit;
+
+                // Always Read-Only fields
+                txtPosition.ReadOnly = true;
+                txtSpecialty.ReadOnly = true;
+                txtLicense.ReadOnly = true;
+                txtExperienceYears.ReadOnly = true;
+
                 pnlBasicInfoActions.Visible = isEdit;
                 btnEditBasicInfo.Visible = !isEdit;
 
-                Color bgColor = isEdit ? Color.White : Color.FromArgb(250, 251, 252); // Very light gray for view mode
-                txtFullName.BackColor = bgColor;
-                txtPhone.BackColor = bgColor;
-                txtGender.BackColor = bgColor;
-                txtCCCD.BackColor = bgColor;
-                txtAddress.BackColor = bgColor;
-                txtPosition.BackColor = bgColor;
-                txtSpecialty.BackColor = bgColor;
-                txtLicense.BackColor = bgColor;
+                Color editColor = Color.White;
+                Color readOnlyColor = Color.FromArgb(250, 251, 252);
+
+                // Set backgrounds based on editability
+                txtFullName.BackColor = isEdit ? editColor : readOnlyColor;
+                txtPhone.BackColor = isEdit ? editColor : readOnlyColor;
+                txtGender.BackColor = isEdit ? editColor : readOnlyColor;
+                txtCCCD.BackColor = isEdit ? editColor : readOnlyColor;
+                txtAddress.BackColor = isEdit ? editColor : readOnlyColor;
+                txtConsultationFee.BackColor = isEdit ? editColor : readOnlyColor;
+                txtBiography.BackColor = isEdit ? editColor : readOnlyColor;
+
+                // These always stay gray
+                txtPosition.BackColor = readOnlyColor;
+                txtSpecialty.BackColor = readOnlyColor;
+                txtLicense.BackColor = readOnlyColor;
+                txtExperienceYears.BackColor = readOnlyColor;
 
                 if (isEdit) txtFullName.Focus();
             }
@@ -166,13 +189,19 @@ namespace UI_Tier
             user.Residential_Address = txtAddress.Text.Trim();
             user.Dob = dtpBirthday.Value;
 
-            if (_userBUS.UpdateUser(user))
+            // Update doctor specific fields
+            _currentDoctor.ExperienceYears = int.TryParse(txtExperienceYears.Text, out int exp) ? exp : 0;
+            _currentDoctor.ConsultationFee = decimal.TryParse(txtConsultationFee.Text.Replace(".", "").Replace(",", ""), out decimal fee) ? fee : 0;
+            _currentDoctor.Biography = txtBiography.Text.Trim();
+
+            string result = _doctorBUS.UpdateDoctorInfo(_currentDoctor);
+            if (result.Contains("thành công"))
             {
-                MessageBox.Show("Cập nhật thông tin thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(result, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 SetEditMode(false, "basic");
                 InitData();
             }
-            else MessageBox.Show("Cập nhật thất bại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            else MessageBox.Show(result, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void SavePassword()

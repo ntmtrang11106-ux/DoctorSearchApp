@@ -72,19 +72,38 @@ namespace DAL_Tier
         //////////////////////////////////////////////////
         
 
-        public bool UpdateDoctor(DoctorDTO doctor)
+        public bool UpdateDoctor(DoctorDTO updatedDoctor)
         {
             using var context = new AppDbContext();
             try
             {
-                var existingDoctor = context.Doctors.Find(doctor.Id);
+                var existingDoctor = context.Doctors
+                    .Include(d => d.User)
+                    .FirstOrDefault(d => d.Id == updatedDoctor.Id);
+
                 if (existingDoctor == null) return false;
 
-                // Update fields
-                existingDoctor.Position = doctor.Position;
-                existingDoctor.Biography = doctor.Biography;
-                existingDoctor.ConsultationFee = doctor.ConsultationFee;
-                existingDoctor.ExperienceYears = doctor.ExperienceYears;
+                // 1. Update User info
+                if (existingDoctor.User != null && updatedDoctor.User != null)
+                {
+                    existingDoctor.User.FullName = updatedDoctor.User.FullName;
+                    existingDoctor.User.PhoneNumber = updatedDoctor.User.PhoneNumber;
+                    existingDoctor.User.Dob = updatedDoctor.User.Dob;
+                    existingDoctor.User.Gender = updatedDoctor.User.Gender;
+                    existingDoctor.User.CCCD = updatedDoctor.User.CCCD;
+                    existingDoctor.User.Residential_Address = updatedDoctor.User.Residential_Address;
+                    existingDoctor.User.UpdatedAt = DateTime.Now;
+                }
+
+                // 2. Update Doctor info
+                existingDoctor.Position = updatedDoctor.Position;
+                existingDoctor.ExperienceYears = updatedDoctor.ExperienceYears;
+                existingDoctor.ConsultationFee = updatedDoctor.ConsultationFee;
+                existingDoctor.Biography = updatedDoctor.Biography;
+                // LicenseNumber is read-only according to user request, but we might want to allow 
+                // setting it if it's currently null, but for now let's keep it as is.
+                // existingDoctor.LicenseNumber = updatedDoctor.LicenseNumber; 
+
                 existingDoctor.UpdatedAt = DateTime.Now;
 
                 return context.SaveChanges() > 0;
@@ -92,46 +111,6 @@ namespace DAL_Tier
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("Lỗi UpdateDoctor: " + ex.Message);
-                return false;
-            }
-        }
-
-        public bool UpdateDoctorProfile(DoctorDTO doctor)
-        {
-            using var context = new AppDbContext();
-            using var transaction = context.Database.BeginTransaction();
-            try
-            {
-                var existingDoctor = context.Doctors.Include(d => d.User).FirstOrDefault(d => d.Id == doctor.Id);
-                if (existingDoctor == null) return false;
-
-                // Update User info
-                if (doctor.User != null && existingDoctor.User != null)
-                {
-                    existingDoctor.User.FullName = doctor.User.FullName;
-                    existingDoctor.User.PhoneNumber = doctor.User.PhoneNumber;
-                    existingDoctor.User.Dob = doctor.User.Dob;
-                    existingDoctor.User.Gender = doctor.User.Gender;
-                    existingDoctor.User.CCCD = doctor.User.CCCD;
-                    existingDoctor.User.Residential_Address = doctor.User.Residential_Address;
-                    existingDoctor.User.UpdatedAt = DateTime.Now;
-                }
-
-                // Update Doctor info
-                existingDoctor.Position = doctor.Position;
-                existingDoctor.Biography = doctor.Biography;
-                existingDoctor.ConsultationFee = doctor.ConsultationFee;
-                existingDoctor.ExperienceYears = doctor.ExperienceYears;
-                existingDoctor.UpdatedAt = DateTime.Now;
-
-                bool success = context.SaveChanges() > 0;
-                transaction.Commit();
-                return success;
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                System.Diagnostics.Debug.WriteLine("Lỗi UpdateDoctorProfile: " + ex.Message);
                 return false;
             }
         }

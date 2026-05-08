@@ -17,6 +17,12 @@ namespace UI_Tier
 
         private void InitializeComponent()
         {
+            txtConsultationFee = new TextBox();
+            lblConsultationFee = new Label();
+            txtExperienceYears = new TextBox();
+            lblExperienceYears = new Label();
+            txtBiography = new TextBox();
+            lblBiography = new Label();
             pnlMain = new Panel();
             pnlSecurity = new Panel();
             pnlChangePassword = new Panel();
@@ -40,8 +46,8 @@ namespace UI_Tier
             lblPosition = new Label();
             txtSpecialty = new TextBox();
             lblSpecialty = new Label();
-            txtDoctorID = new TextBox();
-            lblDoctorID = new Label();
+            txtLicense = new TextBox();
+            lblLicense = new Label();
             txtCCCD = new TextBox();
             lblCCCD = new Label();
             txtGender = new TextBox();
@@ -67,6 +73,67 @@ namespace UI_Tier
             ((System.ComponentModel.ISupportInitialize)picAvatar).BeginInit();
             SuspendLayout();
             // 
+            // txtConsultationFee
+            // 
+            txtConsultationFee.Font = new Font("Segoe UI", 12F);
+            txtConsultationFee.Location = new Point(1271, 780);
+            txtConsultationFee.Name = "txtConsultationFee";
+            txtConsultationFee.ReadOnly = true;
+            txtConsultationFee.Size = new Size(735, 50);
+            txtConsultationFee.TabIndex = 27;
+            // 
+            // lblConsultationFee
+            // 
+            lblConsultationFee.AutoSize = true;
+            lblConsultationFee.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblConsultationFee.ForeColor = Color.FromArgb(71, 85, 105);
+            lblConsultationFee.Location = new Point(1271, 735);
+            lblConsultationFee.Name = "lblConsultationFee";
+            lblConsultationFee.Size = new Size(132, 37);
+            lblConsultationFee.TabIndex = 28;
+            lblConsultationFee.Text = "Giá khám";
+            // 
+            // txtExperienceYears
+            // 
+            txtExperienceYears.Font = new Font("Segoe UI", 12F);
+            txtExperienceYears.Location = new Point(455, 780);
+            txtExperienceYears.Name = "txtExperienceYears";
+            txtExperienceYears.ReadOnly = true;
+            txtExperienceYears.Size = new Size(735, 50);
+            txtExperienceYears.TabIndex = 29;
+            // 
+            // lblExperienceYears
+            // 
+            lblExperienceYears.AutoSize = true;
+            lblExperienceYears.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblExperienceYears.ForeColor = Color.FromArgb(71, 85, 105);
+            lblExperienceYears.Location = new Point(455, 735);
+            lblExperienceYears.Name = "lblExperienceYears";
+            lblExperienceYears.Size = new Size(252, 37);
+            lblExperienceYears.TabIndex = 30;
+            lblExperienceYears.Text = "Kinh nghiệm (năm)";
+            // 
+            // txtBiography
+            // 
+            txtBiography.Font = new Font("Segoe UI", 12F);
+            txtBiography.Location = new Point(455, 911);
+            txtBiography.Multiline = true;
+            txtBiography.Name = "txtBiography";
+            txtBiography.ReadOnly = true;
+            txtBiography.Size = new Size(1551, 218);
+            txtBiography.TabIndex = 31;
+            // 
+            // lblBiography
+            // 
+            lblBiography.AutoSize = true;
+            lblBiography.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblBiography.ForeColor = Color.FromArgb(71, 85, 105);
+            lblBiography.Location = new Point(455, 866);
+            lblBiography.Name = "lblBiography";
+            lblBiography.Size = new Size(105, 37);
+            lblBiography.TabIndex = 32;
+            lblBiography.Text = "Tiểu sử";
+            // 
             // pnlMain
             // 
             pnlMain.AutoScroll = true;
@@ -89,7 +156,7 @@ namespace UI_Tier
             pnlSecurity.Controls.Add(btnChangePassword);
             pnlSecurity.Controls.Add(lblSecurityTitle);
             pnlSecurity.Dock = DockStyle.Top;
-            pnlSecurity.Location = new Point(52, 868);
+            pnlSecurity.Location = new Point(52, 1288);
             pnlSecurity.Margin = new Padding(0, 0, 0, 38);
             pnlSecurity.Name = "pnlSecurity";
             pnlSecurity.Size = new Size(2093, 579);
@@ -252,13 +319,19 @@ namespace UI_Tier
             // pnlBasicInfo
             // 
             pnlBasicInfo.BackColor = Color.White;
+            pnlBasicInfo.Controls.Add(txtBiography);
+            pnlBasicInfo.Controls.Add(lblBiography);
+            pnlBasicInfo.Controls.Add(txtExperienceYears);
+            pnlBasicInfo.Controls.Add(lblExperienceYears);
+            pnlBasicInfo.Controls.Add(txtConsultationFee);
+            pnlBasicInfo.Controls.Add(lblConsultationFee);
             pnlBasicInfo.Controls.Add(pnlBasicInfoActions);
             pnlBasicInfo.Controls.Add(txtPosition);
             pnlBasicInfo.Controls.Add(lblPosition);
             pnlBasicInfo.Controls.Add(txtSpecialty);
             pnlBasicInfo.Controls.Add(lblSpecialty);
-            pnlBasicInfo.Controls.Add(txtDoctorID);
-            pnlBasicInfo.Controls.Add(lblDoctorID);
+            pnlBasicInfo.Controls.Add(txtLicense);
+            pnlBasicInfo.Controls.Add(lblLicense);
             pnlBasicInfo.Controls.Add(txtCCCD);
             pnlBasicInfo.Controls.Add(lblCCCD);
             pnlBasicInfo.Controls.Add(txtGender);
@@ -279,7 +352,7 @@ namespace UI_Tier
             pnlBasicInfo.Location = new Point(52, 38);
             pnlBasicInfo.Margin = new Padding(0, 0, 0, 38);
             pnlBasicInfo.Name = "pnlBasicInfo";
-            pnlBasicInfo.Size = new Size(2093, 830);
+            pnlBasicInfo.Size = new Size(2093, 1250);
             pnlBasicInfo.TabIndex = 0;
             pnlBasicInfo.Paint += SectionPanel_Paint;
             // 
@@ -287,7 +360,7 @@ namespace UI_Tier
             // 
             pnlBasicInfoActions.Controls.Add(btnCancelBasicInfo);
             pnlBasicInfoActions.Controls.Add(btnSaveBasicInfo);
-            pnlBasicInfoActions.Location = new Point(44, 731);
+            pnlBasicInfoActions.Location = new Point(44, 1150);
             pnlBasicInfoActions.Margin = new Padding(4);
             pnlBasicInfoActions.Name = "pnlBasicInfoActions";
             pnlBasicInfoActions.Size = new Size(475, 77);
@@ -364,25 +437,25 @@ namespace UI_Tier
             lblSpecialty.TabIndex = 20;
             lblSpecialty.Text = "Chuyên khoa";
             // 
-            // txtDoctorID
+            // txtLicense
             // 
-            txtDoctorID.Font = new Font("Segoe UI", 12F);
-            txtDoctorID.Location = new Point(1271, 538);
-            txtDoctorID.Name = "txtDoctorID";
-            txtDoctorID.ReadOnly = true;
-            txtDoctorID.Size = new Size(735, 50);
-            txtDoctorID.TabIndex = 19;
+            txtLicense.Font = new Font("Segoe UI", 12F);
+            txtLicense.Location = new Point(1271, 538);
+            txtLicense.Name = "txtLicense";
+            txtLicense.ReadOnly = true;
+            txtLicense.Size = new Size(735, 50);
+            txtLicense.TabIndex = 19;
             // 
-            // lblDoctorID
+            // lblLicense
             // 
-            lblDoctorID.AutoSize = true;
-            lblDoctorID.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblDoctorID.ForeColor = Color.FromArgb(71, 85, 105);
-            lblDoctorID.Location = new Point(1271, 493);
-            lblDoctorID.Name = "lblDoctorID";
-            lblDoctorID.Size = new Size(132, 37);
-            lblDoctorID.TabIndex = 18;
-            lblDoctorID.Text = "Mã bác sĩ";
+            lblLicense.AutoSize = true;
+            lblLicense.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblLicense.ForeColor = Color.FromArgb(71, 85, 105);
+            lblLicense.Location = new Point(1271, 493);
+            lblLicense.Name = "lblLicense";
+            lblLicense.Size = new Size(322, 37);
+            lblLicense.TabIndex = 18;
+            lblLicense.Text = "Mã chứng chỉ hành nghề";
             // 
             // txtCCCD
             // 
@@ -599,8 +672,8 @@ namespace UI_Tier
         private Label lblPosition;
         private TextBox txtSpecialty;
         private Label lblSpecialty;
-        private TextBox txtDoctorID;
-        private Label lblDoctorID;
+        private TextBox txtLicense;
+        private Label lblLicense;
         private TextBox txtCCCD;
         private Label lblCCCD;
         private TextBox txtGender;
@@ -617,17 +690,11 @@ namespace UI_Tier
         private PictureBox picAvatar;
         private Button btnEditBasicInfo;
         private Label lblBasicInfoTitle;
-        private Panel pnlProfessional;
-        private Panel pnlProfessionalActions;
-        private Button btnCancelProfessional;
-        private Button btnSaveProfessional;
-        private TextBox txtBiography;
-        private Label lblBiography;
         private TextBox txtConsultationFee;
         private Label lblConsultationFee;
-        private Button btnEditProfessional;
-        private TextBox txtLicenseNumber;
-        private Label lblLicenseNumber;
-        private Label lblProfessionalTitle;
+        private TextBox txtExperienceYears;
+        private Label lblExperienceYears;
+        private TextBox txtBiography;
+        private Label lblBiography;
     }
 }

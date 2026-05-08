@@ -69,27 +69,35 @@ namespace BUS_Tier
             return doctorDAL.GetPendingAppointmentsCount(doctorId);
         }
 
-        public string UpdateDoctorProfile(DoctorDTO doctor)
+        /// <summary>
+        /// Cập nhật thông tin bác sĩ với các ràng buộc nghiệp vụ (Validation)
+        /// </summary>
+        public string UpdateDoctorInfo(DoctorDTO doctor)
         {
+            if (doctor == null) return "Dữ liệu không hợp lệ!";
+
             if (doctor.User == null || string.IsNullOrWhiteSpace(doctor.User.FullName))
             {
                 return "Tên bác sĩ không được để trống!";
             }
+
             if (string.IsNullOrWhiteSpace(doctor.User.PhoneNumber))
             {
                 return "Số điện thoại không được để trống!";
             }
-            if ((doctor.ConsultationFee ?? 0) < 0)
-            {
-                return "Giá khám không được nhỏ hơn 0!";
-            }
+
             if ((doctor.ExperienceYears ?? 0) < 0)
             {
                 return "Số năm kinh nghiệm không hợp lệ!";
             }
 
-            bool result = doctorDAL.UpdateDoctorProfile(doctor);
-            return result ? "Success" : "Cập nhật thất bại, vui lòng kiểm tra lại!";
+            if ((doctor.ConsultationFee ?? 0) < 0)
+            {
+                return "Giá khám không hợp lệ!";
+            }
+
+            bool result = doctorDAL.UpdateDoctor(doctor);
+            return result ? "Cập nhật thành công!" : "Cập nhật thất bại, vui lòng kiểm tra lại!";
         }
 
         public void CalculateDoctorStats(DoctorDTO doctor)
