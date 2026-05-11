@@ -20,7 +20,6 @@ namespace UI_Tier
             lblRating = new Label();
             lblDate = new Label();
             lblComment = new Label();
-            panelLine = new Panel();
             lblYourReview = new Label();
             lblEdit = new Label();
             lblDelete = new Label();
@@ -72,23 +71,14 @@ namespace UI_Tier
             // 
             // lblComment
             // 
-            lblComment.AutoSize = true;
-            lblComment.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblComment.Location = new Point(24, 131);
-            lblComment.MaximumSize = new Size(1000, 0);
+            lblComment.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            lblComment.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblComment.ForeColor = Color.FromArgb(64, 64, 64);
+            lblComment.Location = new Point(100, 125);
             lblComment.Name = "lblComment";
             lblComment.Size = new Size(982, 90);
             lblComment.TabIndex = 4;
             lblComment.Text = "Bác sĩ rất tận tâm và chuyên nghiệp. Giải thích rõ ràng về tình trạng bệnh.";
-            // 
-            // panelLine
-            // 
-            panelLine.BackColor = Color.FromArgb(200, 200, 200);
-            panelLine.Dock = DockStyle.Bottom;
-            panelLine.Location = new Point(0, 235);
-            panelLine.Name = "panelLine";
-            panelLine.Size = new Size(1326, 2);
-            panelLine.TabIndex = 5;
             // 
             // lblYourReview
             // 
@@ -110,7 +100,7 @@ namespace UI_Tier
             lblEdit.Cursor = Cursors.Hand;
             lblEdit.Font = new Font("Segoe MDL2 Assets", 20F);
             lblEdit.ForeColor = Color.FromArgb(37, 99, 235);
-            lblEdit.Location = new Point(1116, 20);
+            lblEdit.Location = new Point(1098, 20);
             lblEdit.Name = "lblEdit";
             lblEdit.Size = new Size(85, 85);
             lblEdit.TabIndex = 21;
@@ -119,11 +109,12 @@ namespace UI_Tier
             // 
             // lblDelete
             // 
+            lblDelete.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblDelete.BackColor = Color.FromArgb(255, 252, 235);
             lblDelete.Cursor = Cursors.Hand;
             lblDelete.Font = new Font("Segoe MDL2 Assets", 20F);
             lblDelete.ForeColor = Color.FromArgb(217, 119, 6);
-            lblDelete.Location = new Point(1222, 20);
+            lblDelete.Location = new Point(1204, 20);
             lblDelete.Name = "lblDelete";
             lblDelete.Size = new Size(85, 85);
             lblDelete.TabIndex = 22;
