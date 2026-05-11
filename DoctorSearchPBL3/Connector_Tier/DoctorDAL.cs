@@ -92,6 +92,7 @@ namespace DAL_Tier
                     existingDoctor.User.Gender = updatedDoctor.User.Gender;
                     existingDoctor.User.CCCD = updatedDoctor.User.CCCD;
                     existingDoctor.User.Residential_Address = updatedDoctor.User.Residential_Address;
+                    existingDoctor.User.Picture = updatedDoctor.User.Picture;
                     existingDoctor.User.UpdatedAt = DateTime.Now;
                 }
 

@@ -35,6 +35,56 @@ namespace UI_Tier
             SetEditMode(false, "basic");
             this.HandleCreated += (s, e) => InitData();
             AttachReadOnlyHandlers();
+            AddUploadButton();
+            dtpBirthday.ValueChanged += dtpBirthday_ValueChanged;
+        }
+
+        private Button btnUploadAvatar;
+        private void AddUploadButton()
+        {
+            btnUploadAvatar = new Button
+            {
+                Text = "📷 Thay đổi ảnh",
+                Size = new Size(200, 45),
+                Location = new Point(picAvatar.Left + (picAvatar.Width - 200) / 2, picAvatar.Bottom + 15),
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.FromArgb(241, 245, 249),
+                ForeColor = Color.FromArgb(71, 85, 105),
+                Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Visible = false
+            };
+            btnUploadAvatar.FlatAppearance.BorderSize = 0;
+            btnUploadAvatar.Click += btnUploadAvatar_Click;
+            pnlBasicInfo.Controls.Add(btnUploadAvatar);
+            UIHelper.ApplyRoundedRegion(btnUploadAvatar, 10);
+        }
+
+        private void btnUploadAvatar_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        string uploadDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "uploads", "avatars");
+                        if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
+
+                        string fileName = $"doc_{GlobalAccount.GetUserId()}_{DateTime.Now.Ticks}{Path.GetExtension(ofd.FileName)}";
+                        string destPath = Path.Combine(uploadDir, fileName);
+
+                        File.Copy(ofd.FileName, destPath, true);
+                        picAvatar.ImageLocation = destPath;
+                        _currentDoctor.User.Picture = destPath;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Lỗi tải ảnh: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
         }
 
         private void AttachReadOnlyHandlers()
@@ -139,7 +189,25 @@ namespace UI_Tier
                 txtLicense.BackColor = readOnlyColor;
                 txtExperienceYears.BackColor = readOnlyColor;
 
-                if (isEdit) txtFullName.Focus();
+                if (btnUploadAvatar != null) btnUploadAvatar.Visible = isEdit;
+
+                if (isEdit)
+                {
+                    txtFullName.Focus();
+                    // Nếu đang sửa mà tuổi < 16 thì vẫn phải xám CCCD
+                    int age = _userBUS.CalculateAge(dtpBirthday.Value);
+                    if (age < 16)
+                    {
+                        txtCCCD.ReadOnly = true;
+                        txtCCCD.Enabled = false;
+                        txtCCCD.BackColor = Color.FromArgb(241, 243, 245);
+                    }
+                }
+                else
+                {
+                    // Khi thoát chế độ sửa, cập nhật lại trạng thái CCCD dựa trên tuổi
+                    dtpBirthday_ValueChanged(dtpBirthday, EventArgs.Empty);
+                }
             }
             else if (section == "security")
             {
@@ -179,29 +247,34 @@ namespace UI_Tier
 
         private void SaveBasicInfo()
         {
-            if (_currentDoctor == null) return;
+            if (_currentDoctor == null || _currentDoctor.User == null) return;
 
-            var user = _currentDoctor.User;
-            user.FullName = txtFullName.Text.Trim();
-            user.PhoneNumber = txtPhone.Text.Trim();
-            user.Gender = txtGender.Text.Trim();
-            user.CCCD = txtCCCD.Text.Trim();
-            user.Residential_Address = txtAddress.Text.Trim();
-            user.Dob = dtpBirthday.Value;
+            // 1. Thu thập dữ liệu từ UI
+            _currentDoctor.User.FullName = txtFullName.Text.Trim();
+            _currentDoctor.User.PhoneNumber = txtPhone.Text.Trim();
+            _currentDoctor.User.Gender = txtGender.Text.Trim();
+            _currentDoctor.User.CCCD = txtCCCD.Text.Trim();
+            _currentDoctor.User.Residential_Address = txtAddress.Text.Trim();
+            _currentDoctor.User.Dob = dtpBirthday.Value;
 
-            // Update doctor specific fields
-            _currentDoctor.ExperienceYears = int.TryParse(txtExperienceYears.Text, out int exp) ? exp : 0;
-            _currentDoctor.ConsultationFee = decimal.TryParse(txtConsultationFee.Text.Replace(".", "").Replace(",", ""), out decimal fee) ? fee : 0;
+            // Doctor specific fields
             _currentDoctor.Biography = txtBiography.Text.Trim();
+            if (decimal.TryParse(txtConsultationFee.Text.Replace(".", "").Replace(",", ""), out decimal fee))
+                _currentDoctor.ConsultationFee = fee;
 
+            // 2. Gọi BUS để xử lý (có Validation bên trong)
             string result = _doctorBUS.UpdateDoctorInfo(_currentDoctor);
+
             if (result.Contains("thành công"))
             {
                 MessageBox.Show(result, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 SetEditMode(false, "basic");
-                InitData();
+                InitData(); // Nạp lại dữ liệu mới nhất
             }
-            else MessageBox.Show(result, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            else
+            {
+                MessageBox.Show(result, "Lưu thất bại", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void SavePassword()
@@ -245,6 +318,30 @@ namespace UI_Tier
             using (Pen accentPen = new Pen(accentColor, 6))
             {
                 e.Graphics.DrawLine(accentPen, 20, 0, p.Width - 20, 0);
+            }
+        }
+
+        private void dtpBirthday_ValueChanged(object sender, EventArgs e)
+        {
+            int age = _userBUS.CalculateAge(dtpBirthday.Value);
+
+            if (age < 16)
+            {
+                // Khóa ô nhập CCCD và hiển thị trạng thái như hồ sơ bệnh nhân
+                txtCCCD.Text = "Chưa đủ tuổi";
+                txtCCCD.Enabled = false;
+                txtCCCD.BackColor = Color.FromArgb(241, 243, 245);
+            }
+            else
+            {
+                // Mở khóa nếu từ 16 tuổi trở lên
+                if (txtCCCD.Text == "Chưa đủ tuổi") txtCCCD.Text = "";
+                txtCCCD.Enabled = true;
+
+                // Chỉ thực sự cho sửa nếu đang trong mode Edit
+                bool isEditing = pnlBasicInfoActions.Visible;
+                txtCCCD.ReadOnly = !isEditing;
+                txtCCCD.BackColor = isEditing ? Color.White : Color.FromArgb(250, 251, 252);
             }
         }
     }

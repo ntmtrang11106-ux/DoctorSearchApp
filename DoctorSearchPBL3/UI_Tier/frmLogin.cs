@@ -151,8 +151,8 @@ namespace UI_Tier
                 }
                 else if (role == "Admin")
                 {
-                    MessageBox.Show("Chào Admin!", "Thông báo");
-                    // Mở form Admin ở đây
+                    frmAdmin f = new frmAdmin();
+                    f.ShowDialog();
                 }
 
                 this.Close();

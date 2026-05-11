@@ -57,6 +57,10 @@ namespace UI_Tier
             lblYourReview.Visible = isOwner;
             lblEdit.Visible       = isOwner;
             lblDelete.Visible     = isOwner;
+            
+            // 8. Ẩn các thành phần admin (nếu có)
+            lblArrow.Visible = false;
+            lblDoctorName.Visible = false;
 
             // 7. Wire-up sự kiện (tránh đăng ký nhiều lần)
             lblEdit.Click   -= BtnEdit_Click;
@@ -72,13 +76,85 @@ namespace UI_Tier
         }
 
         // ────────────────────────────────────────────────────────────────────
+        // SetAdminReviewData – dành cho Admin (hiện Patient -> Doctor)
+        // ────────────────────────────────────────────────────────────────────
+        public void SetAdminReviewData(ReviewsDTO review)
+        {
+            if (review == null) return;
+            _review = review;
+
+            // 1. Tên bệnh nhân
+            string patientName = review.Patient?.User?.FullName ?? "Bệnh nhân";
+            lblName.Text = patientName;
+            
+            // 2. Mũi tên & Tên bác sĩ
+            string doctorName = "BS. " + (review.Doctor?.User?.FullName ?? "Bác sĩ");
+            lblDoctorName.Text = doctorName;
+            
+            lblArrow.Visible = true;
+            lblDoctorName.Visible = true;
+            // Cập nhật vị trí để nằm sát nhau
+            lblArrow.Left = lblName.Right + 5;
+            lblDoctorName.Left = lblArrow.Right + 5;
+
+            // Tránh đè lên phần đánh giá (stars) nếú lblRating hiển thị ở bên phải
+            int maxNameWidth = lblRating.Left - lblDoctorName.Left - 20;
+            if (maxNameWidth > 100) {
+                lblDoctorName.MaximumSize = new Size(maxNameWidth, 0);
+            }
+
+            // 3. Avatar (bệnh nhân)
+            if (!string.IsNullOrWhiteSpace(patientName))
+                lblAvatar.Text = patientName.Substring(0, 1).ToUpper();
+
+            // 4. Số sao
+            string stars = "";
+            for (int i = 0; i < 5; i++)
+                stars += (i < review.Rating) ? "★" : "☆";
+            lblRating.Text = stars;
+
+            // 5. Ngày
+            lblDate.Text = review.CreatedAt.ToString("dd/MM/yyyy");
+
+            // 6. Nội dung
+            lblComment.Text = review.Comment ?? "Không có bình luận.";
+
+            // 7. Admin có quyền xóa đánh giá (nút xóa hiện ra)
+            lblYourReview.Visible = false;
+            lblEdit.Visible       = false;
+            lblDelete.Visible     = true;
+
+            // Wire-up sự kiện xóa (tránh đăng ký nhiều lần)
+            lblDelete.Click -= BtnDelete_Click;
+            lblDelete.Click += BtnDelete_Click;
+        }
+
+        // ────────────────────────────────────────────────────────────────────
         // Load – bo tròn avatar, áp dụng màu ngẫu nhiên
         // ────────────────────────────────────────────────────────────────────
         private void ucReviewItem_Load(object sender, EventArgs e)
         {
-            this.Margin = new Padding(5, 5, 5, 10);
-            UIHelper.ApplyRoundedRegion(this, 15);
+            // Xóa dòng ApplyRoundedRegion(this, 15) để tự vẽ trong Paint cho chuẩn
             UIHelper.ApplyRoundedRegion(lblAvatar, lblAvatar.Width / 2);
+            UIHelper.ApplyRoundedRegion(lblDelete, 12);
+            UIHelper.ApplyRoundedRegion(lblEdit, 12);
+
+            this.Paint += (s, ev) => {
+                ev.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                Rectangle rect = new Rectangle(0, 0, this.Width - 1, this.Height - 1);
+                
+                // Vẽ nền trắng bo tròn (thay cho Region)
+                using (System.Drawing.Drawing2D.GraphicsPath path = UIHelper.GetRoundedPath(rect, 15)) {
+                    using (SolidBrush brush = new SolidBrush(this.BackColor)) {
+                        ev.Graphics.FillPath(brush, path);
+                    }
+                    // Vẽ viền khép kín
+                    using (Pen pen = new Pen(Color.FromArgb(220, 220, 220), 1)) {
+                        pen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+                        ev.Graphics.DrawPath(pen, path);
+                    }
+                }
+            };
 
             Color[] softColors = {
                 Color.FromArgb(239, 246, 255),
@@ -104,8 +180,12 @@ namespace UI_Tier
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            // Vẽ viền nhẹ cho từng ô đánh giá
-            UIHelper.DrawControlBorder(this, e, 15, Color.FromArgb(235, 238, 242), 2);
+            // Vẽ viền cực nhẹ
+            using (Pen p = new Pen(Color.FromArgb(240, 242, 245), 1))
+            {
+                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                e.Graphics.DrawPath(p, UIHelper.GetRoundedPath(new Rectangle(0, 0, this.Width - 1, this.Height - 1), 15));
+            }
         }
 
         // ────────────────────────────────────────────────────────────────────

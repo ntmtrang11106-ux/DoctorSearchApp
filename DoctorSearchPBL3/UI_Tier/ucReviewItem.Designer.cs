@@ -23,6 +23,9 @@ namespace UI_Tier
             lblYourReview = new Label();
             lblEdit = new Label();
             lblDelete = new Label();
+            lblArrow = new Label();
+            lblDoctorName = new Label();
+            panelLine = new Panel();
             SuspendLayout();
             // 
             // lblAvatar
@@ -96,6 +99,7 @@ namespace UI_Tier
             // 
             // lblEdit
             // 
+            lblEdit.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblEdit.BackColor = Color.FromArgb(239, 250, 255);
             lblEdit.Cursor = Cursors.Hand;
             lblEdit.Font = new Font("Segoe MDL2 Assets", 20F);
@@ -121,6 +125,40 @@ namespace UI_Tier
             lblDelete.Text = "";
             lblDelete.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // lblArrow
+            // 
+            lblArrow.AutoSize = true;
+            lblArrow.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblArrow.ForeColor = Color.Gray;
+            lblArrow.Location = new Point(400, 20);
+            lblArrow.Name = "lblArrow";
+            lblArrow.Size = new Size(54, 50);
+            lblArrow.TabIndex = 23;
+            lblArrow.Text = "→";
+            lblArrow.Visible = false;
+            // 
+            // lblDoctorName
+            // 
+            lblDoctorName.AutoEllipsis = true;
+            lblDoctorName.AutoSize = true;
+            lblDoctorName.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblDoctorName.ForeColor = Color.FromArgb(24, 112, 255);
+            lblDoctorName.Location = new Point(460, 20);
+            lblDoctorName.Name = "lblDoctorName";
+            lblDoctorName.Size = new Size(262, 50);
+            lblDoctorName.TabIndex = 24;
+            lblDoctorName.Text = "BS. Trần Thị B";
+            lblDoctorName.Visible = false;
+            // 
+            // panelLine
+            // 
+            panelLine.BackColor = Color.FromArgb(240, 240, 240);
+            panelLine.Dock = DockStyle.Bottom;
+            panelLine.Location = new Point(0, 235);
+            panelLine.Name = "panelLine";
+            panelLine.Size = new Size(1308, 2);
+            panelLine.TabIndex = 25;
+            // 
             // ucReviewItem
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
@@ -129,27 +167,31 @@ namespace UI_Tier
             Controls.Add(lblDelete);
             Controls.Add(lblEdit);
             Controls.Add(lblYourReview);
-            Controls.Add(panelLine);
             Controls.Add(lblComment);
             Controls.Add(lblDate);
             Controls.Add(lblRating);
             Controls.Add(lblName);
             Controls.Add(lblAvatar);
+            Controls.Add(lblArrow);
+            Controls.Add(lblDoctorName);
+            Controls.Add(panelLine);
             Name = "ucReviewItem";
-            Size = new Size(1326, 237);
+            Size = new Size(1308, 237);
             Load += ucReviewItem_Load;
             ResumeLayout(false);
             PerformLayout();
         }
 
-        private Label lblAvatar;
-        private Label lblName;
-        private Label lblRating;
-        private Label lblDate;
-        private Label lblComment;
-        private Panel panelLine;
-        private Label lblYourReview;
-        private Label lblDelete;
-        private Label lblEdit;
+        private System.Windows.Forms.Label lblAvatar;
+        private System.Windows.Forms.Label lblName;
+        private System.Windows.Forms.Label lblRating;
+        private System.Windows.Forms.Label lblDate;
+        private System.Windows.Forms.Label lblComment;
+        private System.Windows.Forms.Label lblYourReview;
+        private System.Windows.Forms.Label lblDelete;
+        private System.Windows.Forms.Label lblEdit;
+        private System.Windows.Forms.Label lblArrow;
+        private System.Windows.Forms.Label lblDoctorName;
+        private System.Windows.Forms.Panel panelLine;
     }
 }

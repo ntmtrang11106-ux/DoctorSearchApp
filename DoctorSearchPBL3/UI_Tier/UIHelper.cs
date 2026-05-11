@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
+using System.Drawing;
 using System.Reflection;
 using System.Text;
 
@@ -8,11 +9,16 @@ namespace UI_Tier
 {
     public static class UIHelper
     {
-        // Hàm tạo đường dẫn hình chữ nhật bo tròn
+        // Hàm tạo đường dẫn hình chữ nhật bo tròn (Số nguyên)
         public static GraphicsPath GetRoundedPath(Rectangle rect, int radius)
         {
+            return GetRoundedPath(new RectangleF(rect.X, rect.Y, rect.Width, rect.Height), radius);
+        }
+
+        // Hàm tạo đường dẫn hình chữ nhật bo tròn (Số thực - Độ chính xác cao)
+        public static GraphicsPath GetRoundedPath(RectangleF rect, float radius)
+        {
             GraphicsPath path = new GraphicsPath();
-            // Safeguard: If radius is 0, return a simple rectangle to avoid GDI+ error
             if (radius <= 0)
             {
                 path.AddRectangle(rect);

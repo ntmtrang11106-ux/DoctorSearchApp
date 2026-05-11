@@ -6,6 +6,7 @@ namespace BUS_Tier
     public class DoctorBUS
     {
         private readonly DoctorDAL doctorDAL = new DoctorDAL();
+        private readonly UserDAL userDAL = new UserDAL();
 
         /// <summary>
         /// Lấy toàn bộ danh sách bác sĩ đã được lọc (Active, Approved, Not Deleted)
@@ -75,29 +76,64 @@ namespace BUS_Tier
         public string UpdateDoctorInfo(DoctorDTO doctor)
         {
             if (doctor == null) return "Dữ liệu không hợp lệ!";
+            if (doctor.User == null) return "Thông tin người dùng không hợp lệ!";
 
-            if (doctor.User == null || string.IsNullOrWhiteSpace(doctor.User.FullName))
-            {
-                return "Tên bác sĩ không được để trống!";
-            }
+            // 1. Kiểm tra Họ tên
+            if (string.IsNullOrWhiteSpace(doctor.User.FullName))
+                return "Họ tên không được để trống!";
 
+            // 2. Kiểm tra Số điện thoại (Phải là số VN hợp lệ)
             if (string.IsNullOrWhiteSpace(doctor.User.PhoneNumber))
-            {
                 return "Số điện thoại không được để trống!";
+            if (!IsValidVietnamesePhone(doctor.User.PhoneNumber))
+                return "Số điện thoại không đủ 10 chữ số!";
+            
+            // 2b. Kiểm tra trùng SĐT
+            if (userDAL.IsPhoneExists(doctor.User.PhoneNumber, doctor.UserId))
+                return "Số điện thoại này đã được sử dụng bởi người dùng khác!";
+
+            // 4. Kiểm tra Tuổi (Bác sĩ thường phải từ 22 tuổi trở lên sau khi tốt nghiệp)
+            if (doctor.User.Dob.HasValue)
+            {
+                int age = CalculateAge(doctor.User.Dob.Value);
+                if (age < 22) return "Bác sĩ phải từ 22 tuổi trở lên!";
+                if (age > 100) return "Ngày sinh không hợp lệ!";
             }
 
+            // 3. Kiểm tra CCCD (Bắt buộc và phải đủ 12 số)
+            if (string.IsNullOrWhiteSpace(doctor.User.CCCD))
+                return "Số CCCD không được để trống!";
+            if (!IsValidCCCD(doctor.User.CCCD))
+                return "Số CCCD không hợp lệ (phải nhập đúng 12 chữ số)!";
+
+            
+
+            // 5. Kiểm tra Kinh nghiệm và Giá khám
             if ((doctor.ExperienceYears ?? 0) < 0)
-            {
-                return "Số năm kinh nghiệm không hợp lệ!";
-            }
-
+                return "Số năm kinh nghiệm không thể âm!";
             if ((doctor.ConsultationFee ?? 0) < 0)
-            {
-                return "Giá khám không hợp lệ!";
-            }
+                return "Giá khám không thể âm!";
 
             bool result = doctorDAL.UpdateDoctor(doctor);
             return result ? "Cập nhật thành công!" : "Cập nhật thất bại, vui lòng kiểm tra lại!";
+        }
+
+        private bool IsValidVietnamesePhone(string phone)
+        {
+            if (string.IsNullOrWhiteSpace(phone)) return false;
+            return System.Text.RegularExpressions.Regex.IsMatch(phone, @"^(0[3|5|7|8|9])[0-9]{8}$");
+        }
+
+        private bool IsValidCCCD(string cccd)
+        {
+            return System.Text.RegularExpressions.Regex.IsMatch(cccd, @"^[0-9]{12}$");
+        }
+
+        private int CalculateAge(DateTime dob)
+        {
+            int age = DateTime.Today.Year - dob.Year;
+            if (dob.Date > DateTime.Today.AddYears(-age)) age--;
+            return age;
         }
 
         public void CalculateDoctorStats(DoctorDTO doctor)
