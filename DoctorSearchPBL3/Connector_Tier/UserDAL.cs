@@ -37,9 +37,11 @@ namespace DAL_Tier
                 userDto.Status = "Active";
                 RegisterUserCommon(userDto);
 
+                int patientIndex = _context.Patients.IgnoreQueryFilters().Count() + 1;
                 var patient = new PatientDTO
                 {
                     UserId = userDto.Id,
+                    MedicalCode = "BN" + patientIndex.ToString("D3"),
                     InsuranceCode = string.IsNullOrWhiteSpace(insuranceCode) ? null : insuranceCode,
                     CreatedAt = DateTime.Now,
                     IsDeleted = false
@@ -62,26 +64,25 @@ namespace DAL_Tier
         /// Đăng ký Bác sĩ (Thêm clinicName lưu vào cột Position)
         /// </summary>
         // Thêm tham số licenseNumber vào đầu hàm
-        public bool RegisterDoctor(UserDTO userDto, int deptId, int exp, string clinicName, string licenseNumber)
+        public int RegisterDoctor(UserDTO userDto, int deptId, int exp, string clinicName, string licenseNumber)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
             {
                 userDto.Role = "Doctor";
-                userDto.Status = "False";
+                userDto.Status = "Active";
 
                 // Bước 1: Lưu thông tin User chung
-                // Đảm bảo hàm này có gọi _context.Users.Add(user) và _context.SaveChanges()
                 RegisterUserCommon(userDto);
 
                 // Bước 2: Tạo đối tượng Doctor
                 var doctor = new DoctorDTO
                 {
-                    UserId = userDto.Id, // Lúc này Id đã được EF Core tự cập nhật sau khi SaveChanges ở trên
+                    UserId = userDto.Id,
                     DepartmentId = deptId,
                     ExperienceYears = exp,
                     Position = clinicName,
-                    LicenseNumber = licenseNumber, // Nhớ gán mã giấy phép ở đây!
+                    LicenseNumber = licenseNumber,
                     ConsultationFee = 0,
                     IsApproved = false,
                     IsActive = true,
@@ -97,13 +98,12 @@ namespace DAL_Tier
                 _context.SaveChanges();
 
                 transaction.Commit();
-                return true;
+                return doctor.Id; // Trả về ID của bác sĩ vừa tạo
             }
             catch (Exception ex)
             {
                 transaction.Rollback();
-                // Bạn có thể log lỗi ex ở đây để biết tại sao nó fail (ví dụ: lỗi khóa ngoại, trùng dữ liệu...)
-                return false;
+                return 0;
             }
         }
 
@@ -119,18 +119,16 @@ namespace DAL_Tier
             return _context.Users
                 .AsNoTracking()
                 .FirstOrDefault(u => u.PhoneNumber == phone 
-                                  && !u.IsDeleted 
-                                  && u.Status == "Active");
+                                  && !u.IsDeleted);
         }
 
         public UserDTO? GetUserForLogin(string phone)
         {
-            // Chỉ lấy User theo số điện thoại, không check pass ở đây nữa
+            // Lấy User theo số điện thoại bất kể trạng thái (Active/Inactive) để BUS xử lý thông báo riêng
             return _context.Users
                 .AsNoTracking()
                 .FirstOrDefault(u => u.PhoneNumber == phone
-                                  && !u.IsDeleted
-                                  && u.Status == "Active");
+                                  && !u.IsDeleted);
         }
 
         public bool ChangePassword(int userId, string newHashedPassword)

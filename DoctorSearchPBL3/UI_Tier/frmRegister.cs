@@ -1,4 +1,4 @@
-﻿using BUS_Tier;
+using BUS_Tier;
 using DAL_Tier;
 using DTO_Tier;
 using System;
@@ -155,45 +155,69 @@ namespace UI_Tier
             }
             else if (currentRole == "Doctor")
             {
-                // 1. Lấy UserControl chứng chỉ (Dùng để lấy chuyên khoa, số giấy phép, kinh nghiệm)
                 var firstCertUC = flpCertificate.Controls.OfType<ucDoctorCertificate>().FirstOrDefault();
 
                 if (firstCertUC == null)
                 {
-                    // Nếu không có UC nào, gán lỗi vào result để hiện ở bước 4 thay vì return im lặng
                     result = "Vui lòng thêm thông tin chứng chỉ và chuyên khoa.";
                 }
                 else
                 {
-                    // 2. Thu thập dữ liệu từ các Control
                     string position = textBox3.Text.Trim();
                     int deptId = firstCertUC.GetSelectedDepartmentId();
-                    string licenseNumber = firstCertUC.GetCertificateCode(); // Lấy từ UC
+                    string licenseNumber = firstCertUC.GetCertificateCode(); 
                     int maxExp = firstCertUC.GetExperienceYears();  
 
-                    // 3. Gọi tầng BUS xử lý (Tầng BUS sẽ lo việc check trống, check CCCD, check tuổi...)
                     try
                     {
-                        // Truyền đủ 6 tham số như bạn đã định nghĩa ở tầng BUS
-                        result = _userBUS.RegisterDoctor(newUser, confirmPass, deptId, maxExp, position, licenseNumber);
+                        int newDoctorId = 0;
+                        result = _userBUS.RegisterDoctor(newUser, confirmPass, deptId, maxExp, position, licenseNumber, out newDoctorId);
+                        
+                        if (result == "Success" && newDoctorId > 0)
+                        {
+                            // Sau khi đăng ký thành công, duyệt qua các UC để upload file
+                            var doctorBUS = new BUS_Tier.DoctorBUS();
+                            var allCerts = flpCertificate.Controls.OfType<ucDoctorCertificate>().ToList();
+                            System.Collections.Generic.List<string> uploadErrors = new System.Collections.Generic.List<string>();
+                            
+                            foreach (var certUC in allCerts)
+                            {
+                                if (certUC.Tag != null) // Tag chứa đường dẫn file gốc
+                                {
+                                    string localFile = certUC.Tag.ToString();
+                                    if (System.IO.File.Exists(localFile))
+                                    {
+                                        string uploadRes = doctorBUS.UploadCertificate(newDoctorId, localFile);
+                                        if (uploadRes != "Tải lên thành công!")
+                                        {
+                                            uploadErrors.Add(uploadRes);
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (uploadErrors.Count > 0)
+                            {
+                                MessageBox.Show("Đăng ký hoàn tất nhưng có lỗi khi tải lên chứng chỉ:\n" + string.Join("\n", uploadErrors), 
+                                    "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
                     }
                     catch (Exception ex)
                     {
-                        // Trường hợp lỗi kết nối DB hoặc lỗi code nghiêm trọng
                         result = "Lỗi hệ thống: " + ex.Message;
                     }
                 }
             }
 
-            // 4. Thông báo kết quả (Đoạn này cực kỳ quan trọng để không bị "đứng im")
+            // 4. Thông báo kết quả
             if (result == "Success")
             {
-                MessageBox.Show($"Đăng ký {currentRole} thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Đăng ký {currentRole} thành công! Tài khoản đang chờ duyệt.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.Close();
             }
             else if (!string.IsNullOrEmpty(result))
             {
-                // Chỉ hiện thông báo lỗi nếu result có nội dung (tránh hiện thông báo trống)
                 MessageBox.Show(result, "Lỗi đăng ký", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

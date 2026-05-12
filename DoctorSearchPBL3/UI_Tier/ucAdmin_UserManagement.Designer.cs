@@ -15,190 +15,378 @@ namespace UI_Tier
 
         private void InitializeComponent()
         {
-            this.pnlHeader = new System.Windows.Forms.Panel();
-            this.lblTitle = new System.Windows.Forms.Label();
-            this.pnlTabs = new System.Windows.Forms.Panel();
-            this.btnPendingDoctors = new System.Windows.Forms.Button();
-            this.btnAllUsers = new System.Windows.Forms.Button();
-            this.pnlFilters = new System.Windows.Forms.Panel();
-            this.cboRoleFilter = new System.Windows.Forms.ComboBox();
-            this.lblFilterRole = new System.Windows.Forms.Label();
-            this.pnlSearch = new System.Windows.Forms.Panel();
-            this.txtSearch = new System.Windows.Forms.TextBox();
-            this.flpUserList = new System.Windows.Forms.FlowLayoutPanel();
-            this.pnlHeader.SuspendLayout();
-            this.pnlTabs.SuspendLayout();
-            this.pnlFilters.SuspendLayout();
-            this.pnlSearch.SuspendLayout();
-            this.SuspendLayout();
+            pnlHeader = new Panel();
+            lblSubtitle = new Label();
+            lblTitle = new Label();
+            pnlTabs = new Panel();
+            pnlTabIndicator = new Panel();
+            btnDoctors = new Button();
+            btnPatients = new Button();
+            btnAllUsers = new Button();
+            pnlFilters = new Panel();
+            cboStatusFilter = new ComboBox();
+            pnlSearch = new Panel();
+            txtSearch = new TextBox();
+            pnlListHeader = new Panel();
+            lblHeaderJoined = new Label();
+            lblHeaderStatus = new Label();
+            lblHeaderType = new Label();
+            lblHeaderPhone = new Label();
+            lblHeaderEmail = new Label();
+            lblHeaderName = new Label();
+            flpUserList = new FlowLayoutPanel();
+            pnlPagination = new Panel();
+            lblNext = new Label();
+            lblPrev = new Label();
+            lblPageStatus = new Label();
+            pnlHeader.SuspendLayout();
+            pnlTabs.SuspendLayout();
+            pnlFilters.SuspendLayout();
+            pnlSearch.SuspendLayout();
+            pnlListHeader.SuspendLayout();
+            pnlPagination.SuspendLayout();
+            SuspendLayout();
             // 
             // pnlHeader
             // 
-            this.pnlHeader.Controls.Add(this.lblTitle);
-            this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlHeader.Location = new System.Drawing.Point(20, 20);
-            this.pnlHeader.Name = "pnlHeader";
-            this.pnlHeader.Size = new System.Drawing.Size(960, 60);
-            this.pnlHeader.TabIndex = 0;
+            pnlHeader.Controls.Add(lblSubtitle);
+            pnlHeader.Controls.Add(lblTitle);
+            pnlHeader.Dock = DockStyle.Top;
+            pnlHeader.Location = new Point(32, 40);
+            pnlHeader.Margin = new Padding(5, 6, 5, 6);
+            pnlHeader.Name = "pnlHeader";
+            pnlHeader.Size = new Size(1561, 140);
+            pnlHeader.TabIndex = 0;
+            // 
+            // lblSubtitle
+            // 
+            lblSubtitle.AutoSize = true;
+            lblSubtitle.Font = new Font("Segoe UI", 10F);
+            lblSubtitle.ForeColor = Color.FromArgb(249, 115, 22);
+            lblSubtitle.Location = new Point(0, 75);
+            lblSubtitle.Name = "lblSubtitle";
+            lblSubtitle.Size = new Size(434, 37);
+            lblSubtitle.TabIndex = 1;
+            lblSubtitle.Text = "⚠️ Có 0 bác sĩ đang chờ phê duyệt";
             // 
             // lblTitle
             // 
-            this.lblTitle.AutoSize = true;
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(33)))), ((int)(((byte)(33)))));
-            this.lblTitle.Location = new System.Drawing.Point(0, 0);
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(288, 41);
-            this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "Quản lý người dùng";
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            lblTitle.ForeColor = Color.FromArgb(31, 41, 55);
+            lblTitle.Location = new Point(0, 0);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(480, 65);
+            lblTitle.TabIndex = 0;
+            lblTitle.Text = "Quản lý người dùng";
             // 
             // pnlTabs
             // 
-            this.pnlTabs.Controls.Add(this.btnPendingDoctors);
-            this.pnlTabs.Controls.Add(this.btnAllUsers);
-            this.pnlTabs.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlTabs.Location = new System.Drawing.Point(20, 80);
-            this.pnlTabs.Name = "pnlTabs";
-            this.pnlTabs.Size = new System.Drawing.Size(960, 50);
-            this.pnlTabs.TabIndex = 1;
+            pnlTabs.Controls.Add(pnlTabIndicator);
+            pnlTabs.Controls.Add(btnDoctors);
+            pnlTabs.Controls.Add(btnPatients);
+            pnlTabs.Controls.Add(btnAllUsers);
+            pnlTabs.Dock = DockStyle.Top;
+            pnlTabs.Location = new Point(32, 180);
+            pnlTabs.Margin = new Padding(5, 6, 5, 6);
+            pnlTabs.Name = "pnlTabs";
+            pnlTabs.Size = new Size(1561, 80);
+            pnlTabs.TabIndex = 1;
             // 
-            // btnPendingDoctors
+            // pnlTabIndicator
             // 
-            this.btnPendingDoctors.BackColor = System.Drawing.Color.White;
-            this.btnPendingDoctors.FlatAppearance.BorderSize = 0;
-            this.btnPendingDoctors.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPendingDoctors.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnPendingDoctors.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnPendingDoctors.Location = new System.Drawing.Point(180, 0);
-            this.btnPendingDoctors.Name = "btnPendingDoctors";
-            this.btnPendingDoctors.Size = new System.Drawing.Size(180, 40);
-            this.btnPendingDoctors.TabIndex = 1;
-            this.btnPendingDoctors.Text = "Duyệt bác sĩ";
-            this.btnPendingDoctors.UseVisualStyleBackColor = false;
-            this.btnPendingDoctors.Click += new System.EventHandler(this.btnPendingDoctors_Click);
+            pnlTabIndicator.BackColor = Color.FromArgb(59, 130, 246);
+            pnlTabIndicator.Location = new Point(0, 75);
+            pnlTabIndicator.Name = "pnlTabIndicator";
+            pnlTabIndicator.Size = new Size(150, 5);
+            pnlTabIndicator.TabIndex = 4;
+            // 
+            // btnDoctors
+            // 
+            btnDoctors.BackColor = Color.Transparent;
+            btnDoctors.FlatAppearance.BorderSize = 0;
+            btnDoctors.FlatStyle = FlatStyle.Flat;
+            btnDoctors.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnDoctors.ForeColor = Color.FromArgb(75, 85, 99);
+            btnDoctors.Location = new Point(435, 1);
+            btnDoctors.Name = "btnDoctors";
+            btnDoctors.Size = new Size(228, 70);
+            btnDoctors.TabIndex = 3;
+            btnDoctors.Text = "Bác sĩ (0)";
+            btnDoctors.UseVisualStyleBackColor = false;
+            btnDoctors.Click += btnDoctors_Click;
+            // 
+            // btnPatients
+            // 
+            btnPatients.BackColor = Color.Transparent;
+            btnPatients.FlatAppearance.BorderSize = 0;
+            btnPatients.FlatStyle = FlatStyle.Flat;
+            btnPatients.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnPatients.ForeColor = Color.FromArgb(75, 85, 99);
+            btnPatients.Location = new Point(201, 0);
+            btnPatients.Name = "btnPatients";
+            btnPatients.Size = new Size(228, 70);
+            btnPatients.TabIndex = 2;
+            btnPatients.Text = "Bệnh nhân (0)";
+            btnPatients.UseVisualStyleBackColor = false;
+            btnPatients.Click += btnPatients_Click;
             // 
             // btnAllUsers
             // 
-            this.btnAllUsers.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(98)))), ((int)(((byte)(255)))));
-            this.btnAllUsers.FlatAppearance.BorderSize = 0;
-            this.btnAllUsers.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAllUsers.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnAllUsers.ForeColor = System.Drawing.Color.White;
-            this.btnAllUsers.Location = new System.Drawing.Point(0, 0);
-            this.btnAllUsers.Name = "btnAllUsers";
-            this.btnAllUsers.Size = new System.Drawing.Size(170, 40);
-            this.btnAllUsers.TabIndex = 0;
-            this.btnAllUsers.Text = "Tất cả người dùng";
-            this.btnAllUsers.UseVisualStyleBackColor = false;
-            this.btnAllUsers.Click += new System.EventHandler(this.btnAllUsers_Click);
+            btnAllUsers.BackColor = Color.Transparent;
+            btnAllUsers.FlatAppearance.BorderSize = 0;
+            btnAllUsers.FlatStyle = FlatStyle.Flat;
+            btnAllUsers.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnAllUsers.ForeColor = Color.FromArgb(59, 130, 246);
+            btnAllUsers.Location = new Point(0, 0);
+            btnAllUsers.Name = "btnAllUsers";
+            btnAllUsers.Size = new Size(195, 70);
+            btnAllUsers.TabIndex = 0;
+            btnAllUsers.Text = "Tất cả (0)";
+            btnAllUsers.UseVisualStyleBackColor = false;
+            btnAllUsers.Click += btnAllUsers_Click;
             // 
             // pnlFilters
             // 
-            this.pnlFilters.Controls.Add(this.cboRoleFilter);
-            this.pnlFilters.Controls.Add(this.lblFilterRole);
-            this.pnlFilters.Controls.Add(this.pnlSearch);
-            this.pnlFilters.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlFilters.Location = new System.Drawing.Point(20, 130);
-            this.pnlFilters.Name = "pnlFilters";
-            this.pnlFilters.Size = new System.Drawing.Size(960, 60);
-            this.pnlFilters.TabIndex = 2;
+            pnlFilters.Controls.Add(cboStatusFilter);
+            pnlFilters.Controls.Add(pnlSearch);
+            pnlFilters.Dock = DockStyle.Top;
+            pnlFilters.Location = new Point(32, 260);
+            pnlFilters.Margin = new Padding(5, 6, 5, 6);
+            pnlFilters.Name = "pnlFilters";
+            pnlFilters.Size = new Size(1561, 120);
+            pnlFilters.TabIndex = 2;
             // 
-            // cboRoleFilter
+            // cboStatusFilter
             // 
-            this.cboRoleFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboRoleFilter.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.cboRoleFilter.FormattingEnabled = true;
-            this.cboRoleFilter.Items.AddRange(new object[] {
-            "Tất cả",
-            "Admin",
-            "Doctor",
-            "Patient"});
-            this.cboRoleFilter.Location = new System.Drawing.Point(400, 15);
-            this.cboRoleFilter.Name = "cboRoleFilter";
-            this.cboRoleFilter.Size = new System.Drawing.Size(150, 31);
-            this.cboRoleFilter.TabIndex = 2;
-            this.cboRoleFilter.SelectedIndexChanged += new System.EventHandler(this.cboRoleFilter_SelectedIndexChanged);
-            // 
-            // lblFilterRole
-            // 
-            this.lblFilterRole.AutoSize = true;
-            this.lblFilterRole.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblFilterRole.ForeColor = System.Drawing.Color.Gray;
-            this.lblFilterRole.Location = new System.Drawing.Point(340, 20);
-            this.lblFilterRole.Name = "lblFilterRole";
-            this.lblFilterRole.Size = new System.Drawing.Size(55, 20);
-            this.lblFilterRole.TabIndex = 1;
-            this.lblFilterRole.Text = "Vai trò:";
+            cboStatusFilter.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            cboStatusFilter.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboStatusFilter.Font = new Font("Segoe UI", 13.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cboStatusFilter.FormattingEnabled = true;
+            cboStatusFilter.Items.AddRange(new object[] { "Tất cả trạng thái", "Hoạt động", "Chờ duyệt", "Bị khóa" });
+            cboStatusFilter.Location = new Point(1221, 20);
+            cboStatusFilter.Name = "cboStatusFilter";
+            cboStatusFilter.Size = new Size(340, 55);
+            cboStatusFilter.TabIndex = 1;
+            cboStatusFilter.SelectedIndexChanged += cboStatusFilter_SelectedIndexChanged;
             // 
             // pnlSearch
             // 
-            this.pnlSearch.BackColor = System.Drawing.Color.White;
-            this.pnlSearch.Controls.Add(this.txtSearch);
-            this.pnlSearch.Location = new System.Drawing.Point(0, 10);
-            this.pnlSearch.Name = "pnlSearch";
-            this.pnlSearch.Padding = new System.Windows.Forms.Padding(15, 8, 15, 8);
-            this.pnlSearch.Size = new System.Drawing.Size(320, 40);
-            this.pnlSearch.TabIndex = 0;
-            this.pnlSearch.Paint += new System.Windows.Forms.PaintEventHandler((s, e) => UIHelper.DrawControlBorder(s, e, 20, System.Drawing.Color.FromArgb(230, 230, 230), 1));
+            pnlSearch.BackColor = Color.FromArgb(243, 244, 246);
+            pnlSearch.Controls.Add(txtSearch);
+            pnlSearch.Location = new Point(0, 10);
+            pnlSearch.Name = "pnlSearch";
+            pnlSearch.Padding = new Padding(24, 20, 24, 20);
+            pnlSearch.Size = new Size(1191, 80);
+            pnlSearch.TabIndex = 0;
             // 
             // txtSearch
             // 
-            this.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtSearch.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtSearch.Location = new System.Drawing.Point(15, 8);
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.PlaceholderText = "Tìm kiếm tên, số điện thoại...";
-            this.txtSearch.Size = new System.Drawing.Size(290, 23);
-            this.txtSearch.TabIndex = 0;
-            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            txtSearch.BackColor = Color.FromArgb(243, 244, 246);
+            txtSearch.BorderStyle = BorderStyle.None;
+            txtSearch.Dock = DockStyle.Fill;
+            txtSearch.Font = new Font("Segoe UI", 11F);
+            txtSearch.Location = new Point(24, 20);
+            txtSearch.Name = "txtSearch";
+            txtSearch.Size = new Size(1143, 40);
+            txtSearch.TabIndex = 0;
+            txtSearch.TextChanged += txtSearch_TextChanged;
+            // 
+            // pnlListHeader
+            // 
+            pnlListHeader.BackColor = Color.White;
+            pnlListHeader.Controls.Add(lblHeaderJoined);
+            pnlListHeader.Controls.Add(lblHeaderStatus);
+            pnlListHeader.Controls.Add(lblHeaderType);
+            pnlListHeader.Controls.Add(lblHeaderPhone);
+            pnlListHeader.Controls.Add(lblHeaderEmail);
+            pnlListHeader.Controls.Add(lblHeaderName);
+            pnlListHeader.Dock = DockStyle.Top;
+            pnlListHeader.Location = new Point(32, 380);
+            pnlListHeader.Name = "pnlListHeader";
+            pnlListHeader.Size = new Size(1561, 80);
+            pnlListHeader.TabIndex = 4;
+            // 
+            // lblHeaderJoined
+            // 
+            lblHeaderJoined.AutoSize = true;
+            lblHeaderJoined.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblHeaderJoined.ForeColor = Color.FromArgb(31, 41, 55);
+            lblHeaderJoined.Location = new Point(1320, 20);
+            lblHeaderJoined.Name = "lblHeaderJoined";
+            lblHeaderJoined.Size = new Size(206, 37);
+            lblHeaderJoined.TabIndex = 5;
+            lblHeaderJoined.Text = "Ngày tham gia";
+            // 
+            // lblHeaderStatus
+            // 
+            lblHeaderStatus.AutoSize = true;
+            lblHeaderStatus.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblHeaderStatus.ForeColor = Color.FromArgb(31, 41, 55);
+            lblHeaderStatus.Location = new Point(1100, 20);
+            lblHeaderStatus.Name = "lblHeaderStatus";
+            lblHeaderStatus.Size = new Size(147, 37);
+            lblHeaderStatus.TabIndex = 4;
+            lblHeaderStatus.Text = "Trạng thái";
+            // 
+            // lblHeaderType
+            // 
+            lblHeaderType.AutoSize = true;
+            lblHeaderType.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblHeaderType.ForeColor = Color.FromArgb(31, 41, 55);
+            lblHeaderType.Location = new Point(950, 20);
+            lblHeaderType.Name = "lblHeaderType";
+            lblHeaderType.Size = new Size(71, 37);
+            lblHeaderType.TabIndex = 3;
+            lblHeaderType.Text = "Loại";
+            // 
+            // lblHeaderPhone
+            // 
+            lblHeaderPhone.AutoSize = true;
+            lblHeaderPhone.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblHeaderPhone.ForeColor = Color.FromArgb(31, 41, 55);
+            lblHeaderPhone.Location = new Point(700, 20);
+            lblHeaderPhone.Name = "lblHeaderPhone";
+            lblHeaderPhone.Size = new Size(186, 37);
+            lblHeaderPhone.TabIndex = 2;
+            lblHeaderPhone.Text = "Số điện thoại";
+            // 
+            // lblHeaderEmail
+            // 
+            lblHeaderEmail.AutoSize = true;
+            lblHeaderEmail.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblHeaderEmail.ForeColor = Color.FromArgb(31, 41, 55);
+            lblHeaderEmail.Location = new Point(400, 20);
+            lblHeaderEmail.Name = "lblHeaderEmail";
+            lblHeaderEmail.Size = new Size(87, 37);
+            lblHeaderEmail.TabIndex = 1;
+            lblHeaderEmail.Text = "Email";
+            // 
+            // lblHeaderName
+            // 
+            lblHeaderName.AutoSize = true;
+            lblHeaderName.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblHeaderName.ForeColor = Color.FromArgb(31, 41, 55);
+            lblHeaderName.Location = new Point(20, 20);
+            lblHeaderName.Name = "lblHeaderName";
+            lblHeaderName.Size = new Size(171, 37);
+            lblHeaderName.TabIndex = 0;
+            lblHeaderName.Text = "Người dùng";
             // 
             // flpUserList
             // 
-            this.flpUserList.AutoScroll = true;
-            this.flpUserList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpUserList.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpUserList.Location = new System.Drawing.Point(20, 190);
-            this.flpUserList.Name = "flpUserList";
-            this.flpUserList.Padding = new System.Windows.Forms.Padding(0, 10, 0, 10);
-            this.flpUserList.Size = new System.Drawing.Size(960, 590);
-            this.flpUserList.TabIndex = 3;
-            this.flpUserList.WrapContents = false;
+            flpUserList.AutoScroll = true;
+            flpUserList.Dock = DockStyle.Fill;
+            flpUserList.FlowDirection = FlowDirection.TopDown;
+            flpUserList.Location = new Point(32, 380);
+            flpUserList.Name = "flpUserList";
+            flpUserList.Padding = new Padding(0, 10, 0, 10);
+            flpUserList.Size = new Size(1561, 1100);
+            flpUserList.TabIndex = 3;
+            flpUserList.WrapContents = false;
+            // 
+            // pnlPagination
+            // 
+            pnlPagination.BackColor = Color.FromArgb(242, 246, 250);
+            pnlPagination.Controls.Add(lblNext);
+            pnlPagination.Controls.Add(lblPrev);
+            pnlPagination.Controls.Add(lblPageStatus);
+            pnlPagination.Dock = DockStyle.Bottom;
+            pnlPagination.Location = new Point(32, 1480);
+            pnlPagination.Name = "pnlPagination";
+            pnlPagination.Size = new Size(1561, 80);
+            pnlPagination.TabIndex = 4;
+            // 
+            // lblNext
+            // 
+            lblNext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblNext.AutoSize = true;
+            lblNext.Cursor = Cursors.Hand;
+            lblNext.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblNext.ForeColor = Color.FromArgb(0, 120, 212);
+            lblNext.Location = new Point(1350, 24);
+            lblNext.Name = "lblNext";
+            lblNext.Size = new Size(185, 37);
+            lblNext.TabIndex = 0;
+            lblNext.Text = "Trang sau >>";
+            lblNext.Click += lblNext_Click;
+            // 
+            // lblPrev
+            // 
+            lblPrev.AutoSize = true;
+            lblPrev.Cursor = Cursors.Hand;
+            lblPrev.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblPrev.ForeColor = Color.FromArgb(0, 120, 212);
+            lblPrev.Location = new Point(24, 24);
+            lblPrev.Name = "lblPrev";
+            lblPrev.Size = new Size(212, 37);
+            lblPrev.TabIndex = 1;
+            lblPrev.Text = "<< Trang trước";
+            lblPrev.Click += lblPrev_Click;
+            // 
+            // lblPageStatus
+            // 
+            lblPageStatus.Anchor = AnchorStyles.None;
+            lblPageStatus.AutoSize = true;
+            lblPageStatus.Font = new Font("Segoe UI", 10F);
+            lblPageStatus.Location = new Point(708, 24);
+            lblPageStatus.Name = "lblPageStatus";
+            lblPageStatus.Size = new Size(145, 37);
+            lblPageStatus.TabIndex = 2;
+            lblPageStatus.Text = "Trang 1 / 1";
+            lblPageStatus.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // ucAdmin_UserManagement
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(251)))), ((int)(((byte)(253)))));
-            this.Controls.Add(this.flpUserList);
-            this.Controls.Add(this.pnlFilters);
-            this.Controls.Add(this.pnlTabs);
-            this.Controls.Add(this.pnlHeader);
-            this.Name = "ucAdmin_UserManagement";
-            this.Padding = new System.Windows.Forms.Padding(20);
-            this.Size = new System.Drawing.Size(1000, 800);
-            this.Load += new System.EventHandler(this.ucAdmin_UserManagement_Load);
-            this.pnlHeader.ResumeLayout(false);
-            this.pnlHeader.PerformLayout();
-            this.pnlTabs.ResumeLayout(false);
-            this.pnlFilters.ResumeLayout(false);
-            this.pnlFilters.PerformLayout();
-            this.pnlSearch.ResumeLayout(false);
-            this.pnlSearch.PerformLayout();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(13F, 32F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.White;
+            Controls.Add(flpUserList);
+            Controls.Add(pnlPagination);
+            Controls.Add(pnlFilters);
+            Controls.Add(pnlTabs);
+            Controls.Add(pnlHeader);
+            Name = "ucAdmin_UserManagement";
+            Padding = new Padding(32, 40, 32, 40);
+            Size = new Size(1625, 1600);
+            Load += ucAdmin_UserManagement_Load;
+            pnlHeader.ResumeLayout(false);
+            pnlHeader.PerformLayout();
+            pnlTabs.ResumeLayout(false);
+            pnlFilters.ResumeLayout(false);
+            pnlSearch.ResumeLayout(false);
+            pnlSearch.PerformLayout();
+            pnlListHeader.ResumeLayout(false);
+            pnlListHeader.PerformLayout();
+            pnlPagination.ResumeLayout(false);
+            pnlPagination.PerformLayout();
+            ResumeLayout(false);
         }
 
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Label lblTitle;
+        private System.Windows.Forms.Label lblSubtitle;
         private System.Windows.Forms.Panel pnlTabs;
+        private System.Windows.Forms.Panel pnlTabIndicator;
         private System.Windows.Forms.Button btnPendingDoctors;
         private System.Windows.Forms.Button btnAllUsers;
+        private System.Windows.Forms.Button btnPatients;
+        private System.Windows.Forms.Button btnDoctors;
         private System.Windows.Forms.Panel pnlFilters;
         private System.Windows.Forms.Panel pnlSearch;
         private System.Windows.Forms.TextBox txtSearch;
-        private System.Windows.Forms.Label lblFilterRole;
-        private System.Windows.Forms.ComboBox cboRoleFilter;
+        private System.Windows.Forms.ComboBox cboStatusFilter;
+        private System.Windows.Forms.Panel pnlListHeader;
+        private System.Windows.Forms.Label lblHeaderName;
+        private System.Windows.Forms.Label lblHeaderEmail;
+        private System.Windows.Forms.Label lblHeaderPhone;
+        private System.Windows.Forms.Label lblHeaderType;
+        private System.Windows.Forms.Label lblHeaderStatus;
+        private System.Windows.Forms.Label lblHeaderJoined;
         private System.Windows.Forms.FlowLayoutPanel flpUserList;
+        private System.Windows.Forms.Panel pnlPagination;
+        private System.Windows.Forms.Label lblNext;
+        private System.Windows.Forms.Label lblPrev;
+        private System.Windows.Forms.Label lblPageStatus;
     }
 }

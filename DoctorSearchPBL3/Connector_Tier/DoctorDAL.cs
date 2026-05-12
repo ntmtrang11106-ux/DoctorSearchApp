@@ -26,6 +26,7 @@ namespace DAL_Tier
                 .Include(d => d.User)
                 .Include(d => d.Department)
                 .Include(d => d.Reviews)
+                .Include(d => d.Certificates)
                 .FirstOrDefault(d => d.Id == doctorId);
         }
 
@@ -101,9 +102,8 @@ namespace DAL_Tier
                 existingDoctor.ExperienceYears = updatedDoctor.ExperienceYears;
                 existingDoctor.ConsultationFee = updatedDoctor.ConsultationFee;
                 existingDoctor.Biography = updatedDoctor.Biography;
-                // LicenseNumber is read-only according to user request, but we might want to allow 
-                // setting it if it's currently null, but for now let's keep it as is.
-                // existingDoctor.LicenseNumber = updatedDoctor.LicenseNumber; 
+                existingDoctor.LicenseNumber = updatedDoctor.LicenseNumber;
+                existingDoctor.DepartmentId = updatedDoctor.DepartmentId;
 
                 existingDoctor.UpdatedAt = DateTime.Now;
 
@@ -133,6 +133,26 @@ namespace DAL_Tier
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("Lỗi UpdateRating: " + ex.Message);
+                return false;
+            }
+        }
+
+        public bool ApproveDoctor(int doctorId, bool isApproved)
+        {
+            using var context = new AppDbContext();
+            try
+            {
+                var doctor = context.Doctors.Find(doctorId);
+                if (doctor == null) return false;
+
+                doctor.IsApproved = isApproved;
+                doctor.UpdatedAt = DateTime.Now;
+
+                return context.SaveChanges() > 0;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Lỗi ApproveDoctor: " + ex.Message);
                 return false;
             }
         }
@@ -191,6 +211,66 @@ namespace DAL_Tier
                 .Where(r => r.DoctorId == doctorId && r.IsVisible && !r.IsDeleted)
                 .OrderByDescending(r => r.CreatedAt)
                 .ToList();
+        }
+
+        public List<DoctorCertificateDTO> GetCertificatesByDoctorId(int doctorId)
+        {
+            using var context = new AppDbContext();
+            return context.DoctorCertificates
+                .Where(c => c.DoctorId == doctorId && !c.IsDeleted)
+                .ToList();
+        }
+
+        public bool AddDoctorCertificate(DoctorCertificateDTO certificate)
+        {
+            using var context = new AppDbContext();
+            try
+            {
+                // Đảm bảo không đính kèm đối tượng Doctor để tránh lỗi conflict context nếu có
+                certificate.Doctor = null; 
+                context.DoctorCertificates.Add(certificate);
+                return context.SaveChanges() > 0;
+            }
+            catch (Exception ex)
+            {
+                // Log chi tiết lỗi để debug
+                System.Diagnostics.Debug.WriteLine("Lỗi AddDoctorCertificate: " + ex.ToString());
+                return false;
+            }
+        }
+        public bool ReplaceDoctorCertificate(int doctorId, DoctorCertificateDTO newCertificate)
+        {
+            using var context = new AppDbContext();
+            using var transaction = context.Database.BeginTransaction();
+            try
+            {
+                // 1. Mark all existing certificates as deleted
+                var existingCerts = context.DoctorCertificates
+                    .Where(c => c.DoctorId == doctorId && !c.IsDeleted)
+                    .ToList();
+
+                foreach (var cert in existingCerts)
+                {
+                    cert.IsDeleted = true;
+                    cert.DeletedAt = DateTime.Now;
+                    cert.IsPrimary = false;
+                    context.Entry(cert).State = EntityState.Modified;
+                }
+
+                // 2. Add the new one
+                newCertificate.Doctor = null; // Avoid attachment issues
+                context.DoctorCertificates.Add(newCertificate);
+
+                int result = context.SaveChanges();
+                transaction.Commit();
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                System.Diagnostics.Debug.WriteLine("Lỗi ReplaceDoctorCertificate: " + ex.ToString());
+                return false;
+            }
         }
     }
 }

@@ -111,13 +111,27 @@ namespace BUS_Tier
 
             if (user != null && SecurityHelper.VerifyPassword(pass, user.Password))
             {
+                if (user.Status == "Inactive")
+                {
+                    msg = "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để được hỗ trợ.";
+                    return "";
+                }
+
                 userId = user.Id;
                 fullName = user.FullName;
 
                 if (user.Role == "Doctor")
                 {
                     var doctor = _context.Doctors.FirstOrDefault(d => d.UserId == user.Id);
-                    if (doctor != null) profileId = doctor.Id;
+                    if (doctor != null)
+                    {
+                        if (!doctor.IsApproved)
+                        {
+                            msg = "Tài khoản bác sĩ của bạn đang chờ quản trị viên phê duyệt. Vui lòng quay lại sau!";
+                            return "";
+                        }
+                        profileId = doctor.Id;
+                    }
                 }
                 else if (user.Role == "Patient")
                 {
@@ -167,26 +181,21 @@ namespace BUS_Tier
         /// <summary>
         /// Đăng ký cho Bác sĩ (Thêm trường clinicName từ giao diện)
         /// </summary>
-        public string RegisterDoctor(UserDTO user, string confirmPass, int deptId, int exp, string position, string licenseNumber)
+        public string RegisterDoctor(UserDTO user, string confirmPass, int deptId, int exp, string position, string licenseNumber, out int doctorId)
         {
+            doctorId = 0;
             string validation = ValidateCommonUser(user, confirmPass);
             if (validation != "OK") return validation;
 
             if (string.IsNullOrWhiteSpace(position)) return "Vui lòng nhập chức danh nghề nghiệp";
-
-            //if (string.IsNullOrWhiteSpace(deptId.ToString())) return "Vui lòng chọn chuyên khoa cho bác sĩ.";
             if (deptId <= 0) return "Vui lòng chọn chuyên khoa cho bác sĩ.";
+            if (exp < 0) return "Năm kinh nghiệm không hợp lệ.";
+            if (string.IsNullOrWhiteSpace(licenseNumber)) return "Vui lòng nhập mã giấy phép hành nghề.";
 
-            if (string.IsNullOrWhiteSpace(exp.ToString())) return "Vui lòng nhập năm cấp chứng chỉ.";
-
-            if (string.IsNullOrWhiteSpace(licenseNumber.ToString())) return "Vui lòng nhập mã giấy phép hành nghề.";
-
-            // Sử dụng SecurityHelper để băm trước khi lưu
             user.Password = SecurityHelper.HashPassword(user.Password);
 
-            // Truyền xuống DAL (đã bỏ fee)
-            bool isSuccess = _userDAL.RegisterDoctor(user, deptId, exp, position, licenseNumber);
-            return isSuccess ? "Success" : "Lỗi hệ thống khi đăng ký Bác sĩ.";
+            doctorId = _userDAL.RegisterDoctor(user, deptId, exp, position, licenseNumber);
+            return doctorId > 0 ? "Success" : "Lỗi hệ thống khi đăng ký Bác sĩ.";
         }
 
         /// <summary>

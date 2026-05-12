@@ -77,16 +77,16 @@ namespace UI_Tier
             pnlTabs.Controls.Add(pnlUser);
             pnlTabs.Controls.Add(pnlDoctor);
             pnlTabs.Controls.Add(pnlOverview);
-            pnlTabs.Location = new Point(583, 3);
+            pnlTabs.Location = new Point(500, 3);
             pnlTabs.Name = "pnlTabs";
-            pnlTabs.Size = new Size(1200, 110);
+            pnlTabs.Size = new Size(1387, 110);
             pnlTabs.TabIndex = 1;
             // 
             // pnlProfile
             // 
             pnlProfile.Controls.Add(lblIconProfile);
             pnlProfile.Controls.Add(lblProfile);
-            pnlProfile.Location = new Point(900, 15);
+            pnlProfile.Location = new Point(1062, 15);
             pnlProfile.Name = "pnlProfile";
             pnlProfile.Size = new Size(280, 85);
             pnlProfile.TabIndex = 4;
@@ -117,7 +117,7 @@ namespace UI_Tier
             // 
             pnlUser.Controls.Add(lblIconUser);
             pnlUser.Controls.Add(lblUser);
-            pnlUser.Location = new Point(600, 15);
+            pnlUser.Location = new Point(767, 15);
             pnlUser.Name = "pnlUser";
             pnlUser.Size = new Size(280, 85);
             pnlUser.TabIndex = 3;
@@ -138,7 +138,7 @@ namespace UI_Tier
             lblUser.AutoSize = true;
             lblUser.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
             lblUser.ForeColor = Color.Gray;
-            lblUser.Location = new Point(85, 18);
+            lblUser.Location = new Point(82, 18);
             lblUser.Name = "lblUser";
             lblUser.Size = new Size(195, 47);
             lblUser.TabIndex = 0;
@@ -150,7 +150,7 @@ namespace UI_Tier
             pnlDoctor.Controls.Add(lblDoctor);
             pnlDoctor.Location = new Point(300, 15);
             pnlDoctor.Name = "pnlDoctor";
-            pnlDoctor.Size = new Size(280, 85);
+            pnlDoctor.Size = new Size(445, 85);
             pnlDoctor.TabIndex = 2;
             // 
             // lblIconDoctor
@@ -171,9 +171,9 @@ namespace UI_Tier
             lblDoctor.ForeColor = Color.Gray;
             lblDoctor.Location = new Point(85, 18);
             lblDoctor.Name = "lblDoctor";
-            lblDoctor.Size = new Size(113, 47);
+            lblDoctor.Size = new Size(351, 47);
             lblDoctor.TabIndex = 0;
-            lblDoctor.Text = "Bác sĩ";
+            lblDoctor.Text = "Quản lý người dùng";
             // 
             // pnlOverview
             // 
@@ -181,7 +181,7 @@ namespace UI_Tier
             pnlOverview.Controls.Add(lblOverview);
             pnlOverview.Location = new Point(0, 15);
             pnlOverview.Name = "pnlOverview";
-            pnlOverview.Size = new Size(280, 85);
+            pnlOverview.Size = new Size(294, 85);
             pnlOverview.TabIndex = 1;
             // 
             // lblIconOverview
@@ -200,7 +200,7 @@ namespace UI_Tier
             lblOverview.AutoSize = true;
             lblOverview.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
             lblOverview.ForeColor = Color.Gray;
-            lblOverview.Location = new Point(85, 18);
+            lblOverview.Location = new Point(79, 18);
             lblOverview.Name = "lblOverview";
             lblOverview.Size = new Size(198, 47);
             lblOverview.TabIndex = 0;

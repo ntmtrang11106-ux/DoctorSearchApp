@@ -149,10 +149,62 @@ namespace BUS_Tier
             doctor.AverageRating = validReviews.Any() ? Math.Round(validReviews.Average(r => r.Rating), 1) : 0;
         }
 
+        public string ApproveDoctor(int doctorId, bool isApproved)
+        {
+            if (doctorId <= 0) return "ID bác sĩ không hợp lệ!";
+            bool result = doctorDAL.ApproveDoctor(doctorId, isApproved);
+            return result ? "Success" : "Thao tác thất bại!";
+        }
+
         public List<ReviewsDTO> GetDoctorReviews(int doctorId)
         {
             if (doctorId <= 0) return new List<ReviewsDTO>();
             return doctorDAL.GetDoctorReviews(doctorId);
+        }
+
+        public string UploadCertificate(int doctorId, string localFilePath)
+        {
+            try
+            {
+                if (!System.IO.File.Exists(localFilePath))
+                    return "File không tồn tại!";
+
+                // 1. (Optional) Previous logic removed here as ReplaceDoctorCertificate handles it.
+                
+                // 2. Create directory if not exists
+                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                string certFolder = System.IO.Path.Combine(baseDir, "Resources", "Certificates");
+                if (!System.IO.Directory.Exists(certFolder))
+                    System.IO.Directory.CreateDirectory(certFolder);
+
+                // 3. Generate unique filename
+                string fileName = System.IO.Path.GetFileName(localFilePath);
+                string extension = System.IO.Path.GetExtension(localFilePath);
+                string uniqueFileName = $"{DateTime.Now:yyyyMMdd}_{Guid.NewGuid().ToString().Substring(0, 8)}{extension}";
+                string destinationPath = System.IO.Path.Combine(certFolder, uniqueFileName);
+
+                // 4. Copy file
+                System.IO.File.Copy(localFilePath, destinationPath, true);
+
+                // 5. Save to DB
+                var certDTO = new DoctorCertificateDTO
+                {
+                    DoctorId = doctorId,
+                    FilePath = System.IO.Path.Combine("Resources", "Certificates", uniqueFileName),
+                    FileName = fileName,
+                    UploadedAt = DateTime.Now,
+                    IsPrimary = true,
+                    IsDeleted = false
+                };
+
+                // Use a transaction or a specialized DAL method to handle "Replace"
+                bool result = doctorDAL.ReplaceDoctorCertificate(doctorId, certDTO);
+                return result ? "Tải lên thành công!" : "Lưu vào cơ sở dữ liệu thất bại!";
+            }
+            catch (Exception ex)
+            {
+                return "Lỗi: " + ex.Message;
+            }
         }
     }
 }

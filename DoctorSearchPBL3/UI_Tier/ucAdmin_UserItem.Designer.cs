@@ -15,187 +15,378 @@ namespace UI_Tier
 
         private void InitializeComponent()
         {
-            this.picAvatar = new System.Windows.Forms.PictureBox();
-            this.lblFullName = new System.Windows.Forms.Label();
-            this.lblPhone = new System.Windows.Forms.Label();
-            this.pnlRoleBadge = new System.Windows.Forms.Panel();
-            this.lblRole = new System.Windows.Forms.Label();
-            this.pnlStatusBadge = new System.Windows.Forms.Panel();
-            this.lblStatus = new System.Windows.Forms.Label();
-            this.lblJoinedDate = new System.Windows.Forms.Label();
-            this.btnApprove = new System.Windows.Forms.Button();
-            this.btnReject = new System.Windows.Forms.Button();
-            this.btnToggleStatus = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.picAvatar)).BeginInit();
-            this.pnlRoleBadge.SuspendLayout();
-            this.pnlStatusBadge.SuspendLayout();
-            this.SuspendLayout();
+            flpHeader = new FlowLayoutPanel();
+            pnlRoleBadge = new Panel();
+            lblRole = new Label();
+            lblFullName = new Label();
+            pnlApprovalBadge = new Panel();
+            lblApproval = new Label();
+            pnlStatusBadge = new Panel();
+            lblStatus = new Label();
+            pnlCard = new Panel();
+            flpActions = new FlowLayoutPanel();
+            btnRemove = new Button();
+            btnEdit = new Button();
+            btnToggleStatus = new Button();
+            btnReject = new Button();
+            btnApprove = new Button();
+            btnDetail = new Button();
+            lblExp = new Label();
+            lblDepartment = new Label();
+            lblPhone = new Label();
+            lblLicenseOrBHYT = new Label();
+            lblDeptOrCode = new Label();
+            lblDob = new Label();
+            flpHeader.SuspendLayout();
+            pnlRoleBadge.SuspendLayout();
+            pnlApprovalBadge.SuspendLayout();
+            pnlStatusBadge.SuspendLayout();
+            pnlCard.SuspendLayout();
+            flpActions.SuspendLayout();
+            SuspendLayout();
             // 
-            // picAvatar
+            // flpHeader
             // 
-            this.picAvatar.BackColor = System.Drawing.Color.Gainsboro;
-            this.picAvatar.Location = new System.Drawing.Point(15, 12);
-            this.picAvatar.Name = "picAvatar";
-            this.picAvatar.Size = new System.Drawing.Size(50, 50);
-            this.picAvatar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.picAvatar.TabIndex = 0;
-            this.picAvatar.TabStop = false;
-            // 
-            // lblFullName
-            // 
-            this.lblFullName.AutoSize = true;
-            this.lblFullName.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.lblFullName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(33)))), ((int)(((byte)(33)))));
-            this.lblFullName.Location = new System.Drawing.Point(80, 12);
-            this.lblFullName.Name = "lblFullName";
-            this.lblFullName.Size = new System.Drawing.Size(120, 25);
-            this.lblFullName.TabIndex = 1;
-            this.lblFullName.Text = "Nguyễn Văn A";
-            // 
-            // lblPhone
-            // 
-            this.lblPhone.AutoSize = true;
-            this.lblPhone.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblPhone.ForeColor = System.Drawing.Color.Gray;
-            this.lblPhone.Location = new System.Drawing.Point(80, 40);
-            this.lblPhone.Name = "lblPhone";
-            this.lblPhone.Size = new System.Drawing.Size(89, 20);
-            this.lblPhone.TabIndex = 2;
-            this.lblPhone.Text = "0987654321";
+            flpHeader.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            flpHeader.Controls.Add(pnlRoleBadge);
+            flpHeader.Controls.Add(lblFullName);
+            flpHeader.Controls.Add(pnlApprovalBadge);
+            flpHeader.Controls.Add(pnlStatusBadge);
+            flpHeader.Location = new Point(32, 44);
+            flpHeader.Name = "flpHeader";
+            flpHeader.Size = new Size(1236, 60);
+            flpHeader.TabIndex = 13;
+            flpHeader.WrapContents = false;
             // 
             // pnlRoleBadge
             // 
-            this.pnlRoleBadge.Controls.Add(this.lblRole);
-            this.pnlRoleBadge.Location = new System.Drawing.Point(300, 22);
-            this.pnlRoleBadge.Name = "pnlRoleBadge";
-            this.pnlRoleBadge.Size = new System.Drawing.Size(80, 30);
-            this.pnlRoleBadge.TabIndex = 3;
+            pnlRoleBadge.Controls.Add(lblRole);
+            pnlRoleBadge.Location = new Point(0, 5);
+            pnlRoleBadge.Margin = new Padding(0, 5, 10, 0);
+            pnlRoleBadge.Name = "pnlRoleBadge";
+            pnlRoleBadge.Size = new Size(200, 45);
+            pnlRoleBadge.TabIndex = 0;
             // 
             // lblRole
             // 
-            this.lblRole.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblRole.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
-            this.lblRole.Location = new System.Drawing.Point(0, 0);
-            this.lblRole.Name = "lblRole";
-            this.lblRole.Size = new System.Drawing.Size(80, 30);
-            this.lblRole.TabIndex = 0;
-            this.lblRole.Text = "Doctor";
-            this.lblRole.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lblRole.Dock = DockStyle.Fill;
+            lblRole.Font = new Font("Segoe UI", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblRole.Location = new Point(0, 0);
+            lblRole.Margin = new Padding(5, 0, 5, 0);
+            lblRole.Name = "lblRole";
+            lblRole.Size = new Size(200, 45);
+            lblRole.TabIndex = 0;
+            lblRole.Text = "BỆNH NHÂN";
+            lblRole.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lblFullName
+            // 
+            lblFullName.AutoSize = true;
+            lblFullName.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblFullName.ForeColor = Color.FromArgb(31, 41, 55);
+            lblFullName.Location = new Point(170, 5);
+            lblFullName.Margin = new Padding(0, 5, 10, 0);
+            lblFullName.Name = "lblFullName";
+            lblFullName.Size = new Size(313, 50);
+            lblFullName.TabIndex = 1;
+            lblFullName.Text = "Lê Hoàng Cường";
+            // 
+            // pnlApprovalBadge
+            // 
+            pnlApprovalBadge.Controls.Add(lblApproval);
+            pnlApprovalBadge.Location = new Point(503, 0);
+            pnlApprovalBadge.Margin = new Padding(10, 0, 10, 0);
+            pnlApprovalBadge.Name = "pnlApprovalBadge";
+            pnlApprovalBadge.Size = new Size(220, 60);
+            pnlApprovalBadge.TabIndex = 2;
+            // 
+            // lblApproval
+            // 
+            lblApproval.Dock = DockStyle.Fill;
+            lblApproval.Font = new Font("Segoe UI", 10.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblApproval.Location = new Point(0, 0);
+            lblApproval.Name = "lblApproval";
+            lblApproval.Size = new Size(220, 60);
+            lblApproval.TabIndex = 0;
+            lblApproval.Text = "Chờ duyệt";
+            lblApproval.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // pnlStatusBadge
             // 
-            this.pnlStatusBadge.Controls.Add(this.lblStatus);
-            this.pnlStatusBadge.Location = new System.Drawing.Point(400, 22);
-            this.pnlStatusBadge.Name = "pnlStatusBadge";
-            this.pnlStatusBadge.Size = new System.Drawing.Size(80, 30);
-            this.pnlStatusBadge.TabIndex = 4;
+            pnlStatusBadge.Controls.Add(lblStatus);
+            pnlStatusBadge.Location = new Point(743, 0);
+            pnlStatusBadge.Margin = new Padding(10, 0, 10, 0);
+            pnlStatusBadge.Name = "pnlStatusBadge";
+            pnlStatusBadge.Size = new Size(220, 60);
+            pnlStatusBadge.TabIndex = 3;
             // 
             // lblStatus
             // 
-            this.lblStatus.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblStatus.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
-            this.lblStatus.Location = new System.Drawing.Point(0, 0);
-            this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(80, 30);
-            this.lblStatus.TabIndex = 0;
-            this.lblStatus.Text = "Active";
-            this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lblStatus.Dock = DockStyle.Fill;
+            lblStatus.Font = new Font("Segoe UI", 10.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblStatus.Location = new Point(0, 0);
+            lblStatus.Name = "lblStatus";
+            lblStatus.Size = new Size(220, 60);
+            lblStatus.TabIndex = 0;
+            lblStatus.Text = "Hoạt động";
+            lblStatus.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // lblJoinedDate
+            // pnlCard
             // 
-            this.lblJoinedDate.AutoSize = true;
-            this.lblJoinedDate.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblJoinedDate.ForeColor = System.Drawing.Color.Gray;
-            this.lblJoinedDate.Location = new System.Drawing.Point(520, 27);
-            this.lblJoinedDate.Name = "lblJoinedDate";
-            this.lblJoinedDate.Size = new System.Drawing.Size(85, 20);
-            this.lblJoinedDate.TabIndex = 5;
-            this.lblJoinedDate.Text = "20/05/2024";
+            pnlCard.Controls.Add(flpActions);
+            pnlCard.Controls.Add(flpHeader);
+            pnlCard.Controls.Add(lblExp);
+            pnlCard.Controls.Add(lblDepartment);
+            pnlCard.Controls.Add(lblPhone);
+            pnlCard.Controls.Add(lblLicenseOrBHYT);
+            pnlCard.Controls.Add(lblDeptOrCode);
+            pnlCard.Controls.Add(lblDob);
+            pnlCard.Dock = DockStyle.Fill;
+            pnlCard.Location = new Point(16, 20);
+            pnlCard.Margin = new Padding(5, 6, 5, 6);
+            pnlCard.Name = "pnlCard";
+            pnlCard.Padding = new Padding(32, 40, 10, 40);
+            pnlCard.Size = new Size(1757, 226);
+            pnlCard.TabIndex = 0;
             // 
-            // btnApprove
+            // flpActions
             // 
-            this.btnApprove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnApprove.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(98)))), ((int)(((byte)(255)))));
-            this.btnApprove.FlatAppearance.BorderSize = 0;
-            this.btnApprove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnApprove.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnApprove.ForeColor = System.Drawing.Color.White;
-            this.btnApprove.Location = new System.Drawing.Point(740, 20);
-            this.btnApprove.Name = "btnApprove";
-            this.btnApprove.Size = new System.Drawing.Size(80, 35);
-            this.btnApprove.TabIndex = 6;
-            this.btnApprove.Text = "Duyệt";
-            this.btnApprove.UseVisualStyleBackColor = false;
-            this.btnApprove.Click += new System.EventHandler(this.btnApprove_Click);
+            flpActions.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            flpActions.AutoSize = true;
+            flpActions.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            flpActions.Controls.Add(btnRemove);
+            flpActions.Controls.Add(btnEdit);
+            flpActions.Controls.Add(btnToggleStatus);
+            flpActions.Controls.Add(btnReject);
+            flpActions.Controls.Add(btnApprove);
+            flpActions.Controls.Add(btnDetail);
+            flpActions.FlowDirection = FlowDirection.RightToLeft;
+            flpActions.Location = new Point(782, 53);
+            flpActions.Margin = new Padding(0);
+            flpActions.Name = "flpActions";
+            flpActions.Size = new Size(955, 95);
+            flpActions.TabIndex = 21;
+            flpActions.WrapContents = false;
             // 
-            // btnReject
+            // btnRemove
             // 
-            this.btnReject.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnReject.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(240)))));
-            this.btnReject.FlatAppearance.BorderSize = 0;
-            this.btnReject.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnReject.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnReject.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(77)))), ((int)(((byte)(79)))));
-            this.btnReject.Location = new System.Drawing.Point(830, 20);
-            this.btnReject.Name = "btnReject";
-            this.btnReject.Size = new System.Drawing.Size(80, 35);
-            this.btnReject.TabIndex = 7;
-            this.btnReject.Text = "Từ chối";
-            this.btnReject.UseVisualStyleBackColor = false;
-            this.btnReject.Click += new System.EventHandler(this.btnReject_Click);
+            btnRemove.AccessibleDescription = "C";
+            btnRemove.Anchor = AnchorStyles.None;
+            btnRemove.BackColor = Color.FromArgb(255, 252, 235);
+            btnRemove.FlatAppearance.BorderSize = 0;
+            btnRemove.FlatStyle = FlatStyle.Flat;
+            btnRemove.Font = new Font("Segoe MDL2 Assets", 20F);
+            btnRemove.ForeColor = Color.FromArgb(217, 119, 6);
+            btnRemove.Location = new Point(870, 5);
+            btnRemove.Margin = new Padding(15, 5, 0, 5);
+            btnRemove.Name = "btnRemove";
+            btnRemove.Size = new Size(85, 85);
+            btnRemove.TabIndex = 23;
+            btnRemove.Text = "";
+            btnRemove.UseVisualStyleBackColor = false;
+            btnRemove.Click += btnRemove_Click;
+            // 
+            // btnEdit
+            // 
+            btnEdit.AccessibleDescription = "C";
+            btnEdit.Anchor = AnchorStyles.None;
+            btnEdit.BackColor = Color.FromArgb(239, 250, 255);
+            btnEdit.FlatAppearance.BorderSize = 0;
+            btnEdit.FlatStyle = FlatStyle.Flat;
+            btnEdit.Font = new Font("Segoe MDL2 Assets", 20F);
+            btnEdit.ForeColor = Color.FromArgb(37, 99, 235);
+            btnEdit.Location = new Point(770, 7);
+            btnEdit.Margin = new Padding(8, 5, 0, 0);
+            btnEdit.Name = "btnEdit";
+            btnEdit.Size = new Size(85, 85);
+            btnEdit.TabIndex = 21;
+            btnEdit.Text = "";
+            btnEdit.UseVisualStyleBackColor = false;
+            btnEdit.Click += btnEdit_Click;
             // 
             // btnToggleStatus
             // 
-            this.btnToggleStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnToggleStatus.BackColor = System.Drawing.Color.White;
-            this.btnToggleStatus.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.btnToggleStatus.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnToggleStatus.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnToggleStatus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnToggleStatus.Location = new System.Drawing.Point(820, 20);
-            this.btnToggleStatus.Name = "btnToggleStatus";
-            this.btnToggleStatus.Size = new System.Drawing.Size(90, 35);
-            this.btnToggleStatus.TabIndex = 8;
-            this.btnToggleStatus.Text = "Chặn";
-            this.btnToggleStatus.UseVisualStyleBackColor = false;
-            this.btnToggleStatus.Click += new System.EventHandler(this.btnToggleStatus_Click);
+            btnToggleStatus.BackColor = Color.FromArgb(255, 87, 34);
+            btnToggleStatus.FlatAppearance.BorderSize = 0;
+            btnToggleStatus.FlatStyle = FlatStyle.Flat;
+            btnToggleStatus.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnToggleStatus.ForeColor = Color.White;
+            btnToggleStatus.Location = new Point(567, 5);
+            btnToggleStatus.Margin = new Padding(15, 5, 0, 5);
+            btnToggleStatus.Name = "btnToggleStatus";
+            btnToggleStatus.Size = new Size(195, 80);
+            btnToggleStatus.TabIndex = 7;
+            btnToggleStatus.Text = "🔒 Chặn";
+            btnToggleStatus.UseVisualStyleBackColor = false;
+            btnToggleStatus.Click += btnToggleStatus_Click;
+            // 
+            // btnReject
+            // 
+            btnReject.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnReject.BackColor = Color.FromArgb(220, 38, 38);
+            btnReject.FlatAppearance.BorderSize = 0;
+            btnReject.FlatStyle = FlatStyle.Flat;
+            btnReject.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnReject.ForeColor = Color.White;
+            btnReject.Location = new Point(357, 5);
+            btnReject.Margin = new Padding(15, 5, 0, 5);
+            btnReject.Name = "btnReject";
+            btnReject.Size = new Size(195, 80);
+            btnReject.TabIndex = 6;
+            btnReject.Text = "✖ Từ chối";
+            btnReject.UseVisualStyleBackColor = false;
+            btnReject.Click += btnReject_Click;
+            // 
+            // btnApprove
+            // 
+            btnApprove.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnApprove.BackColor = Color.FromArgb(16, 185, 129);
+            btnApprove.FlatAppearance.BorderSize = 0;
+            btnApprove.FlatStyle = FlatStyle.Flat;
+            btnApprove.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnApprove.ForeColor = Color.White;
+            btnApprove.Location = new Point(103, 5);
+            btnApprove.Margin = new Padding(15, 5, 0, 5);
+            btnApprove.Name = "btnApprove";
+            btnApprove.Size = new Size(239, 80);
+            btnApprove.TabIndex = 5;
+            btnApprove.Text = "✔ Phê duyệt";
+            btnApprove.UseVisualStyleBackColor = false;
+            btnApprove.Click += btnApprove_Click;
+            // 
+            // btnDetail
+            // 
+            btnDetail.Anchor = AnchorStyles.None;
+            btnDetail.BackColor = Color.Azure;
+            btnDetail.FlatAppearance.BorderSize = 0;
+            btnDetail.FlatStyle = FlatStyle.Flat;
+            btnDetail.Font = new Font("Segoe MDL2 Assets", 18F);
+            btnDetail.ForeColor = Color.DodgerBlue;
+            btnDetail.Location = new Point(8, 10);
+            btnDetail.Margin = new Padding(8, 10, 0, 5);
+            btnDetail.Name = "btnDetail";
+            btnDetail.Size = new Size(80, 80);
+            btnDetail.TabIndex = 20;
+            btnDetail.Text = "";
+            btnDetail.TextAlign = ContentAlignment.MiddleRight;
+            btnDetail.UseVisualStyleBackColor = false;
+            btnDetail.Click += btnDetail_Click;
+            // 
+            // lblExp
+            // 
+            lblExp.AutoSize = true;
+            lblExp.Font = new Font("Segoe UI", 10.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblExp.ForeColor = Color.FromArgb(64, 64, 64);
+            lblExp.Location = new Point(450, 170);
+            lblExp.Margin = new Padding(5, 0, 5, 0);
+            lblExp.Name = "lblExp";
+            lblExp.Size = new Size(254, 37);
+            lblExp.TabIndex = 12;
+            lblExp.Text = "Kinh nghiệm: 5 năm";
+            // 
+            // lblDepartment
+            // 
+            lblDepartment.AutoSize = true;
+            lblDepartment.Font = new Font("Segoe UI", 10.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblDepartment.ForeColor = Color.FromArgb(64, 64, 64);
+            lblDepartment.Location = new Point(63, 130);
+            lblDepartment.Margin = new Padding(5, 0, 5, 0);
+            lblDepartment.Name = "lblDepartment";
+            lblDepartment.Size = new Size(292, 37);
+            lblDepartment.TabIndex = 11;
+            lblDepartment.Text = "Chuyên khoa: Nội khoa";
+            lblDepartment.Visible = false;
+            // 
+            // lblPhone
+            // 
+            lblPhone.AutoSize = true;
+            lblPhone.Font = new Font("Segoe UI", 10.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblPhone.ForeColor = Color.FromArgb(64, 64, 64);
+            lblPhone.Location = new Point(450, 115);
+            lblPhone.Margin = new Padding(5, 0, 5, 0);
+            lblPhone.Name = "lblPhone";
+            lblPhone.Size = new Size(307, 37);
+            lblPhone.TabIndex = 10;
+            lblPhone.Text = "Số điện thoại: 09345678";
+            // 
+            // lblLicenseOrBHYT
+            // 
+            lblLicenseOrBHYT.AutoSize = true;
+            lblLicenseOrBHYT.Font = new Font("Segoe UI", 10.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblLicenseOrBHYT.ForeColor = Color.FromArgb(64, 64, 64);
+            lblLicenseOrBHYT.Location = new Point(32, 167);
+            lblLicenseOrBHYT.Margin = new Padding(5, 0, 5, 0);
+            lblLicenseOrBHYT.Name = "lblLicenseOrBHYT";
+            lblLicenseOrBHYT.Size = new Size(261, 40);
+            lblLicenseOrBHYT.TabIndex = 9;
+            lblLicenseOrBHYT.Text = "Số CCHN: BS12345";
+            // 
+            // lblDeptOrCode
+            // 
+            lblDeptOrCode.AutoSize = true;
+            lblDeptOrCode.Font = new Font("Segoe UI", 10.125F);
+            lblDeptOrCode.ForeColor = Color.FromArgb(64, 64, 64);
+            lblDeptOrCode.Location = new Point(32, 115);
+            lblDeptOrCode.Name = "lblDeptOrCode";
+            lblDeptOrCode.Size = new Size(202, 37);
+            lblDeptOrCode.TabIndex = 22;
+            lblDeptOrCode.Text = "Chuyên khoa: ...";
+            // 
+            // lblDob
+            // 
+            lblDob.AutoSize = true;
+            lblDob.Font = new Font("Segoe UI", 10.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblDob.ForeColor = Color.FromArgb(64, 64, 64);
+            lblDob.Location = new Point(450, 169);
+            lblDob.Margin = new Padding(5, 0, 5, 0);
+            lblDob.Name = "lblDob";
+            lblDob.Size = new Size(275, 37);
+            lblDob.TabIndex = 11;
+            lblDob.Text = "Ngày sinh: 15/3/1990";
+            lblDob.Visible = false;
             // 
             // ucAdmin_UserItem
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.btnToggleStatus);
-            this.Controls.Add(this.btnReject);
-            this.Controls.Add(this.btnApprove);
-            this.Controls.Add(this.lblJoinedDate);
-            this.Controls.Add(this.pnlStatusBadge);
-            this.Controls.Add(this.pnlRoleBadge);
-            this.Controls.Add(this.lblPhone);
-            this.Controls.Add(this.lblFullName);
-            this.Controls.Add(this.picAvatar);
-            this.Name = "ucAdmin_UserItem";
-            this.Size = new System.Drawing.Size(930, 75);
-            this.Load += new System.EventHandler(this.ucAdmin_UserItem_Load);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.ucAdmin_UserItem_Paint);
-            ((System.ComponentModel.ISupportInitialize)(this.picAvatar)).EndInit();
-            this.pnlRoleBadge.ResumeLayout(false);
-            this.pnlStatusBadge.ResumeLayout(false);
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new SizeF(13F, 32F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(250, 251, 253);
+            Controls.Add(pnlCard);
+            Margin = new Padding(5, 6, 5, 6);
+            Name = "ucAdmin_UserItem";
+            Padding = new Padding(16, 20, 16, 20);
+            Size = new Size(1789, 266);
+            flpHeader.ResumeLayout(false);
+            flpHeader.PerformLayout();
+            pnlRoleBadge.ResumeLayout(false);
+            pnlApprovalBadge.ResumeLayout(false);
+            pnlStatusBadge.ResumeLayout(false);
+            pnlCard.ResumeLayout(false);
+            pnlCard.PerformLayout();
+            flpActions.ResumeLayout(false);
+            ResumeLayout(false);
 
         }
-
-        private System.Windows.Forms.PictureBox picAvatar;
-        private System.Windows.Forms.Label lblFullName;
-        private System.Windows.Forms.Label lblPhone;
+        private System.Windows.Forms.Panel pnlCard;
+        private System.Windows.Forms.FlowLayoutPanel flpHeader;
         private System.Windows.Forms.Panel pnlRoleBadge;
         private System.Windows.Forms.Label lblRole;
+        private System.Windows.Forms.Label lblFullName;
+        private System.Windows.Forms.Panel pnlApprovalBadge;
+        private System.Windows.Forms.Label lblApproval;
         private System.Windows.Forms.Panel pnlStatusBadge;
         private System.Windows.Forms.Label lblStatus;
-        private System.Windows.Forms.Label lblJoinedDate;
         private System.Windows.Forms.Button btnApprove;
         private System.Windows.Forms.Button btnReject;
         private System.Windows.Forms.Button btnToggleStatus;
+        private System.Windows.Forms.Label lblDeptOrCode;
+        private System.Windows.Forms.Label lblLicenseOrBHYT;
+        private System.Windows.Forms.Label lblPhone;
+        private System.Windows.Forms.Label lblDob;
+        private System.Windows.Forms.Label lblExp;
+        private System.Windows.Forms.FlowLayoutPanel flpActions;
+        private System.Windows.Forms.Button btnDetail;
+        private System.Windows.Forms.Label lblDepartment;
+        private System.Windows.Forms.Button btnRemove;
+        private System.Windows.Forms.Button btnEdit;
     }
 }
