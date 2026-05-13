@@ -179,29 +179,8 @@ namespace UI_Tier
                 // 2. LƯU VÀO DTO: Cất vào GlobalAccount để dùng toàn app
                 DTO_Tier.GlobalAccount.SetLoggedInAccount(userId, profileId, role, fullName);
 
-                // 3. ĐIỀU HƯỚNG
-                Form nextForm = null;
-
-                if (role == "Patient")
-                {
-                    nextForm = new frmPatient();
-                }
-                else if (role == "Doctor")
-                {
-                    nextForm = new frmDoctor();
-                }
-                else if (role == "Admin")
-                {
-                    nextForm = new frmAdmin();
-                }
-
-                if (nextForm != null)
-                {
-                    // Ẩn form login CHỈ KHI form mới đã hiện lên (tránh nháy ra desktop)
-                    nextForm.Shown += (s, args) => this.Hide();
-                    nextForm.ShowDialog();
-                }
-
+                // 3. ĐÓNG LOGIN: Trả về OK để Guest biết và mở Form tiếp theo
+                this.DialogResult = DialogResult.OK;
                 this.Close();
             }
             else

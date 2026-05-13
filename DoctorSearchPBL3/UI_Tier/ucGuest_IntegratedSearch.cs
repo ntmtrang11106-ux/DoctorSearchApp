@@ -23,6 +23,7 @@ namespace UI_Tier
         private int _pageSize = 6;
         private int _currentDocPage = 1;
         private int _currentArtPage = 1;
+        private bool _isAdmin = false;
         private bool _isUpdatingChips = false;
 
         private Color _activeBack = Color.FromArgb(206, 225, 255);
@@ -86,6 +87,39 @@ namespace UI_Tier
             pnlTabHeader.Visible = false;
         }
 
+        public void HideSearchInput(bool hide)
+        {
+            pnlSearchBox.Visible = !hide;
+            pnlHeader.Height = hide ? 60 : 130;
+        }
+
+        public void SetPlaceholder(string text)
+        {
+            txtSearchBar.PlaceholderText = text;
+        }
+
+        public void SetAdminMode(bool isAdmin)
+        {
+            _isAdmin = isAdmin;
+            lblAdminStatus.Visible = isAdmin;
+            cboAdminStatus.Visible = isAdmin;
+
+            if (isAdmin)
+            {
+                cboAdminStatus.SelectedIndexChanged -= Filter_SelectedIndexChanged;
+                cboAdminStatus.Items.Clear();
+                cboAdminStatus.Items.Add("Tất cả trạng thái");
+                cboAdminStatus.Items.Add("Đã xuất bản");
+                cboAdminStatus.Items.Add("Bản nháp");
+                cboAdminStatus.Items.Add("Đã ẩn");
+                cboAdminStatus.SelectedIndex = 0;
+                cboAdminStatus.SelectedIndexChanged += Filter_SelectedIndexChanged;
+
+                // Force an immediate search now that we are in Admin mode
+                ExecuteSearch();
+            }
+        }
+
         public void SetActiveTab(bool isDoctor)
         {
             Panel target = isDoctor ? tabDoc : tabArt;
@@ -143,6 +177,11 @@ namespace UI_Tier
             lblPrev.Cursor = Cursors.Hand;
             lblNext.Cursor = Cursors.Hand;
 
+            // Đảm bảo dàn trang và nạp dữ liệu đúng ngay khi vừa hiện lên
+            this.Load += (s, e) => {
+                ExecuteSearch();
+            };
+
             LoadDepartments();
         }
 
@@ -153,6 +192,18 @@ namespace UI_Tier
             flpDepts.BackColor = Color.White; // Bỏ nền xanh, dùng nền trắng
             flpDepts.Padding = new Padding(10);
             
+            // Đảm bảo bộ lọc Admin luôn ẩn mặc định
+            lblAdminStatus.Visible = false;
+            cboAdminStatus.Visible = false;
+
+            // Tự động dàn trang lại khi co giãn cửa sổ
+            flpArticles.Resize += (s, e) => {
+                if (_activeTab == tabArt) DisplayResults();
+            };
+            flpDoctors.Resize += (s, e) => {
+                if (_activeTab == tabDoc) DisplayResults();
+            };
+
             // "Tất cả" Chip
             CheckBox chkAll = CreateChip("Tất cả Chuyên khoa", "Tất cả");
             chkAll.Checked = true;
@@ -277,7 +328,21 @@ namespace UI_Tier
             // Hide suggestions when searching
             if (lstSuggestions != null) lstSuggestions.Visible = false;
 
-            var results = _searchBus.ExecuteIntegratedSearch(keyword, selectedDepts, gender, contentType, sort, sort);
+            // Map status for Admin
+            string status = "Published"; // Default for guest/patient
+            if (_isAdmin)
+            {
+                string selectedStatus = cboAdminStatus.SelectedItem?.ToString();
+                status = selectedStatus switch
+                {
+                    "Đã xuất bản" => "Published",
+                    "Bản nháp" => "Draft",
+                    "Đã ẩn" => "Hidden",
+                    _ => "Tất cả"
+                };
+            }
+
+            var results = _searchBus.ExecuteIntegratedSearch(keyword, selectedDepts, gender, contentType, sort, status);
             _foundDoctors = results.doctors;
             _foundArticles = results.contents;
 
@@ -305,6 +370,10 @@ namespace UI_Tier
             cboContentType.Visible = !isDoctorTab;
             labelContentType.Visible = !isDoctorTab;
 
+            // Bộ lọc trạng thái CHỈ hiện khi là Admin và đang ở tab Bài viết
+            lblAdminStatus.Visible = _isAdmin && !isDoctorTab;
+            cboAdminStatus.Visible = _isAdmin && !isDoctorTab;
+
             UpdateSortOptions(isDoctorTab);
 
             flpDoctors.Visible = isDoctorTab;
@@ -328,7 +397,7 @@ namespace UI_Tier
                 cboSort.Items.Add("Giá khám thấp đến cao");
                 cboSort.Items.Add("Giá khám cao đến thấp");
                 cboSort.Items.Add("Năm kinh nghiệm cao đến thấp");
-                cboSort.Items.Add("Đánh giá cao đến thấp");
+                cboSort.Items.Add("Rating cao đến thấp");
             }
             else
             {
@@ -360,6 +429,14 @@ namespace UI_Tier
                 card.IsClickable = false; // Guest không có hiệu ứng nổi và click
                 card.SetDoctorData(doc);
                 card.Margin = new Padding(15);
+
+                // Bác sĩ hiện 4 cột như cũ
+                int containerWidth = flpDoctors.ClientSize.Width;
+                if (containerWidth > 100)
+                {
+                    card.Width = (containerWidth / 4) - 55;
+                }
+
                 flpDoctors.Controls.Add(card);
             }
 
@@ -380,6 +457,14 @@ namespace UI_Tier
                 UCCardArticle card = new UCCardArticle();
                 card.SetData(art);
                 card.Margin = new Padding(15);
+                
+                // // Đảm bảo luôn hiện 2 cột bài viết
+                int containerWidth = flpArticles.ClientSize.Width;
+                if (containerWidth > 50)
+                {
+                    card.Width = (containerWidth / 2) - 65;
+                }
+                
                 flpArticles.Controls.Add(card);
             }
 

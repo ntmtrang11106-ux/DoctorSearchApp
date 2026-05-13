@@ -35,11 +35,11 @@ namespace UI_Tier
             lblSummary = new Label();
             lblTitle = new Label();
             pnlContainer = new Panel();
+            lblStatus = new Label();
             lblSpecialities = new Label();
             label4 = new Label();
             lblAuthor = new Label();
             label3 = new Label();
-            lblStatus = new Label();
             ((System.ComponentModel.ISupportInitialize)picThumbnail).BeginInit();
             pnlContainer.SuspendLayout();
             SuspendLayout();
@@ -54,59 +54,63 @@ namespace UI_Tier
             // 
             // picThumbnail
             // 
+            picThumbnail.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             picThumbnail.BackColor = Color.FromArgb(248, 249, 250);
             picThumbnail.Location = new Point(1, 3);
             picThumbnail.Name = "picThumbnail";
-            picThumbnail.Size = new Size(592, 506);
+            picThumbnail.Size = new Size(592, 521);
             picThumbnail.SizeMode = PictureBoxSizeMode.Zoom;
             picThumbnail.TabIndex = 0;
             picThumbnail.TabStop = false;
             // 
             // lblDate
             // 
+            lblDate.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblDate.AutoSize = true;
-            lblDate.Font = new Font("Segoe UI", 10F);
+            lblDate.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblDate.ForeColor = Color.DimGray;
-            lblDate.Location = new Point(619, 408);
+            lblDate.Location = new Point(617, 412);
             lblDate.Margin = new Padding(0, 5, 0, 5);
             lblDate.Name = "lblDate";
-            lblDate.Size = new Size(303, 37);
+            lblDate.Size = new Size(351, 45);
             lblDate.TabIndex = 4;
             lblDate.Text = "Ngày đăng: 22/10/2025";
             // 
             // lblViews
             // 
+            lblViews.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             lblViews.AutoSize = true;
-            lblViews.Font = new Font("Segoe UI", 10F);
+            lblViews.Font = new Font("Segoe UI", 11F);
             lblViews.ForeColor = Color.DimGray;
-            lblViews.Location = new Point(1178, 454);
-            lblViews.Margin = new Padding(0, 5, 0, 5);
+            lblViews.Location = new Point(1110, 468);
+            lblViews.Margin = new Padding(0);
             lblViews.Name = "lblViews";
-            lblViews.Size = new Size(92, 37);
+            lblViews.Size = new Size(100, 40);
             lblViews.TabIndex = 3;
             lblViews.Text = "56920";
+            lblViews.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lblSummary
             // 
+            lblSummary.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             lblSummary.Font = new Font("Segoe UI", 11F);
             lblSummary.ForeColor = Color.Black;
-            lblSummary.Location = new Point(619, 271);
+            lblSummary.Location = new Point(617, 255);
             lblSummary.Margin = new Padding(0, 5, 0, 5);
-            lblSummary.MaximumSize = new Size(666, 0);
             lblSummary.Name = "lblSummary";
-            lblSummary.Size = new Size(662, 127);
+            lblSummary.Size = new Size(602, 127);
             lblSummary.TabIndex = 2;
             lblSummary.Text = "Mọi người nghĩ là không thể đúng không? Đúng là không thể thật :rolf:\r\nNhưng không hẳn là không có nha, mình nghĩ là ngủ bù đủ là được\r\n";
             // 
             // lblTitle
             // 
+            lblTitle.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             lblTitle.FlatStyle = FlatStyle.Flat;
-            lblTitle.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
-            lblTitle.Location = new Point(617, 31);
+            lblTitle.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTitle.Location = new Point(617, 15);
             lblTitle.Margin = new Padding(0, 5, 0, 5);
-            lblTitle.MaximumSize = new Size(666, 0);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(664, 162);
+            lblTitle.Size = new Size(604, 162);
             lblTitle.TabIndex = 1;
             lblTitle.Text = "Cách để ngủ 3 tiếng mỗi ngày vẫn tỉnh táo, tuyệt ghê ha, nhưng mà ai bt đc";
             // 
@@ -128,41 +132,57 @@ namespace UI_Tier
             pnlContainer.Location = new Point(13, 13);
             pnlContainer.Name = "pnlContainer";
             pnlContainer.Padding = new Padding(10);
-            pnlContainer.Size = new Size(1298, 507);
+            pnlContainer.Size = new Size(1238, 522);
             pnlContainer.TabIndex = 21;
+            // 
+            // lblStatus
+            // 
+            lblStatus.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblStatus.AutoSize = true;
+            lblStatus.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblStatus.Location = new Point(1027, 183);
+            lblStatus.Name = "lblStatus";
+            lblStatus.Padding = new Padding(8, 4, 8, 4);
+            lblStatus.Size = new Size(188, 53);
+            lblStatus.TabIndex = 26;
+            lblStatus.Text = "Trạng thái";
+            lblStatus.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lblSpecialities
             // 
-            lblSpecialities.Font = new Font("Segoe UI", 10F);
+            lblSpecialities.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblSpecialities.ForeColor = Color.DimGray;
-            lblSpecialities.Location = new Point(629, 203);
+            lblSpecialities.Location = new Point(617, 187);
             lblSpecialities.Margin = new Padding(0, 5, 0, 5);
             lblSpecialities.Name = "lblSpecialities";
-            lblSpecialities.Size = new Size(400, 58);
+            lblSpecialities.Size = new Size(334, 58);
             lblSpecialities.TabIndex = 25;
             lblSpecialities.Text = "Chuyên khoa";
             // 
             // label4
             // 
+            label4.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             label4.BackColor = Color.Transparent;
-            label4.Font = new Font("Segoe MDL2 Assets", 15F);
+            label4.Font = new Font("Segoe MDL2 Assets", 14F);
             label4.ForeColor = Color.DodgerBlue;
-            label4.Location = new Point(1121, 454);
-            label4.Margin = new Padding(4, 0, 4, 0);
+            label4.Location = new Point(1065, 465);
+            label4.Margin = new Padding(0);
             label4.Name = "label4";
-            label4.Size = new Size(65, 64);
+            label4.Size = new Size(45, 45);
             label4.TabIndex = 24;
             label4.Text = "";
+            label4.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lblAuthor
             // 
+            lblAuthor.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblAuthor.AutoSize = true;
-            lblAuthor.Font = new Font("Segoe UI", 10F);
+            lblAuthor.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblAuthor.ForeColor = Color.DimGray;
-            lblAuthor.Location = new Point(619, 455);
+            lblAuthor.Location = new Point(617, 467);
             lblAuthor.Margin = new Padding(0, 5, 0, 5);
             lblAuthor.Name = "lblAuthor";
-            lblAuthor.Size = new Size(245, 37);
+            lblAuthor.Size = new Size(291, 45);
             lblAuthor.TabIndex = 23;
             lblAuthor.Text = "Tác giả: Mai Văn Cá";
             // 
@@ -175,18 +195,6 @@ namespace UI_Tier
             label3.Size = new Size(0, 32);
             label3.TabIndex = 22;
             // 
-            // lblStatus
-            // 
-            lblStatus.AutoSize = true;
-            lblStatus.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblStatus.Location = new Point(1050, 203);
-            lblStatus.Name = "lblStatus";
-            lblStatus.Padding = new Padding(8, 4, 8, 4);
-            lblStatus.Size = new Size(130, 40);
-            lblStatus.TabIndex = 26;
-            lblStatus.Text = "Trạng thái";
-            lblStatus.TextAlign = ContentAlignment.MiddleCenter;
-            // 
             // UCCardArticle
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
@@ -195,7 +203,7 @@ namespace UI_Tier
             Margin = new Padding(4);
             Name = "UCCardArticle";
             Padding = new Padding(13);
-            Size = new Size(1324, 533);
+            Size = new Size(1264, 548);
             Load += UCCardArticle_Load;
             ((System.ComponentModel.ISupportInitialize)picThumbnail).EndInit();
             pnlContainer.ResumeLayout(false);

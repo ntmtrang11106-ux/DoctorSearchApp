@@ -19,15 +19,15 @@ namespace UI_Tier
         }
 
         // Override CreateParams để bật WS_EX_COMPOSITED, giúp giảm nhấp nháy khi vẽ lại Form
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams cp = base.CreateParams;
-                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
-                return cp;
-            }
-        }
+        //protected override CreateParams CreateParams
+        //{
+        //    get
+        //    {
+        //        CreateParams cp = base.CreateParams;
+        //        cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
+        //        return cp;
+        //    }
+        //}
 
         #region Xử lý các click trên menu (Tabs)
 
@@ -98,6 +98,7 @@ namespace UI_Tier
             {
                 search.HideTabs(); // Ẩn tab nội bộ
                 search.SetActiveTab(false); // Luôn hiện tab Bài viết cho trang này
+                search.SetPlaceholder(""); // Xóa dòng chữ "Nhập tên bác sĩ hoặc bài viết..."
             }
 
             if (_currentUC == selectedUC && selectedUC is not ucGuest_IntegratedSearch) return;
@@ -151,6 +152,7 @@ namespace UI_Tier
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
+            DTO_Tier.GlobalAccount.Logout();
             this.Close();
         }
 

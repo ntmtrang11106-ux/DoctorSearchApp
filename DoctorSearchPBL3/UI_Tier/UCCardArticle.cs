@@ -20,6 +20,10 @@ namespace UI_Tier
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
+
+            // Thêm chú giải ToolTip cho các biểu tượng
+            ToolTip tip = new ToolTip();
+            tip.SetToolTip(label4, "Lượt xem bài viết");
         }
 
         private void UCCardArticle_Load(object sender, EventArgs e)
@@ -54,6 +58,9 @@ namespace UI_Tier
                 else { lblSummary.Text = "...Xem thêm"; }
 
                 lblViews.Text = content.ViewCount.ToString();
+                // Ép con mắt luôn nằm sát bên trái số lượt xem (tránh bị lệch do AutoSize và DPI)
+                label4.Location = new Point(lblViews.Left - label4.Width - 2, lblViews.Top + (lblViews.Height - label4.Height) / 2);
+
                 lblDate.Text = "Ngày đăng: " + content.CreatedAt.ToString("dd/MM/yyyy");
                 lblAuthor.Text = "Tác giả: " + (content.AuthorAdmin?.User?.FullName ?? "Quản trị viên");
                 

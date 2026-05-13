@@ -22,9 +22,31 @@ namespace UI_Tier
         {
             UIHelper.ApplyRoundedRegion(btnAddArticle, 12);
             
-            // Initialize search article control
-            ucSearchArticle.SetAdminMode(true);
-            ucSearchArticle.InitData();
+            // Bo góc và viền cho 4 thẻ thống kê
+            Panel[] cards = { pnlCard1, pnlCard2, pnlCard3, pnlCard4 };
+            foreach (var card in cards)
+            {
+                // UIHelper.ApplyRoundedRegion(card, 10);
+                card.Paint += (s, e) => {
+                    using (Pen p = new Pen(Color.FromArgb(230, 230, 230), 3)) // Viền dày 2, màu xám nhẹ
+                    {
+                        e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                        e.Graphics.DrawPath(p, UIHelper.GetRoundedPath(card.ClientRectangle, 10));
+                    }
+                };
+            }
+
+            // Bo góc cho các panel icon bên trong cho đồng bộ
+            UIHelper.ApplyRoundedRegion(pnlIcon1, 20);
+            UIHelper.ApplyRoundedRegion(pnlIcon2, 20);
+            UIHelper.ApplyRoundedRegion(pnlIcon3, 20);
+            UIHelper.ApplyRoundedRegion(pnlIcon4, 20);
+
+            // Cấu hình bộ tìm kiếm tích hợp cho Admin
+            ucSearchArticle.SetAdminMode(true);   // Bật chế độ Admin (hiện lọc trạng thái)
+            ucSearchArticle.SetActiveTab(false); // Luôn mở tab Bài viết
+            ucSearchArticle.HideTabs();          // Ẩn tab nội bộ
+            ucSearchArticle.SetPlaceholder("");  // Xóa dòng chữ mờ
 
             // Hook up events
             btnAddArticle.Click += btnAddArticle_Click;
@@ -49,7 +71,7 @@ namespace UI_Tier
             
             if (art != null) addForm.SetData(art);
 
-            addForm.Location = new Point((this.Width - addForm.Width) / 2, (this.Height - addForm.Height) / 2);
+            addForm.Location = new Point(((this.Width - addForm.Width)-10) / 2, (this.Height - addForm.Height) / 2);
             
             addForm.OnCancel += (s, ev) => {
                 this.Controls.Remove(addForm);
@@ -64,7 +86,7 @@ namespace UI_Tier
                 // For now, let's close the detail view too so we see the updated list
                 HideOverlay(); 
                 
-                ucSearchArticle.InitData(); 
+                ucSearchArticle.ExecuteSearch(); 
                 LoadStats();
             };
             
@@ -113,7 +135,7 @@ namespace UI_Tier
         }
         public void RefreshList()
         {
-            ucSearchArticle.InitData();
+            ucSearchArticle.ExecuteSearch();
             LoadStats();
         }
     }

@@ -23,12 +23,14 @@ namespace UI_Tier
             btnSearch = new Button();
             pnlFilters = new Panel();
             labelGender = new Label();
-            labelContentType = new Label();
-            flpDepts = new FlowLayoutPanel();
-            cboGender = new ComboBox();
-            cboContentType = new ComboBox();
-            cboSort = new ComboBox();
+            lblAdminStatus = new Label();
+            cboAdminStatus = new ComboBox();
             labelSort = new Label();
+            cboSort = new ComboBox();
+            cboContentType = new ComboBox();
+            labelContentType = new Label();
+            cboGender = new ComboBox();
+            flpDepts = new FlowLayoutPanel();
             pnlTabHeader = new Panel();
             tabDoc = new Panel();
             lblDocText = new Label();
@@ -60,7 +62,7 @@ namespace UI_Tier
             pnlHeader.Controls.Add(pnlSearchBox);
             pnlHeader.Dock = DockStyle.Top;
             pnlHeader.Location = new Point(0, 0);
-            pnlHeader.Margin = new Padding(5, 5, 5, 5);
+            pnlHeader.Margin = new Padding(5);
             pnlHeader.Name = "pnlHeader";
             pnlHeader.Size = new Size(1950, 185);
             pnlHeader.TabIndex = 0;
@@ -84,7 +86,7 @@ namespace UI_Tier
             pnlSearchBox.Controls.Add(txtSearchBar);
             pnlSearchBox.Controls.Add(btnSearch);
             pnlSearchBox.Location = new Point(65, 76);
-            pnlSearchBox.Margin = new Padding(5, 5, 5, 5);
+            pnlSearchBox.Margin = new Padding(5);
             pnlSearchBox.Name = "pnlSearchBox";
             pnlSearchBox.Size = new Size(1820, 96);
             pnlSearchBox.TabIndex = 1;
@@ -94,10 +96,10 @@ namespace UI_Tier
             lstSuggestions.BorderStyle = BorderStyle.FixedSingle;
             lstSuggestions.Font = new Font("Segoe UI", 11F);
             lstSuggestions.FormattingEnabled = true;
-            lstSuggestions.Location = new Point(32, 80);
-            lstSuggestions.Margin = new Padding(5, 5, 5, 5);
+            lstSuggestions.Location = new Point(-41, 80);
+            lstSuggestions.Margin = new Padding(5);
             lstSuggestions.Name = "lstSuggestions";
-            lstSuggestions.Size = new Size(1542, 242);
+            lstSuggestions.Size = new Size(1902, 242);
             lstSuggestions.TabIndex = 2;
             lstSuggestions.Visible = false;
             lstSuggestions.Click += lstSuggestions_Click;
@@ -107,7 +109,7 @@ namespace UI_Tier
             txtSearchBar.BorderStyle = BorderStyle.None;
             txtSearchBar.Font = new Font("Segoe UI", 15F);
             txtSearchBar.Location = new Point(32, 21);
-            txtSearchBar.Margin = new Padding(5, 5, 5, 5);
+            txtSearchBar.Margin = new Padding(5);
             txtSearchBar.Name = "txtSearchBar";
             txtSearchBar.PlaceholderText = "Nhập tên bác sĩ hoặc tiêu đề bài viết...";
             txtSearchBar.Size = new Size(1544, 54);
@@ -122,7 +124,7 @@ namespace UI_Tier
             btnSearch.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             btnSearch.ForeColor = Color.White;
             btnSearch.Location = new Point(1592, 8);
-            btnSearch.Margin = new Padding(5, 5, 5, 5);
+            btnSearch.Margin = new Padding(5);
             btnSearch.Name = "btnSearch";
             btnSearch.Size = new Size(211, 80);
             btnSearch.TabIndex = 1;
@@ -134,17 +136,19 @@ namespace UI_Tier
             // 
             pnlFilters.BackColor = Color.White;
             pnlFilters.Controls.Add(labelGender);
-            pnlFilters.Controls.Add(labelContentType);
-            pnlFilters.Controls.Add(flpDepts);
-            pnlFilters.Controls.Add(cboGender);
-            pnlFilters.Controls.Add(cboContentType);
-            pnlFilters.Controls.Add(cboSort);
+            pnlFilters.Controls.Add(lblAdminStatus);
+            pnlFilters.Controls.Add(cboAdminStatus);
             pnlFilters.Controls.Add(labelSort);
+            pnlFilters.Controls.Add(cboSort);
+            pnlFilters.Controls.Add(cboContentType);
+            pnlFilters.Controls.Add(labelContentType);
+            pnlFilters.Controls.Add(cboGender);
+            pnlFilters.Controls.Add(flpDepts);
             pnlFilters.Dock = DockStyle.Top;
             pnlFilters.Location = new Point(0, 185);
-            pnlFilters.Margin = new Padding(5, 5, 5, 5);
+            pnlFilters.Margin = new Padding(5);
             pnlFilters.Name = "pnlFilters";
-            pnlFilters.Size = new Size(1950, 235);
+            pnlFilters.Size = new Size(1950, 240);
             pnlFilters.TabIndex = 1;
             // 
             // labelGender
@@ -158,6 +162,61 @@ namespace UI_Tier
             labelGender.TabIndex = 4;
             labelGender.Text = "Giới tính:";
             // 
+            // lblAdminStatus
+            // 
+            lblAdminStatus.AutoSize = true;
+            lblAdminStatus.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblAdminStatus.Location = new Point(1489, 158);
+            lblAdminStatus.Name = "lblAdminStatus";
+            lblAdminStatus.Size = new Size(212, 51);
+            lblAdminStatus.TabIndex = 7;
+            lblAdminStatus.Text = "Trạng thái:";
+            lblAdminStatus.Visible = false;
+            // 
+            // cboAdminStatus
+            // 
+            cboAdminStatus.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboAdminStatus.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cboAdminStatus.Location = new Point(1709, 158);
+            cboAdminStatus.Name = "cboAdminStatus";
+            cboAdminStatus.Size = new Size(334, 58);
+            cboAdminStatus.TabIndex = 6;
+            // 
+            // labelSort
+            // 
+            labelSort.AutoSize = true;
+            labelSort.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            labelSort.Location = new Point(771, 155);
+            labelSort.Margin = new Padding(5, 0, 5, 0);
+            labelSort.Name = "labelSort";
+            labelSort.Size = new Size(173, 51);
+            labelSort.TabIndex = 6;
+            labelSort.Text = "Sắp xếp:";
+            // 
+            // cboSort
+            // 
+            cboSort.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboSort.Font = new Font("Segoe UI", 14F);
+            cboSort.FormattingEnabled = true;
+            cboSort.Location = new Point(954, 155);
+            cboSort.Margin = new Padding(5);
+            cboSort.Name = "cboSort";
+            cboSort.Size = new Size(485, 58);
+            cboSort.TabIndex = 3;
+            cboSort.SelectedIndexChanged += Filter_SelectedIndexChanged;
+            // 
+            // cboContentType
+            // 
+            cboContentType.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboContentType.Font = new Font("Segoe UI", 14F);
+            cboContentType.FormattingEnabled = true;
+            cboContentType.Location = new Point(351, 155);
+            cboContentType.Margin = new Padding(5);
+            cboContentType.Name = "cboContentType";
+            cboContentType.Size = new Size(388, 58);
+            cboContentType.TabIndex = 2;
+            cboContentType.SelectedIndexChanged += Filter_SelectedIndexChanged;
+            // 
             // labelContentType
             // 
             labelContentType.AutoSize = true;
@@ -169,62 +228,27 @@ namespace UI_Tier
             labelContentType.TabIndex = 5;
             labelContentType.Text = "Loại nội dung:";
             // 
-            // flpDepts
-            // 
-            flpDepts.AutoScroll = true;
-            flpDepts.BackColor = Color.White;
-            flpDepts.Location = new Point(65, 24);
-            flpDepts.Margin = new Padding(5, 5, 5, 5);
-            flpDepts.Name = "flpDepts";
-            flpDepts.Size = new Size(1820, 104);
-            flpDepts.TabIndex = 0;
-            // 
             // cboGender
             // 
             cboGender.DropDownStyle = ComboBoxStyle.DropDownList;
             cboGender.Font = new Font("Segoe UI", 14F);
             cboGender.FormattingEnabled = true;
             cboGender.Location = new Point(296, 155);
-            cboGender.Margin = new Padding(5, 5, 5, 5);
+            cboGender.Margin = new Padding(5);
             cboGender.Name = "cboGender";
             cboGender.Size = new Size(420, 58);
             cboGender.TabIndex = 1;
             cboGender.SelectedIndexChanged += Filter_SelectedIndexChanged;
             // 
-            // cboContentType
+            // flpDepts
             // 
-            cboContentType.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboContentType.Font = new Font("Segoe UI", 14F);
-            cboContentType.FormattingEnabled = true;
-            cboContentType.Location = new Point(351, 155);
-            cboContentType.Margin = new Padding(5, 5, 5, 5);
-            cboContentType.Name = "cboContentType";
-            cboContentType.Size = new Size(388, 58);
-            cboContentType.TabIndex = 2;
-            cboContentType.SelectedIndexChanged += Filter_SelectedIndexChanged;
-            // 
-            // cboSort
-            // 
-            cboSort.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboSort.Font = new Font("Segoe UI", 14F);
-            cboSort.FormattingEnabled = true;
-            cboSort.Location = new Point(975, 155);
-            cboSort.Margin = new Padding(5, 5, 5, 5);
-            cboSort.Name = "cboSort";
-            cboSort.Size = new Size(485, 58);
-            cboSort.TabIndex = 3;
-            cboSort.SelectedIndexChanged += Filter_SelectedIndexChanged;
-            // 
-            // labelSort
-            // 
-            labelSort.AutoSize = true;
-            labelSort.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-            labelSort.Location = new Point(780, 155);
-            labelSort.Margin = new Padding(5, 0, 5, 0);
-            labelSort.Name = "labelSort";
-            labelSort.Size = new Size(173, 51);
-            labelSort.TabIndex = 6;
-            labelSort.Text = "Sắp xếp:";
+            flpDepts.AutoScroll = true;
+            flpDepts.BackColor = Color.White;
+            flpDepts.Location = new Point(65, 24);
+            flpDepts.Margin = new Padding(5);
+            flpDepts.Name = "flpDepts";
+            flpDepts.Size = new Size(1820, 104);
+            flpDepts.TabIndex = 0;
             // 
             // pnlTabHeader
             // 
@@ -232,8 +256,8 @@ namespace UI_Tier
             pnlTabHeader.Controls.Add(tabDoc);
             pnlTabHeader.Controls.Add(tabArt);
             pnlTabHeader.Dock = DockStyle.Top;
-            pnlTabHeader.Location = new Point(0, 420);
-            pnlTabHeader.Margin = new Padding(5, 5, 5, 5);
+            pnlTabHeader.Location = new Point(0, 425);
+            pnlTabHeader.Margin = new Padding(5);
             pnlTabHeader.Name = "pnlTabHeader";
             pnlTabHeader.Size = new Size(1950, 112);
             pnlTabHeader.TabIndex = 2;
@@ -243,7 +267,7 @@ namespace UI_Tier
             tabDoc.Controls.Add(lblDocText);
             tabDoc.Controls.Add(lblDocIcon);
             tabDoc.Location = new Point(65, 8);
-            tabDoc.Margin = new Padding(5, 5, 5, 5);
+            tabDoc.Margin = new Padding(5);
             tabDoc.Name = "tabDoc";
             tabDoc.Size = new Size(358, 96);
             tabDoc.TabIndex = 0;
@@ -274,7 +298,7 @@ namespace UI_Tier
             tabArt.Controls.Add(lblArtText);
             tabArt.Controls.Add(lblArtIcon);
             tabArt.Location = new Point(455, 8);
-            tabArt.Margin = new Padding(5, 5, 5, 5);
+            tabArt.Margin = new Padding(5);
             tabArt.Name = "tabArt";
             tabArt.Size = new Size(358, 96);
             tabArt.TabIndex = 1;
@@ -306,11 +330,11 @@ namespace UI_Tier
             pnlResultContainer.Controls.Add(flpDoctors);
             pnlResultContainer.Controls.Add(flpArticles);
             pnlResultContainer.Dock = DockStyle.Fill;
-            pnlResultContainer.Location = new Point(0, 532);
-            pnlResultContainer.Margin = new Padding(5, 5, 5, 5);
+            pnlResultContainer.Location = new Point(0, 537);
+            pnlResultContainer.Margin = new Padding(5);
             pnlResultContainer.Name = "pnlResultContainer";
-            pnlResultContainer.Padding = new Padding(24, 24, 24, 24);
-            pnlResultContainer.Size = new Size(1950, 800);
+            pnlResultContainer.Padding = new Padding(24);
+            pnlResultContainer.Size = new Size(1950, 795);
             pnlResultContainer.TabIndex = 3;
             // 
             // flpDoctors
@@ -318,10 +342,10 @@ namespace UI_Tier
             flpDoctors.AutoScroll = true;
             flpDoctors.Dock = DockStyle.Fill;
             flpDoctors.Location = new Point(24, 24);
-            flpDoctors.Margin = new Padding(5, 5, 5, 5);
+            flpDoctors.Margin = new Padding(5);
             flpDoctors.Name = "flpDoctors";
-            flpDoctors.Padding = new Padding(32, 32, 32, 32);
-            flpDoctors.Size = new Size(1902, 752);
+            flpDoctors.Padding = new Padding(32);
+            flpDoctors.Size = new Size(1902, 747);
             flpDoctors.TabIndex = 0;
             // 
             // flpArticles
@@ -329,10 +353,10 @@ namespace UI_Tier
             flpArticles.AutoScroll = true;
             flpArticles.Dock = DockStyle.Fill;
             flpArticles.Location = new Point(24, 24);
-            flpArticles.Margin = new Padding(5, 5, 5, 5);
+            flpArticles.Margin = new Padding(5);
             flpArticles.Name = "flpArticles";
-            flpArticles.Padding = new Padding(32, 32, 32, 32);
-            flpArticles.Size = new Size(1902, 752);
+            flpArticles.Padding = new Padding(32);
+            flpArticles.Size = new Size(1902, 747);
             flpArticles.TabIndex = 1;
             flpArticles.Visible = false;
             // 
@@ -344,7 +368,7 @@ namespace UI_Tier
             pnlPagination.Controls.Add(lblNext);
             pnlPagination.Dock = DockStyle.Bottom;
             pnlPagination.Location = new Point(0, 1332);
-            pnlPagination.Margin = new Padding(5, 5, 5, 5);
+            pnlPagination.Margin = new Padding(5);
             pnlPagination.Name = "pnlPagination";
             pnlPagination.Size = new Size(1950, 80);
             pnlPagination.TabIndex = 4;
@@ -400,7 +424,7 @@ namespace UI_Tier
             Controls.Add(pnlPagination);
             Controls.Add(pnlFilters);
             Controls.Add(pnlHeader);
-            Margin = new Padding(5, 5, 5, 5);
+            Margin = new Padding(5);
             Name = "ucGuest_IntegratedSearch";
             Size = new Size(1950, 1412);
             pnlHeader.ResumeLayout(false);
@@ -447,5 +471,7 @@ namespace UI_Tier
         private Label lblPageStatus;
         private Label lblPrev;
         private Label lblNext;
+        private Label lblAdminStatus;
+        private ComboBox cboAdminStatus;
     }
 }

@@ -30,9 +30,36 @@ namespace UI_Tier
         private void button1_Click(object sender, EventArgs e)
         {
             frmLogin loginForm = new frmLogin();
-            this.Hide();
-            loginForm.ShowDialog();
-            this.Show();
+            if (loginForm.ShowDialog() == DialogResult.OK || DTO_Tier.GlobalAccount.GetUserId() != 0)
+            {
+                // 1. Xác định Form User cần mở
+                Form mainForm = null;
+                string role = DTO_Tier.GlobalAccount.GetRole();
+                if (role == "Patient") mainForm = new frmPatient();
+                else if (role == "Doctor") mainForm = new frmDoctor();
+                else if (role == "Admin") mainForm = new frmAdmin();
+
+                if (mainForm != null)
+                {
+                    // 2. CHỜ HIỆN XONG RỒI MỚI ẨN GUEST (Tránh nháy Desktop)
+                    mainForm.Shown += (s, args) => this.Hide();
+
+                    // 3. Mở Form User (Dùng ShowDialog để Guest đứng đợi ngầm)
+                    mainForm.ShowDialog();
+
+                    // 4. Khi Form User đóng lại:
+                    if (DTO_Tier.GlobalAccount.GetUserId() == 0)
+                    {
+                        // Nếu đã gọi Logout -> Hiện lại Guest ngay lập tức
+                        this.Show();
+                    }
+                    else
+                    {
+                        // Nếu nhấn nút X -> Đóng hẳn Guest để thoát App
+                        this.Close();
+                    }
+                }
+            }
         }
 
         private void frmGuest_Load(object sender, EventArgs e)

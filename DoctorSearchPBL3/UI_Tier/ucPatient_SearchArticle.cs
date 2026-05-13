@@ -50,11 +50,11 @@ namespace UI_Tier
         {
             // Populate Content Type
             cboContentType.Items.Clear();
-            cboContentType.Items.Add("Tất cả");
+            cboContentType.Items.Add("Tất cả Loại bài");
             cboContentType.Items.Add("Thông báo");
-            cboContentType.Items.Add("Hướng dẫn quy trình");
-            cboContentType.Items.Add("Hướng dẫn chuyên khoa");
-            cboContentType.Items.Add("Kiến thức y khoa");
+            cboContentType.Items.Add("Quy trình khám");
+            cboContentType.Items.Add("Bài viết chuyên khoa");
+            cboContentType.Items.Add("Thông tin y tế");
             cboContentType.SelectedIndex = 0;
 
             // Populate Sort
@@ -188,10 +188,10 @@ namespace UI_Tier
             string contentType = selectedType switch
             {
                 "Thông báo" => "HospitalNotice",
-                "Hướng dẫn quy trình" => "ProcedureGuide",
-                "Hướng dẫn chuyên khoa" => "DepartmentGuide",
-                "Kiến thức y khoa" => "HealthArticle",
-                _ => selectedType // "Tất cả" or null
+                "Quy trình khám" => "ProcedureGuide",
+                "Bài viết chuyên khoa" => "DepartmentGuide",
+                "Thông tin y tế" => "HealthArticle",
+                _ => "Tất cả"
             };
 
             List<string> selectedDepts = new List<string>();

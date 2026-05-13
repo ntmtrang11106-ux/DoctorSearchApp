@@ -113,6 +113,7 @@ namespace UI_Tier
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
+            DTO_Tier.GlobalAccount.Logout();
             this.Close();
         }
 

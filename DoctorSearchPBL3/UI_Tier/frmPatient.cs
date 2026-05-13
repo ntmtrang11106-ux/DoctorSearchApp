@@ -85,6 +85,7 @@ namespace UI_Tier
             {
                 search.HideTabs(); // Ẩn tab nội bộ vì Patient đã có menu ngoài
                 search.SetActiveTab(clickedPanel == pnlSearchDoc);
+                search.SetPlaceholder(""); // Xóa dòng chữ "Nhập tên bác sĩ hoặc bài viết..."
             }
             // Tự động làm mới dữ liệu nếu là tab Lịch hẹn hoặc Hồ sơ
             else if (selectedUC is ucPatient_Appointment appointment)
@@ -139,7 +140,8 @@ namespace UI_Tier
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
-            this.Close();
+            DTO_Tier.GlobalAccount.Logout();
+            this.Close(); // Program.cs sẽ tự mở lại Guest
         }
 
         private void frmPatient_Load(object sender, EventArgs e)

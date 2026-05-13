@@ -18,7 +18,6 @@ namespace UI_Tier
             pnlHeader = new Panel();
             lblHeaderTitle = new Label();
             btnCancelTop = new Button();
-            picIcon = new PictureBox();
             lblTitleLabel = new Label();
             txtTitle = new TextBox();
             lblSummaryLabel = new Label();
@@ -39,8 +38,8 @@ namespace UI_Tier
             btnCancel = new Button();
             panel29 = new Panel();
             label24 = new Label();
+            label1 = new Label();
             pnlHeader.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)picIcon).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numPriority).BeginInit();
             panel29.SuspendLayout();
             SuspendLayout();
@@ -48,9 +47,9 @@ namespace UI_Tier
             // pnlHeader
             // 
             pnlHeader.BackColor = Color.FromArgb(37, 99, 235);
+            pnlHeader.Controls.Add(label1);
             pnlHeader.Controls.Add(lblHeaderTitle);
             pnlHeader.Controls.Add(btnCancelTop);
-            pnlHeader.Controls.Add(picIcon);
             pnlHeader.Dock = DockStyle.Top;
             pnlHeader.Location = new Point(0, 0);
             pnlHeader.Name = "pnlHeader";
@@ -85,17 +84,6 @@ namespace UI_Tier
             btnCancelTop.UseVisualStyleBackColor = true;
             btnCancelTop.Click += btnCancel_Click;
             // 
-            // picIcon
-            // 
-            picIcon.BackColor = Color.White;
-            picIcon.Image = Properties.Resources.search;
-            picIcon.Location = new Point(20, 20);
-            picIcon.Name = "picIcon";
-            picIcon.Size = new Size(60, 60);
-            picIcon.SizeMode = PictureBoxSizeMode.Zoom;
-            picIcon.TabIndex = 0;
-            picIcon.TabStop = false;
-            // 
             // lblTitleLabel
             // 
             lblTitleLabel.AutoSize = true;
@@ -109,10 +97,10 @@ namespace UI_Tier
             // 
             // txtTitle
             // 
-            txtTitle.Font = new Font("Segoe UI", 13.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtTitle.BorderStyle = BorderStyle.FixedSingle; txtTitle.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtTitle.Location = new Point(40, 175);
             txtTitle.Name = "txtTitle";
-            txtTitle.Size = new Size(820, 54);
+            txtTitle.Size = new Size(820, 50);
             txtTitle.TabIndex = 2;
             // 
             // lblSummaryLabel
@@ -128,7 +116,7 @@ namespace UI_Tier
             // 
             // txtSummary
             // 
-            txtSummary.Font = new Font("Segoe UI", 13.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtSummary.BorderStyle = BorderStyle.FixedSingle; txtSummary.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtSummary.Location = new Point(40, 285);
             txtSummary.Multiline = true;
             txtSummary.Name = "txtSummary";
@@ -148,7 +136,7 @@ namespace UI_Tier
             // 
             // rtbBody
             // 
-            rtbBody.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            rtbBody.BorderStyle = BorderStyle.FixedSingle; rtbBody.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             rtbBody.Location = new Point(40, 445);
             rtbBody.Name = "rtbBody";
             rtbBody.Size = new Size(820, 300);
@@ -169,11 +157,11 @@ namespace UI_Tier
             // cboType
             // 
             cboType.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboType.Font = new Font("Segoe UI", 13.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cboType.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cboType.FormattingEnabled = true;
             cboType.Location = new Point(40, 810);
             cboType.Name = "cboType";
-            cboType.Size = new Size(390, 55);
+            cboType.Size = new Size(390, 53);
             cboType.TabIndex = 8;
             // 
             // lblDeptLabel
@@ -190,11 +178,11 @@ namespace UI_Tier
             // cboDept
             // 
             cboDept.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboDept.Font = new Font("Segoe UI", 13.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cboDept.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cboDept.FormattingEnabled = true;
             cboDept.Location = new Point(470, 810);
             cboDept.Name = "cboDept";
-            cboDept.Size = new Size(390, 55);
+            cboDept.Size = new Size(390, 53);
             cboDept.TabIndex = 10;
             // 
             // lblStatusLabel
@@ -211,11 +199,11 @@ namespace UI_Tier
             // cboStatus
             // 
             cboStatus.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboStatus.Font = new Font("Segoe UI", 13.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cboStatus.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cboStatus.FormattingEnabled = true;
             cboStatus.Location = new Point(40, 920);
             cboStatus.Name = "cboStatus";
-            cboStatus.Size = new Size(250, 55);
+            cboStatus.Size = new Size(250, 53);
             cboStatus.TabIndex = 12;
             // 
             // lblPriorityLabel
@@ -231,20 +219,20 @@ namespace UI_Tier
             // 
             // numPriority
             // 
-            numPriority.Font = new Font("Segoe UI", 13.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            numPriority.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             numPriority.Location = new Point(320, 920);
             numPriority.Name = "numPriority";
-            numPriority.Size = new Size(157, 54);
+            numPriority.Size = new Size(157, 50);
             numPriority.TabIndex = 14;
             // 
             // chkPinned
             // 
             chkPinned.AutoSize = true;
-            chkPinned.Font = new Font("Segoe UI", 13.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            chkPinned.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             chkPinned.ForeColor = Color.FromArgb(64, 64, 64);
             chkPinned.Location = new Point(510, 929);
             chkPinned.Name = "chkPinned";
-            chkPinned.Size = new Size(201, 51);
+            chkPinned.Size = new Size(187, 49);
             chkPinned.TabIndex = 15;
             chkPinned.Text = "Ghim bài";
             chkPinned.UseVisualStyleBackColor = true;
@@ -294,7 +282,7 @@ namespace UI_Tier
             panel29.BackColor = Color.White;
             panel29.BorderStyle = BorderStyle.FixedSingle;
             panel29.Controls.Add(label24);
-            panel29.Font = new Font("Segoe UI", 13.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            panel29.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             panel29.Location = new Point(40, 1030);
             panel29.Name = "panel29";
             panel29.Size = new Size(757, 73);
@@ -311,45 +299,72 @@ namespace UI_Tier
             label24.TabIndex = 22;
             label24.Text = "Bấm vào đây để tải ảnh lên";
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.BackColor = Color.White;
+            label1.Font = new Font("Segoe UI", 16.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label1.Location = new Point(40, 25);
+            label1.Name = "label1";
+            label1.Size = new Size(54, 59);
+            label1.TabIndex = 3;
+            label1.Text = "+";
+            // 
             // ucAdmin_AddArticle
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            Controls.Add(panel29);
-            Controls.Add(btnCancel);
-            Controls.Add(btnSave);
-            Controls.Add(lblThumbnailLabel);
-            Controls.Add(chkPinned);
-            Controls.Add(numPriority);
-            Controls.Add(lblPriorityLabel);
-            Controls.Add(cboStatus);
-            Controls.Add(lblStatusLabel);
-            Controls.Add(cboDept);
-            Controls.Add(lblDeptLabel);
-            Controls.Add(cboType);
-            Controls.Add(lblTypeLabel);
-            Controls.Add(rtbBody);
-            Controls.Add(lblBodyLabel);
-            Controls.Add(txtSummary);
-            Controls.Add(lblSummaryLabel);
-            Controls.Add(txtTitle);
-            Controls.Add(lblTitleLabel);
-            Controls.Add(pnlHeader);
+            // 
+            // pnlMainBackground
+            // 
+            pnlMainBackground = new Panel();
+            pnlMainBackground.BackColor = Color.White;
+            pnlMainBackground.Dock = DockStyle.Fill;
+            pnlMainBackground.Controls.Add(panel29);
+            pnlMainBackground.Controls.Add(btnCancel);
+            pnlMainBackground.Controls.Add(btnSave);
+            pnlMainBackground.Controls.Add(lblThumbnailLabel);
+            pnlMainBackground.Controls.Add(chkPinned);
+            pnlMainBackground.Controls.Add(numPriority);
+            pnlMainBackground.Controls.Add(lblPriorityLabel);
+            pnlMainBackground.Controls.Add(cboStatus);
+            pnlMainBackground.Controls.Add(lblStatusLabel);
+            pnlMainBackground.Controls.Add(cboDept);
+            pnlMainBackground.Controls.Add(lblDeptLabel);
+            pnlMainBackground.Controls.Add(cboType);
+            pnlMainBackground.Controls.Add(lblTypeLabel);
+            pnlMainBackground.Controls.Add(rtbBody);
+            pnlMainBackground.Controls.Add(lblBodyLabel);
+            pnlMainBackground.Controls.Add(txtSummary);
+            pnlMainBackground.Controls.Add(lblSummaryLabel);
+            pnlMainBackground.Controls.Add(txtTitle);
+            pnlMainBackground.Controls.Add(lblTitleLabel);
+            pnlMainBackground.Controls.Add(pnlHeader);
+            
+            // 
+            // ucAdmin_AddArticle
+            // 
+            AutoScaleDimensions = new SizeF(13F, 32F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(64, 64, 64);
+            Padding = new Padding(3);
+            Controls.Add(pnlMainBackground);
             Name = "ucAdmin_AddArticle";
             Size = new Size(900, 1220);
+            this.Load += new EventHandler(this.ucAdmin_AddArticle_Load);
             pnlHeader.ResumeLayout(false);
             pnlHeader.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)picIcon).EndInit();
             ((System.ComponentModel.ISupportInitialize)numPriority).EndInit();
             panel29.ResumeLayout(false);
             panel29.PerformLayout();
+            pnlMainBackground.ResumeLayout(false);
+            pnlMainBackground.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
 
         private System.Windows.Forms.Panel pnlHeader;
-        private System.Windows.Forms.PictureBox picIcon;
         private System.Windows.Forms.Label lblHeaderTitle;
         private System.Windows.Forms.Button btnCancelTop;
         private System.Windows.Forms.Label lblTitleLabel;
@@ -374,5 +389,7 @@ namespace UI_Tier
         private System.Windows.Forms.Button btnCancel;
         private Panel panel29;
         private Label label24;
+        private Label label1;
+        private System.Windows.Forms.Panel pnlMainBackground;
     }
 }

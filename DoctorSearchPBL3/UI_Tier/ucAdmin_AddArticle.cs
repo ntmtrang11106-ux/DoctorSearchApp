@@ -38,9 +38,9 @@ namespace UI_Tier
             // Populate Content Type (Vietnamese Labels)
             cboType.Items.Clear();
             cboType.Items.Add("Thông báo");
-            cboType.Items.Add("Hướng dẫn quy trình");
-            cboType.Items.Add("Hướng dẫn chuyên khoa");
-            cboType.Items.Add("Kiến thức y khoa");
+            cboType.Items.Add("Quy trình khám");
+            cboType.Items.Add("Bài viết chuyên khoa");
+            cboType.Items.Add("Thông tin y tế");
             cboType.SelectedIndex = 0;
 
             // Populate Status (Vietnamese Labels)
@@ -65,30 +65,57 @@ namespace UI_Tier
         private void ucAdmin_AddArticle_Load(object sender, EventArgs e)
         {
             // Styling
-            UIHelper.ApplyRoundedRegion(this, 20);
-            // Vẽ viền đen đậm để làm nổi bật form trên nền trắng
-            this.Paint += (s, ev) => UIHelper.uc_Paint(s, ev, 20, Color.Black, 3); 
+            // Bo góc cho khung Đen ngoài cùng
+            UIHelper.ApplyRoundedRegion(this, 30);
+            // Bo góc cho khung Trắng bên trong (khớp với viền 3px)
+            UIHelper.ApplyRoundedRegion(pnlMainBackground, 27);
 
-            UIHelper.ApplyRoundedRegion(pnlHeader, 20);
-            UIHelper.ApplyRoundedRegion(picIcon, 15);
-
-            // Make children of header draggable too
+            UIHelper.ApplyRoundedRegion(label1, 15);
+            
+            // Chỉ giữ lại kéo thả cho thanh tiêu đề
             lblHeaderTitle.MouseDown += panelHeader_MouseDown;
             lblHeaderTitle.MouseMove += panelHeader_MouseMove;
-            picIcon.MouseDown += panelHeader_MouseDown;
-            picIcon.MouseMove += panelHeader_MouseMove;
-            
-            UIHelper.ApplyRoundedRegion(txtTitle, 10);
-            UIHelper.ApplyRoundedRegion(txtSummary, 10);
-            UIHelper.ApplyRoundedRegion(rtbBody, 10);
-            UIHelper.ApplyRoundedRegion(cboType, 8);
-            UIHelper.ApplyRoundedRegion(cboDept, 8);
-            UIHelper.ApplyRoundedRegion(cboStatus, 8);
-            UIHelper.ApplyRoundedRegion(numPriority, 8);
+            label1.MouseDown += panelHeader_MouseDown;
+            label1.MouseMove += panelHeader_MouseMove;
+
+            // Áp dụng bo góc 5px và hiệu ứng vạch xanh khi Focus
+            ApplyInputStyle(txtTitle);
+            ApplyInputStyle(txtSummary);
+            ApplyInputStyle(rtbBody);
+
+            // Bo góc cho các nút bấm (15px)
             UIHelper.ApplyRoundedRegion(btnSave, 15);
             UIHelper.ApplyRoundedRegion(btnCancel, 15);
-            
+
             _thumbnailPath = ""; 
+        }
+
+        private void ApplyInputStyle(Control ctrl)
+        {
+            // Bo góc 5px cố định
+            UIHelper.ApplyRoundedRegion(ctrl, 5);
+
+            // Vẽ vạch xanh ở cạnh dưới khi Focus
+            ctrl.Paint += (s, e) => {
+                if (ctrl.Focused)
+                {
+                    using (Pen p = new Pen(Color.FromArgb(37, 99, 235), 4)) // Độ dày 4 cho rõ
+                    {
+                        // Vẽ đường thẳng ở sát đáy, lùi vào 2 bên 5px cho đẹp
+                        e.Graphics.DrawLine(p, 5, ctrl.Height - 2, ctrl.Width - 5, ctrl.Height - 2);
+                    }
+                }
+            };
+
+            ctrl.Enter += (s, e) => {
+                ctrl.BackColor = Color.FromArgb(242, 248, 255); // Đổi nền xanh cực nhẹ
+                ctrl.Invalidate(); 
+            };
+
+            ctrl.Leave += (s, e) => {
+                ctrl.BackColor = Color.White;
+                ctrl.Invalidate();
+            };
         }
 
         private string _thumbnailPath = "";
@@ -119,9 +146,9 @@ namespace UI_Tier
                 cboType.SelectedItem = art.ContentType switch
                 {
                     "HospitalNotice" => "Thông báo",
-                    "ProcedureGuide" => "Hướng dẫn quy trình",
-                    "DepartmentGuide" => "Hướng dẫn chuyên khoa",
-                    "HealthArticle" => "Kiến thức y khoa",
+                    "ProcedureGuide" => "Quy trình khám",
+                    "DepartmentGuide" => "Bài viết chuyên khoa",
+                    "HealthArticle" => "Thông tin y tế",
                     _ => "Thông báo"
                 };
 
@@ -147,9 +174,9 @@ namespace UI_Tier
             art.ContentType = cboType.SelectedItem?.ToString() switch
             {
                 "Thông báo" => "HospitalNotice",
-                "Hướng dẫn quy trình" => "ProcedureGuide",
-                "Hướng dẫn chuyên khoa" => "DepartmentGuide",
-                "Kiến thức y khoa" => "HealthArticle",
+                "Quy trình khám" => "ProcedureGuide",
+                "Bài viết chuyên khoa" => "DepartmentGuide",
+                "Thông tin y tế" => "HealthArticle",
                 _ => "HospitalNotice"
             };
 

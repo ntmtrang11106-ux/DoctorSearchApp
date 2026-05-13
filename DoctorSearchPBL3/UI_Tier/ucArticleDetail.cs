@@ -9,11 +9,16 @@ namespace UI_Tier
 {
     public partial class ucArticleDetail : UserControl
     {
+        private ToolTip _tip = new ToolTip();
         public ucArticleDetail()
         {
             InitializeComponent();
             SetupAdminActions();
             
+            // Thêm chú giải ToolTip cho các nút hành động
+            _tip.SetToolTip(btnEdit, "Chỉnh sửa bài viết");
+            _tip.SetToolTip(btnRemove, "Xóa bài viết");
+
             // Hide admin actions if the user is not an Admin
             flpAction.Visible = (GlobalAccount.GetRole() == "Admin");
         }
@@ -47,12 +52,12 @@ namespace UI_Tier
             if (art.Status == "Hidden")
             {
                 btnHide.Text = "\uE7B3"; // View icon
-                btnHide.AccessibleDescription = "Hiện bài viết";
+                _tip.SetToolTip(btnHide, "Hiện bài viết");
             }
             else
             {
                 btnHide.Text = "\uE890"; // Hide icon
-                btnHide.AccessibleDescription = "Ẩn bài viết";
+                _tip.SetToolTip(btnHide, "Ẩn bài viết");
             }
 
             // 2. Xử lý ảnh
