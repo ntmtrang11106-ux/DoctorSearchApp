@@ -249,5 +249,11 @@ namespace BUS_Tier
             if (doctorId <= 0) return new List<TimeSlotsDTO>();
             return _dal.GetSlotsByDoctorAndDate(doctorId, date);
         }
+
+        public bool DeleteTimeSlot(int slotId)
+        {
+            if (slotId <= 0) return false;
+            return _dal.SoftDeleteSlot(slotId);
+        }
     }
 }

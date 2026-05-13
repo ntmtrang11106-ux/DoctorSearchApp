@@ -20,9 +20,10 @@ namespace UI_Tier
         private List<DoctorDTO> _foundDoctors = new List<DoctorDTO>();
         private List<ContentDTO> _foundArticles = new List<ContentDTO>();
         
-        private int _pageSize = 8;
+        private int _pageSize = 6;
         private int _currentDocPage = 1;
         private int _currentArtPage = 1;
+        private bool _isUpdatingChips = false;
 
         private Color _activeBack = Color.FromArgb(206, 225, 255);
         private Color _normalBack = Color.Transparent;
@@ -133,6 +134,12 @@ namespace UI_Tier
             cboContentType.Items.Add("Bài viết chuyên khoa");
             cboContentType.Items.Add("Thông tin y tế");
             cboContentType.SelectedIndex = 0;
+            
+            // Set Hand Cursor for interactive elements
+            btnSearch.Cursor = Cursors.Hand;
+            lblPrev.Cursor = Cursors.Hand;
+            lblNext.Cursor = Cursors.Hand;
+
             LoadDepartments();
         }
 
@@ -181,11 +188,52 @@ namespace UI_Tier
 
             chk.CheckedChanged += (s, e) =>
             {
+                if (_isUpdatingChips) return;
+
                 CheckBox c = (CheckBox)s;
+                
                 if (c.Checked)
-                    c.ForeColor = Color.White;
+                {
+                    _isUpdatingChips = true;
+                    // Bỏ chọn tất cả các Chip khác
+                    foreach (Control ctrl in flpDepts.Controls)
+                    {
+                        if (ctrl is CheckBox other && other != c)
+                        {
+                            other.Checked = false;
+                            other.ForeColor = Color.FromArgb(64, 64, 64);
+                        }
+                    }
+                    _isUpdatingChips = false;
+                }
                 else
-                    c.ForeColor = Color.FromArgb(64, 64, 64);
+                {
+                    // Nếu người dùng bỏ chọn một chip, kiểm tra xem còn cái nào đang chọn không
+                    bool anyChecked = false;
+                    foreach (Control ctrl in flpDepts.Controls)
+                    {
+                        if (ctrl is CheckBox other && other.Checked) { anyChecked = true; break; }
+                    }
+
+                    // Nếu không còn cái nào được chọn, tự động quay lại "Tất cả"
+                    if (!anyChecked)
+                    {
+                        _isUpdatingChips = true;
+                        foreach (Control ctrl in flpDepts.Controls)
+                        {
+                            if (ctrl is CheckBox other && other.Tag?.ToString() == "Tất cả")
+                            {
+                                other.Checked = true;
+                                other.ForeColor = Color.White;
+                                break;
+                            }
+                        }
+                        _isUpdatingChips = false;
+                    }
+                }
+
+                // Cập nhật màu sắc cho chip hiện tại
+                c.ForeColor = c.Checked ? Color.White : Color.FromArgb(64, 64, 64);
                 
                 ExecuteSearch();
             };
@@ -275,7 +323,7 @@ namespace UI_Tier
                 cboSort.Items.Add("Giá khám thấp đến cao");
                 cboSort.Items.Add("Giá khám cao đến thấp");
                 cboSort.Items.Add("Năm kinh nghiệm cao đến thấp");
-                cboSort.Items.Add("Rating cao đến thấp");
+                cboSort.Items.Add("Đánh giá cao đến thấp");
             }
             else
             {
@@ -304,6 +352,7 @@ namespace UI_Tier
             foreach (var doc in items)
             {
                 UCCardDoctor card = new UCCardDoctor();
+                card.IsClickable = false; // Guest không có hiệu ứng nổi và click
                 card.SetDoctorData(doc);
                 card.Margin = new Padding(15);
                 flpDoctors.Controls.Add(card);

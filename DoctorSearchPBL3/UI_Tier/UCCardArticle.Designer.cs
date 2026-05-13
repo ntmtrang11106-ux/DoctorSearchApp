@@ -112,7 +112,7 @@ namespace UI_Tier
             // 
             // pnlContainer
             // 
-            pnlContainer.BackColor = Color.White;
+            pnlContainer.BackColor = Color.Transparent;
             pnlContainer.Controls.Add(lblStatus);
             pnlContainer.Controls.Add(lblSpecialities);
             pnlContainer.Controls.Add(lblViews);

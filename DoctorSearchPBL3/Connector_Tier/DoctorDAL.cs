@@ -170,7 +170,7 @@ namespace DAL_Tier
 
             // 1. Lọc theo từ khóa
             if (!string.IsNullOrWhiteSpace(keyword))
-                query = query.Where(d => d.User != null && d.User.FullName.Contains(keyword));
+                query = query.Where(d => d.User != null && EF.Functions.Collate(d.User.FullName, "SQL_Latin1_General_CP1_CI_AI").Contains(keyword));
 
             // 2. Lọc theo giới tính
             if (!string.IsNullOrWhiteSpace(gender) && gender != "Tất cả")

@@ -242,22 +242,11 @@ namespace UI_Tier
             Control pnl = sender as Control;
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-            // Soft Shadow
-            for (int i = 1; i <= 6; i++)
-            {
-                Rectangle shadowRect = new Rectangle(i, i, pnl.Width - i * 2, pnl.Height - i * 2);
-                using (var path = UIHelper.GetRoundedPath(shadowRect, 20))
-                {
-                    using (Pen shadowPen = new Pen(Color.FromArgb(12 / i, Color.Black), i))
-                    {
-                        e.Graphics.DrawPath(shadowPen, path);
-                    }
-                }
-            }
-
+            // Soft Shadow - Only draw if not resizing or use a simpler version
             Rectangle rect = new Rectangle(0, 0, pnl.Width - 1, pnl.Height - 1);
             using (var path = UIHelper.GetRoundedPath(rect, 20))
             {
+                // Simple shadow/border
                 using (Pen pen = new Pen(Color.FromArgb(226, 232, 240), 1))
                 {
                     pen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
@@ -265,7 +254,7 @@ namespace UI_Tier
                 }
             }
 
-            // Accent Line (Top)
+            // Accent Line (Top) - Static part
             Color accentColor = (pnl == pnlSecurity) ? Color.FromArgb(244, 63, 94) : Color.FromArgb(37, 99, 235);
             using (Pen accentPen = new Pen(accentColor, 6))
             {

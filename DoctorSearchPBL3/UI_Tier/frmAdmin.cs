@@ -39,6 +39,7 @@ namespace UI_Tier
             _tabTypeMapping.Add(pnlOverview, typeof(ucAdmin_Overview));
             _tabTypeMapping.Add(pnlDoctor, typeof(ucAdmin_UserManagement)); 
             _tabTypeMapping.Add(pnlArticles, typeof(ucAdmin_ArticleManagement));
+            _tabTypeMapping.Add(pnlAppointment, typeof(ucAdmin_AppointmentManagement));
             _tabTypeMapping.Add(pnlUser, typeof(ucAdmin_DepartmentManagement));
             _tabTypeMapping.Add(pnlProfile, typeof(ucAdmin_ReviewManagement));
             _tabTypeMapping.Add(pnlAdminProfile, typeof(ucAdmin_Profile));

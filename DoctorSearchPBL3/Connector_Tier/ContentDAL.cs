@@ -29,7 +29,7 @@ namespace DAL_Tier
 
             if (!string.IsNullOrWhiteSpace(keyword))
             {
-                query = query.Where(c => c.Title.Contains(keyword));
+                query = query.Where(c => EF.Functions.Collate(c.Title, "SQL_Latin1_General_CP1_CI_AI").Contains(keyword));
             }
 
             if (!string.IsNullOrWhiteSpace(contentType) && contentType != "Tất cả")

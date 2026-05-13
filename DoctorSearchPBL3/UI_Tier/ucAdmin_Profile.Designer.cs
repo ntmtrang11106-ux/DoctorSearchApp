@@ -152,7 +152,7 @@ namespace UI_Tier
             // 
             // txtConfirmPass
             // 
-            txtConfirmPass.BorderStyle = BorderStyle.FixedSingle;
+            txtConfirmPass.BorderStyle = BorderStyle.None;
             txtConfirmPass.Font = new Font("Segoe UI", 12F);
             txtConfirmPass.Location = new Point(52, 307);
             txtConfirmPass.Margin = new Padding(4);
@@ -176,7 +176,7 @@ namespace UI_Tier
             // 
             // txtNewPass
             // 
-            txtNewPass.BorderStyle = BorderStyle.FixedSingle;
+            txtNewPass.BorderStyle = BorderStyle.None;
             txtNewPass.Font = new Font("Segoe UI", 12F);
             txtNewPass.Location = new Point(52, 192);
             txtNewPass.Margin = new Padding(4);
@@ -200,7 +200,7 @@ namespace UI_Tier
             // 
             // txtCurrentPass
             // 
-            txtCurrentPass.BorderStyle = BorderStyle.FixedSingle;
+            txtCurrentPass.BorderStyle = BorderStyle.None;
             txtCurrentPass.Font = new Font("Segoe UI", 12F);
             txtCurrentPass.Location = new Point(52, 77);
             txtCurrentPass.Margin = new Padding(4);
@@ -241,10 +241,10 @@ namespace UI_Tier
             btnChangePassword.FlatStyle = FlatStyle.Flat;
             btnChangePassword.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             btnChangePassword.ForeColor = Color.FromArgb(37, 99, 235);
-            btnChangePassword.Location = new Point(1045, 32);
+            btnChangePassword.Location = new Point(1100, 32);
             btnChangePassword.Margin = new Padding(4);
             btnChangePassword.Name = "btnChangePassword";
-            btnChangePassword.Size = new Size(325, 58);
+            btnChangePassword.Size = new Size(250, 60);
             btnChangePassword.TabIndex = 1;
             btnChangePassword.Text = "✎  Đổi mật khẩu";
             btnChangePassword.TextAlign = ContentAlignment.MiddleRight;
@@ -339,12 +339,13 @@ namespace UI_Tier
             // 
             // txtCCCD
             // 
+            txtCCCD.BorderStyle = BorderStyle.None;
             txtCCCD.Font = new Font("Segoe UI", 12F);
             txtCCCD.Location = new Point(1000, 486);
             txtCCCD.Margin = new Padding(4);
             txtCCCD.Name = "txtCCCD";
             txtCCCD.ReadOnly = true;
-            txtCCCD.Size = new Size(428, 50);
+            txtCCCD.Size = new Size(650, 50);
             txtCCCD.TabIndex = 15;
             // 
             // lblCCCD
@@ -361,12 +362,13 @@ namespace UI_Tier
             // 
             // txtGender
             // 
+            txtGender.BorderStyle = BorderStyle.None;
             txtGender.Font = new Font("Segoe UI", 12F);
             txtGender.Location = new Point(455, 486);
             txtGender.Margin = new Padding(4);
             txtGender.Name = "txtGender";
             txtGender.ReadOnly = true;
-            txtGender.Size = new Size(428, 50);
+            txtGender.Size = new Size(650, 50);
             txtGender.TabIndex = 13;
             // 
             // lblGender
@@ -389,7 +391,7 @@ namespace UI_Tier
             dtpBirthday.Location = new Point(1000, 358);
             dtpBirthday.Margin = new Padding(4);
             dtpBirthday.Name = "dtpBirthday";
-            dtpBirthday.Size = new Size(428, 50);
+            dtpBirthday.Size = new Size(650, 50);
             dtpBirthday.TabIndex = 11;
             // 
             // lblBirthday
@@ -406,12 +408,13 @@ namespace UI_Tier
             // 
             // txtAddress
             // 
+            txtAddress.BorderStyle = BorderStyle.None;
             txtAddress.Font = new Font("Segoe UI", 12F);
             txtAddress.Location = new Point(455, 615);
             txtAddress.Margin = new Padding(4);
             txtAddress.Name = "txtAddress";
             txtAddress.ReadOnly = true;
-            txtAddress.Size = new Size(941, 50);
+            txtAddress.Size = new Size(1195, 50);
             txtAddress.TabIndex = 9;
             // 
             // lblAddress
@@ -428,12 +431,13 @@ namespace UI_Tier
             // 
             // txtPhone
             // 
+            txtPhone.BorderStyle = BorderStyle.None;
             txtPhone.Font = new Font("Segoe UI", 12F);
             txtPhone.Location = new Point(1000, 230);
             txtPhone.Margin = new Padding(4);
             txtPhone.Name = "txtPhone";
             txtPhone.ReadOnly = true;
-            txtPhone.Size = new Size(500, 50);
+            txtPhone.Size = new Size(650, 50);
             txtPhone.TabIndex = 7;
             // 
             // lblPhone
@@ -450,12 +454,13 @@ namespace UI_Tier
             // 
             // txtFullName
             // 
+            txtFullName.BorderStyle = BorderStyle.None;
             txtFullName.Font = new Font("Segoe UI", 12F);
             txtFullName.Location = new Point(455, 230);
             txtFullName.Margin = new Padding(4);
             txtFullName.Name = "txtFullName";
             txtFullName.ReadOnly = true;
-            txtFullName.Size = new Size(428, 50);
+            txtFullName.Size = new Size(650, 50);
             txtFullName.TabIndex = 5;
             // 
             // lblFullName
@@ -472,12 +477,13 @@ namespace UI_Tier
             // 
             // txtRole
             // 
+            txtRole.BorderStyle = BorderStyle.None;
             txtRole.Font = new Font("Segoe UI", 12F);
             txtRole.Location = new Point(455, 358);
             txtRole.Margin = new Padding(4);
             txtRole.Name = "txtRole";
             txtRole.ReadOnly = true;
-            txtRole.Size = new Size(428, 50);
+            txtRole.Size = new Size(650, 50);
             txtRole.TabIndex = 17;
             // 
             // lblRole
@@ -521,10 +527,10 @@ namespace UI_Tier
             btnEditBasicInfo.FlatStyle = FlatStyle.Flat;
             btnEditBasicInfo.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             btnEditBasicInfo.ForeColor = Color.FromArgb(37, 99, 235);
-            btnEditBasicInfo.Location = new Point(1045, 32);
+            btnEditBasicInfo.Location = new Point(1100, 32);
             btnEditBasicInfo.Margin = new Padding(4);
             btnEditBasicInfo.Name = "btnEditBasicInfo";
-            btnEditBasicInfo.Size = new Size(325, 58);
+            btnEditBasicInfo.Size = new Size(250, 60);
             btnEditBasicInfo.TabIndex = 1;
             btnEditBasicInfo.Text = "✎  Chỉnh sửa";
             btnEditBasicInfo.TextAlign = ContentAlignment.MiddleRight;

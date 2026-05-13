@@ -14,6 +14,7 @@ namespace UI_Tier
     {
         // Khai báo một biến để lưu trữ dữ liệu của bài viết này
         private ContentDTO _currentArt;
+        private bool _isHovered = false;
 
         public UCCardArticle()
         {
@@ -23,9 +24,12 @@ namespace UI_Tier
 
         private void UCCardArticle_Load(object sender, EventArgs e)
         {
-            this.Paint+=(s, args) =>
+            this.Paint += (s, args) =>
             {
-                UIHelper.uc_Paint(s, args, 20, Color.Gray, 2);
+                // Sử dụng màu xanh đậm khi hover, màu xám khi bình thường
+                Color borderColor = _isHovered ? Color.FromArgb(37, 99, 235) : Color.FromArgb(224, 224, 224);
+                int borderWidth = _isHovered ? 3 : 2;
+                UIHelper.uc_Paint(s, args, 20, borderColor, borderWidth);
             };
         }
 
@@ -128,13 +132,42 @@ namespace UI_Tier
                     ctrl.Click += Card_Click;
 
                     // Đổi con trỏ chuột sang hình bàn tay để người dùng biết là kích được
+                    // Đổi con trỏ chuột sang hình bàn tay để người dùng biết là kích được
                     ctrl.Cursor = Cursors.Hand;
+
+                    // Thêm hiệu ứng Hover
+                    ctrl.MouseEnter -= OnMouseEnter;
+                    ctrl.MouseEnter += OnMouseEnter;
+                    ctrl.MouseLeave -= OnMouseLeave;
+                    ctrl.MouseLeave += OnMouseLeave;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Lỗi tại Card Bài Viết: " + ex.Message);
             }
+        }
+
+        private void OnMouseEnter(object sender, EventArgs e)
+        {
+            if (_isHovered) return;
+            _isHovered = true;
+            
+            // Hiệu ứng "Nhấc lên": Giảm padding trên, tăng padding dưới
+            this.Padding = new Padding(13, 8, 13, 18);
+            this.BackColor = Color.FromArgb(252, 253, 255); // Nền hơi xanh nhạt
+            this.Refresh(); // Vẽ lại viền
+        }
+
+        private void OnMouseLeave(object sender, EventArgs e)
+        {
+            // Kiểm tra xem chuột có thực sự rời khỏi vùng của UC không (tránh flick khi di chuyển giữa các control con)
+            if (this.GetChildAtPoint(this.PointToClient(Cursor.Position)) != null) return;
+
+            _isHovered = false;
+            this.Padding = new Padding(13); // Trả về padding mặc định
+            this.BackColor = Color.White;
+            this.Refresh(); // Vẽ lại viền
         }
 
         // Hàm xử lý khi kích vào bất kỳ đâu trên Card
@@ -149,6 +182,10 @@ namespace UI_Tier
             else if (parentForm is frmDoctor docMain)
             {
                 docMain.OpenArticleDetail(_currentArt);
+            }
+            else if (parentForm is frmGuest guestMain)
+            {
+                guestMain.OpenArticleDetail(_currentArt);
             }
             else if (parentForm is frmAdmin adminMain)
             {

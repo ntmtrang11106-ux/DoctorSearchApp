@@ -125,6 +125,11 @@ namespace UI_Tier
                 // Gọi hàm quay lại trang danh sách bài viết bên bác sĩ
                 docForm.BackToArticleList();
             }
+            else if (parentForm is frmGuest guestForm)
+            {
+                // Gọi hàm quay lại trang tìm kiếm bên Guest
+                guestForm.BackToSearch();
+            }
             else if (parentForm is frmAdmin adminForm)
             {
                 // In Admin, we handle it via the Article Management overlay

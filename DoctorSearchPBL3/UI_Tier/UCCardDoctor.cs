@@ -1,5 +1,6 @@
 using BUS_Tier;
 using DTO_Tier;
+using System.ComponentModel;
 using System.Drawing.Drawing2D;
 
 namespace UI_Tier
@@ -7,12 +8,21 @@ namespace UI_Tier
     public partial class UCCardDoctor : UserControl
     {
         private DoctorDTO _currentDoc;
+        private bool _isHovered = false;
+
+        /// <summary>
+        /// Thuộc tính để xác định thẻ này có cho phép tương tác (Click/Hover) hay không.
+        /// </summary>
+        [Browsable(true)]
+        [Category("Behavior")]
+        [Description("Xác định thẻ có thể click và có hiệu ứng hover hay không.")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public bool IsClickable { get; set; } = true;
 
         public UCCardDoctor()
         {
             InitializeComponent();
-
-            UIHelper.SetDoubleBuffered(this); // Kích hoạt Double Buffering cho UserControl để giảm nhấp nháy
+            UIHelper.SetDoubleBuffered(this);
         }
 
 
@@ -97,7 +107,31 @@ namespace UI_Tier
                 }
                 catch (Exception ex) { }
             }
-        }
+
+            // --- THIẾT LẬP TƯƠNG TÁC CHUỘT ---
+            Control[] interactiveControls = { 
+                this, pnlContainer, picDoctor, lblFullName, lblPhone, lblSpecialties, 
+                lblGender, lblSpecificAdress, lblWorkingTime, lblPrice, lblRating, 
+                lblTotalReviews, lblEx, label1, label2, label3, label4, label5, label6, label7, lblSpecialtyTag 
+            };
+
+            foreach (var ctrl in interactiveControls)
+            {
+                if (ctrl == null) continue;
+
+                // 1. Luôn dùng con trỏ bàn tay
+                ctrl.Cursor = Cursors.Hand;
+
+                // 2. Đăng ký sự kiện (Việc kiểm tra IsClickable sẽ thực hiện bên trong hàm xử lý)
+                    ctrl.MouseEnter -= OnMouseEnter;
+                    ctrl.MouseEnter += OnMouseEnter;
+                    ctrl.MouseLeave -= OnMouseLeave;
+                    ctrl.MouseLeave += OnMouseLeave;
+
+                    ctrl.Click -= Card_Click;
+                    ctrl.Click += Card_Click;
+                }
+            }
 
         private void UCCardDoctor_Load(object sender, EventArgs e)
         {
@@ -110,8 +144,56 @@ namespace UI_Tier
             // Bo góc cho PictureBox (nếu bạn muốn bo nhẹ 4 góc)
             UIHelper.ApplyRoundedRegion(picDoctor, 15);
 
-            // Vẽ border cho Card (nếu muốn)
-            this.Paint += (sender, e) => UIHelper.uc_Paint(sender, e, 20, Color.FromArgb(224, 224, 224), 2);
+            // Vẽ border cho Card
+            this.Paint += (s, args) =>
+            {
+                if (IsClickable)
+                {
+                    // Màu xanh đậm khi hover, xám nhạt khi bình thường
+                    Color borderColor = _isHovered ? Color.FromArgb(37, 99, 235) : Color.FromArgb(224, 224, 224);
+                    int borderWidth = _isHovered ? 3 : 2;
+                    UIHelper.uc_Paint(s, args, 20, borderColor, borderWidth);
+                }
+                else
+                {
+                    // Khi không clickable, giữ viền xám mặc định
+                    UIHelper.uc_Paint(s, args, 20, Color.FromArgb(224, 224, 224), 2);
+                }
+            };
+        }
+
+        private void OnMouseEnter(object sender, EventArgs e)
+        {
+            if (!IsClickable || _isHovered) return;
+            _isHovered = true;
+
+            // Hiệu ứng "Nhấc lên": Giảm padding trên, tăng padding dưới
+            this.Padding = new Padding(13, 8, 13, 18);
+            
+            Color hoverColor = Color.FromArgb(252, 253, 255);
+            this.BackColor = hoverColor;
+            pnlContainer.BackColor = hoverColor;
+            
+            this.Refresh(); // Vẽ lại viền
+        }
+
+        private void OnMouseLeave(object sender, EventArgs e)
+        {
+            if (!IsClickable) return;
+
+            // Kiểm tra xem chuột có thực sự rời khỏi vùng của UC không
+            Point clientMousePos = this.PointToClient(Cursor.Position);
+            if (this.ClientRectangle.Contains(clientMousePos)) return;
+
+            _isHovered = false;
+            
+            // Trả về Margin mặc định
+            this.Margin = new Padding(15);
+            
+            this.BackColor = Color.White;
+            pnlContainer.BackColor = Color.White;
+            
+            this.Invalidate(); // Yêu cầu vẽ lại viền
         }
 
         // Hàm xử lý khi kích vào bất kỳ đâu trên Card
