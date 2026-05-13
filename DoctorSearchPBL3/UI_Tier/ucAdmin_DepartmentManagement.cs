@@ -12,6 +12,9 @@ namespace UI_Tier
     {
         private DepartmentBUS _deptBUS = new DepartmentBUS();
         private List<DepartmentDTO> _allDepts = new List<DepartmentDTO>();
+        private List<DepartmentDTO> _filteredDepts = new List<DepartmentDTO>();
+        private int _pageSize = 10;
+        private int _currentPage = 1;
 
         public ucAdmin_DepartmentManagement()
         {
@@ -24,19 +27,62 @@ namespace UI_Tier
         public void InitData()
         {
             _allDepts = _deptBUS.GetAllDepartments();
-            PopulateList(_allDepts);
+            if (cboStatusFilter.SelectedIndex == -1) cboStatusFilter.SelectedIndex = 0;
+            ApplyFilters();
         }
 
-        private void PopulateList(List<DepartmentDTO> list)
+        private void ApplyFilters()
         {
+            string keyword = txtSearch.Text.ToLower().Trim();
+            string statusFilter = cboStatusFilter.SelectedItem?.ToString() ?? "Tất cả trạng thái";
+
+            _filteredDepts = _allDepts.Where(d => 
+                (string.IsNullOrEmpty(keyword) || d.DepartmentName.ToLower().Contains(keyword) || (d.Description != null && d.Description.ToLower().Contains(keyword))) &&
+                (statusFilter == "Tất cả trạng thái" || (statusFilter == "Hiển thị" && d.IsActive) || (statusFilter == "Ẩn" && !d.IsActive))
+            ).ToList();
+
+            _currentPage = 1;
+            DisplayPage(_currentPage);
+        }
+
+        private void DisplayPage(int pageNumber)
+        {
+            flpList.SuspendLayout();
             flpList.Controls.Clear();
-            foreach (var dept in list)
+
+            int startIndex = (pageNumber - 1) * _pageSize;
+            var pageItems = _filteredDepts.Skip(startIndex).Take(_pageSize).ToList();
+
+            if (pageItems.Count == 0 && _currentPage > 1)
+            {
+                _currentPage--;
+                DisplayPage(_currentPage);
+                return;
+            }
+
+            foreach (var dept in pageItems)
             {
                 ucAdmin_DepartmentItem item = new ucAdmin_DepartmentItem();
                 item.SetData(dept);
                 item.DataChanged += (s, ev) => InitData();
-                item.Width = flpList.Width - 40;
+                item.Width = flpList.Width - 45;
                 flpList.Controls.Add(item);
+            }
+
+            int totalPages = (int)Math.Ceiling((double)_filteredDepts.Count / _pageSize);
+            lblPageInfo.Text = $"Trang {_currentPage} / {Math.Max(1, totalPages)}";
+            
+            btnPrev.Enabled = _currentPage > 1;
+            btnNext.Enabled = _currentPage < totalPages;
+
+            flpList.ResumeLayout();
+        }
+
+        private void flpList_Resize(object sender, EventArgs e)
+        {
+            foreach (Control ctrl in flpList.Controls)
+            {
+                ctrl.Width = flpList.Width - 45;
             }
         }
 
@@ -65,14 +111,33 @@ namespace UI_Tier
             f.ShowDialog();
         }
 
+        private void btnPrev_Click(object sender, EventArgs e)
+        {
+            if (_currentPage > 1)
+            {
+                _currentPage--;
+                DisplayPage(_currentPage);
+            }
+        }
+
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            int totalPages = (int)Math.Ceiling((double)_filteredDepts.Count / _pageSize);
+            if (_currentPage < totalPages)
+            {
+                _currentPage++;
+                DisplayPage(_currentPage);
+            }
+        }
+
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            string keyword = txtSearch.Text.ToLower().Trim();
-            var filtered = _allDepts.Where(d => 
-                d.DepartmentName.ToLower().Contains(keyword) || 
-                (d.Description != null && d.Description.ToLower().Contains(keyword))
-            ).ToList();
-            PopulateList(filtered);
+            ApplyFilters();
+        }
+
+        private void cboStatusFilter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ApplyFilters();
         }
     }
 }

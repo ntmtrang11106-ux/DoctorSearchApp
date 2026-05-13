@@ -43,11 +43,13 @@ namespace UI_Tier
             {
                 lblStatus.ForeColor = Color.FromArgb(22, 163, 74);
                 pnlStatusBadge.BackColor = Color.FromArgb(220, 252, 231);
+                btnToggleHide.Text = "\uE890"; // Eye-slash icon
             }
             else
             {
                 lblStatus.ForeColor = Color.FromArgb(220, 38, 38);
                 pnlStatusBadge.BackColor = Color.FromArgb(254, 226, 226);
+                btnToggleHide.Text = "\uE7B3"; // Eye icon
             }
 
             UIHelper.ApplyRoundedRegion(pnlStatusBadge, 10);

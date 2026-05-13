@@ -23,7 +23,7 @@ namespace DAL_Tier
             using var context = new AppDbContext();
             return context.Departments
                 .Where(d => !d.IsDeleted)
-                .OrderBy(d => d.DisplayOrder)
+                .OrderByDescending(d => d.DisplayOrder) // Mới nhất lên đầu
                 .ToList();
         }
 
@@ -36,6 +36,15 @@ namespace DAL_Tier
         public bool AddDepartment(DepartmentDTO dept)
         {
             using var context = new AppDbContext();
+            
+            // Tự động tính DisplayOrder tiếp theo
+            int maxOrder = 0;
+            if (context.Departments.Any())
+            {
+                maxOrder = context.Departments.Max(d => d.DisplayOrder);
+            }
+            dept.DisplayOrder = maxOrder + 1;
+            
             dept.CreatedAt = DateTime.Now;
             dept.IsDeleted = false;
             context.Departments.Add(dept);
