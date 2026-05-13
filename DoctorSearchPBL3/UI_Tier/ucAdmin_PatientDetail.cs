@@ -44,32 +44,6 @@ namespace UI_Tier
             txtEditNotes.Height = 80;
 
             cboEditGender.Items.AddRange(new object[] { "Nam", "Nữ", "Khác" });
-
-            dtpEditDob.ValueChanged += DtpEditDob_ValueChanged;
-        }
-
-        private void DtpEditDob_ValueChanged(object sender, EventArgs e)
-        {
-            if (!this.Visible || !_isEditMode) return;
-
-            int age = DateTime.Now.Year - dtpEditDob.Value.Year;
-            if (dtpEditDob.Value.Date > DateTime.Now.AddYears(-age)) age--;
-
-            if (age < 16)
-            {
-                txtEditCCCD.Text = "Chưa đủ tuổi";
-                txtEditCCCD.ReadOnly = true;
-                txtEditCCCD.BackColor = Color.FromArgb(243, 244, 246); // Light gray
-            }
-            else
-            {
-                if (txtEditCCCD.Text == "Chưa đủ tuổi")
-                {
-                    txtEditCCCD.Text = "";
-                }
-                txtEditCCCD.ReadOnly = false;
-                txtEditCCCD.BackColor = Color.White;
-            }
         }
 
         private void SetupEditControl(Control edit, Control label)

@@ -52,6 +52,41 @@ namespace UI_Tier
                 lblViews.Text = content.ViewCount.ToString();
                 lblDate.Text = "Ngày đăng: " + content.CreatedAt.ToString("dd/MM/yyyy");
                 lblAuthor.Text = "Tác giả: " + (content.AuthorAdmin?.User?.FullName ?? "Quản trị viên");
+                
+                // 1.1 Trạng thái (Chỉ hiện cho Admin)
+                if (GlobalAccount.GetRole() == "Admin")
+                {
+                    lblStatus.Visible = true;
+                    
+                    // Map English to Vietnamese if needed
+                    string status = content.Status ?? "Bản nháp";
+                    if (status == "Published") status = "Đã xuất bản";
+                    else if (status == "Draft") status = "Bản nháp";
+                    else if (status == "Hidden") status = "Đã ẩn";
+                    
+                    lblStatus.Text = status;
+                    
+                    if (status == "Đã xuất bản")
+                    {
+                        lblStatus.BackColor = Color.FromArgb(220, 252, 231); // Green
+                        lblStatus.ForeColor = Color.FromArgb(22, 101, 52);
+                    }
+                    else if (status == "Bản nháp")
+                    {
+                        lblStatus.BackColor = Color.FromArgb(254, 249, 195); // Yellow
+                        lblStatus.ForeColor = Color.FromArgb(133, 77, 14);
+                    }
+                    else // Đã ẩn
+                    {
+                        lblStatus.BackColor = Color.FromArgb(254, 226, 226); // Red
+                        lblStatus.ForeColor = Color.FromArgb(153, 27, 27);
+                    }
+                    UIHelper.ApplyRoundedRegion(lblStatus, 10);
+                }
+                else
+                {
+                    lblStatus.Visible = false;
+                }
 
                 // 2. Xử lý hình ảnh (Giữ nguyên logic an toàn của bạn)
                 try
@@ -82,7 +117,7 @@ namespace UI_Tier
                 // --- PHẦN QUAN TRỌNG: ĐĂNG KÝ SỰ KIỆN CLICK TOÀN DIỆN ---
                 // Tạo một danh sách các control cần bắt sự kiện click
                 Control[] controls = { this, pnlContainer, lblTitle, lblSummary, lblSpecialities,
-                               lblAuthor, lblDate, lblViews, picThumbnail, label4 };
+                               lblAuthor, lblDate, lblViews, picThumbnail, label4, lblStatus };
 
                 foreach (var ctrl in controls)
                 {
@@ -114,6 +149,11 @@ namespace UI_Tier
             else if (parentForm is frmDoctor docMain)
             {
                 docMain.OpenArticleDetail(_currentArt);
+            }
+            else if (parentForm is frmAdmin adminMain)
+            {
+                // In Admin, we might want to handle this differently, but let's assume it has OpenArticleDetail
+                adminMain.OpenArticleDetail(_currentArt);
             }
         }
     }

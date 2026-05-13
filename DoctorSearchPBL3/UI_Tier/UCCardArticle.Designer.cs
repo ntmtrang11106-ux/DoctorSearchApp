@@ -1,4 +1,4 @@
-﻿namespace UI_Tier
+namespace UI_Tier
 {
     partial class UCCardArticle
     {
@@ -35,10 +35,11 @@
             lblSummary = new Label();
             lblTitle = new Label();
             pnlContainer = new Panel();
+            lblSpecialities = new Label();
             label4 = new Label();
             lblAuthor = new Label();
             label3 = new Label();
-            lblSpecialities = new Label();
+            lblStatus = new Label();
             ((System.ComponentModel.ISupportInitialize)picThumbnail).BeginInit();
             pnlContainer.SuspendLayout();
             SuspendLayout();
@@ -112,6 +113,7 @@
             // pnlContainer
             // 
             pnlContainer.BackColor = Color.White;
+            pnlContainer.Controls.Add(lblStatus);
             pnlContainer.Controls.Add(lblSpecialities);
             pnlContainer.Controls.Add(lblViews);
             pnlContainer.Controls.Add(label4);
@@ -128,6 +130,17 @@
             pnlContainer.Padding = new Padding(10);
             pnlContainer.Size = new Size(1298, 507);
             pnlContainer.TabIndex = 21;
+            // 
+            // lblSpecialities
+            // 
+            lblSpecialities.Font = new Font("Segoe UI", 10F);
+            lblSpecialities.ForeColor = Color.DimGray;
+            lblSpecialities.Location = new Point(629, 203);
+            lblSpecialities.Margin = new Padding(0, 5, 0, 5);
+            lblSpecialities.Name = "lblSpecialities";
+            lblSpecialities.Size = new Size(400, 58);
+            lblSpecialities.TabIndex = 25;
+            lblSpecialities.Text = "Chuyên khoa";
             // 
             // label4
             // 
@@ -162,16 +175,17 @@
             label3.Size = new Size(0, 32);
             label3.TabIndex = 22;
             // 
-            // lblSpecialities
+            // lblStatus
             // 
-            lblSpecialities.Font = new Font("Segoe UI", 10F);
-            lblSpecialities.ForeColor = Color.DimGray;
-            lblSpecialities.Location = new Point(629, 203);
-            lblSpecialities.Margin = new Padding(0, 5, 0, 5);
-            lblSpecialities.Name = "lblSpecialities";
-            lblSpecialities.Size = new Size(641, 58);
-            lblSpecialities.TabIndex = 25;
-            lblSpecialities.Text = "Ai bt chuyên khoa gì chời, đại đại đi";
+            lblStatus.AutoSize = true;
+            lblStatus.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblStatus.Location = new Point(1050, 203);
+            lblStatus.Name = "lblStatus";
+            lblStatus.Padding = new Padding(8, 4, 8, 4);
+            lblStatus.Size = new Size(130, 40);
+            lblStatus.TabIndex = 26;
+            lblStatus.Text = "Trạng thái";
+            lblStatus.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // UCCardArticle
             // 
@@ -201,5 +215,6 @@
         private Label label3;
         private Label label4;
         private Label lblSpecialities;
+        private Label lblStatus;
     }
 }

@@ -5,7 +5,7 @@ namespace DAL_Tier
 {
     public class ContentDAL
     {
-        public List<ContentDTO> SearchContents(string? keyword, List<string>? departmentNames, string? contentType, string? sortType)
+        public List<ContentDTO> SearchContents(string? keyword, List<string>? departmentNames, string? contentType, string? sortType, string? status = null)
         {
             using var context = new AppDbContext();
 
@@ -13,8 +13,19 @@ namespace DAL_Tier
                 .Include(c => c.Department)
                 .Include(c => c.AuthorAdmin)
                     .ThenInclude(a => a.User)
-                .Where(c => !c.IsDeleted && c.Status == "Published")
+                .Where(c => !c.IsDeleted)
                 .AsQueryable();
+
+            // Status filter
+            if (!string.IsNullOrWhiteSpace(status) && status != "Tất cả")
+            {
+                query = query.Where(c => c.Status == status);
+            }
+            else if (string.IsNullOrWhiteSpace(status))
+            {
+                // Default behavior for patients (if status not specified)
+                query = query.Where(c => c.Status == "Published");
+            }
 
             if (!string.IsNullOrWhiteSpace(keyword))
             {
@@ -70,6 +81,62 @@ namespace DAL_Tier
                 }
                 return false;
             }
+        }
+        //Thêm bài viết mới
+        public bool AddArticle(ContentDTO art)
+        {
+            using var context = new AppDbContext();
+            
+            art.CreatedAt = DateTime.Now;
+            art.IsDeleted = false;
+            art.ViewCount = 0;
+            
+            if (art.Status == "Published")
+            {
+                art.PublishedAt = DateTime.Now;
+            }
+
+            context.Contents.Add(art);
+            return context.SaveChanges() > 0;
+        }
+
+        //Cập nhật bài viết
+        public bool UpdateArticle(ContentDTO art)
+        {
+            using var context = new AppDbContext();
+            var existing = context.Contents.Find(art.Id);
+            if (existing == null) return false;
+
+            existing.Title = art.Title;
+            existing.Summary = art.Summary;
+            existing.Body = art.Body;
+            existing.ContentType = art.ContentType;
+            existing.DepartmentId = art.DepartmentId;
+            
+            // Set PublishedAt if status changes to Published and it wasn't published before
+            if (art.Status == "Published" && existing.Status != "Published")
+            {
+                existing.PublishedAt = DateTime.Now;
+            }
+            
+            existing.Status = art.Status;
+            existing.Priority = art.Priority;
+            existing.IsPinned = art.IsPinned;
+            existing.Thumbnail = art.Thumbnail;
+            existing.UpdatedAt = DateTime.Now;
+
+            return context.SaveChanges() > 0;
+        }
+        public bool DeleteArticle(int id)
+        {
+            using var context = new AppDbContext();
+            var art = context.Contents.Find(id);
+            if (art == null) return false;
+
+            art.IsDeleted = true;
+            art.DeletedAt = DateTime.Now;
+            
+            return context.SaveChanges() > 0;
         }
     }
 }

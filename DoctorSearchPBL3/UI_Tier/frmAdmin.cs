@@ -38,6 +38,7 @@ namespace UI_Tier
         {
             _tabTypeMapping.Add(pnlOverview, typeof(ucAdmin_Overview));
             _tabTypeMapping.Add(pnlDoctor, typeof(ucAdmin_UserManagement)); 
+            _tabTypeMapping.Add(pnlArticles, typeof(ucAdmin_ArticleManagement));
             _tabTypeMapping.Add(pnlUser, typeof(ucAdmin_UserManagement));
             _tabTypeMapping.Add(pnlProfile, typeof(ucAdmin_Overview)); // Placeholder
 
@@ -81,6 +82,8 @@ namespace UI_Tier
             UpdateLabelStyles(clickedPanel);
         }
 
+        public UserControl GetCurrentUC() => _currentUC;
+
         private void UpdateLabelStyles(Panel activePanel)
         {
             foreach (var panel in _tabTypeMapping.Keys)
@@ -109,6 +112,15 @@ namespace UI_Tier
         private void btnLogout_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        public void OpenArticleDetail(ContentDTO art)
+        {
+            // If we are on the Article Management tab, show detail in its overlay
+            if (_currentUC is ucAdmin_ArticleManagement artMgmt)
+            {
+                artMgmt.ShowArticleDetail(art);
+            }
         }
     }
 }

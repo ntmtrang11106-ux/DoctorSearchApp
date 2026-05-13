@@ -1,36 +1,71 @@
-﻿using DTO_Tier;
+using DTO_Tier;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace DAL_Tier
 {
     public class DepartmentDAL
     {
-        private readonly AppDbContext _context;
-
-        public DepartmentDAL() => _context = new AppDbContext();
-        public DepartmentDAL(AppDbContext context) => _context = context;
-
-        /// <summary>
-        /// Lấy danh sách các chuyên khoa đang hoạt động để hiển thị lên ComboBox
-        /// </summary>
         public List<DepartmentDTO> GetActiveDepartments()
         {
-            return _context.Departments
-                .AsNoTracking() // Tối ưu hiệu năng vì chỉ đọc dữ liệu
+            using var context = new AppDbContext();
+            return context.Departments
+                .AsNoTracking()
                 .Where(d => d.IsActive == true && d.IsDeleted == false)
-                .OrderBy(d => d.DisplayOrder) // Sắp xếp theo thứ tự hiển thị trong SQL
+                .OrderBy(d => d.DisplayOrder)
                 .ToList();
         }
 
-        /// <summary>
-        /// Lấy thông tin chi tiết một chuyên khoa theo ID
-        /// </summary>
+        public List<DepartmentDTO> GetAllDepartments()
+        {
+            using var context = new AppDbContext();
+            return context.Departments
+                .Where(d => !d.IsDeleted)
+                .OrderBy(d => d.DisplayOrder)
+                .ToList();
+        }
+
         public DepartmentDTO? GetDepartmentById(int id)
         {
-            return _context.Departments
-                .FirstOrDefault(d => d.Id == id && !d.IsDeleted);
+            using var context = new AppDbContext();
+            return context.Departments.FirstOrDefault(d => d.Id == id && !d.IsDeleted);
+        }
+
+        public bool AddDepartment(DepartmentDTO dept)
+        {
+            using var context = new AppDbContext();
+            dept.CreatedAt = DateTime.Now;
+            dept.IsDeleted = false;
+            context.Departments.Add(dept);
+            return context.SaveChanges() > 0;
+        }
+
+        public bool UpdateDepartment(DepartmentDTO dept)
+        {
+            using var context = new AppDbContext();
+            var existing = context.Departments.Find(dept.Id);
+            if (existing == null) return false;
+
+            existing.DepartmentName = dept.DepartmentName;
+            existing.Description = dept.Description;
+            existing.DisplayOrder = dept.DisplayOrder;
+            existing.IsActive = dept.IsActive;
+            existing.UpdatedAt = DateTime.Now;
+
+            return context.SaveChanges() > 0;
+        }
+
+        public bool DeleteDepartment(int id)
+        {
+            using var context = new AppDbContext();
+            var existing = context.Departments.Find(id);
+            if (existing == null) return false;
+
+            existing.IsDeleted = true;
+            existing.DeletedAt = DateTime.Now;
+            return context.SaveChanges() > 0;
         }
     }
 }

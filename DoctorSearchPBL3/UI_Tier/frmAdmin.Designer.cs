@@ -24,6 +24,9 @@ namespace UI_Tier
             pnlUser = new Panel();
             lblIconUser = new Label();
             lblUser = new Label();
+            pnlArticles = new Panel();
+            lblIconArticles = new Label();
+            lblArticles = new Label();
             pnlDoctor = new Panel();
             lblIconDoctor = new Label();
             lblDoctor = new Label();
@@ -37,6 +40,7 @@ namespace UI_Tier
             pnlTabs.SuspendLayout();
             pnlProfile.SuspendLayout();
             pnlUser.SuspendLayout();
+            pnlArticles.SuspendLayout();
             pnlDoctor.SuspendLayout();
             pnlOverview.SuspendLayout();
             pnlLogo.SuspendLayout();
@@ -75,18 +79,19 @@ namespace UI_Tier
             pnlTabs.Anchor = AnchorStyles.Top;
             pnlTabs.Controls.Add(pnlProfile);
             pnlTabs.Controls.Add(pnlUser);
+            pnlTabs.Controls.Add(pnlArticles);
             pnlTabs.Controls.Add(pnlDoctor);
             pnlTabs.Controls.Add(pnlOverview);
-            pnlTabs.Location = new Point(500, 3);
+            pnlTabs.Location = new Point(387, 3);
             pnlTabs.Name = "pnlTabs";
-            pnlTabs.Size = new Size(1387, 110);
+            pnlTabs.Size = new Size(1500, 110);
             pnlTabs.TabIndex = 1;
             // 
             // pnlProfile
             // 
             pnlProfile.Controls.Add(lblIconProfile);
             pnlProfile.Controls.Add(lblProfile);
-            pnlProfile.Location = new Point(1062, 15);
+            pnlProfile.Location = new Point(1149, 21);
             pnlProfile.Name = "pnlProfile";
             pnlProfile.Size = new Size(280, 85);
             pnlProfile.TabIndex = 4;
@@ -117,9 +122,9 @@ namespace UI_Tier
             // 
             pnlUser.Controls.Add(lblIconUser);
             pnlUser.Controls.Add(lblUser);
-            pnlUser.Location = new Point(767, 15);
+            pnlUser.Location = new Point(799, 15);
             pnlUser.Name = "pnlUser";
-            pnlUser.Size = new Size(280, 85);
+            pnlUser.Size = new Size(319, 85);
             pnlUser.TabIndex = 3;
             // 
             // lblIconUser
@@ -140,17 +145,48 @@ namespace UI_Tier
             lblUser.ForeColor = Color.Gray;
             lblUser.Location = new Point(82, 18);
             lblUser.Name = "lblUser";
-            lblUser.Size = new Size(195, 47);
+            lblUser.Size = new Size(234, 47);
             lblUser.TabIndex = 0;
-            lblUser.Text = "Bệnh nhân";
+            lblUser.Text = "Chuyên khoa";
+            // 
+            // pnlArticles
+            // 
+            pnlArticles.Controls.Add(lblIconArticles);
+            pnlArticles.Controls.Add(lblArticles);
+            pnlArticles.Location = new Point(559, 15);
+            pnlArticles.Name = "pnlArticles";
+            pnlArticles.Size = new Size(234, 85);
+            pnlArticles.TabIndex = 5;
+            // 
+            // lblIconArticles
+            // 
+            lblIconArticles.Font = new Font("Segoe MDL2 Assets", 20F);
+            lblIconArticles.ForeColor = Color.Gray;
+            lblIconArticles.Location = new Point(15, 10);
+            lblIconArticles.Name = "lblIconArticles";
+            lblIconArticles.Size = new Size(65, 65);
+            lblIconArticles.TabIndex = 1;
+            lblIconArticles.Text = "";
+            lblIconArticles.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lblArticles
+            // 
+            lblArticles.AutoSize = true;
+            lblArticles.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            lblArticles.ForeColor = Color.Gray;
+            lblArticles.Location = new Point(85, 18);
+            lblArticles.Name = "lblArticles";
+            lblArticles.Size = new Size(143, 47);
+            lblArticles.TabIndex = 0;
+            lblArticles.Text = "Bài viết";
             // 
             // pnlDoctor
             // 
             pnlDoctor.Controls.Add(lblIconDoctor);
             pnlDoctor.Controls.Add(lblDoctor);
-            pnlDoctor.Location = new Point(300, 15);
+            pnlDoctor.Location = new Point(268, 15);
             pnlDoctor.Name = "pnlDoctor";
-            pnlDoctor.Size = new Size(445, 85);
+            pnlDoctor.Size = new Size(285, 85);
             pnlDoctor.TabIndex = 2;
             // 
             // lblIconDoctor
@@ -167,13 +203,13 @@ namespace UI_Tier
             // lblDoctor
             // 
             lblDoctor.AutoSize = true;
-            lblDoctor.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            lblDoctor.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblDoctor.ForeColor = Color.Gray;
-            lblDoctor.Location = new Point(85, 18);
+            lblDoctor.Location = new Point(80, 18);
             lblDoctor.Name = "lblDoctor";
-            lblDoctor.Size = new Size(351, 47);
+            lblDoctor.Size = new Size(202, 45);
             lblDoctor.TabIndex = 0;
-            lblDoctor.Text = "Quản lý người dùng";
+            lblDoctor.Text = "Người dùng";
             // 
             // pnlOverview
             // 
@@ -181,7 +217,7 @@ namespace UI_Tier
             pnlOverview.Controls.Add(lblOverview);
             pnlOverview.Location = new Point(0, 15);
             pnlOverview.Name = "pnlOverview";
-            pnlOverview.Size = new Size(294, 85);
+            pnlOverview.Size = new Size(262, 85);
             pnlOverview.TabIndex = 1;
             // 
             // lblIconOverview
@@ -198,11 +234,11 @@ namespace UI_Tier
             // lblOverview
             // 
             lblOverview.AutoSize = true;
-            lblOverview.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            lblOverview.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblOverview.ForeColor = Color.Gray;
             lblOverview.Location = new Point(79, 18);
             lblOverview.Name = "lblOverview";
-            lblOverview.Size = new Size(198, 47);
+            lblOverview.Size = new Size(182, 45);
             lblOverview.TabIndex = 0;
             lblOverview.Text = "Tổng quan";
             // 
@@ -252,6 +288,8 @@ namespace UI_Tier
             pnlProfile.PerformLayout();
             pnlUser.ResumeLayout(false);
             pnlUser.PerformLayout();
+            pnlArticles.ResumeLayout(false);
+            pnlArticles.PerformLayout();
             pnlDoctor.ResumeLayout(false);
             pnlDoctor.PerformLayout();
             pnlOverview.ResumeLayout(false);
@@ -261,23 +299,26 @@ namespace UI_Tier
             ResumeLayout(false);
         }
 
-        private Panel pnlHeader;
-        private Panel pnlLogo;
-        private Panel pnlTabs;
-        private Panel pnlOverview;
-        private Label lblOverview;
-        private Label lblIconOverview;
-        private Panel pnlDoctor;
-        private Label lblDoctor;
-        private Label lblIconDoctor;
-        private Panel pnlUser;
-        private Label lblUser;
-        private Label lblIconUser;
-        private Panel pnlProfile;
-        private Label lblProfile;
-        private Label lblIconProfile;
-        private Button btnLogout;
-        private Panel pnMain;
-        private Label lblWelcome;
+        private System.Windows.Forms.Panel pnlHeader;
+        private System.Windows.Forms.Panel pnlLogo;
+        private System.Windows.Forms.Panel pnlTabs;
+        private System.Windows.Forms.Panel pnlOverview;
+        private System.Windows.Forms.Label lblOverview;
+        private System.Windows.Forms.Label lblIconOverview;
+        private System.Windows.Forms.Panel pnlDoctor;
+        private System.Windows.Forms.Label lblDoctor;
+        private System.Windows.Forms.Label lblIconDoctor;
+        private System.Windows.Forms.Panel pnlArticles;
+        private System.Windows.Forms.Label lblArticles;
+        private System.Windows.Forms.Label lblIconArticles;
+        private System.Windows.Forms.Panel pnlUser;
+        private System.Windows.Forms.Label lblUser;
+        private System.Windows.Forms.Label lblIconUser;
+        private System.Windows.Forms.Panel pnlProfile;
+        private System.Windows.Forms.Label lblProfile;
+        private System.Windows.Forms.Label lblIconProfile;
+        private System.Windows.Forms.Button btnLogout;
+        private System.Windows.Forms.Panel pnMain;
+        private System.Windows.Forms.Label lblWelcome;
     }
 }

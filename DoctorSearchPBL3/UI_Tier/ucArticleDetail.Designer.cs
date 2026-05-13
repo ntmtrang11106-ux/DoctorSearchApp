@@ -1,4 +1,4 @@
-﻿namespace UI_Tier
+namespace UI_Tier
 {
     partial class ucArticleDetail
     {
@@ -25,12 +25,18 @@
             lblSpecialities = new Label();
             picThumbnail = new PictureBox();
             txtBody = new RichTextBox();
+            flpAction = new FlowLayoutPanel();
+            btnRemove = new Button();
+            btnHide = new Button();
+            btnEdit = new Button();
             pnlHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picThumbnail).BeginInit();
+            flpAction.SuspendLayout();
             SuspendLayout();
             // 
             // pnlHeader
             // 
+            pnlHeader.Controls.Add(flpAction);
             pnlHeader.Controls.Add(lblViews);
             pnlHeader.Controls.Add(labelEyeIcon);
             pnlHeader.Controls.Add(lblDate);
@@ -41,7 +47,7 @@
             pnlHeader.Dock = DockStyle.Top;
             pnlHeader.Location = new Point(50, 50);
             pnlHeader.Name = "pnlHeader";
-            pnlHeader.Size = new Size(1122, 260);
+            pnlHeader.Size = new Size(1054, 260);
             pnlHeader.TabIndex = 0;
             // 
             // lblViews
@@ -50,7 +56,7 @@
             lblViews.AutoSize = true;
             lblViews.Font = new Font("Segoe UI", 11F);
             lblViews.ForeColor = Color.Gray;
-            lblViews.Location = new Point(1027, 205);
+            lblViews.Location = new Point(959, 205);
             lblViews.Name = "lblViews";
             lblViews.Size = new Size(82, 41);
             lblViews.TabIndex = 0;
@@ -62,7 +68,7 @@
             labelEyeIcon.AutoSize = true;
             labelEyeIcon.Font = new Font("Segoe MDL2 Assets", 15F);
             labelEyeIcon.ForeColor = Color.Gray;
-            labelEyeIcon.Location = new Point(980, 208);
+            labelEyeIcon.Location = new Point(912, 208);
             labelEyeIcon.Name = "labelEyeIcon";
             labelEyeIcon.Size = new Size(57, 40);
             labelEyeIcon.TabIndex = 1;
@@ -111,7 +117,7 @@
             lblTitle.ForeColor = Color.FromArgb(33, 37, 41);
             lblTitle.Location = new Point(70, 0);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(1032, 150);
+            lblTitle.Size = new Size(964, 150);
             lblTitle.TabIndex = 1;
             lblTitle.Text = "Tiêu đề bài viết chi tiết";
             // 
@@ -131,7 +137,7 @@
             picThumbnail.Dock = DockStyle.Top;
             picThumbnail.Location = new Point(50, 310);
             picThumbnail.Name = "picThumbnail";
-            picThumbnail.Size = new Size(1122, 550);
+            picThumbnail.Size = new Size(1054, 550);
             picThumbnail.SizeMode = PictureBoxSizeMode.Zoom;
             picThumbnail.TabIndex = 1;
             picThumbnail.TabStop = false;
@@ -147,9 +153,75 @@
             txtBody.Name = "txtBody";
             txtBody.ReadOnly = true;
             txtBody.ScrollBars = RichTextBoxScrollBars.None;
-            txtBody.Size = new Size(1022, 500);
+            txtBody.Size = new Size(954, 500);
             txtBody.TabIndex = 2;
             txtBody.Text = "";
+            // 
+            // flpAction
+            // 
+            flpAction.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            flpAction.AutoSize = true;
+            flpAction.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            flpAction.Controls.Add(btnRemove);
+            flpAction.Controls.Add(btnHide);
+            flpAction.Controls.Add(btnEdit);
+            flpAction.FlowDirection = FlowDirection.RightToLeft;
+            flpAction.Location = new Point(700, 85);
+            flpAction.Name = "flpAction";
+            flpAction.Size = new Size(350, 90);
+            flpAction.TabIndex = 16;
+            flpAction.WrapContents = false;
+            // 
+            // btnRemove
+            // 
+            btnRemove.AccessibleDescription = "Xóa bài viết";
+            btnRemove.Anchor = AnchorStyles.None;
+            btnRemove.BackColor = Color.FromArgb(255, 252, 235);
+            btnRemove.FlatAppearance.BorderSize = 0;
+            btnRemove.FlatStyle = FlatStyle.Flat;
+            btnRemove.Font = new Font("Segoe MDL2 Assets", 20F);
+            btnRemove.ForeColor = Color.FromArgb(217, 119, 6);
+            btnRemove.Location = new Point(235, 5);
+            btnRemove.Margin = new Padding(20, 5, 0, 0);
+            btnRemove.Name = "btnRemove";
+            btnRemove.Size = new Size(85, 85);
+            btnRemove.TabIndex = 16;
+            btnRemove.Text = "";
+            btnRemove.UseVisualStyleBackColor = false;
+            // 
+            // btnHide
+            // 
+            btnHide.AccessibleDescription = "Ẩn bài viết";
+            btnHide.Anchor = AnchorStyles.None;
+            btnHide.BackColor = Color.FromArgb(243, 244, 246);
+            btnHide.FlatAppearance.BorderSize = 0;
+            btnHide.FlatStyle = FlatStyle.Flat;
+            btnHide.Font = new Font("Segoe MDL2 Assets", 20F);
+            btnHide.ForeColor = Color.FromArgb(75, 85, 99);
+            btnHide.Location = new Point(130, 5);
+            btnHide.Margin = new Padding(20, 5, 0, 0);
+            btnHide.Name = "btnHide";
+            btnHide.Size = new Size(85, 85);
+            btnHide.TabIndex = 21;
+            btnHide.Text = "";
+            btnHide.UseVisualStyleBackColor = false;
+            // 
+            // btnEdit
+            // 
+            btnEdit.AccessibleDescription = "Chỉnh sửa bài viết";
+            btnEdit.Anchor = AnchorStyles.None;
+            btnEdit.BackColor = Color.FromArgb(239, 250, 255);
+            btnEdit.FlatAppearance.BorderSize = 0;
+            btnEdit.FlatStyle = FlatStyle.Flat;
+            btnEdit.Font = new Font("Segoe MDL2 Assets", 20F);
+            btnEdit.ForeColor = Color.FromArgb(37, 99, 235);
+            btnEdit.Location = new Point(25, 5);
+            btnEdit.Margin = new Padding(20, 5, 0, 0);
+            btnEdit.Name = "btnEdit";
+            btnEdit.Size = new Size(85, 85);
+            btnEdit.TabIndex = 20;
+            btnEdit.Text = "";
+            btnEdit.UseVisualStyleBackColor = false;
             // 
             // ucArticleDetail
             // 
@@ -162,10 +234,11 @@
             Controls.Add(pnlHeader);
             Name = "ucArticleDetail";
             Padding = new Padding(50);
-            Size = new Size(1222, 900);
+            Size = new Size(1154, 900);
             pnlHeader.ResumeLayout(false);
             pnlHeader.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)picThumbnail).EndInit();
+            flpAction.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -179,5 +252,12 @@
         private Label labelEyeIcon;
         private PictureBox picThumbnail;
         private RichTextBox txtBody;
+        private Button btnEdit;
+        private Button btnHide;
+        private Button btnRemove;
+        private FlowLayoutPanel flpAction;
+        private Button button1;
+        private Button button2;
+        private Label lblStatus;
     }
 }
