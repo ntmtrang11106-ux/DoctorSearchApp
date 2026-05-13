@@ -69,6 +69,7 @@
             radioButton2 = new RadioButton();
             label11 = new Label();
             panel21 = new Panel();
+            panel22 = new Panel();
             label19 = new Label();
             panel12 = new Panel();
             label12 = new Label();
@@ -86,7 +87,7 @@
             label2 = new Label();
             label1 = new Label();
             ofdCCHN = new OpenFileDialog();
-            txtAdress = new TextBox();
+            txtAddress = new TextBox();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             panel3.SuspendLayout();
@@ -108,6 +109,7 @@
             panel20.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             panel21.SuspendLayout();
+            panel22.SuspendLayout();
             panel12.SuspendLayout();
             panel9.SuspendLayout();
             panel13.SuspendLayout();
@@ -132,7 +134,7 @@
             panel2.BackColor = Color.FromArgb(24, 112, 255);
             panel2.Controls.Add(panel3);
             panel2.Controls.Add(label1);
-            panel2.Location = new Point(73, 102);
+            panel2.Location = new Point(39, 102);
             panel2.Name = "panel2";
             panel2.Size = new Size(2165, 1719);
             panel2.TabIndex = 4;
@@ -491,7 +493,7 @@
             panel20.Controls.Add(label11);
             panel20.Location = new Point(3, 655);
             panel20.Name = "panel20";
-            panel20.Size = new Size(808, 121);
+            panel20.Size = new Size(808, 144);
             panel20.TabIndex = 36;
             // 
             // flowLayoutPanel1
@@ -540,12 +542,21 @@
             // 
             // panel21
             // 
-            panel21.Controls.Add(txtAdress);
+            panel21.Controls.Add(panel22);
             panel21.Controls.Add(label19);
-            panel21.Location = new Point(3, 782);
+            panel21.Location = new Point(3, 805);
             panel21.Name = "panel21";
-            panel21.Size = new Size(808, 227);
+            panel21.Size = new Size(808, 181);
             panel21.TabIndex = 37;
+            // 
+            // panel22
+            // 
+            panel22.BorderStyle = BorderStyle.FixedSingle;
+            panel22.Controls.Add(txtAddress);
+            panel22.Location = new Point(37, 77);
+            panel22.Name = "panel22";
+            panel22.Size = new Size(751, 78);
+            panel22.TabIndex = 40;
             // 
             // label19
             // 
@@ -561,7 +572,7 @@
             // 
             panel12.Controls.Add(label12);
             panel12.Controls.Add(panel9);
-            panel12.Location = new Point(3, 1015);
+            panel12.Location = new Point(3, 992);
             panel12.Name = "panel12";
             panel12.Size = new Size(808, 157);
             panel12.TabIndex = 28;
@@ -601,7 +612,7 @@
             // 
             panel13.Controls.Add(label13);
             panel13.Controls.Add(panel10);
-            panel13.Location = new Point(3, 1178);
+            panel13.Location = new Point(3, 1155);
             panel13.Name = "panel13";
             panel13.Size = new Size(808, 157);
             panel13.TabIndex = 28;
@@ -723,12 +734,16 @@
             // 
             ofdCCHN.FileName = "pngCCHN";
             // 
-            // txtAdress
+            // txtAddress
             // 
-            txtAdress.Location = new Point(80, 99);
-            txtAdress.Name = "txtAdress";
-            txtAdress.Size = new Size(575, 39);
-            txtAdress.TabIndex = 39;
+            txtAddress.BackColor = SystemColors.Window;
+            txtAddress.BorderStyle = BorderStyle.None;
+            txtAddress.CausesValidation = false;
+            txtAddress.Font = new Font("Segoe UI", 12F);
+            txtAddress.Location = new Point(13, 17);
+            txtAddress.Name = "txtAddress";
+            txtAddress.Size = new Size(723, 43);
+            txtAddress.TabIndex = 3;
             // 
             // frmRegister
             // 
@@ -779,6 +794,8 @@
             flowLayoutPanel1.PerformLayout();
             panel21.ResumeLayout(false);
             panel21.PerformLayout();
+            panel22.ResumeLayout(false);
+            panel22.PerformLayout();
             panel12.ResumeLayout(false);
             panel12.PerformLayout();
             panel9.ResumeLayout(false);
@@ -855,5 +872,11 @@
         private Panel panel14;
         private Label label17;
         private TextBox txtAdress;
+        private Panel panel22;
+        private TextBox textBox1;
+        private Panel panel23;
+        private Panel panel25;
+        private Label label15;
+        private TextBox txtAddress;
     }
 }

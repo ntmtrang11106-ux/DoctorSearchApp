@@ -1,4 +1,4 @@
-﻿//using BUS_Tier;
+//using BUS_Tier;
 //using System;
 //using System.Collections.Generic;
 //using System.ComponentModel;
@@ -182,7 +182,39 @@ namespace UI_Tier
         private void ucDoctorCertificate_Load(object sender, EventArgs e)
         {
             // Vẽ bo góc hoặc border cho UC (dùng helper của bạn)
-            this.Paint += (s, ev) => UIHelper.uc_Paint(s, ev, 10, Color.FromArgb(200, 200, 200), 2);
+            this.Paint += (s, ev) => UIHelper.uc_Paint(s, ev, 10, Color.FromArgb(220, 220, 220), 1);
+
+            // Làm đẹp cho ComboBox Chuyên khoa
+            Panel pnlSpecialty = new Panel();
+            pnlSpecialty.Size = new Size(732, 70); // Tăng chiều cao để có padding
+            pnlSpecialty.Location = new Point(12, 60);
+            pnlSpecialty.BackColor = Color.White;
+            panel14.Controls.Add(pnlSpecialty);
+            pnlSpecialty.Controls.Add(comboBox3);
+            comboBox3.Location = new Point(15, 12); // Đẩy vào giữa để bo góc đẹp
+            comboBox3.Width = 702;
+
+            // Làm đẹp cho ComboBox Năm cấp
+            Panel pnlYear = new Panel();
+            pnlYear.Size = new Size(732, 70);
+            pnlYear.Location = new Point(12, 60);
+            pnlYear.BackColor = Color.White;
+            panel25.Controls.Add(pnlYear);
+            pnlYear.Controls.Add(comboBox4);
+            comboBox4.Location = new Point(15, 12);
+            comboBox4.Width = 702;
+
+            // Làm đẹp các ô nhập liệu bên trong
+            Panel[] inputs = { panel23, panel29, pnlSpecialty, pnlYear };
+            foreach (var pnl in inputs)
+            {
+                UIHelper.ApplyRoundedRegion(pnl, 8);
+                pnl.BorderStyle = BorderStyle.None;
+                pnl.Paint += (s, ev) => UIHelper.uc_Paint(s, ev, 8, Color.Black, 2);
+            }
+
+            // Con trỏ bàn tay cho nút tải ảnh
+            label24.Cursor = Cursors.Hand;
 
             // Nạp dữ liệu chuyên khoa vào ComboBox (đặt tên là comboBox3 theo code cũ của bạn)
             LoadDepartments();

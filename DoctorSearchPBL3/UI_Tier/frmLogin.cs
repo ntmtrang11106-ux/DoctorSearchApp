@@ -22,6 +22,48 @@ namespace UI_Tier
         public frmLogin()
         {
             InitializeComponent();
+            SetupUI();
+        }
+
+        private void SetupUI()
+        {
+            // Bo góc cho các Panel và Nút
+            UIHelper.ApplyRoundedRegion(panel2, 30);
+            UIHelper.ApplyRoundedRegion(panel3, 30);
+            UIHelper.ApplyRoundedRegion(panel4, 10);
+            UIHelper.ApplyRoundedRegion(panel5, 10);
+            panel4.BorderStyle = BorderStyle.None;
+            panel5.BorderStyle = BorderStyle.None;
+            UIHelper.ApplyRoundedRegion(btnLogin, 15);
+            
+            // Con trỏ bàn tay cho nút Đăng nhập
+            btnLogin.Cursor = Cursors.Hand;
+
+            // Vẽ viền đen đậm cho ô nhập liệu
+            panel4.Paint += (s, e) => UIHelper.uc_Paint(s, e, 10, Color.Black, 2);
+            panel5.Paint += (s, e) => UIHelper.uc_Paint(s, e, 10, Color.Black, 2);
+            
+            // Hiệu ứng cho nút Con mắt (Ẩn/Hiện mật khẩu)
+            picShowPass.Cursor = Cursors.Hand;
+            picShowPass.MouseEnter += (s, e) => {
+                picShowPass.Location = new Point(picShowPass.Location.X, picShowPass.Location.Y - 2);
+            };
+            picShowPass.MouseLeave += (s, e) => {
+                picShowPass.Location = new Point(picShowPass.Location.X, picShowPass.Location.Y + 2);
+            };
+
+            // Thiết lập cho link Đăng ký
+            label5.Cursor = Cursors.Hand;
+            label5.MouseEnter += (s, e) => {
+                label5.Font = new Font("Segoe UI", 11F, FontStyle.Bold | FontStyle.Underline);
+                label5.ForeColor = Color.FromArgb(0, 80, 200);
+                label5.Location = new Point(label5.Location.X, label5.Location.Y - 2); // Nổi lên 2px
+            };
+            label5.MouseLeave += (s, e) => {
+                label5.Font = new Font("Segoe UI", 10.125F, FontStyle.Underline);
+                label5.ForeColor = Color.Blue;
+                label5.Location = new Point(label5.Location.X, label5.Location.Y + 2); // Trở về vị trí cũ
+            };
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -138,21 +180,26 @@ namespace UI_Tier
                 DTO_Tier.GlobalAccount.SetLoggedInAccount(userId, profileId, role, fullName);
 
                 // 3. ĐIỀU HƯỚNG
-                this.Hide();
+                Form nextForm = null;
+
                 if (role == "Patient")
                 {
-                    frmPatient f = new frmPatient();
-                    f.ShowDialog();
+                    nextForm = new frmPatient();
                 }
                 else if (role == "Doctor")
                 {
-                    frmDoctor f = new frmDoctor();
-                    f.ShowDialog();
+                    nextForm = new frmDoctor();
                 }
                 else if (role == "Admin")
                 {
-                    frmAdmin f = new frmAdmin();
-                    f.ShowDialog();
+                    nextForm = new frmAdmin();
+                }
+
+                if (nextForm != null)
+                {
+                    // Ẩn form login CHỈ KHI form mới đã hiện lên (tránh nháy ra desktop)
+                    nextForm.Shown += (s, args) => this.Hide();
+                    nextForm.ShowDialog();
                 }
 
                 this.Close();

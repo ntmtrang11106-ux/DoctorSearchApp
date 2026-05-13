@@ -24,7 +24,76 @@ namespace UI_Tier
         public frmRegister()
         {
             InitializeComponent();
+            SetupUI();
             SetActivePanel(true); // Mặc định chọn Bệnh nhân khi mở form
+        }
+
+        private void SetupUI()
+        {
+            // 1. Bo góc cho các Panel lớn
+            UIHelper.ApplyRoundedRegion(panel2, 30);
+            UIHelper.ApplyRoundedRegion(panel3, 30);
+                   // 2. Xử lý cho ô Nơi ở thường trú (Sử dụng panel22 và txtAddress có sẵn)
+            txtAddress.BorderStyle = BorderStyle.None;
+            txtAddress.Location = new Point(15, 15);
+            txtAddress.Width = 721;
+            txtAddress.Font = new Font("Segoe UI", 12F);
+
+            // Bo góc ô Ngày sinh (tạo panel bao quanh để tô viền đen)
+            Panel pnlDOBContainer = new Panel();
+            pnlDOBContainer.Size = new Size(751, 70);
+            pnlDOBContainer.Location = new Point(37, 65);
+            pnlDOBContainer.BackColor = Color.White;
+            panel19.Controls.Add(pnlDOBContainer);
+            pnlDOBContainer.Controls.Add(dtpDOB);
+            dtpDOB.Location = new Point(15, 12);
+            dtpDOB.Width = 721;
+
+            // Danh sách các Panel nhập liệu cần bo góc và vẽ viền đen
+            Panel[] inputPanels = { panel5, panel6, panel11, panel9, panel10, panel28, panel24, panel22, pnlDOBContainer };
+            foreach (var pnl in inputPanels)
+            {
+                UIHelper.ApplyRoundedRegion(pnl, 10);
+                pnl.BorderStyle = BorderStyle.None;
+                pnl.Paint += (s, e) => UIHelper.uc_Paint(s, e, 10, Color.Black, 2);
+            }
+
+            UIHelper.ApplyRoundedRegion(btnLogin, 15);
+
+            // 3. Con trỏ bàn tay cho các nút tương tác
+            btnLogin.Cursor = Cursors.Hand;
+            label7.Cursor = Cursors.Hand;
+
+            // Con trỏ bàn tay cho các tấm thẻ chọn Vai trò
+            Control[] roleControls = { panel7, panel8, label2, label3, label4, label5 };
+            foreach (var ctrl in roleControls) ctrl.Cursor = Cursors.Hand;
+
+            // Hiệu ứng cho các nút Giới tính
+            RadioButton[] genderButtons = { radioButton1, radioButton2 };
+            foreach (var rb in genderButtons)
+            {
+                rb.Cursor = Cursors.Hand;
+                rb.MouseEnter += (s, e) => {
+                    rb.ForeColor = Color.FromArgb(0, 80, 200);
+                    rb.Location = new Point(rb.Location.X, rb.Location.Y - 2);
+                };
+                rb.MouseLeave += (s, e) => {
+                    rb.ForeColor = Color.Black;
+                    rb.Location = new Point(rb.Location.X, rb.Location.Y + 2);
+                };
+            }
+
+            // 4. Hiệu ứng "Nổi lên" cho link Đăng nhập
+            label7.MouseEnter += (s, e) => {
+                label7.Font = new Font("Segoe UI", 11F, FontStyle.Bold | FontStyle.Underline);
+                label7.ForeColor = Color.FromArgb(0, 80, 200);
+                label7.Location = new Point(label7.Location.X, label7.Location.Y - 2);
+            };
+            label7.MouseLeave += (s, e) => {
+                label7.Font = new Font("Segoe UI", 10.125F, FontStyle.Underline);
+                label7.ForeColor = Color.Blue;
+                label7.Location = new Point(label7.Location.X, label7.Location.Y + 2);
+            };
         }
 
         private void label7_Click(object sender, EventArgs e)
@@ -91,30 +160,7 @@ namespace UI_Tier
             SetActivePanel(false);
             // Có thể thêm lệnh để update role
         }
-
-        // MẸO: Bạn hãy gán sự kiện Click của label2, label3, label4, label5 
-        // vào các hàm panel_MouseClick tương ứng để bấm vào chữ cũng đổi được luồng.
         #endregion
-
-        //#region Xử lý Location (Tỉnh/Thành - Quận/Huyện)
-        //// Sự kiện Load Form
-
-        //// Khi chọn Tỉnh/Thành -> Lọc Quận/Huyện tương ứng
-        //private void cboProvince_SelectedIndexChanged(object sender, EventArgs e)
-        //{
-        //    if (cboProvince.SelectedItem != null)
-        //    {
-        //        string provinceName = cboProvince.SelectedItem.ToString();
-
-        //        // Lấy danh sách Quận/Huyện theo Tỉnh lấy ở tầng BUS (đã tách riêng)
-        //        //var districts = _locationBUS.GetDistricts(provinceName);
-
-        //        //cboRegion.DataSource = districts;
-        //        cboRegion.DisplayMember = "LocationName"; // Tên hiển thị (Cẩm Lệ, Hải Châu...)
-        //        cboRegion.ValueMember = "Id";             // Giá trị lấy ra (ID)
-        //    }
-        //}
-        //#endregion
 
         #region Đăng ký
 
@@ -139,7 +185,7 @@ namespace UI_Tier
                 Gender = radioButton1.Checked ? "Nam" : (radioButton2.Checked ? "Nữ" : null),
 
                 CCCD = (txtCCCD.Text == "Chưa đủ tuổi") ? null : txtCCCD.Text.Trim(),
-                Residential_Address = txtAdress.Text.Trim(),
+                Residential_Address = txtAddress.Text.Trim(),
                 Picture = "default.jpg"
             };
 
@@ -213,7 +259,7 @@ namespace UI_Tier
             // 4. Thông báo kết quả
             if (result == "Success")
             {
-                MessageBox.Show($"Đăng ký {currentRole} thành công! Tài khoản đang chờ duyệt.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Đăng ký {currentRole} thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.Close();
             }
             else if (!string.IsNullOrEmpty(result))
@@ -281,32 +327,7 @@ namespace UI_Tier
         }
         #endregion
 
-        //private void cboProvince_SelectedIndexChanged_1(object sender, EventArgs e)
-        //{
-        //    // Kiểm tra nếu người dùng thực sự chọn một mục (tránh lỗi khi form mới load)
-        //    if (cboProvince.SelectedIndex != -1 && cboProvince.SelectedItem != null)
-        //    {
-        //        // Lấy tên tỉnh đang chọn
-        //        string selectedProvince = cboProvince.SelectedItem.ToString();
-
-        //        // 1. Gọi BUS để lấy danh sách Quận/Huyện từ Database
-        //        var districts = _locationBUS.GetDistricts(selectedProvince);
-
-        //        // 2. Xóa các ràng buộc cũ của cboRegion (Xã/Phường) để làm sạch dữ liệu
-        //        cboRegion.DataSource = null;
-        //        cboRegion.Items.Clear();
-
-        //        // 3. Nạp dữ liệu mới
-        //        if (districts != null && districts.Count > 0)
-        //        {
-        //            cboRegion.DataSource = districts;
-        //            cboRegion.DisplayMember = "LocationName"; // Tên hiển thị trên ComboBox
-        //            cboRegion.ValueMember = "Id";             // ID thực tế để lưu xuống bảng Doctor
-
-        //            cboRegion.SelectedIndex = -1; // Để trống, bắt người dùng phải tự chọn
-        //        }
-        //    }
-        //}
+        
 
         private void dtpDOB_ValueChanged(object sender, EventArgs e)
         {
