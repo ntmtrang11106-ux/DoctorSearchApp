@@ -19,15 +19,15 @@ namespace UI_Tier
         }
 
         // Override CreateParams để bật WS_EX_COMPOSITED, giúp giảm nhấp nháy khi vẽ lại Form
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams cp = base.CreateParams;
-                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
-                return cp;
-            }
-        }
+        // protected override CreateParams CreateParams
+        // {
+        //     get
+        //     {
+        //         CreateParams cp = base.CreateParams;
+        //         cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
+        //         return cp;
+        //     }
+        // }
 
         #region Xử lí các click trên menu
 

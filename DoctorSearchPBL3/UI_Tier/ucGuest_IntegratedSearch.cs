@@ -119,6 +119,9 @@ namespace UI_Tier
 
         private void SetupUI()
         {
+            UIHelper.ApplyRoundedRegion(pnlSearchBox, 15);
+            UIHelper.ApplyRoundedRegion(btnSearch, 15);
+
             // Gender
             cboGender.Items.Clear();
             cboGender.Items.Add("Tất cả Giới tính");
@@ -161,7 +164,9 @@ namespace UI_Tier
                 CheckBox chk = CreateChip(dept.DepartmentName, dept.DepartmentName);
                 ApplyChipStyle(chk);
                 flpDepts.Controls.Add(chk);
+                UIHelper.ApplyRoundedRegion(chk, 15);
             }
+            UIHelper.ApplyRoundedRegion(chkAll, 15);
         }
 
         private CheckBox CreateChip(string text, string tag)
