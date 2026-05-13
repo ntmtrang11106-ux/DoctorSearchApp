@@ -11,7 +11,7 @@ namespace UI_Tier
         private DepartmentDTO _dept;
         private DepartmentBUS _deptBUS = new DepartmentBUS();
         public event EventHandler OnCancel;
-        public event EventHandler OnSuccess;
+        public event EventHandler? OnSuccess;
 
         public ucAdmin_AddDepartment()
         {

@@ -42,6 +42,17 @@ namespace BUS_Tier
             return success;
         }
 
+        public List<ReviewsDTO> GetAllReviewsForAdmin()
+        {
+            return _reviewDAL.GetAllReviewsForAdmin();
+        }
+
+        public bool UpdateReviewVisibility(int reviewId, bool isVisible)
+        {
+            if (reviewId <= 0) return false;
+            return _reviewDAL.UpdateReviewVisibility(reviewId, isVisible);
+        }
+
         /// <summary>Xóa mềm một đánh giá. Chỉ cho phép chủ nhân của review.</summary>
         public bool DeleteReview(int reviewId, int doctorId)
         {
@@ -50,6 +61,12 @@ namespace BUS_Tier
             bool success = _reviewDAL.DeleteReview(reviewId);
             if (success) UpdateDoctorRating(doctorId);
             return success;
+        }
+
+        public bool UpdateAdminReply(int reviewId, string reply)
+        {
+            if (reviewId <= 0) return false;
+            return _reviewDAL.UpdateAdminReply(reviewId, reply);
         }
 
         private void UpdateDoctorRating(int doctorId)

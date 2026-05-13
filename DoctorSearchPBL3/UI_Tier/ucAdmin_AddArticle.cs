@@ -15,7 +15,7 @@ namespace UI_Tier
         private ContentDTO _existingArt = null;
 
         public event EventHandler OnCancel;
-        public event EventHandler OnSuccess;
+        public event EventHandler? OnSuccess;
 
         public ucAdmin_AddArticle()
         {

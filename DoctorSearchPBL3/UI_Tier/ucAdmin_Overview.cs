@@ -170,22 +170,8 @@ namespace UI_Tier
             foreach (var rev in realReviews)
             {
                 ucReviewItem item = new ucReviewItem();
-                item.SetAdminReviewData(rev);
+                item.SetAdminReviewData(rev, true); // Ẩn các nút ở trang tổng quan
                 item.Width = flpRecentReviews.ClientSize.Width - 20;
-
-                // --- BẮT ĐẦU VẼ LẠI VỊ TRÍ CHO ADMIN ---
-                // 1. Tìm nút Xóa và đẩy nó sát mép phải hơn
-                var lblDelete = item.Controls.Find("lblDelete", true).FirstOrDefault();
-                if (lblDelete != null) {
-                    lblDelete.Location = new Point(item.Width - 100, 20); // Dịch chuyển tùy ý
-                }
-
-                // 2. Tìm số sao và đưa lên hàng trên cùng chẳng hạn
-                var lblRating = item.Controls.Find("lblRating", true).FirstOrDefault();
-                if (lblRating != null) {
-                    lblRating.Location = new Point(100, 75); // Dịch chuyển vị trí mới
-                }
-                // ---------------------------------------
 
                 flpRecentReviews.Controls.Add(item);
             }

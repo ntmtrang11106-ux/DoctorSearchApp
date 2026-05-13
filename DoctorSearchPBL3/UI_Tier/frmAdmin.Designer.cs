@@ -91,9 +91,9 @@ namespace UI_Tier
             // 
             pnlProfile.Controls.Add(lblIconProfile);
             pnlProfile.Controls.Add(lblProfile);
-            pnlProfile.Location = new Point(1149, 21);
+            pnlProfile.Location = new Point(1124, 15);
             pnlProfile.Name = "pnlProfile";
-            pnlProfile.Size = new Size(280, 85);
+            pnlProfile.Size = new Size(256, 85);
             pnlProfile.TabIndex = 4;
             // 
             // lblIconProfile
@@ -114,9 +114,9 @@ namespace UI_Tier
             lblProfile.ForeColor = Color.Gray;
             lblProfile.Location = new Point(85, 18);
             lblProfile.Name = "lblProfile";
-            lblProfile.Size = new Size(153, 47);
+            lblProfile.Size = new Size(168, 47);
             lblProfile.TabIndex = 0;
-            lblProfile.Text = "Cá nhân";
+            lblProfile.Text = "Đánh giá";
             // 
             // pnlUser
             // 

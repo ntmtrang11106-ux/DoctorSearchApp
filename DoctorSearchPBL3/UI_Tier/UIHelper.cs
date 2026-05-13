@@ -38,6 +38,7 @@ namespace UI_Tier
         // Hàm áp dụng bo góc cho một Control bất kỳ
         public static void ApplyRoundedRegion(Control control, int radius)
         {
+            if (control == null) return;
             control.Region = new Region(GetRoundedPath(control.ClientRectangle, radius));
         }
 
