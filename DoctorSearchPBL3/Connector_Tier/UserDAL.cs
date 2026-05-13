@@ -190,5 +190,10 @@ namespace DAL_Tier
                 return false;
             }
         }
+
+        public UserDTO? GetUserById(int userId)
+        {
+            return _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == userId && !u.IsDeleted);
+        }
     }
 }

@@ -18,6 +18,9 @@ namespace UI_Tier
             pnlHeader = new Panel();
             btnLogout = new Button();
             pnlTabs = new Panel();
+            pnlAdminProfile = new Panel();
+            lblIconAdminProfile = new Label();
+            lblAdminProfile = new Label();
             pnlProfile = new Panel();
             lblIconProfile = new Label();
             lblProfile = new Label();
@@ -38,6 +41,7 @@ namespace UI_Tier
             pnMain = new Panel();
             pnlHeader.SuspendLayout();
             pnlTabs.SuspendLayout();
+            pnlAdminProfile.SuspendLayout();
             pnlProfile.SuspendLayout();
             pnlUser.SuspendLayout();
             pnlArticles.SuspendLayout();
@@ -77,6 +81,7 @@ namespace UI_Tier
             // pnlTabs
             // 
             pnlTabs.Anchor = AnchorStyles.Top;
+            pnlTabs.Controls.Add(pnlAdminProfile);
             pnlTabs.Controls.Add(pnlProfile);
             pnlTabs.Controls.Add(pnlUser);
             pnlTabs.Controls.Add(pnlArticles);
@@ -84,8 +89,39 @@ namespace UI_Tier
             pnlTabs.Controls.Add(pnlOverview);
             pnlTabs.Location = new Point(387, 3);
             pnlTabs.Name = "pnlTabs";
-            pnlTabs.Size = new Size(1500, 110);
+            pnlTabs.Size = new Size(1600, 110);
             pnlTabs.TabIndex = 1;
+            // 
+            // pnlAdminProfile
+            // 
+            pnlAdminProfile.Controls.Add(lblIconAdminProfile);
+            pnlAdminProfile.Controls.Add(lblAdminProfile);
+            pnlAdminProfile.Location = new Point(1380, 15);
+            pnlAdminProfile.Name = "pnlAdminProfile";
+            pnlAdminProfile.Size = new Size(200, 85);
+            pnlAdminProfile.TabIndex = 6;
+            // 
+            // lblIconAdminProfile
+            // 
+            lblIconAdminProfile.Font = new Font("Segoe MDL2 Assets", 20F);
+            lblIconAdminProfile.ForeColor = Color.Gray;
+            lblIconAdminProfile.Location = new Point(15, 10);
+            lblIconAdminProfile.Name = "lblIconAdminProfile";
+            lblIconAdminProfile.Size = new Size(65, 65);
+            lblIconAdminProfile.TabIndex = 1;
+            lblIconAdminProfile.Text = "";
+            lblIconAdminProfile.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lblAdminProfile
+            // 
+            lblAdminProfile.AutoSize = true;
+            lblAdminProfile.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            lblAdminProfile.ForeColor = Color.Gray;
+            lblAdminProfile.Location = new Point(85, 18);
+            lblAdminProfile.Name = "lblAdminProfile";
+            lblAdminProfile.Size = new Size(110, 47);
+            lblAdminProfile.TabIndex = 0;
+            lblAdminProfile.Text = "Hồ sơ";
             // 
             // pnlProfile
             // 
@@ -284,6 +320,8 @@ namespace UI_Tier
             WindowState = FormWindowState.Maximized;
             pnlHeader.ResumeLayout(false);
             pnlTabs.ResumeLayout(false);
+            pnlAdminProfile.ResumeLayout(false);
+            pnlAdminProfile.PerformLayout();
             pnlProfile.ResumeLayout(false);
             pnlProfile.PerformLayout();
             pnlUser.ResumeLayout(false);
@@ -317,6 +355,9 @@ namespace UI_Tier
         private System.Windows.Forms.Panel pnlProfile;
         private System.Windows.Forms.Label lblProfile;
         private System.Windows.Forms.Label lblIconProfile;
+        private System.Windows.Forms.Panel pnlAdminProfile;
+        private System.Windows.Forms.Label lblAdminProfile;
+        private System.Windows.Forms.Label lblIconAdminProfile;
         private System.Windows.Forms.Button btnLogout;
         private System.Windows.Forms.Panel pnMain;
         private System.Windows.Forms.Label lblWelcome;

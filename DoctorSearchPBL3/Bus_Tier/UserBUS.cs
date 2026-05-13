@@ -287,10 +287,49 @@ namespace BUS_Tier
             return success ? "Success" : "Lỗi hệ thống khi cập nhật ảnh đại diện.";
         }
 
+        public string UpdateAdminProfile(UserDTO user)
+        {
+            if (user == null || user.Id <= 0) return "Dữ liệu người dùng không hợp lệ.";
+
+            // 1. Kiểm tra các trường chung
+            if (string.IsNullOrWhiteSpace(user.FullName)) return "Họ và tên không được để trống.";
+            if (string.IsNullOrWhiteSpace(user.PhoneNumber)) return "Số điện thoại không được để trống.";
+            if (user.PhoneNumber.Length < 10) return "Số điện thoại phải có ít nhất 10 số.";
+
+            if (user.Dob == null || user.Dob > DateTime.Now) return "Ngày sinh không hợp lệ.";
+
+            // 2. Kiểm tra tuổi Admin (Bắt buộc >= 18 theo yêu cầu)
+            int age = CalculateAge(user.Dob.Value);
+            if (age < 18) return "Quản trị viên phải từ 18 tuổi trở lên.";
+
+            // 3. Kiểm tra CCCD (Nếu đủ 16 tuổi trở lên)
+            if (age >= 16)
+            {
+                if (string.IsNullOrWhiteSpace(user.CCCD)) return "Bắt buộc phải nhập CCCD cho người dùng trên 16 tuổi.";
+                if (user.CCCD.Length != 12) return "Số CCCD phải bao gồm đúng 12 chữ số.";
+            }
+
+            if (string.IsNullOrWhiteSpace(user.Residential_Address)) return "Địa chỉ không được để trống.";
+
+            // 4. Kiểm tra trùng số điện thoại (Trừ chính người này)
+            if (_userDAL.IsPhoneExists(user.PhoneNumber, user.Id))
+                return "Số điện thoại này đã được sử dụng bởi một tài khoản khác.";
+
+            // 5. Gọi DAL cập nhật
+            bool success = _userDAL.UpdateUser(user);
+            return success ? "Success" : "Lỗi hệ thống khi cập nhật hồ sơ.";
+        }
+
         public bool UpdateUser(UserDTO user)
         {
             if (user == null || user.Id <= 0) return false;
             return _userDAL.UpdateUser(user);
+        }
+
+        public UserDTO GetUserById(int userId)
+        {
+            if (userId <= 0) return null;
+            return _userDAL.GetUserById(userId);
         }
 
         public static class SecurityHelper
