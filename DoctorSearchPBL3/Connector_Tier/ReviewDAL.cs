@@ -70,7 +70,7 @@ namespace DAL_Tier
                 return _context.Reviews
                     .Include(r => r.Patient).ThenInclude(p => p.User)
                     .Include(r => r.Doctor).ThenInclude(d => d.User)
-                    .Where(r => !r.IsDeleted)
+                    // Bỏ filter !r.IsDeleted để admin có thể lọc xem các bản ghi đã xóa
                     .OrderByDescending(r => r.CreatedAt)
                     .ToList();
             }

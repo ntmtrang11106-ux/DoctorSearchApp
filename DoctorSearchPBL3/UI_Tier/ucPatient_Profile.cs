@@ -29,7 +29,6 @@ namespace UI_Tier
             SetEditMode(false, "medical");
 
             // Wire up events
-            this.HandleCreated += (s, e) => InitData();
             picAvatar.Cursor = Cursors.Hand;
             picAvatar.Click += picAvatar_Click;
             dtpBirthday.ValueChanged += dtpBirthday_ValueChanged;

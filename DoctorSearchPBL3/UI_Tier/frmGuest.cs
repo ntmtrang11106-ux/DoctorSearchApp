@@ -19,6 +19,7 @@ namespace UI_Tier
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
+            UIHelper.SetDoubleBuffered(pnlMainContainer);
             UIHelper.ApplyRoundedRegion(btnLogin, 15);
             btnLogin.Cursor = Cursors.Hand;
             
@@ -26,6 +27,16 @@ namespace UI_Tier
             _searchControl.Dock = DockStyle.Fill;
             pnlMainContainer.Controls.Add(_searchControl);
         }
+
+        //protected override CreateParams CreateParams
+        //{
+        //    get
+        //    {
+        //        CreateParams cp = base.CreateParams;
+        //        cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED (0x02000000)
+        //        return cp;
+        //    }
+        //}
 
         private void button1_Click(object sender, EventArgs e)
         {

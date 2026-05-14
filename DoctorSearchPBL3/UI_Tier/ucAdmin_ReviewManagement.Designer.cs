@@ -15,6 +15,14 @@ namespace UI_Tier
 
         private void InitializeComponent()
         {
+            pnlReviewHeader = new Panel();
+            lblTitle = new Label();
+            pnlSearch = new Panel();
+            txtSearch = new TextBox();
+            lblSearchIcon = new Label();
+            cboRatingFilter = new ComboBox();
+            cboStatusFilter = new ComboBox();
+            lblNoData = new Label();
             pnlStats = new TableLayoutPanel();
             pnlCard1 = new Panel();
             lblStatTitle1 = new Label();
@@ -37,17 +45,13 @@ namespace UI_Tier
             pnlIcon4 = new Panel();
             lblStatIcon4 = new Label();
             pnlMainContainer = new Panel();
-            lblTitle = new Label();
-            pnlSearch = new Panel();
-            txtSearch = new TextBox();
-            lblSearchIcon = new Label();
-            cboRatingFilter = new ComboBox();
-            cboStatusFilter = new ComboBox();
             flpList = new FlowLayoutPanel();
             pnlPagination = new Panel();
             lblPageInfo = new Label();
-            btnNext = new Button();
-            btnPrev = new Button();
+            lblNext = new Label();
+            lblPrev = new Label();
+            pnlReviewHeader.SuspendLayout();
+            pnlSearch.SuspendLayout();
             pnlStats.SuspendLayout();
             pnlCard1.SuspendLayout();
             pnlIcon1.SuspendLayout();
@@ -58,9 +62,106 @@ namespace UI_Tier
             pnlCard4.SuspendLayout();
             pnlIcon4.SuspendLayout();
             pnlMainContainer.SuspendLayout();
-            pnlSearch.SuspendLayout();
             pnlPagination.SuspendLayout();
             SuspendLayout();
+            // 
+            // pnlReviewHeader
+            // 
+            pnlReviewHeader.BackColor = Color.White;
+            pnlReviewHeader.Controls.Add(lblTitle);
+            pnlReviewHeader.Controls.Add(pnlSearch);
+            pnlReviewHeader.Controls.Add(cboRatingFilter);
+            pnlReviewHeader.Controls.Add(cboStatusFilter);
+            pnlReviewHeader.Dock = DockStyle.Top;
+            pnlReviewHeader.Location = new Point(0, 0);
+            pnlReviewHeader.Name = "pnlReviewHeader";
+            pnlReviewHeader.Padding = new Padding(30, 20, 30, 0);
+            pnlReviewHeader.Size = new Size(1260, 180);
+            pnlReviewHeader.TabIndex = 0;
+            // 
+            // lblTitle
+            // 
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblTitle.ForeColor = Color.Black;
+            lblTitle.Location = new Point(30, 30);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(323, 51);
+            lblTitle.TabIndex = 0;
+            lblTitle.Text = "Quản lý đánh giá";
+            // 
+            // pnlSearch
+            // 
+            pnlSearch.BackColor = Color.White;
+            pnlSearch.Controls.Add(txtSearch);
+            pnlSearch.Controls.Add(lblSearchIcon);
+            pnlSearch.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            pnlSearch.Location = new Point(30, 100);
+            pnlSearch.Name = "pnlSearch";
+            pnlSearch.Size = new Size(1200, 65);
+            pnlSearch.TabIndex = 2;
+            // 
+            // txtSearch
+            // 
+            txtSearch.BackColor = Color.White;
+            txtSearch.BorderStyle = BorderStyle.None;
+            txtSearch.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtSearch.ForeColor = Color.Gray;
+            txtSearch.Location = new Point(48, 8);
+            txtSearch.Name = "txtSearch";
+            txtSearch.PlaceholderText = "Tìm kiếm theo bệnh nhân, bác sĩ, nội dung...";
+            txtSearch.Size = new Size(1124, 43);
+            txtSearch.TabIndex = 1;
+            txtSearch.TextChanged += txtSearch_TextChanged;
+            // 
+            // lblSearchIcon
+            // 
+            lblSearchIcon.AutoSize = true;
+            lblSearchIcon.Font = new Font("Segoe MDL2 Assets", 15F);
+            lblSearchIcon.ForeColor = Color.FromArgb(156, 163, 175);
+            lblSearchIcon.Location = new Point(15, 12);
+            lblSearchIcon.Name = "lblSearchIcon";
+            lblSearchIcon.Size = new Size(57, 40);
+            lblSearchIcon.TabIndex = 0;
+            lblSearchIcon.Text = "";
+            // 
+            // cboRatingFilter
+            // 
+            cboRatingFilter.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            cboRatingFilter.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboRatingFilter.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cboRatingFilter.FormattingEnabled = true;
+            cboRatingFilter.Items.AddRange(new object[] { "Tất cả đánh giá", "5 sao", "4 sao", "3 sao", "2 sao", "1 sao" });
+            cboRatingFilter.Location = new Point(600, 100);
+            cboRatingFilter.Name = "cboRatingFilter";
+            cboRatingFilter.Size = new Size(300, 58);
+            cboRatingFilter.TabIndex = 2;
+            cboRatingFilter.SelectedIndexChanged += Filter_Changed;
+            // 
+            // cboStatusFilter
+            // 
+            cboStatusFilter.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            cboStatusFilter.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboStatusFilter.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cboStatusFilter.FormattingEnabled = true;
+            cboStatusFilter.Items.AddRange(new object[] { "Tất cả trạng thái", "Đang hiển thị", "Đang ẩn", "Đã xóa" });
+            cboStatusFilter.Location = new Point(920, 100);
+            cboStatusFilter.Name = "cboStatusFilter";
+            cboStatusFilter.Size = new Size(310, 58);
+            cboStatusFilter.TabIndex = 3;
+            cboStatusFilter.SelectedIndexChanged += Filter_Changed;
+            // 
+            // lblNoData
+            // 
+            lblNoData.AutoSize = true;
+            lblNoData.Font = new Font("Segoe UI", 14F, FontStyle.Italic);
+            lblNoData.ForeColor = Color.Gray;
+            lblNoData.Location = new Point(450, 400);
+            lblNoData.Name = "lblNoData";
+            lblNoData.Size = new Size(544, 51);
+            lblNoData.TabIndex = 6;
+            lblNoData.Text = "Không tìm thấy dữ liệu phù hợp";
+            lblNoData.Visible = false;
             // 
             // pnlStats
             // 
@@ -78,7 +179,7 @@ namespace UI_Tier
             pnlStats.Name = "pnlStats";
             pnlStats.RowCount = 1;
             pnlStats.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            pnlStats.Size = new Size(1260, 200);
+            pnlStats.Size = new Size(1260, 247);
             pnlStats.TabIndex = 0;
             // 
             // pnlCard1
@@ -91,28 +192,28 @@ namespace UI_Tier
             pnlCard1.Location = new Point(10, 10);
             pnlCard1.Margin = new Padding(10);
             pnlCard1.Name = "pnlCard1";
-            pnlCard1.Size = new Size(295, 180);
+            pnlCard1.Size = new Size(295, 227);
             pnlCard1.TabIndex = 0;
             // 
             // lblStatTitle1
             // 
             lblStatTitle1.AutoSize = true;
-            lblStatTitle1.Font = new Font("Segoe UI", 10F);
+            lblStatTitle1.Font = new Font("Segoe UI", 12F);
             lblStatTitle1.ForeColor = Color.Gray;
             lblStatTitle1.Location = new Point(20, 20);
             lblStatTitle1.Name = "lblStatTitle1";
-            lblStatTitle1.Size = new Size(195, 37);
+            lblStatTitle1.Size = new Size(225, 45);
             lblStatTitle1.TabIndex = 0;
             lblStatTitle1.Text = "Tổng đánh giá";
             // 
             // lblStatValue1
             // 
             lblStatValue1.AutoSize = true;
-            lblStatValue1.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
+            lblStatValue1.Font = new Font("Segoe UI", 30F, FontStyle.Bold);
             lblStatValue1.ForeColor = Color.Black;
-            lblStatValue1.Location = new Point(15, 70);
+            lblStatValue1.Location = new Point(20, 112);
             lblStatValue1.Name = "lblStatValue1";
-            lblStatValue1.Size = new Size(74, 86);
+            lblStatValue1.Size = new Size(91, 106);
             lblStatValue1.TabIndex = 1;
             lblStatValue1.Text = "0";
             // 
@@ -135,7 +236,7 @@ namespace UI_Tier
             lblStatIcon1.Name = "lblStatIcon1";
             lblStatIcon1.Size = new Size(90, 90);
             lblStatIcon1.TabIndex = 0;
-            lblStatIcon1.Text = "";
+            lblStatIcon1.Text = "";
             lblStatIcon1.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // pnlCard2
@@ -148,28 +249,28 @@ namespace UI_Tier
             pnlCard2.Location = new Point(325, 10);
             pnlCard2.Margin = new Padding(10);
             pnlCard2.Name = "pnlCard2";
-            pnlCard2.Size = new Size(295, 180);
+            pnlCard2.Size = new Size(295, 227);
             pnlCard2.TabIndex = 1;
             // 
             // lblStatTitle2
             // 
             lblStatTitle2.AutoSize = true;
-            lblStatTitle2.Font = new Font("Segoe UI", 10F);
+            lblStatTitle2.Font = new Font("Segoe UI", 12F);
             lblStatTitle2.ForeColor = Color.Gray;
             lblStatTitle2.Location = new Point(20, 20);
             lblStatTitle2.Name = "lblStatTitle2";
-            lblStatTitle2.Size = new Size(136, 37);
+            lblStatTitle2.Size = new Size(172, 45);
             lblStatTitle2.TabIndex = 0;
             lblStatTitle2.Text = "Trung bình";
             // 
             // lblStatValue2
             // 
             lblStatValue2.AutoSize = true;
-            lblStatValue2.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
+            lblStatValue2.Font = new Font("Segoe UI", 30F, FontStyle.Bold);
             lblStatValue2.ForeColor = Color.Black;
-            lblStatValue2.Location = new Point(15, 70);
+            lblStatValue2.Location = new Point(20, 112);
             lblStatValue2.Name = "lblStatValue2";
-            lblStatValue2.Size = new Size(74, 86);
+            lblStatValue2.Size = new Size(91, 106);
             lblStatValue2.TabIndex = 1;
             lblStatValue2.Text = "0";
             // 
@@ -192,7 +293,7 @@ namespace UI_Tier
             lblStatIcon2.Name = "lblStatIcon2";
             lblStatIcon2.Size = new Size(90, 90);
             lblStatIcon2.TabIndex = 0;
-            lblStatIcon2.Text = "";
+            lblStatIcon2.Text = "";
             lblStatIcon2.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // pnlCard3
@@ -205,28 +306,28 @@ namespace UI_Tier
             pnlCard3.Location = new Point(640, 10);
             pnlCard3.Margin = new Padding(10);
             pnlCard3.Name = "pnlCard3";
-            pnlCard3.Size = new Size(295, 180);
+            pnlCard3.Size = new Size(295, 227);
             pnlCard3.TabIndex = 2;
             // 
             // lblStatTitle3
             // 
             lblStatTitle3.AutoSize = true;
-            lblStatTitle3.Font = new Font("Segoe UI", 10F);
+            lblStatTitle3.Font = new Font("Segoe UI", 12F);
             lblStatTitle3.ForeColor = Color.Gray;
             lblStatTitle3.Location = new Point(20, 20);
             lblStatTitle3.Name = "lblStatTitle3";
-            lblStatTitle3.Size = new Size(182, 37);
+            lblStatTitle3.Size = new Size(211, 45);
             lblStatTitle3.TabIndex = 0;
             lblStatTitle3.Text = "Đang hiển thị";
             // 
             // lblStatValue3
             // 
             lblStatValue3.AutoSize = true;
-            lblStatValue3.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
+            lblStatValue3.Font = new Font("Segoe UI", 30F, FontStyle.Bold);
             lblStatValue3.ForeColor = Color.FromArgb(40, 199, 111);
-            lblStatValue3.Location = new Point(15, 70);
+            lblStatValue3.Location = new Point(20, 112);
             lblStatValue3.Name = "lblStatValue3";
-            lblStatValue3.Size = new Size(74, 86);
+            lblStatValue3.Size = new Size(91, 106);
             lblStatValue3.TabIndex = 1;
             lblStatValue3.Text = "0";
             // 
@@ -249,7 +350,7 @@ namespace UI_Tier
             lblStatIcon3.Name = "lblStatIcon3";
             lblStatIcon3.Size = new Size(90, 90);
             lblStatIcon3.TabIndex = 0;
-            lblStatIcon3.Text = "";
+            lblStatIcon3.Text = "";
             lblStatIcon3.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // pnlCard4
@@ -262,28 +363,28 @@ namespace UI_Tier
             pnlCard4.Location = new Point(955, 10);
             pnlCard4.Margin = new Padding(10);
             pnlCard4.Name = "pnlCard4";
-            pnlCard4.Size = new Size(295, 180);
+            pnlCard4.Size = new Size(295, 227);
             pnlCard4.TabIndex = 3;
             // 
             // lblStatTitle4
             // 
             lblStatTitle4.AutoSize = true;
-            lblStatTitle4.Font = new Font("Segoe UI", 10F);
+            lblStatTitle4.Font = new Font("Segoe UI", 12F);
             lblStatTitle4.ForeColor = Color.Gray;
             lblStatTitle4.Location = new Point(20, 20);
             lblStatTitle4.Name = "lblStatTitle4";
-            lblStatTitle4.Size = new Size(110, 37);
+            lblStatTitle4.Size = new Size(138, 45);
             lblStatTitle4.TabIndex = 0;
             lblStatTitle4.Text = "Đang ẩn";
             // 
             // lblStatValue4
             // 
             lblStatValue4.AutoSize = true;
-            lblStatValue4.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
+            lblStatValue4.Font = new Font("Segoe UI", 30F, FontStyle.Bold);
             lblStatValue4.ForeColor = Color.FromArgb(234, 84, 85);
-            lblStatValue4.Location = new Point(15, 70);
+            lblStatValue4.Location = new Point(20, 112);
             lblStatValue4.Name = "lblStatValue4";
-            lblStatValue4.Size = new Size(74, 86);
+            lblStatValue4.Size = new Size(91, 106);
             lblStatValue4.TabIndex = 1;
             lblStatValue4.Text = "0";
             // 
@@ -306,160 +407,83 @@ namespace UI_Tier
             lblStatIcon4.Name = "lblStatIcon4";
             lblStatIcon4.Size = new Size(90, 90);
             lblStatIcon4.TabIndex = 0;
-            lblStatIcon4.Text = "";
+            lblStatIcon4.Text = "";
             lblStatIcon4.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // pnlMainContainer
             // 
             pnlMainContainer.BackColor = Color.White;
+            pnlMainContainer.Controls.Add(lblNoData);
             pnlMainContainer.Controls.Add(flpList);
-            pnlMainContainer.Controls.Add(cboStatusFilter);
-            pnlMainContainer.Controls.Add(cboRatingFilter);
-            pnlMainContainer.Controls.Add(pnlSearch);
-            pnlMainContainer.Controls.Add(lblTitle);
+            pnlMainContainer.Controls.Add(pnlReviewHeader);
             pnlMainContainer.Controls.Add(pnlPagination);
             pnlMainContainer.Dock = DockStyle.Fill;
-            pnlMainContainer.Location = new Point(20, 240);
+            pnlMainContainer.Location = new Point(20, 267);
             pnlMainContainer.Name = "pnlMainContainer";
-            pnlMainContainer.Padding = new Padding(30);
-            pnlMainContainer.Size = new Size(1260, 740);
+            pnlMainContainer.Size = new Size(1260, 713);
             pnlMainContainer.TabIndex = 1;
-            // 
-            // lblTitle
-            // 
-            lblTitle.AutoSize = true;
-            lblTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-            lblTitle.ForeColor = Color.Black;
-            lblTitle.Location = new Point(30, 30);
-            lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(328, 51);
-            lblTitle.TabIndex = 0;
-            lblTitle.Text = "Quản lý đánh giá";
-            // 
-            // pnlSearch
-            // 
-            pnlSearch.BackColor = Color.FromArgb(243, 244, 246);
-            pnlSearch.Controls.Add(txtSearch);
-            pnlSearch.Controls.Add(lblSearchIcon);
-            pnlSearch.Location = new Point(30, 100);
-            pnlSearch.Name = "pnlSearch";
-            pnlSearch.Size = new Size(550, 60);
-            pnlSearch.TabIndex = 1;
-            // 
-            // txtSearch
-            // 
-            txtSearch.BackColor = Color.FromArgb(243, 244, 246);
-            txtSearch.BorderStyle = BorderStyle.None;
-            txtSearch.Font = new Font("Segoe UI", 12F);
-            txtSearch.Location = new Point(60, 10);
-            txtSearch.Name = "txtSearch";
-            txtSearch.PlaceholderText = "Tìm kiếm theo bệnh nhân, bác sĩ, nội dung...";
-            txtSearch.Size = new Size(470, 43);
-            txtSearch.TabIndex = 1;
-            txtSearch.TextChanged += txtSearch_TextChanged;
-            // 
-            // lblSearchIcon
-            // 
-            lblSearchIcon.AutoSize = true;
-            lblSearchIcon.Font = new Font("Segoe MDL2 Assets", 15F);
-            lblSearchIcon.ForeColor = Color.FromArgb(156, 163, 175);
-            lblSearchIcon.Location = new Point(15, 12);
-            lblSearchIcon.Name = "lblSearchIcon";
-            lblSearchIcon.Size = new Size(50, 40);
-            lblSearchIcon.TabIndex = 0;
-            lblSearchIcon.Text = "";
-            // 
-            // cboRatingFilter
-            // 
-            cboRatingFilter.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            cboRatingFilter.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboRatingFilter.Font = new Font("Segoe UI", 12F);
-            cboRatingFilter.FormattingEnabled = true;
-            cboRatingFilter.Items.AddRange(new object[] { "Tất cả đánh giá", "5 sao", "4 sao", "3 sao", "2 sao", "1 sao" });
-            cboRatingFilter.Location = new Point(600, 100);
-            cboRatingFilter.Name = "cboRatingFilter";
-            cboRatingFilter.Size = new Size(300, 53);
-            cboRatingFilter.TabIndex = 2;
-            cboRatingFilter.SelectedIndexChanged += Filter_Changed;
-            // 
-            // cboStatusFilter
-            // 
-            cboStatusFilter.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            cboStatusFilter.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboStatusFilter.Font = new Font("Segoe UI", 12F);
-            cboStatusFilter.FormattingEnabled = true;
-            cboStatusFilter.Items.AddRange(new object[] { "Tất cả trạng thái", "Đang hiển thị", "Đang ẩn" });
-            cboStatusFilter.Location = new Point(920, 100);
-            cboStatusFilter.Name = "cboStatusFilter";
-            cboStatusFilter.Size = new Size(310, 53);
-            cboStatusFilter.TabIndex = 3;
-            cboStatusFilter.SelectedIndexChanged += Filter_Changed;
             // 
             // flpList
             // 
-            flpList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             flpList.AutoScroll = true;
-            flpList.Location = new Point(30, 190);
+            flpList.Dock = DockStyle.Fill;
+            flpList.FlowDirection = FlowDirection.TopDown;
+            flpList.Location = new Point(0, 180);
             flpList.Name = "flpList";
-            flpList.Size = new Size(1200, 440);
+            flpList.Size = new Size(1260, 453);
             flpList.TabIndex = 4;
+            flpList.WrapContents = false;
             flpList.Resize += flpList_Resize;
             // 
             // pnlPagination
             // 
-            pnlPagination.BackColor = Color.FromArgb(243, 248, 255);
+            pnlPagination.BackColor = Color.FromArgb(240, 245, 250);
             pnlPagination.Controls.Add(lblPageInfo);
-            pnlPagination.Controls.Add(btnNext);
-            pnlPagination.Controls.Add(btnPrev);
+            pnlPagination.Controls.Add(lblNext);
+            pnlPagination.Controls.Add(lblPrev);
             pnlPagination.Dock = DockStyle.Bottom;
-            pnlPagination.Location = new Point(30, 630);
+            pnlPagination.Location = new Point(0, 633);
             pnlPagination.Name = "pnlPagination";
-            pnlPagination.Size = new Size(1200, 80);
+            pnlPagination.Size = new Size(1260, 80);
             pnlPagination.TabIndex = 5;
             // 
             // lblPageInfo
             // 
-            lblPageInfo.Dock = DockStyle.Fill;
-            lblPageInfo.Font = new Font("Segoe UI", 11F);
+            lblPageInfo.Anchor = AnchorStyles.Top;
+            lblPageInfo.AutoSize = true;
+            lblPageInfo.Font = new Font("Segoe UI", 10.5F);
             lblPageInfo.ForeColor = Color.FromArgb(17, 24, 39);
-            lblPageInfo.Location = new Point(250, 0);
+            lblPageInfo.Location = new Point(555, 20);
             lblPageInfo.Name = "lblPageInfo";
-            lblPageInfo.Size = new Size(700, 80);
+            lblPageInfo.Size = new Size(151, 38);
             lblPageInfo.TabIndex = 2;
             lblPageInfo.Text = "Trang 1 / 1";
             lblPageInfo.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // btnNext
+            // lblNext
             // 
-            btnNext.AutoSize = true;
-            btnNext.Dock = DockStyle.Right;
-            btnNext.FlatAppearance.BorderSize = 0;
-            btnNext.FlatStyle = FlatStyle.Flat;
-            btnNext.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            btnNext.ForeColor = Color.FromArgb(37, 99, 235);
-            btnNext.Location = new Point(950, 0);
-            btnNext.Name = "btnNext";
-            btnNext.Size = new Size(250, 80);
-            btnNext.TabIndex = 1;
-            btnNext.Text = "Trang sau >>";
-            btnNext.UseVisualStyleBackColor = true;
-            btnNext.Click += btnNext_Click;
+            lblNext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblNext.AutoSize = true;
+            lblNext.Cursor = Cursors.Hand;
+            lblNext.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
+            lblNext.ForeColor = Color.FromArgb(0, 120, 212);
+            lblNext.Location = new Point(1010, 20);
+            lblNext.Name = "lblNext";
+            lblNext.Size = new Size(191, 38);
+            lblNext.TabIndex = 1;
+            lblNext.Text = "Trang sau >>";
             // 
-            // btnPrev
+            // lblPrev
             // 
-            btnPrev.AutoSize = true;
-            btnPrev.Dock = DockStyle.Left;
-            btnPrev.FlatAppearance.BorderSize = 0;
-            btnPrev.FlatStyle = FlatStyle.Flat;
-            btnPrev.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            btnPrev.ForeColor = Color.FromArgb(37, 99, 235);
-            btnPrev.Location = new Point(0, 0);
-            btnPrev.Name = "btnPrev";
-            btnPrev.Size = new Size(250, 80);
-            btnPrev.TabIndex = 0;
-            btnPrev.Text = "<< Trang trước";
-            btnPrev.UseVisualStyleBackColor = true;
-            btnPrev.Click += btnPrev_Click;
+            lblPrev.AutoSize = true;
+            lblPrev.Cursor = Cursors.Hand;
+            lblPrev.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
+            lblPrev.ForeColor = Color.FromArgb(0, 120, 212);
+            lblPrev.Location = new Point(30, 20);
+            lblPrev.Name = "lblPrev";
+            lblPrev.Size = new Size(219, 38);
+            lblPrev.TabIndex = 0;
+            lblPrev.Text = "<< Trang trước";
             // 
             // ucAdmin_ReviewManagement
             // 
@@ -472,6 +496,10 @@ namespace UI_Tier
             Padding = new Padding(20);
             Size = new Size(1300, 1000);
             Load += ucAdmin_ReviewManagement_Load;
+            pnlReviewHeader.ResumeLayout(false);
+            pnlReviewHeader.PerformLayout();
+            pnlSearch.ResumeLayout(false);
+            pnlSearch.PerformLayout();
             pnlStats.ResumeLayout(false);
             pnlCard1.ResumeLayout(false);
             pnlCard1.PerformLayout();
@@ -487,8 +515,6 @@ namespace UI_Tier
             pnlIcon4.ResumeLayout(false);
             pnlMainContainer.ResumeLayout(false);
             pnlMainContainer.PerformLayout();
-            pnlSearch.ResumeLayout(false);
-            pnlSearch.PerformLayout();
             pnlPagination.ResumeLayout(false);
             pnlPagination.PerformLayout();
             ResumeLayout(false);
@@ -521,11 +547,13 @@ namespace UI_Tier
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblSearchIcon;
         private System.Windows.Forms.ComboBox cboRatingFilter;
+        private System.Windows.Forms.Panel pnlReviewHeader;
         private System.Windows.Forms.ComboBox cboStatusFilter;
         private System.Windows.Forms.FlowLayoutPanel flpList;
         private System.Windows.Forms.Panel pnlPagination;
+        private System.Windows.Forms.Label lblNoData;
         private System.Windows.Forms.Label lblPageInfo;
-        private System.Windows.Forms.Button btnNext;
-        private System.Windows.Forms.Button btnPrev;
+        private System.Windows.Forms.Label lblNext;
+        private System.Windows.Forms.Label lblPrev;
     }
 }

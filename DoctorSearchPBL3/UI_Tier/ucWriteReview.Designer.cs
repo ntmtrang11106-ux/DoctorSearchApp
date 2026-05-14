@@ -37,11 +37,15 @@ namespace UI_Tier
             pictureBox1 = new PictureBox();
             lblDocDept = new Label();
             label3 = new Label();
+            pnlMainBackground = new Panel();
+            pnlCommentBorder = new Panel();
             panelHeader.SuspendLayout();
             flpStars.SuspendLayout();
             panelTip.SuspendLayout();
             pnlDoctorInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            pnlMainBackground.SuspendLayout();
+            pnlCommentBorder.SuspendLayout();
             SuspendLayout();
             // 
             // panelHeader
@@ -51,42 +55,42 @@ namespace UI_Tier
             panelHeader.Dock = DockStyle.Top;
             panelHeader.Location = new Point(0, 0);
             panelHeader.Name = "panelHeader";
-            panelHeader.Size = new Size(800, 80);
+            panelHeader.Size = new Size(794, 72);
             panelHeader.TabIndex = 0;
+            panelHeader.Click += Global_Click;
             panelHeader.MouseDown += panelHeader_MouseDown;
-            panelHeader.MouseMove += panelHeader_MouseMove;
             // 
             // btnClose
             // 
             btnClose.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnClose.FlatAppearance.BorderSize = 0;
             btnClose.FlatStyle = FlatStyle.Flat;
-            btnClose.Font = new Font("Segoe MDL2 Assets", 12F);
-            btnClose.Location = new Point(730, 15);
+            btnClose.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnClose.Location = new Point(726, 11);
             btnClose.Name = "btnClose";
             btnClose.Size = new Size(50, 50);
             btnClose.TabIndex = 1;
-            btnClose.Text = "";
+            btnClose.Text = "X";
             btnClose.UseVisualStyleBackColor = true;
             btnClose.Click += btnCancel_Click;
             // 
             // lblTitle
             // 
             lblTitle.AutoSize = true;
-            lblTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-            lblTitle.Location = new Point(30, 20);
+            lblTitle.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTitle.Location = new Point(13, 7);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(291, 51);
+            lblTitle.Size = new Size(332, 59);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Đánh giá bác sĩ";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            label1.Location = new Point(40, 260);
+            label1.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            label1.Location = new Point(40, 265);
             label1.Name = "label1";
-            label1.Size = new Size(236, 37);
+            label1.Size = new Size(282, 45);
             label1.TabIndex = 2;
             label1.Text = "Mức độ hài lòng *";
             // 
@@ -97,6 +101,7 @@ namespace UI_Tier
             flpStars.Controls.Add(lblStar3);
             flpStars.Controls.Add(lblStar4);
             flpStars.Controls.Add(lblStar5);
+            flpStars.Font = new Font("Segoe UI", 10.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
             flpStars.Location = new Point(155, 310);
             flpStars.Name = "flpStars";
             flpStars.Size = new Size(490, 80);
@@ -179,11 +184,11 @@ namespace UI_Tier
             // 
             // lblRatingText
             // 
-            lblRatingText.Font = new Font("Segoe UI", 9F);
+            lblRatingText.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblRatingText.ForeColor = Color.Gray;
-            lblRatingText.Location = new Point(40, 395);
+            lblRatingText.Location = new Point(40, 402);
             lblRatingText.Name = "lblRatingText";
-            lblRatingText.Size = new Size(720, 32);
+            lblRatingText.Size = new Size(720, 45);
             lblRatingText.TabIndex = 4;
             lblRatingText.Text = "Vui lòng chọn mức độ hài lòng";
             lblRatingText.TextAlign = ContentAlignment.MiddleCenter;
@@ -191,22 +196,23 @@ namespace UI_Tier
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            label2.Location = new Point(40, 440);
+            label2.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            label2.Location = new Point(40, 457);
             label2.Name = "label2";
-            label2.Size = new Size(347, 37);
+            label2.Size = new Size(416, 45);
             label2.TabIndex = 5;
             label2.Text = "Nhận xét (không bắt buộc)";
             // 
             // txtComment
             // 
             txtComment.BorderStyle = BorderStyle.None;
+            txtComment.Dock = DockStyle.Fill;
             txtComment.Font = new Font("Segoe UI", 10F);
             txtComment.ForeColor = Color.Gray;
-            txtComment.Location = new Point(40, 490);
+            txtComment.Location = new Point(10, 10);
             txtComment.Name = "txtComment";
-            txtComment.Size = new Size(720, 250);
-            txtComment.TabIndex = 6;
+            txtComment.Size = new Size(700, 230);
+            txtComment.TabIndex = 0;
             txtComment.Text = "Chia sẻ trải nghiệm của bạn về bác sĩ...";
             txtComment.TextChanged += txtComment_TextChanged;
             txtComment.Enter += txtComment_Enter;
@@ -216,7 +222,7 @@ namespace UI_Tier
             // 
             lblCharCount.AutoSize = true;
             lblCharCount.ForeColor = Color.Gray;
-            lblCharCount.Location = new Point(40, 750);
+            lblCharCount.Location = new Point(40, 765);
             lblCharCount.Name = "lblCharCount";
             lblCharCount.Size = new Size(148, 32);
             lblCharCount.TabIndex = 7;
@@ -226,7 +232,7 @@ namespace UI_Tier
             // 
             panelTip.BackColor = Color.FromArgb(239, 246, 255);
             panelTip.Controls.Add(lblTip);
-            panelTip.Location = new Point(40, 800);
+            panelTip.Location = new Point(40, 815);
             panelTip.Name = "panelTip";
             panelTip.Size = new Size(720, 120);
             panelTip.TabIndex = 8;
@@ -234,7 +240,7 @@ namespace UI_Tier
             // lblTip
             // 
             lblTip.Dock = DockStyle.Fill;
-            lblTip.Font = new Font("Segoe UI", 9F);
+            lblTip.Font = new Font("Segoe UI", 10.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblTip.ForeColor = Color.FromArgb(30, 58, 138);
             lblTip.Location = new Point(0, 0);
             lblTip.Name = "lblTip";
@@ -248,11 +254,11 @@ namespace UI_Tier
             btnSubmit.BackColor = Color.FromArgb(37, 99, 235);
             btnSubmit.FlatAppearance.BorderSize = 0;
             btnSubmit.FlatStyle = FlatStyle.Flat;
-            btnSubmit.Font = new Font("Microsoft Sans Serif", 11F, FontStyle.Bold);
+            btnSubmit.Font = new Font("Microsoft Sans Serif", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnSubmit.ForeColor = Color.White;
-            btnSubmit.Location = new Point(40, 980);
+            btnSubmit.Location = new Point(40, 995);
             btnSubmit.Name = "btnSubmit";
-            btnSubmit.Size = new Size(540, 60);
+            btnSubmit.Size = new Size(496, 60);
             btnSubmit.TabIndex = 9;
             btnSubmit.Text = "Gửi đánh giá";
             btnSubmit.UseVisualStyleBackColor = false;
@@ -262,10 +268,10 @@ namespace UI_Tier
             btnCancel.BackColor = Color.FromArgb(241, 245, 249);
             btnCancel.FlatAppearance.BorderSize = 0;
             btnCancel.FlatStyle = FlatStyle.Flat;
-            btnCancel.Font = new Font("Microsoft Sans Serif", 11F, FontStyle.Bold);
-            btnCancel.Location = new Point(620, 980);
+            btnCancel.Font = new Font("Microsoft Sans Serif", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCancel.Location = new Point(560, 995);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(140, 60);
+            btnCancel.Size = new Size(200, 60);
             btnCancel.TabIndex = 10;
             btnCancel.Text = "Hủy";
             btnCancel.UseVisualStyleBackColor = false;
@@ -277,16 +283,17 @@ namespace UI_Tier
             pnlDoctorInfo.Controls.Add(pictureBox1);
             pnlDoctorInfo.Controls.Add(lblDocDept);
             pnlDoctorInfo.Controls.Add(label3);
-            pnlDoctorInfo.Location = new Point(30, 86);
+            pnlDoctorInfo.Location = new Point(13, 74);
             pnlDoctorInfo.Name = "pnlDoctorInfo";
-            pnlDoctorInfo.Size = new Size(767, 171);
+            pnlDoctorInfo.Size = new Size(778, 183);
             pnlDoctorInfo.TabIndex = 16;
+            pnlDoctorInfo.Click += Global_Click;
             // 
             // pictureBox1
             // 
-            pictureBox1.Location = new Point(30, 25);
+            pictureBox1.Location = new Point(27, 13);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(120, 114);
+            pictureBox1.Size = new Size(150, 150);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 3;
             pictureBox1.TabStop = false;
@@ -294,42 +301,64 @@ namespace UI_Tier
             // lblDocDept
             // 
             lblDocDept.AutoSize = true;
-            lblDocDept.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblDocDept.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             lblDocDept.ForeColor = Color.FromArgb(37, 99, 235);
-            lblDocDept.Location = new Point(180, 75);
+            lblDocDept.Location = new Point(212, 85);
             lblDocDept.Name = "lblDocDept";
-            lblDocDept.Size = new Size(137, 37);
+            lblDocDept.Size = new Size(162, 45);
             lblDocDept.TabIndex = 2;
             lblDocDept.Text = "Tim mạch";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Microsoft Sans Serif", 13F, FontStyle.Bold);
+            label3.Font = new Font("Microsoft Sans Serif", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label3.ForeColor = Color.FromArgb(31, 41, 55);
-            label3.Location = new Point(180, 25);
+            label3.Location = new Point(212, 25);
             label3.Name = "label3";
-            label3.Size = new Size(339, 39);
+            label3.Size = new Size(368, 42);
             label3.TabIndex = 1;
             label3.Text = "BS. Nguyễn Văn An";
+            // 
+            // pnlMainBackground
+            // 
+            pnlMainBackground.BackColor = Color.White;
+            pnlMainBackground.Controls.Add(pnlDoctorInfo);
+            pnlMainBackground.Controls.Add(btnCancel);
+            pnlMainBackground.Controls.Add(btnSubmit);
+            pnlMainBackground.Controls.Add(panelTip);
+            pnlMainBackground.Controls.Add(lblCharCount);
+            pnlMainBackground.Controls.Add(pnlCommentBorder);
+            pnlMainBackground.Controls.Add(label2);
+            pnlMainBackground.Controls.Add(lblRatingText);
+            pnlMainBackground.Controls.Add(flpStars);
+            pnlMainBackground.Controls.Add(label1);
+            pnlMainBackground.Controls.Add(panelHeader);
+            pnlMainBackground.Dock = DockStyle.Fill;
+            pnlMainBackground.Location = new Point(3, 3);
+            pnlMainBackground.Name = "pnlMainBackground";
+            pnlMainBackground.Size = new Size(794, 1094);
+            pnlMainBackground.TabIndex = 17;
+            pnlMainBackground.Click += Global_Click;
+            // 
+            // pnlCommentBorder
+            // 
+            pnlCommentBorder.BackColor = Color.White;
+            pnlCommentBorder.Controls.Add(txtComment);
+            pnlCommentBorder.Location = new Point(40, 505);
+            pnlCommentBorder.Name = "pnlCommentBorder";
+            pnlCommentBorder.Padding = new Padding(10);
+            pnlCommentBorder.Size = new Size(720, 250);
+            pnlCommentBorder.TabIndex = 6;
             // 
             // ucWriteReview
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.White;
-            Controls.Add(pnlDoctorInfo);
-            Controls.Add(btnCancel);
-            Controls.Add(btnSubmit);
-            Controls.Add(panelTip);
-            Controls.Add(lblCharCount);
-            Controls.Add(txtComment);
-            Controls.Add(label2);
-            Controls.Add(lblRatingText);
-            Controls.Add(flpStars);
-            Controls.Add(label1);
-            Controls.Add(panelHeader);
+            BackColor = Color.FromArgb(64, 64, 64);
+            Controls.Add(pnlMainBackground);
             Name = "ucWriteReview";
+            Padding = new Padding(3);
             Size = new Size(800, 1100);
             Load += ucWriteReview_Load;
             panelHeader.ResumeLayout(false);
@@ -339,8 +368,10 @@ namespace UI_Tier
             pnlDoctorInfo.ResumeLayout(false);
             pnlDoctorInfo.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            pnlMainBackground.ResumeLayout(false);
+            pnlMainBackground.PerformLayout();
+            pnlCommentBorder.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         private Panel panelHeader;
@@ -365,5 +396,7 @@ namespace UI_Tier
         private Label label3;
         private PictureBox pictureBox1;
         public RichTextBox txtComment;
+        private Panel pnlMainBackground;
+        private Panel pnlCommentBorder;
     }
 }

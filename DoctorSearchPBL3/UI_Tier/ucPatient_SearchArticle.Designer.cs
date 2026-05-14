@@ -155,11 +155,11 @@ namespace UI_Tier
             // lblStatus
             // 
             lblStatus.AutoSize = true;
-            lblStatus.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            lblStatus.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblStatus.Location = new Point(1350, 116);
             lblStatus.Margin = new Padding(5, 0, 5, 0);
             lblStatus.Name = "lblStatus";
-            lblStatus.Size = new Size(197, 47);
+            lblStatus.Size = new Size(181, 45);
             lblStatus.TabIndex = 7;
             lblStatus.Text = "Trạng thái:";
             lblStatus.Visible = false;
@@ -167,12 +167,12 @@ namespace UI_Tier
             // cboStatus
             // 
             cboStatus.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboStatus.Font = new Font("Segoe UI", 13F);
+            cboStatus.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cboStatus.FormattingEnabled = true;
             cboStatus.Location = new Point(1550, 113);
             cboStatus.Margin = new Padding(5);
             cboStatus.Name = "cboStatus";
-            cboStatus.Size = new Size(300, 55);
+            cboStatus.Size = new Size(300, 53);
             cboStatus.TabIndex = 6;
             cboStatus.Visible = false;
             cboStatus.SelectedIndexChanged += cboStatus_SelectedIndexChanged;
@@ -180,46 +180,46 @@ namespace UI_Tier
             // label4
             // 
             label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            label4.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label4.Location = new Point(773, 121);
             label4.Margin = new Padding(5, 0, 5, 0);
             label4.Name = "label4";
-            label4.Size = new Size(160, 47);
+            label4.Size = new Size(148, 45);
             label4.TabIndex = 5;
             label4.Text = "Sắp xếp:";
             // 
             // cboSort
             // 
             cboSort.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboSort.Font = new Font("Segoe UI", 13F);
+            cboSort.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cboSort.FormattingEnabled = true;
             cboSort.Location = new Point(943, 113);
             cboSort.Margin = new Padding(5);
             cboSort.Name = "cboSort";
-            cboSort.Size = new Size(355, 55);
+            cboSort.Size = new Size(355, 53);
             cboSort.TabIndex = 4;
             cboSort.SelectedIndexChanged += cboSort_SelectedIndexChanged;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            label3.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label3.Location = new Point(24, 116);
             label3.Margin = new Padding(5, 0, 5, 0);
             label3.Name = "label3";
-            label3.Size = new Size(255, 47);
+            label3.Size = new Size(235, 45);
             label3.TabIndex = 3;
             label3.Text = "Loại nội dung:";
             // 
             // cboContentType
             // 
             cboContentType.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboContentType.Font = new Font("Segoe UI", 13F);
+            cboContentType.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cboContentType.FormattingEnabled = true;
             cboContentType.Location = new Point(289, 113);
             cboContentType.Margin = new Padding(5);
             cboContentType.Name = "cboContentType";
-            cboContentType.Size = new Size(404, 55);
+            cboContentType.Size = new Size(404, 53);
             cboContentType.TabIndex = 2;
             cboContentType.SelectedIndexChanged += cboContentType_SelectedIndexChanged;
             // 

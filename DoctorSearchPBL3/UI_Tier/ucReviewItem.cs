@@ -14,10 +14,19 @@ namespace UI_Tier
         private ReviewsDTO _review;
         private DoctorDTO _doctor;
         private readonly ReviewBUS _reviewBUS = new ReviewBUS();
+        private readonly ToolTip _toolTip = new ToolTip();
 
         public ucReviewItem()
         {
             InitializeComponent();
+            SetupToolTips();
+        }
+
+        private void SetupToolTips()
+        {
+            _toolTip.SetToolTip(btnEdit, "Chỉnh sửa đánh giá");
+            _toolTip.SetToolTip(btnRemove, "Xóa đánh giá");
+            // ToolTip của btnHide sẽ được Set linh hoạt trong SetReviewData và BtnToggleVisibility
         }
 
         public void SetReviewData(ReviewsDTO review, DoctorDTO doctor, int currentPatientId)
@@ -28,7 +37,10 @@ namespace UI_Tier
 
             lblName.Text = review.Patient?.User?.FullName ?? "Bệnh nhân";
             if (!string.IsNullOrWhiteSpace(lblName.Text))
+            {
                 lblAvatar.Text = lblName.Text.Substring(0, 1).ToUpper();
+                SetAvatarColor(lblName.Text);
+            }
 
             string stars = "";
             for (int i = 0; i < 5; i++) stars += (i < review.Rating) ? "★" : "☆";
@@ -46,6 +58,7 @@ namespace UI_Tier
             if (lblYourReview != null) lblYourReview.Visible = isOwner;
             if (btnEdit != null) btnEdit.Visible = isOwner;
             if (btnRemove != null) btnRemove.Visible = isOwner;
+            if (btnHide != null) btnHide.Visible = false; // Luôn ẩn nút Ẩn bài ở form bệnh nhân
             
             if (lblArrow != null) lblArrow.Visible = false;
             if (lblDoctorName != null) lblDoctorName.Visible = false;
@@ -60,8 +73,11 @@ namespace UI_Tier
             if (review == null) return;
             _review = review;
 
-            lblName.Text = review.Patient?.User?.FullName ?? "Bệnh nhân";
-            lblDoctorName.Text = "BS. " + (review.Doctor?.User?.FullName ?? "Bác sĩ");
+            string pName = review.Patient?.User?.FullName ?? "Bệnh nhân";
+            string dName = review.Doctor?.User?.FullName ?? "Bác sĩ";
+
+            lblName.Text = pName;
+            lblDoctorName.Text = "BS. " + dName;
             
             // Xử lý hiển thị tên dài (Dịch chuyển mũi tên và tên bác sĩ linh hoạt)
             lblArrow.Visible = true;
@@ -72,24 +88,62 @@ namespace UI_Tier
             lblArrow.Left = lblName.Right + 10;
             lblDoctorName.Left = lblArrow.Right + 10;
 
-            if (!string.IsNullOrWhiteSpace(lblName.Text))
-                lblAvatar.Text = lblName.Text.Substring(0, 1).ToUpper();
+            lblAvatar.Text = string.IsNullOrEmpty(pName) ? "?" : pName.Substring(0, 1).ToUpper();
+            
+            // Đổ màu avatar ngẫu nhiên dựa trên tên để đẹp hơn
+            Color[] premiumColors = {
+                Color.FromArgb(127, 85, 240), // Tím
+                Color.FromArgb(24, 112, 255), // Xanh dương
+                Color.FromArgb(40, 199, 111), // Xanh lá
+                Color.FromArgb(255, 159, 67), // Cam
+                Color.FromArgb(234, 84, 85),  // Đỏ
+                Color.FromArgb(0, 207, 232)   // Xanh lơ
+            };
+            int colorIndex = Math.Abs(pName.GetHashCode()) % premiumColors.Length;
+            lblAvatar.BackColor = premiumColors[colorIndex];
+            lblAvatar.ForeColor = Color.White;
+            UIHelper.ApplyRoundedRegion(lblAvatar, 8);
 
-            string stars = "";
-            for (int i = 0; i < 5; i++) stars += (i < review.Rating) ? "★" : "☆";
-            lblRating.Text = stars;
             lblDate.Text = review.CreatedAt.ToString("dd/MM/yyyy");
-
+            lblRating.Text = new string('★', (int)review.Rating) + new string('☆', 5 - (int)review.Rating);
+            
             string fullComment = (review.Comment ?? "").Replace("|ADMIN_REPLY|", "|CHAT_MSG|");
             if (fullComment.Contains("|CHAT_MSG|"))
                 fullComment = fullComment.Split(new string[] { "|CHAT_MSG|" }, StringSplitOptions.None)[0];
             lblComment.Text = string.IsNullOrEmpty(fullComment) ? "Không có bình luận." : fullComment.Trim();
 
-            if (btnRemove != null) btnRemove.Visible = !hideButtons;
+            if (lblStatus != null) {
+                lblStatus.Visible = !hideButtons;
+                if (lblStatus.Visible)
+                {
+                    if (review.IsDeleted) {
+                        lblStatus.Text = "Đã xóa";
+                        lblStatus.BackColor = Color.FromArgb(254, 242, 242);
+                        lblStatus.ForeColor = Color.FromArgb(220, 38, 38);
+                    } else if (!review.IsVisible) {
+                        lblStatus.Text = "Đang ẩn";
+                        lblStatus.BackColor = Color.FromArgb(243, 244, 246);
+                        lblStatus.ForeColor = Color.FromArgb(107, 114, 128);
+                    } else {
+                        lblStatus.Text = "Đang hiển thị";
+                        lblStatus.BackColor = Color.FromArgb(236, 253, 245);
+                        lblStatus.ForeColor = Color.FromArgb(5, 150, 105);
+                    }
+                    UIHelper.ApplyRoundedRegion(lblStatus, 10);
+                    lblStatus.Left = (this.Width - lblStatus.Width) / 2;
+                    lblStatus.Anchor = AnchorStyles.Top;
+                }
+            }
+
+            if (btnRemove != null) btnRemove.Visible = !hideButtons && !review.IsDeleted;
             if (btnHide != null) {
-                btnHide.Visible = !hideButtons;
-                btnHide.Text = review.IsVisible ? "" : ""; 
-                btnHide.ForeColor = review.IsVisible ? Color.FromArgb(75, 85, 99) : Color.FromArgb(239, 68, 68);
+                btnHide.Visible = !hideButtons && !review.IsDeleted;
+                btnHide.Text = review.IsVisible ? "\uE890" : "\uED1A"; 
+                // btnHide.ForeColor = review.IsVisible ? Color.FromArgb(75, 85, 99) : Color.FromArgb(239, 68, 68);
+                btnHide.ForeColor = review.IsVisible ? Color.FromArgb(75, 85, 99) : Color.FromArgb(75, 85, 99);
+
+                // Sử dụng _toolTip chung
+                _toolTip.SetToolTip(btnHide, review.IsVisible ? "Ẩn đánh giá" : "Hiện đánh giá");
             }
             if (btnEdit != null) btnEdit.Visible = false;
 
@@ -144,11 +198,34 @@ namespace UI_Tier
             if (_reviewBUS.UpdateReviewVisibility(_review.Id, newStatus)) {
                 _review.IsVisible = newStatus;
                 if (btnHide != null) {
-                    btnHide.Text = newStatus ? "" : "";
+                    btnHide.Text = newStatus ? "\uE890" : "\uED1A";
                     btnHide.ForeColor = newStatus ? Color.FromArgb(75, 85, 99) : Color.FromArgb(239, 68, 68);
+                    
+                    _toolTip.SetToolTip(btnHide, newStatus ? "Ẩn đánh giá" : "Hiện đánh giá");
                 }
                 ReviewEdited?.Invoke(this, EventArgs.Empty);
             }
+        }
+        private void SetAvatarColor(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return;
+            
+            // Bảng màu Pastel/Vibrant cho Avatar
+            Color[] colors = {
+                Color.FromArgb(239, 68, 68),  // Red
+                Color.FromArgb(249, 115, 22), // Orange
+                Color.FromArgb(245, 158, 11), // Amber
+                Color.FromArgb(16, 185, 129), // Emerald
+                Color.FromArgb(6, 182, 212),  // Cyan
+                Color.FromArgb(59, 130, 246), // Blue
+                Color.FromArgb(99, 102, 241), // Indigo
+                Color.FromArgb(139, 92, 246), // Violet
+                Color.FromArgb(236, 72, 153)  // Pink
+            };
+
+            int index = Math.Abs(name.GetHashCode()) % colors.Length;
+            lblAvatar.BackColor = colors[index];
+            lblAvatar.ForeColor = Color.White; // Chữ trắng trên nền màu cho sang
         }
     }
 }

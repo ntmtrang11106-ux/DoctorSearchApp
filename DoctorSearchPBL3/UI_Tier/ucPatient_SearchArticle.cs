@@ -26,6 +26,32 @@ namespace UI_Tier
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
             SetupUI();
+
+            // Hiệu ứng hover cho các nút phân trang
+            lblPrev.MouseEnter += PaginationLabel_MouseEnter;
+            lblPrev.MouseLeave += PaginationLabel_MouseLeave;
+            lblNext.MouseEnter += PaginationLabel_MouseEnter;
+            lblNext.MouseLeave += PaginationLabel_MouseLeave;
+            lblPrev.Cursor = Cursors.Hand;
+            lblNext.Cursor = Cursors.Hand;
+        }
+
+        private void PaginationLabel_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Label lbl)
+            {
+                lbl.ForeColor = Color.FromArgb(0, 90, 158); // Xanh đậm hơn khi hover
+                lbl.Top -= 2; // Hiệu ứng "nhảy lên"
+            }
+        }
+
+        private void PaginationLabel_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Label lbl)
+            {
+                lbl.ForeColor = Color.FromArgb(0, 120, 212); // Trở lại màu chuẩn
+                lbl.Top += 2;
+            }
         }
 
         public void SetAdminMode(bool isAdmin)
@@ -248,6 +274,13 @@ namespace UI_Tier
             int totalPages = (int)Math.Ceiling((double)_allArticles.Count / _pageSize);
             lblPageStatus.Text = $"Trang {_currentPage} / {Math.Max(1, totalPages)}";
             
+            // Luôn để Enabled = true để bắt hover
+            lblPrev.Enabled = true;
+            lblNext.Enabled = true;
+            lblPrev.ForeColor = Color.FromArgb(0, 120, 212);
+            lblNext.ForeColor = Color.FromArgb(0, 120, 212);
+
+            pnlPagination.Visible = totalPages > 1;
             flpResults.ResumeLayout();
         }
 

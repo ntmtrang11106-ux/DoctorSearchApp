@@ -38,6 +38,47 @@ namespace UI_Tier
             UIHelper.SetDoubleBuffered(this);
             SetupUI();
             InitTabs();
+
+            // Hiệu ứng hover cho các nút phân trang
+            lblPrev.MouseEnter += PaginationLabel_MouseEnter;
+            lblPrev.MouseLeave += PaginationLabel_MouseLeave;
+            lblNext.MouseEnter += PaginationLabel_MouseEnter;
+            lblNext.MouseLeave += PaginationLabel_MouseLeave;
+            lblPrev.Cursor = Cursors.Hand;
+            lblNext.Cursor = Cursors.Hand;
+        }
+
+        private void UpdatePaginationUI(int currentPage, int totalItems)
+        {
+            int totalPages = Math.Max(1, (int)Math.Ceiling((double)totalItems / _pageSize));
+            lblPageStatus.Text = $"Trang {currentPage} / {totalPages}";
+            
+            // Luôn để Enabled = true để bắt hover
+            lblPrev.Enabled = true;
+            lblNext.Enabled = true;
+
+            lblPrev.ForeColor = Color.FromArgb(0, 120, 212);
+            lblNext.ForeColor = Color.FromArgb(0, 120, 212);
+
+            pnlPagination.Visible = totalItems > 0;
+        }
+
+        private void PaginationLabel_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Label lbl)
+            {
+                lbl.ForeColor = Color.FromArgb(0, 90, 158); // Xanh đậm hơn khi hover
+                lbl.Top -= 2; // Hiệu ứng "nhảy lên"
+            }
+        }
+
+        private void PaginationLabel_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Label lbl)
+            {
+                lbl.ForeColor = Color.FromArgb(0, 120, 212); // Trở lại màu chuẩn
+                lbl.Top += 2;
+            }
         }
 
         private void InitTabs()
@@ -440,7 +481,7 @@ namespace UI_Tier
                 flpDoctors.Controls.Add(card);
             }
 
-            lblPageStatus.Text = $"Trang {page} / {Math.Max(1, (int)Math.Ceiling((double)_foundDoctors.Count / _pageSize))}";
+            UpdatePaginationUI(page, _foundDoctors.Count);
             flpDoctors.ResumeLayout();
         }
 
@@ -468,7 +509,7 @@ namespace UI_Tier
                 flpArticles.Controls.Add(card);
             }
 
-            lblPageStatus.Text = $"Trang {page} / {Math.Max(1, (int)Math.Ceiling((double)_foundArticles.Count / _pageSize))}";
+            UpdatePaginationUI(page, _foundArticles.Count);
             flpArticles.ResumeLayout();
         }
 

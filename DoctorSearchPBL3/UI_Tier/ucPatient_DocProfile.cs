@@ -20,12 +20,65 @@ namespace UI_Tier
             InitializeComponent();
 
             UIHelper.SetDoubleBuffered(this); // Kích hoạt Double Buffering cho UserControl để giảm nhấp nháy
+
+            // Bo góc cho các nút
+            UIHelper.ApplyRoundedRegion(btnWriteReview, 15);
+            UIHelper.ApplyRoundedRegion(btnBook, 15);
+
+            // Vẽ đường kẻ trên cùng cho thanh phân trang (Dùng code để Designer không bị lỗi)
+            pnlReviewPagination.Paint += (s, e) => {
+                e.Graphics.DrawLine(new Pen(Color.Gainsboro, 1), 0, 0, pnlReviewPagination.Width, 0);
+            };
+            pnlAppPagination.Paint += (s, e) => {
+                e.Graphics.DrawLine(new Pen(Color.Gainsboro, 1), 0, 0, pnlAppPagination.Width, 0);
+            };
+
+            // Hiệu ứng hover cho các nút phân trang
+            lblReviewPrev.MouseEnter += PaginationLabel_MouseEnter;
+            lblReviewPrev.MouseLeave += PaginationLabel_MouseLeave;
+            lblReviewNext.MouseEnter += PaginationLabel_MouseEnter;
+            lblReviewNext.MouseLeave += PaginationLabel_MouseLeave;
+            lblAppPrev.MouseEnter += PaginationLabel_MouseEnter;
+            lblAppPrev.MouseLeave += PaginationLabel_MouseLeave;
+            lblAppNext.MouseEnter += PaginationLabel_MouseEnter;
+            lblAppNext.MouseLeave += PaginationLabel_MouseLeave;
+
+            lblReviewPrev.Cursor = Cursors.Hand;
+            lblReviewNext.Cursor = Cursors.Hand;
+            lblAppPrev.Cursor = Cursors.Hand;
+            lblAppNext.Cursor = Cursors.Hand;
+        }
+
+        private void PaginationLabel_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Label lbl)
+            {
+                lbl.ForeColor = Color.FromArgb(0, 90, 158); // Xanh đậm hơn khi hover
+                lbl.Top -= 2; // Hiệu ứng "nhảy lên"
+            }
+        }
+
+        private void PaginationLabel_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Label lbl)
+            {
+                lbl.ForeColor = Color.FromArgb(0, 120, 212); // Trở lại màu chuẩn
+                lbl.Top += 2;
+            }
         }
 
         // Hàm này dùng để "đổ" dữ liệu từ đối tượng Doctor vào các Label
 
         private int _doctorId; // Lưu ID bác sĩ để dùng cho việc lấy lịch trình sau này
         private DoctorDTO _currentDoctor; // Lưu để truyền cho Form đánh giá
+
+        private int _reviewPageSize = 4;
+        private int _reviewCurrentPage = 1;
+        private List<ReviewsDTO> _allReviews = new List<ReviewsDTO>();
+
+        private int _appPageSize = 3;
+        private int _appCurrentPage = 1;
+        private List<AppointmentsDTO> _allAppointments = new List<AppointmentsDTO>();
 
         public void SetDoctorData(DoctorDTO doctor)
         {
@@ -110,6 +163,7 @@ namespace UI_Tier
             }
 
             // 10. Tải danh sách đánh giá
+            _reviewCurrentPage = 1;
             LoadReviews();
             
             // Đăng ký sự kiện nút Đặt lịch ngay
@@ -135,8 +189,6 @@ namespace UI_Tier
             flpAppItem.Width = panel4.Width;
 
             InitData();
-
-            DisplayPage();
 
             // Cập nhật bo góc và kích thước item khi Resize
             this.Resize += (s, ev) =>
@@ -221,7 +273,6 @@ namespace UI_Tier
 
         #region Xử lí flpAppItem
         private AppointmentBUS _appBus = new AppointmentBUS();
-        private List<AppointmentsDTO> _myAppointments = new List<AppointmentsDTO>();
 
         public void InitData()
         {
@@ -237,8 +288,8 @@ namespace UI_Tier
                 int currentPatientId = GlobalAccount.GetProfileId();
 
                 // 3. Lấy danh sách lịch hẹn của TÔI với bác sĩ NÀY
-                _myAppointments = _appBus.GetFilteredAppointmentsForPatient(currentPatientId, _doctorId, fromDate, toDate, fromTime, toTime);
-                
+                _allAppointments = _appBus.GetFilteredAppointmentsForPatient(currentPatientId, _doctorId, fromDate, toDate, fromTime, toTime) ?? new List<AppointmentsDTO>();
+                _appCurrentPage = 1;
                 DisplayPage();
             }
             catch (Exception ex)
@@ -252,74 +303,58 @@ namespace UI_Tier
             try
             {
                 flpAppItem.SuspendLayout();
+                flpAppItem.Controls.Clear();
 
-                // 1. Dọn dẹp sạch sẽ
-                while (flpAppItem.Controls.Count > 0)
+                if (_allAppointments == null || _allAppointments.Count == 0)
                 {
-                    var control = flpAppItem.Controls[0];
-                    flpAppItem.Controls.RemoveAt(0);
-                    control.Dispose();
-                }
-
-                if (_myAppointments == null || _myAppointments.Count == 0)
-                {
-                    Label lblEmpty = new Label();
-                    lblEmpty.Text = "Bạn chưa có lịch hẹn nào với bác sĩ này";
-                    lblEmpty.Font = new Font("Segoe UI", 12, FontStyle.Italic);
-                    lblEmpty.ForeColor = Color.Gray;
-                    lblEmpty.TextAlign = ContentAlignment.MiddleCenter;
-                    lblEmpty.Size = new Size(flpAppItem.Width - 40, 100);
-
-                    flpAppItem.Controls.Add(lblEmpty);
+                    lblNoApp.Visible = true;
+                    pnlAppPagination.Visible = false;
                     return;
                 }
 
+                lblNoApp.Visible = false;
+
+                pnlAppPagination.Visible = _allAppointments.Count > 0;
+                int totalPages = (int)Math.Ceiling((double)_allAppointments.Count / _appPageSize);
+                if (_appCurrentPage > totalPages) _appCurrentPage = totalPages;
+                if (_appCurrentPage < 1) _appCurrentPage = 1;
+
+                lblAppPageStatus.Text = $"Trang {_appCurrentPage} / {totalPages}";
+                
+                // Luôn để màu xanh và cho phép hover
+                lblAppPrev.Enabled = true;
+                lblAppNext.Enabled = true;
+                lblAppPrev.ForeColor = Color.FromArgb(0, 120, 212);
+                lblAppNext.ForeColor = Color.FromArgb(0, 120, 212);
+                lblAppPageStatus.ForeColor = Color.FromArgb(75, 85, 99);
+
+                var pageItems = _allAppointments.Skip((_appCurrentPage - 1) * _appPageSize).Take(_appPageSize);
+
                 // 2. Đổ card lịch hẹn
-                foreach (var app in _myAppointments)
+                foreach (var app in pageItems)
                 {
                     ucAppItem card = new ucAppItem();
-                    card.ShowDoctorInfo = false; // Ẩn tên/SĐT bác sĩ vì đang ở trong trang của bác sĩ đó rồi
-
-                    // Sử dụng mode PatientView để xem/sửa/xóa lịch của mình
+                    card.ShowDoctorInfo = false;
                     card.SetupCard(app, ucAppItem.AppCardMode.PatientView);
-
-                    // CAN THIỆP BỐ CỤC TỪ BÊN NGOÀI
-                    var btnStatus = card.Controls.Find("btnStatus", true).FirstOrDefault();
-                    if (btnStatus != null) btnStatus.Location = new Point(400, 95);
-
-                    // Xử lý sự kiện Xóa
+                    
                     card.AppointmentDeleted += (s, ev) => InitData();
-
-                    // Xử lý sự kiện Chỉnh sửa
                     card.AppointmentEdited += (s, appData) => {
                         if (_currentDoctor == null) return;
                         ucBookingDialog editUc = new ucBookingDialog(_currentDoctor);
-                        editUc.SetEditData(appData); // Chuyển sang chế độ Sửa
-
+                        editUc.SetEditData(appData);
                         editUc.Location = new Point((this.Width - editUc.Width) / 2, (this.Height - editUc.Height) / 2);
                         editUc.AppointmentBooked += (s2, ev2) => InitData();
-                        editUc.CloseRequested += (s2, ev2) => {
-                            this.Controls.Remove(editUc);
-                            editUc.Dispose();
-                        };
+                        editUc.CloseRequested += (s2, ev2) => { this.Controls.Remove(editUc); editUc.Dispose(); };
                         this.Controls.Add(editUc);
                         editUc.BringToFront();
                     };
 
-                    card.Margin = new Padding(10, 5, 10, 5);
                     card.Width = flpAppItem.Width - 40;
-                    card.Visible = true;
                     flpAppItem.Controls.Add(card);
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi hiển thị danh sách lịch hẹn: " + ex.Message);
-            }
-            finally
-            {
-                flpAppItem.ResumeLayout();
-            }
+            catch (Exception ex) { Console.WriteLine("Lỗi DisplayPage: " + ex.Message); }
+            finally { flpAppItem.ResumeLayout(); }
         }
         #endregion
 
@@ -360,58 +395,98 @@ namespace UI_Tier
                 flpReview.Controls.Clear();
 
                 DoctorBUS docBus = new DoctorBUS();
-                var reviews = docBus.GetDoctorReviews(_doctorId);
+                _allReviews = docBus.GetDoctorReviews(_doctorId) ?? new List<ReviewsDTO>();
 
-                // Cập nhật lại số liệu trên Header
-                if (reviews != null && reviews.Any())
+                // Cập nhật lại số liệu trên Header (dựa trên toàn bộ reviews)
+                if (_allReviews.Any())
                 {
-                    double avg = reviews.Average(r => r.Rating);
-                    lblRating.Text      = avg.ToString("0.0");
-                    lblTotalReviews.Text = $"{reviews.Count} đánh giá";
+                    double avg = _allReviews.Average(r => r.Rating);
+                    lblRating.Text = avg.ToString("0.0");
+                    lblTotalReviews.Text = $"{_allReviews.Count} đánh giá";
                 }
                 else
                 {
-                    lblRating.Text      = "0.0";
+                    lblRating.Text = "0.0";
                     lblTotalReviews.Text = "0 đánh giá";
                 }
 
-                //if (reviews == null || !reviews.Any())
-                //{
-                //    Label lblNoReview = new Label();
-                //    lblNoReview.Text      = "Chưa có đánh giá nào từ bệnh nhân.";
-                //    lblNoReview.Font      = new Font("Segoe UI", 10, FontStyle.Italic);
-                //    lblNoReview.ForeColor = Color.Gray;
-                //    lblNoReview.Size      = new Size(flpReview.Width - 40, 50);
-                //    lblNoReview.TextAlign = ContentAlignment.MiddleCenter;
-                //    flpReview.Controls.Add(lblNoReview);
-                //    return;
-                //}
+                DisplayReviews();
+            }
+            catch (Exception ex) { Console.WriteLine("Lỗi LoadReviews: " + ex.Message); }
+            finally { flpReview.ResumeLayout(); }
+        }
+
+        private void DisplayReviews()
+        {
+            try
+            {
+                flpReview.SuspendLayout();
+                flpReview.Controls.Clear();
+
+                if (_allReviews == null || !_allReviews.Any())
+                {
+                    lblNoReviews.Visible = true;
+                    pnlReviewPagination.Visible = false;
+                    return;
+                }
+
+                lblNoReviews.Visible = false;
+
+                pnlReviewPagination.Visible = true;
+                int totalPages = (int)Math.Ceiling((double)_allReviews.Count / _reviewPageSize);
+                if (_reviewCurrentPage > totalPages) _reviewCurrentPage = totalPages;
+                if (_reviewCurrentPage < 1) _reviewCurrentPage = 1;
+
+                lblReviewPageStatus.Text = $"Trang {_reviewCurrentPage} / {totalPages}";
+                
+                // Luôn để màu xanh và cho phép hover
+                lblReviewPrev.Enabled = true;
+                lblReviewNext.Enabled = true;
+                lblReviewPrev.ForeColor = Color.FromArgb(0, 120, 212);
+                lblReviewNext.ForeColor = Color.FromArgb(0, 120, 212);
+                lblReviewPageStatus.ForeColor = Color.FromArgb(75, 85, 99);
+
+                var pageItems = _allReviews.Skip((_reviewCurrentPage - 1) * _reviewPageSize).Take(_reviewPageSize);
 
                 // ID bệnh nhân đang đăng nhập
                 int currentPatientId = GlobalAccount.GetProfileId();
 
-                foreach (var rev in reviews)
+                foreach (var rev in pageItems)
                 {
                     ucReviewItem item = new ucReviewItem();
                     item.SetReviewData(rev, _currentDoctor, currentPatientId);
-                    //item.Width = flpReview.ClientSize.Width - 40;
-
-                    // Tải lại danh sách khi xóa hoặc sửa thành công
                     item.ReviewDeleted += (s, ev) => LoadReviews();
-                    item.ReviewEdited  += (s, ev) => LoadReviews();
-
+                    item.ReviewEdited += (s, ev) => LoadReviews();
+                    item.Width = flpReview.ClientSize.Width - 40;
                     flpReview.Controls.Add(item);
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Lỗi LoadReviews: " + ex.Message);
-            }
-            finally
-            {
-                flpReview.ResumeLayout();
-            }
+            catch (Exception ex) { Console.WriteLine("Lỗi DisplayReviews: " + ex.Message); }
+            finally { flpReview.ResumeLayout(); }
         }
 
+        #region Pagination Events
+        private void lblReviewPrev_Click(object sender, EventArgs e)
+        {
+            if (_reviewCurrentPage > 1) { _reviewCurrentPage--; DisplayReviews(); }
+        }
+
+        private void lblReviewNext_Click(object sender, EventArgs e)
+        {
+            int totalPages = (int)Math.Ceiling((double)_allReviews.Count / _reviewPageSize);
+            if (_reviewCurrentPage < totalPages) { _reviewCurrentPage++; DisplayReviews(); }
+        }
+
+        private void lblAppPrev_Click(object sender, EventArgs e)
+        {
+            if (_appCurrentPage > 1) { _appCurrentPage--; DisplayPage(); }
+        }
+
+        private void lblAppNext_Click(object sender, EventArgs e)
+        {
+            int totalPages = (int)Math.Ceiling((double)_allAppointments.Count / _appPageSize);
+            if (_appCurrentPage < totalPages) { _appCurrentPage++; DisplayPage(); }
+        }
+        #endregion
     }
 }

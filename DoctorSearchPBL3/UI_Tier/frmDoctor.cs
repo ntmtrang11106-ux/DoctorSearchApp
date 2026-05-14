@@ -18,16 +18,15 @@ namespace UI_Tier
             UIHelper.SetDoubleBuffered(this);
         }
 
-        // Override CreateParams để bật WS_EX_COMPOSITED, giúp giảm nhấp nháy khi vẽ lại Form
-        //protected override CreateParams CreateParams
-        //{
-        //    get
-        //    {
-        //        CreateParams cp = base.CreateParams;
-        //        cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
-        //        return cp;
-        //    }
-        //}
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED (0x02000000)
+                return cp;
+            }
+        }
 
         #region Xử lý các click trên menu (Tabs)
 

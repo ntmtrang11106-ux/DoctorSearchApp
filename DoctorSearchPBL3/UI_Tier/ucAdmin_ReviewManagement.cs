@@ -20,6 +20,132 @@ namespace UI_Tier
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(flpList);
+            this.Resize += (s, e) => UpdateUI();
+            
+            // Xử lý Placeholder giả lập
+            txtSearch.Enter += TxtSearch_Enter;
+            txtSearch.Leave += TxtSearch_Leave;
+
+            // Click ra ngoài để thoát ô nhập liệu (Đăng ký cho nhiều vùng)
+            pnlMainContainer.Click += (s, e) => this.Focus();
+            pnlStats.Click += (s, e) => this.Focus();
+            lblTitle.Click += (s, e) => this.Focus();
+            this.Click += (s, e) => this.Focus();
+            
+            foreach (Control card in pnlStats.Controls)
+            {
+                if (card is Panel) card.Click += (s, e) => this.Focus();
+            }
+
+            // Hiệu ứng hover cho các nút phân trang
+            lblPrev.MouseEnter += Pagination_MouseEnter;
+            lblPrev.MouseLeave += Pagination_MouseLeave;
+            lblNext.MouseEnter += Pagination_MouseEnter;
+            lblNext.MouseLeave += Pagination_MouseLeave;
+            lblPrev.Click += lblPrev_Click;
+            lblNext.Click += lblNext_Click;
+            lblPrev.Cursor = Cursors.Hand;
+            lblNext.Cursor = Cursors.Hand;
+        }
+
+        private void Pagination_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Label lbl && lbl.ForeColor != Color.Gray)
+            {
+                lbl.ForeColor = Color.FromArgb(0, 90, 158); // Xanh đậm hơn khi hover
+                lbl.Top -= 2; // Hiệu ứng "nhảy lên"
+            }
+        }
+
+        private void Pagination_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Label lbl && lbl.ForeColor != Color.Gray)
+            {
+                lbl.ForeColor = Color.FromArgb(0, 120, 212); // Trở lại màu chuẩn
+                lbl.Top += 2;
+            }
+        }
+
+        private void TxtSearch_Enter(object sender, EventArgs e)
+        {
+            if (txtSearch.Text.Trim() == "Tìm kiếm theo bệnh nhân, bác sĩ, nội dung...")
+            {
+                txtSearch.Text = "";
+                txtSearch.ForeColor = Color.Black;
+            }
+        }
+
+        private void TxtSearch_Leave(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtSearch.Text))
+            {
+                txtSearch.Text = "Tìm kiếm theo bệnh nhân, bác sĩ, nội dung...";
+                txtSearch.ForeColor = Color.Gray;
+            }
+        }
+
+        private void UpdateUI()
+        {
+            UIHelper.ApplyRoundedRegion(pnlMainContainer, 25);
+            
+            // Style cho thanh tìm kiếm (Vẽ viền và bo góc)
+            UIHelper.ApplyRoundedRegion(pnlSearch, 15);
+            pnlSearch.Paint -= StatPanel_Paint;
+            pnlSearch.Paint += StatPanel_Paint;
+            pnlSearch.Invalidate();
+
+            Panel[] cards = { pnlCard1, pnlCard2, pnlCard3, pnlCard4 };
+            Panel[] icons = { pnlIcon1, pnlIcon2, pnlIcon3, pnlIcon4 };
+
+            foreach (var card in cards)
+            {
+                if (card != null)
+                {
+                    UIHelper.SetDoubleBuffered(card);
+                    UIHelper.ApplyRoundedRegion(card, 25);
+                    card.Paint -= StatPanel_Paint; // Tránh đăng ký trùng
+                    card.Paint += StatPanel_Paint;
+                    card.Invalidate();
+                }
+            }
+
+            foreach (var icon in icons)
+            {
+                if (icon != null) UIHelper.ApplyRoundedRegion(icon, 20);
+            }
+
+            // Căn giữa label thông báo
+            if (lblNoData != null)
+            {
+                lblNoData.Left = (pnlMainContainer.Width - lblNoData.Width) / 2;
+                lblNoData.Top = 350;
+            }
+        }
+
+        private void StatPanel_Paint(object sender, PaintEventArgs e)
+        {
+            if (sender is Panel pnl)
+            {
+                using (Pen pen = new Pen(Color.Black, 2))
+                {
+                    e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                    int radius = 20;
+                    int width = pnl.Width;
+                    int height = pnl.Height;
+
+                    System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+                    float arcSize = radius * 2f;
+                    float offset = 1.5f;
+
+                    path.AddArc(offset, offset, arcSize, arcSize, 180, 90);
+                    path.AddArc(width - arcSize - offset, offset, arcSize, arcSize, 270, 90);
+                    path.AddArc(width - arcSize - offset, height - arcSize - offset, arcSize, arcSize, 0, 90);
+                    path.AddArc(offset, height - arcSize - offset, arcSize, arcSize, 90, 90);
+                    path.CloseAllFigures();
+
+                    e.Graphics.DrawPath(pen, path);
+                }
+            }
         }
 
         private void ucAdmin_ReviewManagement_Load(object sender, EventArgs e)
@@ -27,14 +153,11 @@ namespace UI_Tier
             if (cboRatingFilter.SelectedIndex == -1) cboRatingFilter.SelectedIndex = 0;
             if (cboStatusFilter.SelectedIndex == -1) cboStatusFilter.SelectedIndex = 0;
             
-            //// Bo góc cho các card và container chính
-            //UIHelper.ApplyRoundedRegion(pnlCard1, 15);
-            //UIHelper.ApplyRoundedRegion(pnlCard2, 15);
-            //UIHelper.ApplyRoundedRegion(pnlCard3, 15);
-            //UIHelper.ApplyRoundedRegion(pnlCard4, 15);
-            //UIHelper.ApplyRoundedRegion(pnlMainContainer, 20);
-            //UIHelper.ApplyRoundedRegion(pnlSearch, 15);
+            // Thiết lập placeholder ban đầu
+            txtSearch.Text = "Tìm kiếm theo bệnh nhân, bác sĩ, nội dung...";
+            txtSearch.ForeColor = Color.Gray;
 
+            UpdateUI();
             InitData();
         }
 
@@ -61,6 +184,8 @@ namespace UI_Tier
         private void ApplyFilters()
         {
             string keyword = txtSearch.Text.ToLower().Trim();
+            if (keyword == "tìm kiếm theo bệnh nhân, bác sĩ, nội dung...") keyword = "";
+
             string ratingStr = cboRatingFilter.SelectedItem?.ToString() ?? "Tất cả đánh giá";
             string statusStr = cboStatusFilter.SelectedItem?.ToString() ?? "Tất cả trạng thái";
 
@@ -73,8 +198,9 @@ namespace UI_Tier
 
                 bool matchRating = ratingStr == "Tất cả đánh giá" || (ratingStr.Contains(r.Rating.ToString()));
                 bool matchStatus = statusStr == "Tất cả trạng thái" ||
-                                   (statusStr == "Đang hiển thị" && r.IsVisible) ||
-                                   (statusStr == "Đang ẩn" && !r.IsVisible);
+                                   (statusStr == "Đang hiển thị" && r.IsVisible && !r.IsDeleted) ||
+                                   (statusStr == "Đang ẩn" && !r.IsVisible && !r.IsDeleted) ||
+                                   (statusStr == "Đã xóa" && r.IsDeleted);
 
                 return matchKeyword && matchRating && matchStatus;
             }).ToList();
@@ -103,9 +229,25 @@ namespace UI_Tier
 
             int totalPages = (int)Math.Ceiling((double)_filteredReviews.Count / _pageSize);
             lblPageInfo.Text = $"Trang {_currentPage} / {Math.Max(1, totalPages)}";
-            btnPrev.Enabled = _currentPage > 1;
-            btnNext.Enabled = _currentPage < totalPages;
+            
+            // Luôn để màu xanh và Enabled để bắt hover theo phong cách Doctor Overview
+            lblPrev.Enabled = true;
+            lblNext.Enabled = true;
+            lblPrev.ForeColor = Color.FromArgb(0, 120, 212);
+            lblNext.ForeColor = Color.FromArgb(0, 120, 212);
 
+            lblNoData.Visible = _filteredReviews.Count == 0;
+            if (lblNoData.Visible)
+            {
+                string currentStatus = cboStatusFilter.SelectedItem?.ToString() ?? "";
+                lblNoData.Text = (currentStatus == "Đã xóa") ? "Chưa có đánh giá nào bị xóa" : "Không tìm thấy dữ liệu phù hợp";
+                lblNoData.ForeColor = Color.FromArgb(156, 163, 175); // Màu xám hiện đại
+                lblNoData.Left = (pnlMainContainer.Width - lblNoData.Width) / 2;
+                lblNoData.Top = 300; 
+                lblNoData.BringToFront();
+            }
+
+            pnlPagination.Visible = true;
             flpList.ResumeLayout();
         }
 
@@ -117,12 +259,12 @@ namespace UI_Tier
             }
         }
 
-        private void btnPrev_Click(object sender, EventArgs e)
+        private void lblPrev_Click(object sender, EventArgs e)
         {
             if (_currentPage > 1) { _currentPage--; DisplayPage(_currentPage); }
         }
 
-        private void btnNext_Click(object sender, EventArgs e)
+        private void lblNext_Click(object sender, EventArgs e)
         {
             int totalPages = (int)Math.Ceiling((double)_filteredReviews.Count / _pageSize);
             if (_currentPage < totalPages) { _currentPage++; DisplayPage(_currentPage); }

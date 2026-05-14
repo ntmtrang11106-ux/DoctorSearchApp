@@ -16,18 +16,18 @@ namespace UI_Tier
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
+            InitTabs();
         }
 
-        // Override CreateParams để bật WS_EX_COMPOSITED, giúp giảm nhấp nháy khi vẽ lại Form
-        // protected override CreateParams CreateParams
-        // {
-        //     get
-        //     {
-        //         CreateParams cp = base.CreateParams;
-        //         cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
-        //         return cp;
-        //     }
-        // }
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED (0x02000000)
+                return cp;
+            }
+        }
 
         #region Xử lí các click trên menu
 
@@ -44,6 +44,9 @@ namespace UI_Tier
 
         private void InitTabs()
         {
+            _tabTypeMapping.Clear();
+            _tabMapping.Clear();
+
             // Cả Trang chủ và Tìm bác sĩ đều dùng chung bộ Tìm kiếm tích hợp
             _tabTypeMapping.Add(pnlHome, typeof(ucGuest_IntegratedSearch));
             _tabTypeMapping.Add(pnlSearchDoc, typeof(ucGuest_IntegratedSearch));
@@ -68,41 +71,56 @@ namespace UI_Tier
 
             if (clickedPanel == null || !_tabTypeMapping.ContainsKey(clickedPanel)) return;
 
+            bool isFirstLoad = !_tabMapping.ContainsKey(clickedPanel);
+
             // 2. LAZY LOADING
-            if (!_tabMapping.ContainsKey(clickedPanel))
+            if (isFirstLoad)
             {
+                pnMain.SuspendLayout();
                 UserControl uc = (UserControl)Activator.CreateInstance(_tabTypeMapping[clickedPanel]);
                 uc.Dock = DockStyle.Fill;
                 uc.Visible = false;
                 pnMain.Controls.Add(uc);
                 _tabMapping.Add(clickedPanel, uc);
+                pnMain.ResumeLayout(false);
             }
 
             UserControl selectedUC = _tabMapping[clickedPanel];
             
-            // Cấu hình Tab mặc định nếu là bộ tìm kiếm (Mỗi bên giữ trạng thái riêng)
-            if (selectedUC is ucGuest_IntegratedSearch search)
+            // Chỉ làm mới dữ liệu nếu là lần đầu tiên load tab này 
+            // (Hoặc nếu Tab này cần làm mới liên tục thì mới để ở đây, 
+            // nhưng thường chỉ cần load 1 lần hoặc có nút Refresh riêng)
+            if (isFirstLoad)
             {
-                search.HideTabs(); // Ẩn tab nội bộ vì Patient đã có menu ngoài
-                search.SetActiveTab(clickedPanel == pnlSearchDoc);
-                search.SetPlaceholder(""); // Xóa dòng chữ "Nhập tên bác sĩ hoặc bài viết..."
-            }
-            // Tự động làm mới dữ liệu nếu là tab Lịch hẹn hoặc Hồ sơ
-            else if (selectedUC is ucPatient_Appointment appointment)
-            {
-                appointment.InitData();
-            }
-            else if (selectedUC is ucPatient_Profile profile)
-            {
-                profile.InitData();
+                if (selectedUC is ucGuest_IntegratedSearch search)
+                {
+                    search.HideTabs();
+                    search.SetActiveTab(clickedPanel == pnlSearchDoc);
+                    search.SetPlaceholder("");
+                }
+                else if (selectedUC is ucPatient_Appointment appointment)
+                {
+                    appointment.InitData();
+                }
+                else if (selectedUC is ucPatient_Profile profile)
+                {
+                    profile.InitData();
+                }
             }
 
             if (_currentUC == selectedUC && selectedUC is not ucGuest_IntegratedSearch) return;
 
             // 3. Hiển thị
             if (_currentUC != null) _currentUC.Visible = false;
+            
             selectedUC.Visible = true;
             selectedUC.BringToFront();
+            
+            // Nếu là lần đầu tiên, hãy vẽ hoàn thiện trước khi thoát hàm
+            if (isFirstLoad) {
+                selectedUC.Update(); 
+            }
+            
             _currentUC = selectedUC;
 
             UpdateLabelStyles(clickedPanel);

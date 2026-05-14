@@ -11,6 +11,9 @@ namespace UI_Tier
     public partial class ucAdmin_Overview : UserControl
     {
         private readonly DashboardBUS _dashboardBUS;
+        private List<ReviewsDTO> _allReviews = new List<ReviewsDTO>();
+        private int _currentPage = 1;
+        private int _pageSize = 4;
 
         public ucAdmin_Overview()
         {
@@ -37,8 +40,7 @@ namespace UI_Tier
             cboFilter.SelectedIndexChanged += CboFilter_SelectedIndexChanged;
 
             LoadRealData(DateTime.Now);
-            //UpdateUI();
-            UIHelper.ApplyRoundedRegion(pnlHeader, 15);
+            UpdateUI();
             
             // Xử lý resize để review item luôn full width và không bị mất viền
             flpRecentReviews.Resize += (s, ev) => {
@@ -47,6 +49,31 @@ namespace UI_Tier
                         item.Width = flpRecentReviews.ClientSize.Width - 15;
                     }
                 }
+            };
+
+            lblReviewPrevBtn.Click += (s, ev) => { if (_currentPage > 1) { _currentPage--; DisplayRecentReviews(); } };
+            lblReviewNext.Click += (s, ev) => { 
+                int totalPages = (int)Math.Ceiling((double)_allReviews.Count / _pageSize);
+                if (_currentPage < totalPages) { _currentPage++; DisplayRecentReviews(); } 
+            };
+
+            // Hiệu ứng "nhảy" và đổi màu khi di chuột
+            ApplyHoverEffect(lblReviewPrevBtn);
+            ApplyHoverEffect(lblReviewNext);
+        }
+
+        private void ApplyHoverEffect(Label lbl)
+        {
+            Color originalColor = lbl.ForeColor;
+            Point originalLocation = lbl.Location;
+
+            lbl.MouseEnter += (s, e) => {
+                lbl.ForeColor = Color.FromArgb(0, 102, 180); // Đậm hơn chút
+                lbl.Top -= 2; // Nhảy lên 2px
+            };
+            lbl.MouseLeave += (s, e) => {
+                lbl.ForeColor = originalColor;
+                lbl.Top += 2; // Trở lại vị trí cũ
             };
         }
 
@@ -62,6 +89,7 @@ namespace UI_Tier
 
         private void UpdateUI()
         {
+            UIHelper.ApplyRoundedRegion(pnlHeader, 15);
             UIHelper.ApplyRoundedRegion(pnlRecentReviews, 25);
             pnlRecentReviews.Resize += (s, e) => UIHelper.ApplyRoundedRegion(pnlRecentReviews, 25);
 
@@ -70,14 +98,87 @@ namespace UI_Tier
 
             foreach (var card in cards)
             {
-                UIHelper.ApplyRoundedRegion(card, 25);
-                card.Resize += (s, e) => UIHelper.ApplyRoundedRegion(card, 25);
+                if (card != null)
+                {
+                    UIHelper.SetDoubleBuffered(card);
+                    UIHelper.ApplyRoundedRegion(card, 25);
+                    card.Paint += StatPanel_Paint;
+                    card.Resize += (s, e) => UIHelper.ApplyRoundedRegion(card, 25);
+                }
             }
 
             foreach (var icon in icons)
             {
-                UIHelper.ApplyRoundedRegion(icon, 20);
-                icon.Resize += (s, e) => UIHelper.ApplyRoundedRegion(icon, 20);
+                if (icon != null)
+                {
+                    UIHelper.ApplyRoundedRegion(icon, 20);
+                    icon.Resize += (s, e) => UIHelper.ApplyRoundedRegion(icon, 20);
+                }
+            }
+
+            // Viền cho 2 biểu đồ chính
+            Control[] charts = { chartApp, chartUserGrowth };
+            foreach (var c in charts)
+            {
+                if (c != null)
+                {
+                    UIHelper.SetDoubleBuffered(c);
+                    UIHelper.ApplyRoundedRegion(c, 25);
+                    c.Paint += ChartPanel_Paint;
+                    c.Resize += (s, e) => UIHelper.ApplyRoundedRegion(c, 25);
+                }
+            }
+        }
+
+        private void ChartPanel_Paint(object sender, PaintEventArgs e)
+        {
+            if (sender is Control ctrl)
+            {
+                using (Pen pen = new Pen(Color.Black, 1)) // Viền đen dày 1
+                {
+                    e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                    int radius = 25;
+                    int width = ctrl.Width;
+                    int height = ctrl.Height;
+
+                    System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+                    float arcSize = radius * 2f;
+                    float offset = 0.5f;
+
+                    path.AddArc(offset, offset, arcSize, arcSize, 180, 90);
+                    path.AddArc(width - arcSize - offset, offset, arcSize, arcSize, 270, 90);
+                    path.AddArc(width - arcSize - offset, height - arcSize - offset, arcSize, arcSize, 0, 90);
+                    path.AddArc(offset, height - arcSize - offset, arcSize, arcSize, 90, 90);
+                    path.CloseAllFigures();
+
+                    e.Graphics.DrawPath(pen, path);
+                }
+            }
+        }
+
+        private void StatPanel_Paint(object sender, PaintEventArgs e)
+        {
+            if (sender is Panel pnl)
+            {
+                using (Pen pen = new Pen(Color.Black, 2)) // Viền đen dày 2
+                {
+                    e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                    int radius = 25;
+                    int width = pnl.Width;
+                    int height = pnl.Height;
+
+                    System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+                    float arcSize = radius * 2f;
+                    float offset = 1.5f; // Lùi vào để không bị xén viền
+
+                    path.AddArc(offset, offset, arcSize, arcSize, 180, 90);
+                    path.AddArc(width - arcSize - offset, offset, arcSize, arcSize, 270, 90);
+                    path.AddArc(width - arcSize - offset, height - arcSize - offset, arcSize, arcSize, 0, 90);
+                    path.AddArc(offset, height - arcSize - offset, arcSize, arcSize, 90, 90);
+                    path.CloseAllFigures();
+
+                    e.Graphics.DrawPath(pen, path);
+                }
             }
         }
 
@@ -162,18 +263,36 @@ namespace UI_Tier
 
         private void LoadRecentReviews()
         {
+            _allReviews = _dashboardBUS.GetRecentReviews(20); // Lấy 20 cái mới nhất để phân trang
+            _currentPage = 1;
+            DisplayRecentReviews();
+        }
+
+        private void DisplayRecentReviews()
+        {
             flpRecentReviews.SuspendLayout();
             flpRecentReviews.Controls.Clear();
             
-            var realReviews = _dashboardBUS.GetRecentReviews(6);
+            int startIndex = (_currentPage - 1) * _pageSize;
+            var pageItems = _allReviews.Skip(startIndex).Take(_pageSize).ToList();
 
-            foreach (var rev in realReviews)
+            foreach (var rev in pageItems)
             {
                 ucReviewItem item = new ucReviewItem();
-                item.SetAdminReviewData(rev, true); // Ẩn các nút ở trang tổng quan
-                item.Width = flpRecentReviews.ClientSize.Width - 20;
-
+                item.SetAdminReviewData(rev, true); 
+                item.Width = flpRecentReviews.ClientSize.Width - 25;
                 flpRecentReviews.Controls.Add(item);
+            }
+
+            int totalPages = (int)Math.Ceiling((double)_allReviews.Count / _pageSize);
+            lblReviewPageStatus.Text = $"Trang {_currentPage} / {Math.Max(1, totalPages)}";
+            
+            lblNoReviews.Visible = _allReviews.Count == 0;
+            if (lblNoReviews.Visible)
+            {
+                lblNoReviews.Left = (pnlRecentReviews.Width - lblNoReviews.Width) / 2;
+                lblNoReviews.Top = (pnlRecentReviews.Height - lblNoReviews.Height) / 2;
+                lblNoReviews.BringToFront();
             }
 
             flpRecentReviews.ResumeLayout();

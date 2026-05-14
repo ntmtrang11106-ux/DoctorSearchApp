@@ -21,6 +21,7 @@ namespace UI_Tier
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
+            UIHelper.SetDoubleBuffered(pnlMainBackground);
             SetupUI();
             
             // Register events here to ensure they are always active
@@ -31,6 +32,20 @@ namespace UI_Tier
             label24.Cursor = Cursors.Hand;
             panel29.Click += label24_Click;
             label24.Click += label24_Click;
+
+            // Đăng ký sự kiện Click ra ngoài để thoát focus (giống ucWriteReview)
+            pnlMainBackground.Click += Global_Click;
+            pnlHeader.Click += Global_Click;
+            lblHeaderTitle.Click += Global_Click;
+            label1.Click += Global_Click;
+            lblTitleLabel.Click += Global_Click;
+            lblSummaryLabel.Click += Global_Click;
+            lblBodyLabel.Click += Global_Click;
+            lblTypeLabel.Click += Global_Click;
+            lblDeptLabel.Click += Global_Click;
+            lblStatusLabel.Click += Global_Click;
+            lblPriorityLabel.Click += Global_Click;
+            lblThumbnailLabel.Click += Global_Click;
         }
 
         private void SetupUI()
@@ -74,14 +89,26 @@ namespace UI_Tier
             
             // Chỉ giữ lại kéo thả cho thanh tiêu đề
             lblHeaderTitle.MouseDown += panelHeader_MouseDown;
-            lblHeaderTitle.MouseMove += panelHeader_MouseMove;
             label1.MouseDown += panelHeader_MouseDown;
-            label1.MouseMove += panelHeader_MouseMove;
 
-            // Áp dụng bo góc 5px và hiệu ứng vạch xanh khi Focus
-            ApplyInputStyle(txtTitle);
-            ApplyInputStyle(txtSummary);
-            ApplyInputStyle(rtbBody);
+            // Áp dụng bo góc và viền đen 2px cho các khung bao quanh
+            ApplyBorderPanelStyle(pnlTitleBorder);
+            ApplyBorderPanelStyle(pnlSummaryBorder);
+            ApplyBorderPanelStyle(pnlBodyBorder);
+            ApplyBorderPanelStyle(pnlTypeBorder);
+            ApplyBorderPanelStyle(pnlDeptBorder);
+            ApplyBorderPanelStyle(pnlStatusBorder);
+            ApplyBorderPanelStyle(pnlPriorityBorder);
+            ApplyBorderPanelStyle(panel29); // Khung hình ảnh
+
+            // Áp dụng hiệu ứng Focus cho các control bên trong
+            ApplyInternalControlStyle(txtTitle);
+            ApplyInternalControlStyle(txtSummary);
+            ApplyInternalControlStyle(rtbBody);
+            ApplyInternalControlStyle(cboType);
+            ApplyInternalControlStyle(cboDept);
+            ApplyInternalControlStyle(cboStatus);
+            ApplyInternalControlStyle(numPriority);
 
             // Bo góc cho các nút bấm (15px)
             UIHelper.ApplyRoundedRegion(btnSave, 15);
@@ -90,32 +117,50 @@ namespace UI_Tier
             _thumbnailPath = ""; 
         }
 
-        private void ApplyInputStyle(Control ctrl)
+        private void ApplyBorderPanelStyle(Panel pnl)
         {
-            // Bo góc 5px cố định
-            UIHelper.ApplyRoundedRegion(ctrl, 5);
+            UIHelper.ApplyRoundedRegion(pnl, 10);
+            pnl.Paint += (s, e) => {
+                // Vẽ viền đen/xám đậm độ dày 2px
+                UIHelper.DrawControlBorder(s, e, 10, Color.FromArgb(64, 64, 64), 2);
+            };
+        }
 
-            // Vẽ vạch xanh ở cạnh dưới khi Focus
-            ctrl.Paint += (s, e) => {
-                if (ctrl.Focused)
+        private void ApplyInternalControlStyle(Control ctrl)
+        {
+            ctrl.Enter += (s, e) => {
+                // Đổi nền panel cha khi focus
+                if (ctrl.Parent is Panel pnl) pnl.BackColor = Color.FromArgb(242, 248, 255);
+                ctrl.BackColor = Color.FromArgb(242, 248, 255);
+                
+                // Vẽ vạch xanh dưới đáy của panel cha
+                if (ctrl.Parent is Panel parent)
                 {
-                    using (Pen p = new Pen(Color.FromArgb(37, 99, 235), 4)) // Độ dày 4 cho rõ
-                    {
-                        // Vẽ đường thẳng ở sát đáy, lùi vào 2 bên 5px cho đẹp
-                        e.Graphics.DrawLine(p, 5, ctrl.Height - 2, ctrl.Width - 5, ctrl.Height - 2);
-                    }
+                    parent.Paint += Control_Paint_Focus;
+                    parent.Invalidate();
                 }
             };
 
-            ctrl.Enter += (s, e) => {
-                ctrl.BackColor = Color.FromArgb(242, 248, 255); // Đổi nền xanh cực nhẹ
-                ctrl.Invalidate(); 
-            };
-
             ctrl.Leave += (s, e) => {
+                if (ctrl.Parent is Panel pnl) pnl.BackColor = Color.White;
                 ctrl.BackColor = Color.White;
-                ctrl.Invalidate();
+
+                if (ctrl.Parent is Panel parent)
+                {
+                    parent.Paint -= Control_Paint_Focus;
+                    parent.Invalidate();
+                }
             };
+        }
+
+        private void Control_Paint_Focus(object sender, PaintEventArgs e)
+        {
+            Control ctrl = sender as Control;
+            using (Pen p = new Pen(Color.FromArgb(37, 99, 235), 4))
+            {
+                // Vẽ ở sát đáy panel cha
+                e.Graphics.DrawLine(p, 10, ctrl.Height - 3, ctrl.Width - 10, ctrl.Height - 3);
+            }
         }
 
         private string _thumbnailPath = "";
@@ -265,16 +310,28 @@ namespace UI_Tier
             OnCancel?.Invoke(this, EventArgs.Empty);
         }
 
-        #region Draggable Logic
-        private Point _mouseLoc;
-        private void panelHeader_MouseDown(object sender, MouseEventArgs e) => _mouseLoc = e.Location;
-        private void panelHeader_MouseMove(object sender, MouseEventArgs e)
+        #region High-Performance Draggable Logic (Win32)
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool ReleaseCapture();
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
+        private void panelHeader_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
-                this.Left += e.X - _mouseLoc.X;
-                this.Top += e.Y - _mouseLoc.Y;
+                ReleaseCapture();
+                SendMessage(this.Handle, 0xA1, 0x2, 0);
+                
+                // Khi bắt đầu kéo form cũng nên xóa focus
+                Global_Click(sender, e);
             }
+        }
+
+        private void Global_Click(object sender, EventArgs e)
+        {
+            // Chuyển ActiveControl về tiêu đề để xóa focus khỏi các ô nhập liệu
+            this.ActiveControl = lblHeaderTitle;
         }
         #endregion
     }

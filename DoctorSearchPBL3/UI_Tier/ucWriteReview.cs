@@ -24,6 +24,9 @@ namespace UI_Tier
             _existingReview = null;
 
             UIHelper.SetDoubleBuffered(this);
+            UIHelper.SetDoubleBuffered(pnlMainBackground);
+            UIHelper.SetDoubleBuffered(pnlDoctorInfo);
+            
             btnSubmit.Click += btnSubmit_Click;
         }
 
@@ -35,17 +38,24 @@ namespace UI_Tier
             _existingReview = existingReview;
 
             UIHelper.SetDoubleBuffered(this);
+            UIHelper.SetDoubleBuffered(pnlMainBackground);
+            UIHelper.SetDoubleBuffered(pnlDoctorInfo);
+
             btnSubmit.Click += btnSubmit_Click;
         }
 
         private void ucWriteReview_Load(object sender, EventArgs e)
         {
-            // Bo góc
-            UIHelper.ApplyRoundedRegion(this, 20);
-            this.BackColor = Color.FromArgb(252, 252, 255); // Màu xanh/xám cực nhạt
-            this.Paint += (s, ev) => UIHelper.uc_Paint(s, ev, 20, Color.FromArgb(226, 232, 240), 2); // Viền xám nhạt
+            // Bo góc chuẩn (30px cho khung ngoài, 27px cho khung trong khớp viền 3px)
+            UIHelper.ApplyRoundedRegion(this, 30);
+            UIHelper.ApplyRoundedRegion(pnlMainBackground, 27);
 
-            UIHelper.ApplyRoundedRegion(txtComment, 10);
+            // Styling cho khung nhận xét (bo góc 10px, viền dày 2px)
+            UIHelper.ApplyRoundedRegion(pnlCommentBorder, 10);
+            pnlCommentBorder.Paint += (s, ev) => {
+                UIHelper.DrawControlBorder(s, ev, 10, Color.FromArgb(64, 64, 64), 2);
+            };
+
             UIHelper.ApplyRoundedRegion(panelTip, 10);
             UIHelper.ApplyRoundedRegion(btnSubmit, 10);
             UIHelper.ApplyRoundedRegion(btnCancel, 10);
@@ -93,15 +103,18 @@ namespace UI_Tier
             }
         }
 
-        #region Kéo UserControl (Draggable)
-        private Point _mouseLoc;
-        private void panelHeader_MouseDown(object sender, MouseEventArgs e) => _mouseLoc = e.Location;
-        private void panelHeader_MouseMove(object sender, MouseEventArgs e)
+        #region High-Performance Draggable Logic (Win32)
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool ReleaseCapture();
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
+        private void panelHeader_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
-                this.Left += e.X - _mouseLoc.X;
-                this.Top  += e.Y - _mouseLoc.Y;
+                ReleaseCapture();
+                SendMessage(this.Handle, 0xA1, 0x2, 0);
             }
         }
         #endregion
@@ -141,6 +154,11 @@ namespace UI_Tier
                 txtComment.Text      = "";
                 txtComment.ForeColor = Color.Black;
             }
+            // Highlight viền khi focus
+            pnlCommentBorder.BackColor = Color.FromArgb(242, 248, 255); // Xanh nhạt
+            txtComment.BackColor = Color.FromArgb(242, 248, 255);
+            pnlCommentBorder.Paint += Control_Paint_Focus;
+            pnlCommentBorder.Invalidate();
         }
 
         private void txtComment_Leave(object sender, EventArgs e)
@@ -150,6 +168,10 @@ namespace UI_Tier
                 txtComment.Text      = "Chia sẻ trải nghiệm của bạn về bác sĩ...";
                 txtComment.ForeColor = Color.Gray;
             }
+            pnlCommentBorder.BackColor = Color.White;
+            txtComment.BackColor = Color.White;
+            pnlCommentBorder.Paint -= Control_Paint_Focus;
+            pnlCommentBorder.Invalidate();
         }
 
         private void txtComment_TextChanged(object sender, EventArgs e)
@@ -159,6 +181,22 @@ namespace UI_Tier
             lblCharCount.ForeColor = length > 1000 ? Color.Red : Color.Gray;
         }
         #endregion
+
+        private void Control_Paint_Focus(object sender, PaintEventArgs e)
+        {
+            Control ctrl = sender as Control;
+            using (Pen p = new Pen(Color.FromArgb(37, 99, 235), 4))
+            {
+                // Vẽ ở sát đáy panel cha
+                e.Graphics.DrawLine(p, 10, ctrl.Height - 3, ctrl.Width - 10, ctrl.Height - 3);
+            }
+        }
+
+        private void Global_Click(object sender, EventArgs e)
+        {
+            // Thoát khỏi ô nhập liệu khi click ra ngoài (chuyển focus sang control tĩnh)
+            this.ActiveControl = label1;
+        }
 
         private void btnCancel_Click(object sender, EventArgs e) => CloseRequested?.Invoke(this, EventArgs.Empty);
 

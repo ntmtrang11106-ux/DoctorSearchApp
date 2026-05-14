@@ -16,6 +16,8 @@ namespace UI_Tier
         public ucPatient_Appointment()
         {
             InitializeComponent();
+            UIHelper.SetDoubleBuffered(this);
+            UIHelper.SetDoubleBuffered(flpAppItem);
         }
         // Khai báo một lần ở cấp độ class để tái sử dụng
         private AppointmentBUS _bus = new AppointmentBUS();
@@ -77,16 +79,8 @@ namespace UI_Tier
                 card.Width = flpAppItem.ClientSize.Width - 40;
                 card.Height = 252;
 
-                // CAN THIỆP BỐ CỤC TỪ BÊN NGOÀI ĐỂ TRÁNH ĐÈ CHỮ
-                var btnStatus = card.Controls.Find("btnStatus", true).FirstOrDefault();
-                if (btnStatus != null) btnStatus.Location = new Point(1900, 95);
-
-                var lblName = card.Controls.Find("lblName", true).FirstOrDefault();
-                if (lblName != null) lblName.MaximumSize = new Size(0, 0); // Cho phép tên trải dài hết cỡ
-                var lblSymptoms = card.Controls.Find("lblSymptoms", true).FirstOrDefault();
-                if (lblSymptoms != null) lblSymptoms.Location = new Point(1240, 95); // Cho phép tên trải dài hết cỡ
-                var label2 = card.Controls.Find("label2", true).FirstOrDefault();
-                if (label2 != null) label2.Location = new Point(1140, 65); // Cho phép tên trải dài hết cỡ
+                // Thêm card vào danh sách mà không cần tìm kiếm control đệ quy
+                // (Mọi layout sẽ được card tự xử lý hoặc thông qua SetupCard)
                 
                 // Thêm handler Xóa/Sửa
                 card.AppointmentDeleted += (s, ev) => InitData();

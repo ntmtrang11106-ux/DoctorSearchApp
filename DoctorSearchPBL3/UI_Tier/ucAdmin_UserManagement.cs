@@ -33,6 +33,32 @@ namespace UI_Tier
                     ctrl.Width = flpUserList.ClientSize.Width - 10;
                 }
             };
+
+            // Hiệu ứng hover cho các nút phân trang
+            lblPrev.MouseEnter += PaginationLabel_MouseEnter;
+            lblPrev.MouseLeave += PaginationLabel_MouseLeave;
+            lblNext.MouseEnter += PaginationLabel_MouseEnter;
+            lblNext.MouseLeave += PaginationLabel_MouseLeave;
+            lblPrev.Cursor = Cursors.Hand;
+            lblNext.Cursor = Cursors.Hand;
+        }
+
+        private void PaginationLabel_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Label lbl)
+            {
+                lbl.ForeColor = Color.FromArgb(0, 90, 158); // Xanh đậm hơn khi hover
+                lbl.Top -= 2; // Hiệu ứng "nhảy lên"
+            }
+        }
+
+        private void PaginationLabel_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Label lbl)
+            {
+                lbl.ForeColor = Color.FromArgb(0, 120, 212); // Trở lại màu chuẩn
+                lbl.Top += 2;
+            }
         }
 
         private void ucAdmin_UserManagement_Load(object sender, EventArgs e)
@@ -163,6 +189,13 @@ namespace UI_Tier
             flpUserList.ResumeLayout();
 
             lblPageStatus.Text = $"Trang {_currentPage} / {totalPages}";
+            
+            // Luôn để Enabled = true để bắt hover
+            lblPrev.Enabled = true;
+            lblNext.Enabled = true;
+            lblPrev.ForeColor = Color.FromArgb(0, 120, 212);
+            lblNext.ForeColor = Color.FromArgb(0, 120, 212);
+
             flpUserList.AutoScrollPosition = new Point(0, 0);
         }
 

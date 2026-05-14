@@ -70,6 +70,7 @@
             label11 = new Label();
             panel21 = new Panel();
             panel22 = new Panel();
+            txtAddress = new TextBox();
             label19 = new Label();
             panel12 = new Panel();
             label12 = new Label();
@@ -87,7 +88,6 @@
             label2 = new Label();
             label1 = new Label();
             ofdCCHN = new OpenFileDialog();
-            txtAddress = new TextBox();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             panel3.SuspendLayout();
@@ -134,7 +134,7 @@
             panel2.BackColor = Color.FromArgb(24, 112, 255);
             panel2.Controls.Add(panel3);
             panel2.Controls.Add(label1);
-            panel2.Location = new Point(39, 102);
+            panel2.Location = new Point(22, 102);
             panel2.Name = "panel2";
             panel2.Size = new Size(2165, 1719);
             panel2.TabIndex = 4;
@@ -558,6 +558,17 @@
             panel22.Size = new Size(751, 78);
             panel22.TabIndex = 40;
             // 
+            // txtAddress
+            // 
+            txtAddress.BackColor = SystemColors.Window;
+            txtAddress.BorderStyle = BorderStyle.None;
+            txtAddress.CausesValidation = false;
+            txtAddress.Font = new Font("Segoe UI", 12F);
+            txtAddress.Location = new Point(13, 17);
+            txtAddress.Name = "txtAddress";
+            txtAddress.Size = new Size(723, 43);
+            txtAddress.TabIndex = 3;
+            // 
             // label19
             // 
             label19.AutoSize = true;
@@ -733,17 +744,6 @@
             // ofdCCHN
             // 
             ofdCCHN.FileName = "pngCCHN";
-            // 
-            // txtAddress
-            // 
-            txtAddress.BackColor = SystemColors.Window;
-            txtAddress.BorderStyle = BorderStyle.None;
-            txtAddress.CausesValidation = false;
-            txtAddress.Font = new Font("Segoe UI", 12F);
-            txtAddress.Location = new Point(13, 17);
-            txtAddress.Name = "txtAddress";
-            txtAddress.Size = new Size(723, 43);
-            txtAddress.TabIndex = 3;
             // 
             // frmRegister
             // 

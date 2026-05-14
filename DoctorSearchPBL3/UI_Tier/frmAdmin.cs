@@ -33,7 +33,6 @@ namespace UI_Tier
                 return cp;
             }
         }
-
         private void InitTabs()
         {
             _tabTypeMapping.Add(pnlOverview, typeof(ucAdmin_Overview));
