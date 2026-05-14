@@ -18,6 +18,18 @@ namespace UI_Tier
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
             UIHelper.SetDoubleBuffered(flpAppItem);
+
+            // Hiệu ứng hover cho các nút phân trang
+            lblPrev.MouseEnter += Pagination_MouseEnter;
+            lblPrev.MouseLeave += Pagination_MouseLeave;
+            lblNext.MouseEnter += Pagination_MouseEnter;
+            lblNext.MouseLeave += Pagination_MouseLeave;
+            
+            lblPrev.Click += lblPrev_Click;
+            lblNext.Click += lblNext_Click;
+
+            lblPrev.Cursor = Cursors.Hand;
+            lblNext.Cursor = Cursors.Hand;
         }
         // Khai báo một lần ở cấp độ class để tái sử dụng
         private AppointmentBUS _bus = new AppointmentBUS();
@@ -112,11 +124,6 @@ namespace UI_Tier
 
         private void ucPatient_Appointment_Load(object sender, EventArgs e)
         {
-            flpAppItem.Dock = DockStyle.None; // Tạm bỏ dock
-            //flpAppItem.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
-
-            flpAppItem.Width = this.Width;
-
             InitData();
 
             this.Resize += (s, ev) =>
@@ -150,5 +157,22 @@ namespace UI_Tier
             }
         }
 
+        private void Pagination_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Label lbl)
+            {
+                lbl.ForeColor = Color.FromArgb(0, 90, 158); // Xanh đậm hơn khi hover
+                lbl.Top -= 2; // Hiệu ứng "nhấc lên"
+            }
+        }
+
+        private void Pagination_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Label lbl)
+            {
+                lbl.ForeColor = Color.FromArgb(0, 120, 212); // Trở lại màu chuẩn
+                lbl.Top += 2;
+            }
+        }
     }
 }

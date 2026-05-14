@@ -1,4 +1,4 @@
-﻿namespace UI_Tier
+namespace UI_Tier
 {
     partial class ucPatient_Appointment
     {
@@ -42,15 +42,15 @@
             btnAccepted = new Button();
             btnCanceled = new Button();
             btnDone = new Button();
-            pnlAlert = new Panel();
+            flpAppItem = new FlowLayoutPanel();
+            pnlPagination = new Panel();
             lblPageStatus = new Label();
             lblPrev = new Label();
             lblNext = new Label();
-            flpAppItem = new FlowLayoutPanel();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             flpFilter.SuspendLayout();
-            pnlAlert.SuspendLayout();
+            pnlPagination.SuspendLayout();
             SuspendLayout();
             // 
             // panel3
@@ -65,18 +65,17 @@
             panel3.Controls.Add(label2);
             panel3.Controls.Add(label1);
             panel3.Controls.Add(flpFilter);
-            panel3.Controls.Add(pnlAlert);
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 0);
             panel3.Name = "panel3";
-            panel3.Size = new Size(1845, 528);
+            panel3.Size = new Size(1845, 358);
             panel3.TabIndex = 6;
             // 
             // label4
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 12F);
-            label4.Location = new Point(865, 290);
+            label4.Location = new Point(860, 166);
             label4.Name = "label4";
             label4.Size = new Size(154, 45);
             label4.TabIndex = 28;
@@ -86,7 +85,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 12F);
-            label3.Location = new Point(144, 284);
+            label3.Location = new Point(144, 166);
             label3.Name = "label3";
             label3.Size = new Size(133, 45);
             label3.TabIndex = 27;
@@ -98,7 +97,7 @@
             dtpEnd.CustomFormat = "  dd / MM / yyyy";
             dtpEnd.Font = new Font("Segoe UI", 12F);
             dtpEnd.Format = DateTimePickerFormat.Custom;
-            dtpEnd.Location = new Point(1052, 284);
+            dtpEnd.Location = new Point(1045, 166);
             dtpEnd.Name = "dtpEnd";
             dtpEnd.Size = new Size(360, 50);
             dtpEnd.TabIndex = 26;
@@ -109,7 +108,7 @@
             dtpBegin.CustomFormat = "  dd / MM / yyyy";
             dtpBegin.Font = new Font("Segoe UI", 12F);
             dtpBegin.Format = DateTimePickerFormat.Custom;
-            dtpBegin.Location = new Point(295, 284);
+            dtpBegin.Location = new Point(294, 166);
             dtpBegin.Name = "dtpBegin";
             dtpBegin.Size = new Size(360, 50);
             dtpBegin.TabIndex = 25;
@@ -117,7 +116,7 @@
             // pictureBox2
             // 
             pictureBox2.Image = Properties.Resources.filter;
-            pictureBox2.Location = new Point(56, 284);
+            pictureBox2.Location = new Point(56, 166);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(65, 62);
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
@@ -127,22 +126,22 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 13F, FontStyle.Italic);
+            label2.Font = new Font("Segoe UI", 13.875F, FontStyle.Italic, GraphicsUnit.Point, 0);
             label2.Location = new Point(56, 84);
             label2.Name = "label2";
-            label2.Size = new Size(688, 47);
+            label2.Size = new Size(724, 50);
             label2.TabIndex = 1;
             label2.Text = "Theo dõi lịch hẹn và kết quả khám sức khỏe";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 17F, FontStyle.Bold);
+            label1.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.Location = new Point(43, 12);
             label1.Name = "label1";
-            label1.Size = new Size(377, 62);
+            label1.Size = new Size(342, 59);
             label1.TabIndex = 0;
-            label1.Text = "Quản lý lịch hẹn";
+            label1.Text = "Lịch hẹn của tôi";
             // 
             // flpFilter
             // 
@@ -152,7 +151,7 @@
             flpFilter.Controls.Add(btnAccepted);
             flpFilter.Controls.Add(btnCanceled);
             flpFilter.Controls.Add(btnDone);
-            flpFilter.Location = new Point(144, 356);
+            flpFilter.Location = new Point(144, 239);
             flpFilter.Name = "flpFilter";
             flpFilter.Padding = new Padding(10);
             flpFilter.Size = new Size(1653, 77);
@@ -209,72 +208,76 @@
             btnDone.Text = "Hoàn thành";
             btnDone.UseVisualStyleBackColor = true;
             // 
-            // pnlAlert
+            // flpAppItem
             // 
-            pnlAlert.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            pnlAlert.BackColor = Color.AliceBlue;
-            pnlAlert.Controls.Add(lblPageStatus);
-            pnlAlert.Controls.Add(lblPrev);
-            pnlAlert.Controls.Add(lblNext);
-            pnlAlert.Location = new Point(0, 458);
-            pnlAlert.Name = "pnlAlert";
-            pnlAlert.Padding = new Padding(10);
-            pnlAlert.Size = new Size(1845, 67);
-            pnlAlert.TabIndex = 8;
+            flpAppItem.AutoScroll = true;
+            flpAppItem.Dock = DockStyle.Fill;
+            flpAppItem.FlowDirection = FlowDirection.TopDown;
+            flpAppItem.Location = new Point(0, 358);
+            flpAppItem.Margin = new Padding(0);
+            flpAppItem.Name = "flpAppItem";
+            flpAppItem.Size = new Size(1845, 424);
+            flpAppItem.TabIndex = 7;
+            flpAppItem.WrapContents = false;
+            // 
+            // pnlPagination
+            // 
+            pnlPagination.BackColor = Color.FromArgb(240, 245, 250);
+            pnlPagination.Controls.Add(lblPageStatus);
+            pnlPagination.Controls.Add(lblPrev);
+            pnlPagination.Controls.Add(lblNext);
+            pnlPagination.Dock = DockStyle.Bottom;
+            pnlPagination.Location = new Point(0, 782);
+            pnlPagination.Margin = new Padding(5);
+            pnlPagination.Name = "pnlPagination";
+            pnlPagination.Size = new Size(1845, 80);
+            pnlPagination.TabIndex = 8;
             // 
             // lblPageStatus
             // 
-            lblPageStatus.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblPageStatus.Anchor = AnchorStyles.Top;
             lblPageStatus.AutoSize = true;
             lblPageStatus.Font = new Font("Segoe UI", 11F);
-            lblPageStatus.Location = new Point(1396, 16);
+            lblPageStatus.Location = new Point(843, 24);
+            lblPageStatus.Margin = new Padding(5, 0, 5, 0);
             lblPageStatus.Name = "lblPageStatus";
-            lblPageStatus.RightToLeft = RightToLeft.No;
-            lblPageStatus.Size = new Size(67, 41);
+            lblPageStatus.Size = new Size(159, 41);
             lblPageStatus.TabIndex = 2;
-            lblPageStatus.Text = "1/...";
+            lblPageStatus.Text = "Trang 1 / 1";
             // 
             // lblPrev
             // 
-            lblPrev.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblPrev.AutoSize = true;
-            lblPrev.Font = new Font("Segoe UI", 11F);
-            lblPrev.Location = new Point(1157, 16);
+            lblPrev.Cursor = Cursors.Hand;
+            lblPrev.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblPrev.ForeColor = Color.FromArgb(0, 120, 212);
+            lblPrev.Location = new Point(60, 24);
+            lblPrev.Margin = new Padding(5, 0, 5, 0);
             lblPrev.Name = "lblPrev";
-            lblPrev.Size = new Size(219, 41);
+            lblPrev.Size = new Size(234, 41);
             lblPrev.TabIndex = 1;
-            lblPrev.Text = "Trang trước <<";
-            lblPrev.Click += lblPrev_Click;
+            lblPrev.Text = "<< Trang trước";
             // 
             // lblNext
             // 
             lblNext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblNext.AutoSize = true;
-            lblNext.Font = new Font("Segoe UI", 11F);
-            lblNext.Location = new Point(1590, 16);
+            lblNext.Cursor = Cursors.Hand;
+            lblNext.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblNext.ForeColor = Color.FromArgb(0, 120, 212);
+            lblNext.Location = new Point(1581, 24);
+            lblNext.Margin = new Padding(5, 0, 5, 0);
             lblNext.Name = "lblNext";
-            lblNext.Size = new Size(194, 41);
+            lblNext.Size = new Size(204, 41);
             lblNext.TabIndex = 0;
-            lblNext.Text = ">> Trang sau";
-            lblNext.Click += lblNext_Click;
-            // 
-            // flpAppItem
-            // 
-            flpAppItem.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            flpAppItem.AutoScroll = true;
-            flpAppItem.FlowDirection = FlowDirection.TopDown;
-            flpAppItem.Location = new Point(0, 528);
-            flpAppItem.Margin = new Padding(0);
-            flpAppItem.Name = "flpAppItem";
-            flpAppItem.Size = new Size(1845, 334);
-            flpAppItem.TabIndex = 7;
-            flpAppItem.WrapContents = false;
+            lblNext.Text = "Trang sau >>";
             // 
             // ucPatient_Appointment
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
+            Controls.Add(pnlPagination);
             Controls.Add(flpAppItem);
             Controls.Add(panel3);
             Name = "ucPatient_Appointment";
@@ -284,8 +287,8 @@
             panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             flpFilter.ResumeLayout(false);
-            pnlAlert.ResumeLayout(false);
-            pnlAlert.PerformLayout();
+            pnlPagination.ResumeLayout(false);
+            pnlPagination.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -310,5 +313,6 @@
         private Label label4;
         private Label label3;
         private DateTimePicker dtpEnd;
+        private Panel pnlPagination;
     }
 }

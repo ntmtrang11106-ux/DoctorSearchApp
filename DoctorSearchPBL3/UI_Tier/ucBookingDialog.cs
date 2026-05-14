@@ -31,21 +31,49 @@ namespace UI_Tier
         private void ucBookingDialog_Load(object sender, EventArgs e)
         {
             // Styling
+            this.Padding = new Padding(3); // Giúp viền dày 3 không bị các panel con che khuất
             UIHelper.ApplyRoundedRegion(this, 20);
-            this.BackColor = Color.White; // Nền trắng như hình mẫu
-            this.Paint += (s, ev) => UIHelper.uc_Paint(s, ev, 20, Color.FromArgb(226, 232, 240), 2); // Viền xám nhạt
-
-            UIHelper.ApplyRoundedRegion(picIcon, 20); // Ô icon trắng ở header
-            picIcon.BackColor = Color.White;
+            this.BackColor = Color.White;
+            // Viền form màu đen dày 3 - Phải vẽ sau cùng hoặc chừa lề bằng Padding
+            this.Paint += (s, ev) => UIHelper.uc_Paint(s, ev, 20, Color.Black, 3);
 
             UIHelper.ApplyRoundedRegion(pnlDoctorInfo, 20); // Bo góc cho card bác sĩ
             UIHelper.ApplyRoundedRegion(picDocAvatar, picDocAvatar.Width / 2); // Bo tròn ảnh đại diện
-            
-            UIHelper.ApplyRoundedRegion(txtReason, 15);
-            txtReason.Paint += (s, ev) => UIHelper.DrawControlBorder(txtReason, ev, 15, Color.FromArgb(209, 213, 219), 1);
+
+            // Bo viền cho Lý do khám (Dùng panel bọc ngoài)
+            Panel pnlReasonBorder = new Panel();
+            pnlReasonBorder.Size = txtReason.Size;
+            pnlReasonBorder.Location = txtReason.Location;
+            pnlReasonBorder.BackColor = Color.White; // Nền trắng mặc định
+            this.Controls.Add(pnlReasonBorder);
+
+            txtReason.Parent = pnlReasonBorder;
+            txtReason.Dock = DockStyle.Fill;
+            txtReason.BorderStyle = BorderStyle.None;
+            txtReason.BackColor = Color.White; // Nền trắng mặc định đồng bộ
+            // Chừa lề một chút để text không dính vào viền
+            pnlReasonBorder.Padding = new Padding(12, 10, 12, 10);
+
+            UIHelper.ApplyRoundedRegion(pnlReasonBorder, 15);
+            pnlReasonBorder.Paint += (s, ev) =>
+            {
+                // Vẽ viền xám mờ bao quanh - Độ dày 2 theo yêu cầu
+                using (Pen penGray = new Pen(Color.FromArgb(209, 213, 219), 2))
+                {
+                    ev.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                    ev.Graphics.DrawPath(penGray, UIHelper.GetRoundedPath(new Rectangle(0, 0, pnlReasonBorder.Width - 1, pnlReasonBorder.Height - 1), 15));
+                }
+            };
+
+            UIHelper.ApplyRoundedRegion(flpTimeSlots, 15);
+            flpTimeSlots.Paint += (s, ev) => UIHelper.DrawControlBorder(flpTimeSlots, ev, 15, Color.Black, 2);
+
             UIHelper.ApplyRoundedRegion(pnlNotice, 15);
             UIHelper.ApplyRoundedRegion(btnConfirm, 15);
             UIHelper.ApplyRoundedRegion(btnCancel, 15);
+
+            // Click ra vùng trắng để thoát ô nhập (Đăng ký cho tất cả các control không phải input)
+            RegisterUnfocus(this);
 
             // Placeholder cho txtReason
             txtReason.Text = "Vui lòng mô tả lý do bạn cần khám bệnh...";
@@ -58,7 +86,7 @@ namespace UI_Tier
             {
                 lblDocName.Text = (_doctor.Position + " " + _doctor.User?.FullName).Trim();
                 lblDocDept.Text = _doctor.Department?.DepartmentName ?? "Chuyên khoa";
-                
+
 
                 string fileName = string.IsNullOrWhiteSpace(_doctor.User?.Picture) ? "default.jpg" : _doctor.User.Picture.Trim();
                 string imagePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources_Images", fileName);
@@ -77,6 +105,9 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(picLegendSelected, 6);
             UIHelper.ApplyRoundedRegion(picLegendAvailable, 6);
             UIHelper.ApplyRoundedRegion(picLegendBooked, 6);
+
+            // Vẽ viền đen đậm hơn cho ô "Còn trống"
+            picLegendAvailable.Paint += (s, ev) => UIHelper.DrawControlBorder(picLegendAvailable, ev, 6, Color.Black, 2);
 
             // Set default date hoặc dữ liệu Edit
             if (_editAppointmentId != -1)
@@ -119,10 +150,13 @@ namespace UI_Tier
             {
                 Label lblEmpty = new Label();
                 lblEmpty.Text = "Không có lịch khám nào trong ngày này.";
-                lblEmpty.Font = new Font("Segoe UI", 10, FontStyle.Italic);
+                lblEmpty.Font = new Font("Segoe UI", 12, FontStyle.Italic);
                 lblEmpty.ForeColor = Color.Gray;
                 lblEmpty.TextAlign = ContentAlignment.MiddleCenter;
-                lblEmpty.Size = new Size(flpTimeSlots.Width - 20, 100);
+                // Căn giữa chính xác bằng cách chiếm toàn bộ chiều cao container
+                lblEmpty.AutoSize = false;
+                lblEmpty.Size = new Size(flpTimeSlots.Width - 40, flpTimeSlots.Height - 40);
+                lblEmpty.Margin = new Padding(20, 20, 20, 20);
                 flpTimeSlots.Controls.Add(lblEmpty);
             }
             else
@@ -273,7 +307,7 @@ namespace UI_Tier
         {
             string currentText = txtReason.Text;
             if (currentText == "Vui lòng mô tả lý do bạn cần khám bệnh...") return;
-            
+
             int length = currentText.Length;
             lblCharCount.Text = $"{length}/500 ký tự";
             lblCharCount.ForeColor = length > 500 ? Color.Red : Color.Gray;
@@ -286,6 +320,11 @@ namespace UI_Tier
                 txtReason.Text = "";
                 txtReason.ForeColor = Color.Black;
             }
+            // Highlight khi chọn: Nền xanh nhạt và viền xanh ở đáy
+            txtReason.Parent.BackColor = Color.FromArgb(243, 248, 255);
+            txtReason.BackColor = Color.FromArgb(243, 248, 255);
+            txtReason.Parent.Paint += DrawFocusHighlight;
+            txtReason.Parent.Invalidate();
         }
 
         private void txtReason_Leave(object sender, EventArgs e)
@@ -295,9 +334,38 @@ namespace UI_Tier
                 txtReason.Text = "Vui lòng mô tả lý do bạn cần khám bệnh...";
                 txtReason.ForeColor = Color.Gray;
             }
+            // Trở về bình thường khi thoát: Nền trắng
+            txtReason.Parent.BackColor = Color.White;
+            txtReason.BackColor = Color.White;
+            txtReason.Parent.Paint -= DrawFocusHighlight;
+            txtReason.Parent.Invalidate();
         }
 
-        #region Draggable Header
+        private void DrawFocusHighlight(object sender, PaintEventArgs e)
+        {
+            Control ctrl = (Control)sender;
+            using (Pen penBlue = new Pen(Color.FromArgb(37, 99, 235), 4))
+            {
+                e.Graphics.DrawLine(penBlue, 15, ctrl.Height - 2, ctrl.Width - 15, ctrl.Height - 2);
+            }
+        }
+
+        #region Draggable Header & Unfocus
+        private void RegisterUnfocus(Control ctrl)
+        {
+            // Sử dụng ActiveControl để đẩy focus ra khỏi ô nhập liệu một cách triệt để
+            ctrl.Click += (s, e) => this.ActiveControl = lblTitle;
+            
+            foreach (Control child in ctrl.Controls)
+            {
+                // Không đăng ký cho các ô nhập liệu hoặc nút bấm
+                if (!(child is RichTextBox || child is TextBox || child is Button || child is DateTimePicker))
+                {
+                    RegisterUnfocus(child);
+                }
+            }
+        }
+
         private Point _mouseLoc;
         private void panelHeader_MouseDown(object sender, MouseEventArgs e) => _mouseLoc = e.Location;
         private void panelHeader_MouseMove(object sender, MouseEventArgs e)

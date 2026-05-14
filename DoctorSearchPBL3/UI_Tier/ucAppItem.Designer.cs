@@ -106,7 +106,7 @@ namespace UI_Tier
             btnStatus.FlatStyle = FlatStyle.Flat;
             btnStatus.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnStatus.ForeColor = Color.DarkGreen;
-            btnStatus.Location = new Point(1543, 80);
+            btnStatus.Location = new Point(1850, 80);
             btnStatus.Name = "btnStatus";
             btnStatus.Size = new Size(200, 60);
             btnStatus.TabIndex = 9;
