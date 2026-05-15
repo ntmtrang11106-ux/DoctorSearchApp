@@ -353,12 +353,13 @@ namespace UI_Tier
             pnlReviewPagination.Controls.Add(lblReviewPageStatus);
             pnlReviewPagination.Controls.Add(lblReviewPrev);
             pnlReviewPagination.Controls.Add(lblReviewNext);
-            pnlReviewPagination.Dock = DockStyle.Bottom;
+            pnlReviewPagination.Dock = DockStyle.Top;
             pnlReviewPagination.Location = new Point(0, 779);
+            pnlReviewPagination.Margin = new Padding(0, 10, 0, 10);
             pnlReviewPagination.Name = "pnlReviewPagination";
-            pnlReviewPagination.Padding = new Padding(0, 30, 0, 0);
             pnlReviewPagination.Size = new Size(1003, 61);
             pnlReviewPagination.TabIndex = 58;
+            pnlReviewPagination.Visible = false;
             // 
             // lblReviewPageStatus
             // 
@@ -401,12 +402,13 @@ namespace UI_Tier
             // flpReview
             // 
             flpReview.AutoScroll = true;
-            flpReview.Dock = DockStyle.Fill;
+            flpReview.Dock = DockStyle.Top;
             flpReview.FlowDirection = FlowDirection.TopDown;
             flpReview.Location = new Point(0, 198);
+            flpReview.Margin = new Padding(20, 10, 20, 0);
             flpReview.Name = "flpReview";
-            flpReview.Padding = new Padding(25, 10, 25, 10);
-            flpReview.Size = new Size(1003, 642);
+            flpReview.Padding = new Padding(5, 5, 5, 10);
+            flpReview.Size = new Size(1003, 581);
             flpReview.TabIndex = 4;
             flpReview.WrapContents = false;
             // 
@@ -485,11 +487,13 @@ namespace UI_Tier
             pnlAppPagination.Controls.Add(lblAppPageStatus);
             pnlAppPagination.Controls.Add(lblAppPrev);
             pnlAppPagination.Controls.Add(lblAppNext);
-            pnlAppPagination.Dock = DockStyle.Bottom;
+            pnlAppPagination.Dock = DockStyle.Top;
             pnlAppPagination.Location = new Point(0, 778);
+            pnlAppPagination.Margin = new Padding(0, 10, 0, 10);
             pnlAppPagination.Name = "pnlAppPagination";
             pnlAppPagination.Size = new Size(1002, 60);
             pnlAppPagination.TabIndex = 60;
+            pnlAppPagination.Visible = false;
             // 
             // lblAppPageStatus
             // 
@@ -532,12 +536,13 @@ namespace UI_Tier
             // flpAppItem
             // 
             flpAppItem.AutoScroll = true;
-            flpAppItem.Dock = DockStyle.Fill;
+            flpAppItem.Dock = DockStyle.Top;
             flpAppItem.FlowDirection = FlowDirection.TopDown;
             flpAppItem.Location = new Point(0, 338);
+            flpAppItem.Margin = new Padding(20, 10, 20, 0);
             flpAppItem.Name = "flpAppItem";
-            flpAppItem.Padding = new Padding(25, 10, 25, 10);
-            flpAppItem.Size = new Size(1002, 500);
+            flpAppItem.Padding = new Padding(5, 5, 5, 10);
+            flpAppItem.Size = new Size(1002, 440);
             flpAppItem.TabIndex = 0;
             flpAppItem.WrapContents = false;
             // 

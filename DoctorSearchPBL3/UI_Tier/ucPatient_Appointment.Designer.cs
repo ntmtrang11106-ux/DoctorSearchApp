@@ -47,10 +47,12 @@ namespace UI_Tier
             lblPageStatus = new Label();
             lblPrev = new Label();
             lblNext = new Label();
+            pnlResultContainer = new Panel();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             flpFilter.SuspendLayout();
             pnlPagination.SuspendLayout();
+            pnlResultContainer.SuspendLayout();
             SuspendLayout();
             // 
             // panel3
@@ -68,7 +70,7 @@ namespace UI_Tier
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 0);
             panel3.Name = "panel3";
-            panel3.Size = new Size(1845, 358);
+            panel3.Size = new Size(1845, 332);
             panel3.TabIndex = 6;
             // 
             // label4
@@ -151,7 +153,7 @@ namespace UI_Tier
             flpFilter.Controls.Add(btnAccepted);
             flpFilter.Controls.Add(btnCanceled);
             flpFilter.Controls.Add(btnDone);
-            flpFilter.Location = new Point(144, 239);
+            flpFilter.Location = new Point(144, 249);
             flpFilter.Name = "flpFilter";
             flpFilter.Padding = new Padding(10);
             flpFilter.Size = new Size(1653, 77);
@@ -213,10 +215,10 @@ namespace UI_Tier
             flpAppItem.AutoScroll = true;
             flpAppItem.Dock = DockStyle.Fill;
             flpAppItem.FlowDirection = FlowDirection.TopDown;
-            flpAppItem.Location = new Point(0, 358);
+            flpAppItem.Location = new Point(20, 10);
             flpAppItem.Margin = new Padding(0);
             flpAppItem.Name = "flpAppItem";
-            flpAppItem.Size = new Size(1845, 504);
+            flpAppItem.Size = new Size(1805, 404);
             flpAppItem.TabIndex = 7;
             flpAppItem.WrapContents = false;
             // 
@@ -272,13 +274,24 @@ namespace UI_Tier
             lblNext.TabIndex = 0;
             lblNext.Text = "Trang sau >>";
             // 
+            // pnlResultContainer
+            // 
+            pnlResultContainer.Controls.Add(flpAppItem);
+            pnlResultContainer.Dock = DockStyle.Fill;
+            pnlResultContainer.Location = new Point(0, 332);
+            pnlResultContainer.Margin = new Padding(10);
+            pnlResultContainer.Name = "pnlResultContainer";
+            pnlResultContainer.Padding = new Padding(5, 5, 5, 10);
+            pnlResultContainer.Size = new Size(1845, 450);
+            pnlResultContainer.TabIndex = 9;
+            // 
             // ucPatient_Appointment
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
+            Controls.Add(pnlResultContainer);
             Controls.Add(pnlPagination);
-            Controls.Add(flpAppItem);
             Controls.Add(panel3);
             Name = "ucPatient_Appointment";
             Size = new Size(1845, 862);
@@ -289,6 +302,7 @@ namespace UI_Tier
             flpFilter.ResumeLayout(false);
             pnlPagination.ResumeLayout(false);
             pnlPagination.PerformLayout();
+            pnlResultContainer.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -314,5 +328,6 @@ namespace UI_Tier
         private Label label3;
         private DateTimePicker dtpEnd;
         private Panel pnlPagination;
+        private Panel pnlResultContainer;
     }
 }

@@ -43,7 +43,7 @@ namespace UI_Tier
             flpAppItem.Resize += (s, e) => {
                 foreach (Control ctrl in flpAppItem.Controls)
                 {
-                    ctrl.Width = flpAppItem.ClientSize.Width - 20;
+                    ctrl.Width = flpAppItem.ClientSize.Width - 40;
                 }
             };
 
@@ -169,9 +169,11 @@ namespace UI_Tier
 
             int totalPages = (int)Math.Ceiling((double)_filteredApps.Count / _pageSize);
             lblReviewPageStatus.Text = $"Trang {_currentPage} / {totalPages} ";
+
+            pnlReviewPagination.Visible = _filteredApps.Count > 0;
+
             flpAppItem.ResumeLayout();
         }
-
 
         private void lblPrev_Click(object sender, EventArgs e)
         {

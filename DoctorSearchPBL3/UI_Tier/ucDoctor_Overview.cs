@@ -41,7 +41,11 @@ namespace UI_Tier
             lblAppNext.Click += lblAppNext_Click;
 
             this.Load += ucDoctor_Overview_Load;
-            this.Resize += (s, e) => UpdateUI();
+            this.Resize += (s, e) => {
+                UpdateUI();
+                UpdateListLayout(flpRecentReviews, pnlReviewPagination, pnlReviews, lblRecentReviewsTitle.Height + 20);
+                UpdateListLayout(flpTodayApp, pnlAppPagination, pnlAppointments, lblTodayTitle.Height + 20);
+            };
         }
 
         private void ucDoctor_Overview_Load(object sender, EventArgs e)
@@ -176,6 +180,7 @@ namespace UI_Tier
             lblAppNext.ForeColor = Color.FromArgb(0, 120, 212);
 
             pnlAppPagination.Visible = _allTodayApps.Count > 0;
+            UpdateListLayout(flpTodayApp, pnlAppPagination, pnlAppointments, lblTodayTitle.Height + 20);
             flpTodayApp.ResumeLayout();
         }
 
@@ -202,6 +207,7 @@ namespace UI_Tier
         {
             ucAppointmentRow row = new ucAppointmentRow();
             row.SetData(app);
+            row.Margin = new Padding(10, 5, 10, 5); // Thêm khoảng cách
             flpTodayApp.Controls.Add(row);
         }
 
@@ -224,6 +230,7 @@ namespace UI_Tier
             {
                 ucReviewItem item = new ucReviewItem();
                 item.SetReviewData(rev, _currentDoctor, -1);
+                item.Margin = new Padding(10, 5, 10, 5); // Thêm khoảng cách
                 flpRecentReviews.Controls.Add(item);
             }
 
@@ -237,6 +244,7 @@ namespace UI_Tier
             lblReviewNext.ForeColor = Color.FromArgb(0, 120, 212);
 
             pnlReviewPagination.Visible = _allReviews.Count > 0;
+            UpdateListLayout(flpRecentReviews, pnlReviewPagination, pnlReviews, lblRecentReviewsTitle.Height + 20);
             flpRecentReviews.ResumeLayout();
         }
 
@@ -259,5 +267,42 @@ namespace UI_Tier
             }
         }
 
+        private void UpdateListLayout(FlowLayoutPanel flp, Panel pnlPagination, Panel container, int reservedHeight)
+        {
+            flp.Padding = new Padding(flp.Padding.Left, flp.Padding.Top, flp.Padding.Right, 0);
+            int totalItemsHeight = flp.Padding.Top + flp.Padding.Bottom;
+            foreach (Control ctrl in flp.Controls)
+            {
+                if (ctrl.Visible && ctrl != pnlPagination && ctrl.Name != "pnlBuffer") 
+                    totalItemsHeight += ctrl.Height + ctrl.Margin.Top + ctrl.Margin.Bottom;
+            }
+
+            int availableHeight = container.Height - reservedHeight;
+
+            // Xóa buffer cũ nếu có
+            Control oldBuffer = flp.Controls.Find("pnlBuffer", false).FirstOrDefault();
+            if (oldBuffer != null) flp.Controls.Remove(oldBuffer);
+
+            if (totalItemsHeight + pnlPagination.Height < availableHeight)
+            {
+                pnlPagination.Dock = DockStyle.Top;
+                pnlPagination.Margin = new Padding(0, 10, 0, 0); // Thêm khoảng cách 10px
+                flp.Dock = DockStyle.Top;
+                flp.Height = totalItemsHeight;
+                flp.AutoScroll = false;
+            }
+            else
+            {
+                pnlPagination.Dock = DockStyle.Bottom;
+                pnlPagination.Margin = new Padding(0);
+                flp.Dock = DockStyle.Fill;
+                flp.AutoScroll = true;
+                
+                Panel pnlBuffer = new Panel { Height = 15, Width = flp.Width, Name = "pnlBuffer" };
+                flp.Controls.Add(pnlBuffer);
+            }
+            
+            container.Controls.SetChildIndex(pnlPagination, 0); 
+        }
     }
 }

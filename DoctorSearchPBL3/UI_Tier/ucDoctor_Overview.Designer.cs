@@ -20,12 +20,12 @@ namespace UI_Tier
             lblWelcome = new Label();
             tlpMain = new TableLayoutPanel();
             pnlReviews = new Panel();
+            lblNoReviews = new Label();
             pnlReviewPagination = new Panel();
             lblReviewPageStatus = new Label();
             lblReviewPrev = new Label();
             lblReviewNext = new Label();
             flpRecentReviews = new FlowLayoutPanel();
-            lblNoReviews = new Label();
             lblRecentReviewsTitle = new Label();
             pnlAppointments = new Panel();
             pnlAppPagination = new Panel();
@@ -33,9 +33,10 @@ namespace UI_Tier
             lblAppPrev = new Label();
             lblAppNext = new Label();
             flpTodayApp = new FlowLayoutPanel();
-            lblNoApp = new Label();
+            label5 = new Label();
             lblTodayDate = new Label();
             lblTodayTitle = new Label();
+            lblNoApp = new Label();
             tableLayoutPanel1 = new TableLayoutPanel();
             pnlCard1 = new Panel();
             label1 = new Label();
@@ -65,7 +66,6 @@ namespace UI_Tier
             lblIcon3 = new Label();
             pnlIcon4 = new Panel();
             lblIcon4 = new Label();
-            label5 = new Label();
             pnlHeader.SuspendLayout();
             tlpMain.SuspendLayout();
             pnlReviews.SuspendLayout();
@@ -140,11 +140,27 @@ namespace UI_Tier
             pnlReviews.Controls.Add(flpRecentReviews);
             pnlReviews.Controls.Add(lblRecentReviewsTitle);
             pnlReviews.Dock = DockStyle.Fill;
-            pnlReviews.Location = new Point(0, 15);
-            pnlReviews.Margin = new Padding(0, 15, 7, 0);
+            pnlReviews.Location = new Point(10, 10);
+            pnlReviews.Margin = new Padding(10, 10, 10, 0);
             pnlReviews.Name = "pnlReviews";
-            pnlReviews.Size = new Size(952, 971);
+            pnlReviews.Padding = new Padding(5, 5, 5, 0);
+            pnlReviews.Size = new Size(939, 976);
             pnlReviews.TabIndex = 1;
+            // 
+            // lblNoReviews
+            // 
+            lblNoReviews.Dock = DockStyle.Top;
+            lblNoReviews.Font = new Font("Segoe UI", 11F);
+            lblNoReviews.ForeColor = Color.Gray;
+            lblNoReviews.Location = new Point(5, 201);
+            lblNoReviews.Margin = new Padding(0);
+            lblNoReviews.Name = "lblNoReviews";
+            lblNoReviews.Padding = new Padding(0, 30, 0, 0);
+            lblNoReviews.Size = new Size(929, 93);
+            lblNoReviews.TabIndex = 6;
+            lblNoReviews.Text = "Không có đánh giá nào gần đây";
+            lblNoReviews.TextAlign = ContentAlignment.TopCenter;
+            lblNoReviews.Visible = false;
             // 
             // pnlReviewPagination
             // 
@@ -153,9 +169,10 @@ namespace UI_Tier
             pnlReviewPagination.Controls.Add(lblReviewPrev);
             pnlReviewPagination.Controls.Add(lblReviewNext);
             pnlReviewPagination.Dock = DockStyle.Top;
-            pnlReviewPagination.Location = new Point(0, 116);
+            pnlReviewPagination.Location = new Point(5, 121);
+            pnlReviewPagination.Margin = new Padding(5, 5, 5, 10);
             pnlReviewPagination.Name = "pnlReviewPagination";
-            pnlReviewPagination.Size = new Size(952, 80);
+            pnlReviewPagination.Size = new Size(929, 80);
             pnlReviewPagination.TabIndex = 3;
             // 
             // lblReviewPageStatus
@@ -163,7 +180,7 @@ namespace UI_Tier
             lblReviewPageStatus.Anchor = AnchorStyles.Top;
             lblReviewPageStatus.AutoSize = true;
             lblReviewPageStatus.Font = new Font("Segoe UI", 10.5F);
-            lblReviewPageStatus.Location = new Point(402, 20);
+            lblReviewPageStatus.Location = new Point(390, 20);
             lblReviewPageStatus.Name = "lblReviewPageStatus";
             lblReviewPageStatus.Size = new Size(151, 38);
             lblReviewPageStatus.TabIndex = 2;
@@ -188,7 +205,7 @@ namespace UI_Tier
             lblReviewNext.Cursor = Cursors.Hand;
             lblReviewNext.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
             lblReviewNext.ForeColor = Color.FromArgb(0, 120, 212);
-            lblReviewNext.Location = new Point(710, 20);
+            lblReviewNext.Location = new Point(687, 20);
             lblReviewNext.Name = "lblReviewNext";
             lblReviewNext.Size = new Size(191, 38);
             lblReviewNext.TabIndex = 0;
@@ -200,53 +217,39 @@ namespace UI_Tier
             flpRecentReviews.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             flpRecentReviews.Dock = DockStyle.Top;
             flpRecentReviews.FlowDirection = FlowDirection.TopDown;
-            flpRecentReviews.Location = new Point(0, 116);
+            flpRecentReviews.Location = new Point(5, 121);
             flpRecentReviews.Margin = new Padding(0);
             flpRecentReviews.Name = "flpRecentReviews";
-            flpRecentReviews.Size = new Size(952, 0);
+            flpRecentReviews.Size = new Size(929, 0);
             flpRecentReviews.TabIndex = 1;
             flpRecentReviews.WrapContents = false;
-            // 
-            // lblNoReviews
-            // 
-            lblNoReviews.Font = new Font("Segoe UI", 11F);
-            lblNoReviews.ForeColor = Color.Gray;
-            lblNoReviews.Location = new Point(0, 199);
-            lblNoReviews.Margin = new Padding(0);
-            lblNoReviews.Name = "lblNoReviews";
-            lblNoReviews.Padding = new Padding(0, 30, 0, 0);
-            lblNoReviews.Size = new Size(952, 93);
-            lblNoReviews.TabIndex = 6;
-            lblNoReviews.Text = "Không có đánh giá nào gần đây";
-            lblNoReviews.TextAlign = ContentAlignment.TopCenter;
-            lblNoReviews.Visible = false;
             // 
             // lblRecentReviewsTitle
             // 
             lblRecentReviewsTitle.Dock = DockStyle.Top;
             lblRecentReviewsTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             lblRecentReviewsTitle.ForeColor = Color.FromArgb(17, 34, 71);
-            lblRecentReviewsTitle.Location = new Point(0, 0);
+            lblRecentReviewsTitle.Location = new Point(5, 5);
             lblRecentReviewsTitle.Name = "lblRecentReviewsTitle";
             lblRecentReviewsTitle.Padding = new Padding(30, 20, 0, 10);
-            lblRecentReviewsTitle.Size = new Size(952, 116);
+            lblRecentReviewsTitle.Size = new Size(929, 116);
             lblRecentReviewsTitle.TabIndex = 0;
             lblRecentReviewsTitle.Text = "Đánh giá gần đây";
             // 
             // pnlAppointments
             // 
-            pnlAppointments.BackColor = Color.White;
-            pnlAppointments.Controls.Add(label5);
             pnlAppointments.Controls.Add(pnlAppPagination);
             pnlAppointments.Controls.Add(flpTodayApp);
+            pnlAppointments.Controls.Add(label5);
             pnlAppointments.Controls.Add(lblTodayDate);
             pnlAppointments.Controls.Add(lblTodayTitle);
             pnlAppointments.Controls.Add(lblNoApp);
             pnlAppointments.Dock = DockStyle.Fill;
-            pnlAppointments.Location = new Point(966, 15);
-            pnlAppointments.Margin = new Padding(7, 15, 0, 0);
+            pnlAppointments.Location = new Point(969, 10);
+            pnlAppointments.Margin = new Padding(10, 10, 10, 0);
             pnlAppointments.Name = "pnlAppointments";
-            pnlAppointments.Size = new Size(953, 971);
+            pnlAppointments.Padding = new Padding(5, 5, 5, 3);
+            pnlAppointments.Size = new Size(940, 976);
             pnlAppointments.TabIndex = 0;
             // 
             // pnlAppPagination
@@ -256,9 +259,9 @@ namespace UI_Tier
             pnlAppPagination.Controls.Add(lblAppPrev);
             pnlAppPagination.Controls.Add(lblAppNext);
             pnlAppPagination.Dock = DockStyle.Top;
-            pnlAppPagination.Location = new Point(0, 116);
+            pnlAppPagination.Location = new Point(5, 214);
             pnlAppPagination.Name = "pnlAppPagination";
-            pnlAppPagination.Size = new Size(953, 80);
+            pnlAppPagination.Size = new Size(930, 80);
             pnlAppPagination.TabIndex = 3;
             // 
             // lblAppPageStatus
@@ -266,7 +269,7 @@ namespace UI_Tier
             lblAppPageStatus.Anchor = AnchorStyles.Top;
             lblAppPageStatus.AutoSize = true;
             lblAppPageStatus.Font = new Font("Segoe UI", 10.5F);
-            lblAppPageStatus.Location = new Point(401, 20);
+            lblAppPageStatus.Location = new Point(390, 20);
             lblAppPageStatus.Name = "lblAppPageStatus";
             lblAppPageStatus.Size = new Size(151, 38);
             lblAppPageStatus.TabIndex = 2;
@@ -291,7 +294,7 @@ namespace UI_Tier
             lblAppNext.Cursor = Cursors.Hand;
             lblAppNext.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
             lblAppNext.ForeColor = Color.FromArgb(0, 120, 212);
-            lblAppNext.Location = new Point(711, 20);
+            lblAppNext.Location = new Point(688, 20);
             lblAppNext.Name = "lblAppNext";
             lblAppNext.Size = new Size(191, 38);
             lblAppNext.TabIndex = 0;
@@ -303,11 +306,50 @@ namespace UI_Tier
             flpTodayApp.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             flpTodayApp.Dock = DockStyle.Top;
             flpTodayApp.FlowDirection = FlowDirection.TopDown;
-            flpTodayApp.Location = new Point(0, 116);
+            flpTodayApp.Location = new Point(5, 214);
             flpTodayApp.Name = "flpTodayApp";
-            flpTodayApp.Size = new Size(953, 0);
+            flpTodayApp.Size = new Size(930, 0);
             flpTodayApp.TabIndex = 2;
             flpTodayApp.WrapContents = false;
+            // 
+            // label5
+            // 
+            label5.Dock = DockStyle.Top;
+            label5.Font = new Font("Segoe UI", 11F);
+            label5.ForeColor = Color.Gray;
+            label5.Location = new Point(5, 121);
+            label5.Margin = new Padding(0);
+            label5.Name = "label5";
+            label5.Padding = new Padding(0, 30, 0, 0);
+            label5.Size = new Size(930, 93);
+            label5.TabIndex = 7;
+            label5.Text = "Không có lịch hẹn nào hôm nay";
+            label5.TextAlign = ContentAlignment.TopCenter;
+            label5.Visible = false;
+            // 
+            // lblTodayDate
+            // 
+            lblTodayDate.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblTodayDate.AutoSize = true;
+            lblTodayDate.Font = new Font("Segoe UI", 12F);
+            lblTodayDate.ForeColor = Color.Gray;
+            lblTodayDate.Location = new Point(616, 30);
+            lblTodayDate.Name = "lblTodayDate";
+            lblTodayDate.Size = new Size(276, 45);
+            lblTodayDate.TabIndex = 1;
+            lblTodayDate.Text = "Thứ 6, 17/04/2026";
+            // 
+            // lblTodayTitle
+            // 
+            lblTodayTitle.Dock = DockStyle.Top;
+            lblTodayTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+            lblTodayTitle.ForeColor = Color.FromArgb(17, 34, 71);
+            lblTodayTitle.Location = new Point(5, 5);
+            lblTodayTitle.Name = "lblTodayTitle";
+            lblTodayTitle.Padding = new Padding(30, 20, 0, 10);
+            lblTodayTitle.Size = new Size(930, 116);
+            lblTodayTitle.TabIndex = 0;
+            lblTodayTitle.Text = "Lịch hẹn hôm nay";
             // 
             // lblNoApp
             // 
@@ -322,30 +364,6 @@ namespace UI_Tier
             lblNoApp.Text = "Không có lịch hẹn nào hôm nay";
             lblNoApp.TextAlign = ContentAlignment.TopCenter;
             lblNoApp.Visible = false;
-            // 
-            // lblTodayDate
-            // 
-            lblTodayDate.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            lblTodayDate.AutoSize = true;
-            lblTodayDate.Font = new Font("Segoe UI", 12F);
-            lblTodayDate.ForeColor = Color.Gray;
-            lblTodayDate.Location = new Point(634, 25);
-            lblTodayDate.Name = "lblTodayDate";
-            lblTodayDate.Size = new Size(276, 45);
-            lblTodayDate.TabIndex = 1;
-            lblTodayDate.Text = "Thứ 6, 17/04/2026";
-            // 
-            // lblTodayTitle
-            // 
-            lblTodayTitle.Dock = DockStyle.Top;
-            lblTodayTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
-            lblTodayTitle.ForeColor = Color.FromArgb(17, 34, 71);
-            lblTodayTitle.Location = new Point(0, 0);
-            lblTodayTitle.Name = "lblTodayTitle";
-            lblTodayTitle.Padding = new Padding(30, 20, 0, 10);
-            lblTodayTitle.Size = new Size(953, 116);
-            lblTodayTitle.TabIndex = 0;
-            lblTodayTitle.Text = "Lịch hẹn hôm nay";
             // 
             // tableLayoutPanel1
             // 
@@ -692,21 +710,6 @@ namespace UI_Tier
             lblIcon4.Text = "";
             lblIcon4.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // label5
-            // 
-            label5.Dock = DockStyle.Top;
-            label5.Font = new Font("Segoe UI", 11F);
-            label5.ForeColor = Color.Gray;
-            label5.Location = new Point(0, 196);
-            label5.Margin = new Padding(0);
-            label5.Name = "label5";
-            label5.Padding = new Padding(0, 30, 0, 0);
-            label5.Size = new Size(953, 93);
-            label5.TabIndex = 7;
-            label5.Text = "Không có lịch hẹn nào hôm nay";
-            label5.TextAlign = ContentAlignment.TopCenter;
-            label5.Visible = false;
-            // 
             // ucDoctor_Overview
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
@@ -716,7 +719,7 @@ namespace UI_Tier
             Controls.Add(tableLayoutPanel1);
             Controls.Add(pnlHeader);
             Name = "ucDoctor_Overview";
-            Padding = new Padding(50, 10, 50, 10);
+            Padding = new Padding(50, 10, 50, 0);
             Size = new Size(2019, 1371);
             pnlHeader.ResumeLayout(false);
             pnlHeader.PerformLayout();

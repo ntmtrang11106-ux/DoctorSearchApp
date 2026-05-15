@@ -25,7 +25,8 @@ namespace UI_Tier
             lblReviewNext.Click += lblReviewNext_Click;
 
             // Tự động co giãn các card khi resize form
-            flpAppItem.Resize += (s, e) => {
+            flpAppItem.Resize += (s, e) =>
+            {
                 foreach (Control ctrl in flpAppItem.Controls)
                 {
                     if (ctrl is ucAppItem card)
@@ -33,6 +34,7 @@ namespace UI_Tier
                         card.Width = flpAppItem.ClientSize.Width - 40;
                     }
                 }
+                //UpdateListLayout();
             };
 
             // Đăng ký sự kiện lọc
@@ -99,7 +101,7 @@ namespace UI_Tier
                 // 3. Xử lý hiển thị các Slot trống (Chỉ khi chọn "Tất cả" hoặc "Trống")
                 if (status == "Tất cả" || status == "Trống")
                 {
-                    var slotsInDateRange = (rawSlots ?? new List<TimeSlotsDTO>()).Where(s => 
+                    var slotsInDateRange = (rawSlots ?? new List<TimeSlotsDTO>()).Where(s =>
                         s.WorkDate.Date >= startDate && s.WorkDate.Date <= endDate && !s.IsDeleted
                     ).ToList();
 
@@ -120,7 +122,7 @@ namespace UI_Tier
                     .ThenBy(a => (a.TimeSlot != null) ? a.TimeSlot.StartTime : TimeSpan.Zero)
                     .ToList();
 
-                _currentPage = 1; 
+                _currentPage = 1;
                 DisplayPage(_currentPage);
             }
             catch (Exception ex)
@@ -143,7 +145,7 @@ namespace UI_Tier
 
         public void DisplayPage(int pageNumber)
         {
-            flpAppItem.SuspendLayout(); 
+            flpAppItem.SuspendLayout();
             try
             {
                 while (flpAppItem.Controls.Count > 0)
@@ -174,22 +176,24 @@ namespace UI_Tier
                 var pageItems = _allApps.Skip(startIndex).Take(_pageSize).ToList();
 
                 foreach (var ap in pageItems)
-                { 
+                {
                     ucAppItem card = new ucAppItem();
                     card.SetupCard(ap, ucAppItem.AppCardMode.DoctorView);
                     card.Margin = new Padding(20, 10, 20, 10);
                     card.Width = flpAppItem.ClientSize.Width - 40;
-                    card.Height = 252; 
+                    card.Height = 252;
 
                     card.RefreshData = () => InitData();
                     card.AppointmentDeleted += (s, ev) => InitData();
-                    card.AppointmentEdited += (s, appData) => {
+                    card.AppointmentEdited += (s, appData) =>
+                    {
                         if (appData.Doctor == null) return;
                         ucBookingDialog editUc = new ucBookingDialog(appData.Doctor);
                         editUc.SetEditData(appData);
                         editUc.Location = new Point((this.Width - editUc.Width) / 2, (this.Height - editUc.Height) / 2);
                         editUc.AppointmentBooked += (s2, ev2) => InitData();
-                        editUc.CloseRequested += (s2, ev2) => {
+                        editUc.CloseRequested += (s2, ev2) =>
+                        {
                             this.Controls.Remove(editUc);
                             editUc.Dispose();
                         };
@@ -199,7 +203,11 @@ namespace UI_Tier
 
                     flpAppItem.Controls.Add(card);
                 }
+
+                pnlReviewPagination.Visible = _allApps.Count > 0;
+                //UpdateListLayout();
             }
+            catch (Exception ex) { Console.WriteLine("Lỗi DisplayPage: " + ex.Message); }
             finally
             {
                 flpAppItem.ResumeLayout();
@@ -273,6 +281,52 @@ namespace UI_Tier
                 default: return statusInDb;
             }
         }
+        #region Xử lý phân trang (Pagination)
+        private void UpdateListLayout()
+        {
+            flpAppItem.Padding = new Padding(flpAppItem.Padding.Left, flpAppItem.Padding.Top, flpAppItem.Padding.Right, 0);
+            int totalItemsHeight = flpAppItem.Padding.Top + flpAppItem.Padding.Bottom;
+            foreach (Control ctrl in flpAppItem.Controls)
+            {
+                if (ctrl.Visible && ctrl != pnlReviewPagination && ctrl.Name != "pnlBuffer")
+                    totalItemsHeight += ctrl.Height + ctrl.Margin.Top + ctrl.Margin.Bottom;
+            }
+
+            int availableHeight = pnlResultContainer.Height - pnlResultContainer.Padding.Top - pnlResultContainer.Padding.Bottom;
+
+            // Xóa buffer cũ
+            Control oldBuffer = flpAppItem.Controls.Find("pnlBuffer", false).FirstOrDefault();
+            if (oldBuffer != null) flpAppItem.Controls.Remove(oldBuffer);
+
+            if (totalItemsHeight + pnlReviewPagination.Height < availableHeight)
+            {
+                // Danh sách ngắn: Bám sát nội dung
+                pnlReviewPagination.Dock = DockStyle.Top;
+                pnlReviewPagination.Margin = new Padding(0, 10, 0, 0);
+                flpAppItem.Dock = DockStyle.Top;
+                flpAppItem.Height = totalItemsHeight;
+                flpAppItem.AutoScroll = false;
+            }
+            else
+            {
+                // Danh sách dài: Đứng yên ở đáy - Sát khít đáy hoàn toàn
+                pnlReviewPagination.Dock = DockStyle.Bottom;
+                pnlReviewPagination.Margin = new Padding(0);
+                flpAppItem.Dock = DockStyle.Fill;
+                flpAppItem.AutoScroll = true;
+
+                // Thêm đệm vật lý 20px để card cuối không bị che viền
+                Panel pnlBuffer = new Panel { Height = 20, Width = flpAppItem.Width - 25, Name = "pnlBuffer" };
+                flpAppItem.Controls.Add(pnlBuffer);
+            }
+
+            // Đảm bảo Z-Order đúng trong Container - Kiểm tra an toàn
+            if (!pnlResultContainer.Controls.Contains(pnlReviewPagination))
+            {
+                pnlResultContainer.Controls.Add(pnlReviewPagination);
+            }
+            pnlResultContainer.Controls.SetChildIndex(pnlReviewPagination, 0);
+        }
         #endregion
 
         private void btnAddTimeSlot_Click(object sender, EventArgs e)
@@ -285,4 +339,5 @@ namespace UI_Tier
             }
         }
     }
+        #endregion
 }

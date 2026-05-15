@@ -331,9 +331,9 @@ namespace UI_Tier
             pnlResultContainer.Controls.Add(flpArticles);
             pnlResultContainer.Dock = DockStyle.Fill;
             pnlResultContainer.Location = new Point(0, 537);
-            pnlResultContainer.Margin = new Padding(5);
+            pnlResultContainer.Margin = new Padding(10);
             pnlResultContainer.Name = "pnlResultContainer";
-            pnlResultContainer.Padding = new Padding(24);
+            pnlResultContainer.Padding = new Padding(5, 5, 5, 10);
             pnlResultContainer.Size = new Size(1950, 795);
             pnlResultContainer.TabIndex = 3;
             // 
@@ -341,22 +341,22 @@ namespace UI_Tier
             // 
             flpDoctors.AutoScroll = true;
             flpDoctors.Dock = DockStyle.Fill;
-            flpDoctors.Location = new Point(24, 24);
+            flpDoctors.Location = new Point(5, 5);
             flpDoctors.Margin = new Padding(5);
             flpDoctors.Name = "flpDoctors";
-            flpDoctors.Padding = new Padding(32);
-            flpDoctors.Size = new Size(1902, 747);
+            flpDoctors.Padding = new Padding(32, 10, 32, 150);
+            flpDoctors.Size = new Size(1940, 780);
             flpDoctors.TabIndex = 0;
             // 
             // flpArticles
             // 
             flpArticles.AutoScroll = true;
             flpArticles.Dock = DockStyle.Fill;
-            flpArticles.Location = new Point(24, 24);
+            flpArticles.Location = new Point(5, 5);
             flpArticles.Margin = new Padding(5);
             flpArticles.Name = "flpArticles";
-            flpArticles.Padding = new Padding(32);
-            flpArticles.Size = new Size(1902, 747);
+            flpArticles.Padding = new Padding(32, 10, 32, 150);
+            flpArticles.Size = new Size(1940, 780);
             flpArticles.TabIndex = 1;
             flpArticles.Visible = false;
             // 
@@ -368,7 +368,7 @@ namespace UI_Tier
             pnlPagination.Controls.Add(lblNext);
             pnlPagination.Dock = DockStyle.Bottom;
             pnlPagination.Location = new Point(0, 1332);
-            pnlPagination.Margin = new Padding(5);
+            pnlPagination.Margin = new Padding(5, 50, 5, 5);
             pnlPagination.Name = "pnlPagination";
             pnlPagination.Size = new Size(1950, 80);
             pnlPagination.TabIndex = 4;
@@ -421,9 +421,9 @@ namespace UI_Tier
             BackColor = Color.White;
             Controls.Add(pnlResultContainer);
             Controls.Add(pnlTabHeader);
-            Controls.Add(pnlPagination);
             Controls.Add(pnlFilters);
             Controls.Add(pnlHeader);
+            Controls.Add(pnlPagination);
             Margin = new Padding(5);
             Name = "ucGuest_IntegratedSearch";
             Size = new Size(1950, 1412);

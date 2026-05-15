@@ -31,11 +31,14 @@ namespace UI_Tier
             lblReviewPageStatus = new Label();
             lblReviewPrevBtn = new Label();
             lblReviewNext = new Label();
+            pnlBottomBuffer = new Panel();
+            pnlResultContainer = new Panel();
             pnlHeader.SuspendLayout();
             pnlSearchArea.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picSearch).BeginInit();
             flpAppItem.SuspendLayout();
             pnlReviewPagination.SuspendLayout();
+            pnlResultContainer.SuspendLayout();
             SuspendLayout();
             // 
             // pnlHeader
@@ -145,9 +148,9 @@ namespace UI_Tier
             flpAppItem.Controls.Add(lblNoData);
             flpAppItem.Dock = DockStyle.Fill;
             flpAppItem.FlowDirection = FlowDirection.TopDown;
-            flpAppItem.Location = new Point(0, 198);
+            flpAppItem.Location = new Point(5, 5);
             flpAppItem.Name = "flpAppItem";
-            flpAppItem.Size = new Size(1845, 664);
+            flpAppItem.Size = new Size(1835, 649);
             flpAppItem.TabIndex = 2;
             flpAppItem.WrapContents = false;
             // 
@@ -163,6 +166,15 @@ namespace UI_Tier
             lblNoData.Text = "Không tìm thấy dữ liệu phù hợp";
             lblNoData.Visible = false;
             // 
+            // pnlBottomBuffer
+            // 
+            pnlBottomBuffer.BackColor = Color.White;
+            pnlBottomBuffer.Dock = DockStyle.Bottom;
+            pnlBottomBuffer.Location = new Point(5, 564);
+            pnlBottomBuffer.Name = "pnlBottomBuffer";
+            pnlBottomBuffer.Size = new Size(1835, 20);
+            pnlBottomBuffer.TabIndex = 6;
+            // 
             // pnlReviewPagination
             // 
             pnlReviewPagination.BackColor = Color.FromArgb(242, 246, 250);
@@ -170,9 +182,10 @@ namespace UI_Tier
             pnlReviewPagination.Controls.Add(lblReviewPrevBtn);
             pnlReviewPagination.Controls.Add(lblReviewNext);
             pnlReviewPagination.Dock = DockStyle.Bottom;
-            pnlReviewPagination.Location = new Point(0, 782);
+            pnlReviewPagination.Location = new Point(5, 584);
+            pnlReviewPagination.Margin = new Padding(5);
             pnlReviewPagination.Name = "pnlReviewPagination";
-            pnlReviewPagination.Size = new Size(1845, 80);
+            pnlReviewPagination.Size = new Size(1835, 80);
             pnlReviewPagination.TabIndex = 5;
             // 
             // lblReviewPageStatus
@@ -212,13 +225,25 @@ namespace UI_Tier
             lblReviewNext.TabIndex = 0;
             lblReviewNext.Text = "Trang sau >>";
             // 
+            // pnlResultContainer
+            // 
+            pnlResultContainer.BackColor = Color.White;
+            pnlResultContainer.Controls.Add(flpAppItem);
+            pnlResultContainer.Controls.Add(pnlBottomBuffer);
+            pnlResultContainer.Controls.Add(pnlReviewPagination);
+            pnlResultContainer.Dock = DockStyle.Fill;
+            pnlResultContainer.Location = new Point(0, 198);
+            pnlResultContainer.Name = "pnlResultContainer";
+            pnlResultContainer.Padding = new Padding(5, 5, 5, 10);
+            pnlResultContainer.Size = new Size(1845, 664);
+            pnlResultContainer.TabIndex = 2;
+            // 
             // ucAdmin_AppointmentManagement
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(240, 242, 245);
-            Controls.Add(pnlReviewPagination);
-            Controls.Add(flpAppItem);
+            Controls.Add(pnlResultContainer);
             Controls.Add(pnlHeader);
             Name = "ucAdmin_AppointmentManagement";
             Size = new Size(1845, 862);
@@ -230,8 +255,10 @@ namespace UI_Tier
             ((System.ComponentModel.ISupportInitialize)picSearch).EndInit();
             flpAppItem.ResumeLayout(false);
             flpAppItem.PerformLayout();
+            pnlBottomBuffer.ResumeLayout(false);
             pnlReviewPagination.ResumeLayout(false);
             pnlReviewPagination.PerformLayout();
+            pnlResultContainer.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -260,5 +287,7 @@ namespace UI_Tier
         private Label lblReviewNext;
         private Label lblNoData;
         private ComboBox cbStatusFilter;
+        private Panel pnlBottomBuffer;
+        private Panel pnlResultContainer;
     }
 }

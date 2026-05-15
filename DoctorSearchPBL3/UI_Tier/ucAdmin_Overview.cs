@@ -46,7 +46,7 @@ namespace UI_Tier
             flpRecentReviews.Resize += (s, ev) => {
                 foreach (Control ctrl in flpRecentReviews.Controls) {
                     if (ctrl is ucReviewItem item) {
-                        item.Width = flpRecentReviews.ClientSize.Width - 15;
+                        item.Width = flpRecentReviews.ClientSize.Width - 40;
                     }
                 }
             };
@@ -231,7 +231,7 @@ namespace UI_Tier
             {
                 ucReviewItem item = new ucReviewItem();
                 item.SetAdminReviewData(rev, true); 
-                item.Width = flpRecentReviews.ClientSize.Width - 25;
+                item.Width = flpRecentReviews.ClientSize.Width - 40;
                 flpRecentReviews.Controls.Add(item);
             }
 

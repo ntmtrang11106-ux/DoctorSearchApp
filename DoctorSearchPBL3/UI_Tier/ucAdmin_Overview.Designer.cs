@@ -419,7 +419,7 @@ namespace UI_Tier
             tlpBottom.Name = "tlpBottom";
             tlpBottom.RowCount = 1;
             tlpBottom.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlpBottom.Size = new Size(1800, 711);
+            tlpBottom.Size = new Size(1800, 731);
             tlpBottom.TabIndex = 2;
             // 
             // chartDept
@@ -429,7 +429,7 @@ namespace UI_Tier
             chartDept.Location = new Point(10, 10);
             chartDept.Margin = new Padding(10);
             chartDept.Name = "chartDept";
-            chartDept.Size = new Size(738, 691);
+            chartDept.Size = new Size(738, 711);
             chartDept.TabIndex = 0;
             // 
             // pnlRecentReviews
@@ -441,9 +441,9 @@ namespace UI_Tier
             pnlRecentReviews.Controls.Add(pnlReviewPagination);
             pnlRecentReviews.Dock = DockStyle.Fill;
             pnlRecentReviews.Location = new Point(768, 10);
-            pnlRecentReviews.Margin = new Padding(10);
+            pnlRecentReviews.Margin = new Padding(10, 10, 10, 0);
             pnlRecentReviews.Name = "pnlRecentReviews";
-            pnlRecentReviews.Size = new Size(1022, 691);
+            pnlRecentReviews.Size = new Size(1022, 721);
             pnlRecentReviews.TabIndex = 1;
             // 
             // lblNoReviews
@@ -466,7 +466,7 @@ namespace UI_Tier
             flpRecentReviews.Location = new Point(0, 80);
             flpRecentReviews.Margin = new Padding(0);
             flpRecentReviews.Name = "flpRecentReviews";
-            flpRecentReviews.Size = new Size(1022, 531);
+            flpRecentReviews.Size = new Size(1022, 561);
             flpRecentReviews.TabIndex = 0;
             flpRecentReviews.WrapContents = false;
             // 
@@ -485,7 +485,7 @@ namespace UI_Tier
             lblRecentReviewsTitle.AutoSize = true;
             lblRecentReviewsTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             lblRecentReviewsTitle.ForeColor = Color.FromArgb(17, 34, 71);
-            lblRecentReviewsTitle.Location = new Point(25, 20);
+            lblRecentReviewsTitle.Location = new Point(17, 18);
             lblRecentReviewsTitle.Name = "lblRecentReviewsTitle";
             lblRecentReviewsTitle.Size = new Size(332, 51);
             lblRecentReviewsTitle.TabIndex = 1;
@@ -498,7 +498,7 @@ namespace UI_Tier
             pnlReviewPagination.Controls.Add(lblReviewPrevBtn);
             pnlReviewPagination.Controls.Add(lblReviewNext);
             pnlReviewPagination.Dock = DockStyle.Bottom;
-            pnlReviewPagination.Location = new Point(0, 611);
+            pnlReviewPagination.Location = new Point(0, 641);
             pnlReviewPagination.Name = "pnlReviewPagination";
             pnlReviewPagination.Size = new Size(1022, 80);
             pnlReviewPagination.TabIndex = 4;
@@ -607,7 +607,7 @@ namespace UI_Tier
             Controls.Add(pnlStats);
             Controls.Add(pnlHeader);
             Name = "ucAdmin_Overview";
-            Padding = new Padding(40, 0, 40, 20);
+            Padding = new Padding(40, 0, 40, 0);
             Size = new Size(1880, 1603);
             pnlStats.ResumeLayout(false);
             pnlCard1.ResumeLayout(false);

@@ -44,14 +44,16 @@ namespace UI_Tier
             btnAccepted = new Button();
             btnCanceled = new Button();
             btnDone = new Button();
-            flpAppItem = new FlowLayoutPanel();
+            pnlResultContainer = new Panel();
             pnlReviewPagination = new Panel();
             lblReviewPageStatus = new Label();
             lblReviewPrevBtn = new Label();
             lblReviewNext = new Label();
+            flpAppItem = new FlowLayoutPanel();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             flpFilter.SuspendLayout();
+            pnlResultContainer.SuspendLayout();
             pnlReviewPagination.SuspendLayout();
             SuspendLayout();
             // 
@@ -237,17 +239,16 @@ namespace UI_Tier
             btnDone.Text = "Thành công";
             btnDone.UseVisualStyleBackColor = true;
             // 
-            // flpAppItem
+            // pnlResultContainer
             // 
-            flpAppItem.AutoScroll = true;
-            flpAppItem.Dock = DockStyle.Fill;
-            flpAppItem.FlowDirection = FlowDirection.TopDown;
-            flpAppItem.Location = new Point(0, 321);
-            flpAppItem.Margin = new Padding(0);
-            flpAppItem.Name = "flpAppItem";
-            flpAppItem.Size = new Size(1845, 541);
-            flpAppItem.TabIndex = 7;
-            flpAppItem.WrapContents = false;
+            pnlResultContainer.Controls.Add(flpAppItem);
+            pnlResultContainer.Dock = DockStyle.Fill;
+            pnlResultContainer.Location = new Point(0, 321);
+            pnlResultContainer.Margin = new Padding(10);
+            pnlResultContainer.Name = "pnlResultContainer";
+            pnlResultContainer.Padding = new Padding(5, 5, 5, 10);
+            pnlResultContainer.Size = new Size(1845, 461);
+            pnlResultContainer.TabIndex = 9;
             // 
             // pnlReviewPagination
             // 
@@ -257,6 +258,7 @@ namespace UI_Tier
             pnlReviewPagination.Controls.Add(lblReviewNext);
             pnlReviewPagination.Dock = DockStyle.Bottom;
             pnlReviewPagination.Location = new Point(0, 782);
+            pnlReviewPagination.Margin = new Padding(5);
             pnlReviewPagination.Name = "pnlReviewPagination";
             pnlReviewPagination.Size = new Size(1845, 80);
             pnlReviewPagination.TabIndex = 8;
@@ -298,13 +300,25 @@ namespace UI_Tier
             lblReviewNext.TabIndex = 0;
             lblReviewNext.Text = "Trang sau >>";
             // 
+            // flpAppItem
+            // 
+            flpAppItem.AutoScroll = true;
+            flpAppItem.Dock = DockStyle.Fill;
+            flpAppItem.FlowDirection = FlowDirection.TopDown;
+            flpAppItem.Location = new Point(5, 5);
+            flpAppItem.Margin = new Padding(0);
+            flpAppItem.Name = "flpAppItem";
+            flpAppItem.Size = new Size(1835, 446);
+            flpAppItem.TabIndex = 7;
+            flpAppItem.WrapContents = false;
+            // 
             // ucDoctor_Appointment
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
+            Controls.Add(pnlResultContainer);
             Controls.Add(pnlReviewPagination);
-            Controls.Add(flpAppItem);
             Controls.Add(panel3);
             Name = "ucDoctor_Appointment";
             Size = new Size(1845, 862);
@@ -313,6 +327,7 @@ namespace UI_Tier
             panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             flpFilter.ResumeLayout(false);
+            pnlResultContainer.ResumeLayout(false);
             pnlReviewPagination.ResumeLayout(false);
             pnlReviewPagination.PerformLayout();
             ResumeLayout(false);
@@ -345,5 +360,6 @@ namespace UI_Tier
         private Label lblReviewPageStatus;
         private Label lblReviewPrevBtn;
         private Label lblReviewNext;
+        private Panel pnlResultContainer;
     }
 }

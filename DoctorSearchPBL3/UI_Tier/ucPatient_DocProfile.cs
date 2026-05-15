@@ -194,6 +194,8 @@ namespace UI_Tier
                         review.Width = flpReview.ClientSize.Width - (flpReview.Padding.Left + flpReview.Padding.Right);
                     }
                 }
+                UpdateListLayout(flpReview, pnlReviewPagination, panel5, panel16.Height + lblNoReviews.Height + 20);
+                UpdateListLayout(flpAppItem, pnlAppPagination, panel4, pnlAppHeader.Height + lblNoApp.Height + 20);
             };
         }
 
@@ -341,6 +343,9 @@ namespace UI_Tier
                     card.Width = flpAppItem.ClientSize.Width - (flpAppItem.Padding.Left + flpAppItem.Padding.Right);
                     flpAppItem.Controls.Add(card);
                 }
+
+                pnlAppPagination.Visible = _allAppointments.Count > 0;
+                UpdateListLayout(flpAppItem, pnlAppPagination, panel4, pnlAppHeader.Height + lblNoApp.Height + 20);
             }
             catch (Exception ex) { Console.WriteLine("Lỗi DisplayPage: " + ex.Message); }
             finally { flpAppItem.ResumeLayout(); }
@@ -449,6 +454,9 @@ namespace UI_Tier
                     item.Width = flpReview.ClientSize.Width - (flpReview.Padding.Left + flpReview.Padding.Right);
                     flpReview.Controls.Add(item);
                 }
+
+                pnlReviewPagination.Visible = _allReviews.Count > 0;
+                UpdateListLayout(flpReview, pnlReviewPagination, panel5, panel16.Height + lblNoReviews.Height + 20);
             }
             catch (Exception ex) { Console.WriteLine("Lỗi DisplayReviews: " + ex.Message); }
             finally { flpReview.ResumeLayout(); }
@@ -477,5 +485,43 @@ namespace UI_Tier
             if (_appCurrentPage < totalPages) { _appCurrentPage++; DisplayPage(); }
         }
         #endregion
+
+        private void UpdateListLayout(FlowLayoutPanel flp, Panel pnlPagination, Panel container, int reservedHeight)
+        {
+            flp.Padding = new Padding(flp.Padding.Left, flp.Padding.Top, flp.Padding.Right, 0);
+            int totalItemsHeight = flp.Padding.Top + flp.Padding.Bottom;
+            foreach (Control ctrl in flp.Controls)
+            {
+                if (ctrl.Visible && ctrl != pnlPagination) 
+                    totalItemsHeight += ctrl.Height + ctrl.Margin.Top + ctrl.Margin.Bottom;
+            }
+
+            int availableHeight = container.Height - reservedHeight;
+
+            if (totalItemsHeight + pnlPagination.Height < availableHeight)
+            {
+                // Danh sách ngắn: Thanh phân trang bám sát UC cuối
+                pnlPagination.Dock = DockStyle.Top;
+                pnlPagination.Margin = new Padding(0, 10, 0, 0); // Thêm khoảng cách 10px
+                flp.Dock = DockStyle.Top;
+                flp.Height = totalItemsHeight;
+                flp.AutoScroll = false;
+            }
+            else
+            {
+                // Danh sách dài: Thanh phân trang đứng yên ở đáy
+                pnlPagination.Dock = DockStyle.Bottom;
+                pnlPagination.Margin = new Padding(0);
+                flp.Dock = DockStyle.Fill;
+                flp.AutoScroll = true;
+                
+                // Thêm Panel đệm vật lý để đảm bảo không bị che
+                Panel pnlBuffer = new Panel { Height = 15, Width = flp.Width, Name = "pnlBuffer" };
+                flp.Controls.Add(pnlBuffer);
+            }
+            
+            // Đảm bảo Z-order đúng để Dock hoạt động
+            container.Controls.SetChildIndex(pnlPagination, 0); 
+        }
     }
 }
