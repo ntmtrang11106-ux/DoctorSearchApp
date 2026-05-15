@@ -27,32 +27,12 @@ namespace UI_Tier
             UIHelper.SetDoubleBuffered(this);
             SetupUI();
 
-            // Hiệu ứng hover cho các nút phân trang
-            lblPrev.MouseEnter += PaginationLabel_MouseEnter;
-            lblPrev.MouseLeave += PaginationLabel_MouseLeave;
-            lblNext.MouseEnter += PaginationLabel_MouseEnter;
-            lblNext.MouseLeave += PaginationLabel_MouseLeave;
-            lblPrev.Cursor = Cursors.Hand;
-            lblNext.Cursor = Cursors.Hand;
+            // Hiệu ứng hover cho các nút phân trang sử dụng Helper
+            UIHelper.SetupHoverEffect(lblPrev, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212), 3);
+            UIHelper.SetupHoverEffect(lblNext, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212), 3);
         }
 
-        private void PaginationLabel_MouseEnter(object sender, EventArgs e)
-        {
-            if (sender is Label lbl)
-            {
-                lbl.ForeColor = Color.FromArgb(0, 90, 158); // Xanh đậm hơn khi hover
-                lbl.Top -= 2; // Hiệu ứng "nhảy lên"
-            }
-        }
 
-        private void PaginationLabel_MouseLeave(object sender, EventArgs e)
-        {
-            if (sender is Label lbl)
-            {
-                lbl.ForeColor = Color.FromArgb(0, 120, 212); // Trở lại màu chuẩn
-                lbl.Top += 2;
-            }
-        }
 
         public void SetAdminMode(bool isAdmin)
         {

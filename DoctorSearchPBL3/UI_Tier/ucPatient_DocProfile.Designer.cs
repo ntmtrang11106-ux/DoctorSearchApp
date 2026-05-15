@@ -353,10 +353,11 @@ namespace UI_Tier
             pnlReviewPagination.Controls.Add(lblReviewPageStatus);
             pnlReviewPagination.Controls.Add(lblReviewPrev);
             pnlReviewPagination.Controls.Add(lblReviewNext);
-            pnlReviewPagination.Dock = DockStyle.Top;
-            pnlReviewPagination.Location = new Point(0, 218);
+            pnlReviewPagination.Dock = DockStyle.Bottom;
+            pnlReviewPagination.Location = new Point(0, 779);
             pnlReviewPagination.Name = "pnlReviewPagination";
-            pnlReviewPagination.Size = new Size(1003, 60);
+            pnlReviewPagination.Padding = new Padding(0, 30, 0, 0);
+            pnlReviewPagination.Size = new Size(1003, 61);
             pnlReviewPagination.TabIndex = 58;
             // 
             // lblReviewPageStatus
@@ -364,7 +365,7 @@ namespace UI_Tier
             lblReviewPageStatus.Anchor = AnchorStyles.Top;
             lblReviewPageStatus.AutoSize = true;
             lblReviewPageStatus.Font = new Font("Segoe UI", 10.5F);
-            lblReviewPageStatus.Location = new Point(407, 10);
+            lblReviewPageStatus.Location = new Point(409, 10);
             lblReviewPageStatus.Name = "lblReviewPageStatus";
             lblReviewPageStatus.Size = new Size(151, 38);
             lblReviewPageStatus.TabIndex = 2;
@@ -390,7 +391,7 @@ namespace UI_Tier
             lblReviewNext.Cursor = Cursors.Hand;
             lblReviewNext.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
             lblReviewNext.ForeColor = Color.FromArgb(0, 120, 212);
-            lblReviewNext.Location = new Point(748, 10);
+            lblReviewNext.Location = new Point(749, 10);
             lblReviewNext.Name = "lblReviewNext";
             lblReviewNext.Size = new Size(191, 38);
             lblReviewNext.TabIndex = 0;
@@ -399,14 +400,13 @@ namespace UI_Tier
             // 
             // flpReview
             // 
-            flpReview.AutoSize = true;
-            flpReview.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            flpReview.Dock = DockStyle.Top;
+            flpReview.AutoScroll = true;
+            flpReview.Dock = DockStyle.Fill;
             flpReview.FlowDirection = FlowDirection.TopDown;
             flpReview.Location = new Point(0, 198);
             flpReview.Name = "flpReview";
             flpReview.Padding = new Padding(25, 10, 25, 10);
-            flpReview.Size = new Size(1003, 20);
+            flpReview.Size = new Size(1003, 642);
             flpReview.TabIndex = 4;
             flpReview.WrapContents = false;
             // 
@@ -457,10 +457,10 @@ namespace UI_Tier
             btnWriteReview.FlatStyle = FlatStyle.Flat;
             btnWriteReview.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
             btnWriteReview.ForeColor = Color.WhiteSmoke;
-            btnWriteReview.Location = new Point(631, 11);
+            btnWriteReview.Location = new Point(633, 0);
             btnWriteReview.Name = "btnWriteReview";
             btnWriteReview.Padding = new Padding(5);
-            btnWriteReview.Size = new Size(358, 71);
+            btnWriteReview.Size = new Size(358, 84);
             btnWriteReview.TabIndex = 57;
             btnWriteReview.Text = " Viết đánh giá";
             btnWriteReview.UseVisualStyleBackColor = false;
@@ -485,8 +485,8 @@ namespace UI_Tier
             pnlAppPagination.Controls.Add(lblAppPageStatus);
             pnlAppPagination.Controls.Add(lblAppPrev);
             pnlAppPagination.Controls.Add(lblAppNext);
-            pnlAppPagination.Dock = DockStyle.Top;
-            pnlAppPagination.Location = new Point(0, 358);
+            pnlAppPagination.Dock = DockStyle.Bottom;
+            pnlAppPagination.Location = new Point(0, 778);
             pnlAppPagination.Name = "pnlAppPagination";
             pnlAppPagination.Size = new Size(1002, 60);
             pnlAppPagination.TabIndex = 60;
@@ -531,14 +531,13 @@ namespace UI_Tier
             // 
             // flpAppItem
             // 
-            flpAppItem.AutoSize = true;
-            flpAppItem.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            flpAppItem.Dock = DockStyle.Top;
+            flpAppItem.AutoScroll = true;
+            flpAppItem.Dock = DockStyle.Fill;
             flpAppItem.FlowDirection = FlowDirection.TopDown;
             flpAppItem.Location = new Point(0, 338);
             flpAppItem.Name = "flpAppItem";
             flpAppItem.Padding = new Padding(25, 10, 25, 10);
-            flpAppItem.Size = new Size(1002, 20);
+            flpAppItem.Size = new Size(1002, 500);
             flpAppItem.TabIndex = 0;
             flpAppItem.WrapContents = false;
             // 
@@ -584,10 +583,10 @@ namespace UI_Tier
             btnBook.FlatStyle = FlatStyle.Flat;
             btnBook.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
             btnBook.ForeColor = Color.WhiteSmoke;
-            btnBook.Location = new Point(648, 10);
+            btnBook.Location = new Point(651, 3);
             btnBook.Name = "btnBook";
             btnBook.Padding = new Padding(5);
-            btnBook.Size = new Size(334, 71);
+            btnBook.Size = new Size(334, 81);
             btnBook.TabIndex = 58;
             btnBook.Text = " Đặt lịch ngay";
             btnBook.UseVisualStyleBackColor = false;
@@ -736,13 +735,11 @@ namespace UI_Tier
             panel2.ResumeLayout(false);
             tlpContent.ResumeLayout(false);
             panel5.ResumeLayout(false);
-            panel5.PerformLayout();
             pnlReviewPagination.ResumeLayout(false);
             pnlReviewPagination.PerformLayout();
             panel16.ResumeLayout(false);
             panel16.PerformLayout();
             panel4.ResumeLayout(false);
-            panel4.PerformLayout();
             pnlAppPagination.ResumeLayout(false);
             pnlAppPagination.PerformLayout();
             pnlAppHeader.ResumeLayout(false);

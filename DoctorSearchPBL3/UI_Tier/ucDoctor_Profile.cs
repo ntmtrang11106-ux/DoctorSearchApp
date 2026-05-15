@@ -89,25 +89,8 @@ namespace UI_Tier
 
         private void AttachReadOnlyHandlers()
         {
-            txtFullName.Enter += TextBox_Enter;
-            txtPhone.Enter += TextBox_Enter;
-            txtGender.Enter += TextBox_Enter;
-            txtCCCD.Enter += TextBox_Enter;
-            txtAddress.Enter += TextBox_Enter;
-            txtPosition.Enter += TextBox_Enter;
-            txtSpecialty.Enter += TextBox_Enter;
-            txtLicense.Enter += TextBox_Enter;
-            txtConsultationFee.Enter += TextBox_Enter;
-            txtExperienceYears.Enter += TextBox_Enter;
-            txtBiography.Enter += TextBox_Enter;
-        }
-
-        private void TextBox_Enter(object sender, EventArgs e)
-        {
-            if (sender is TextBox tb && tb.ReadOnly)
-            {
-                pnlMain.Focus();
-            }
+            TextBox[] tbs = { txtFullName, txtPhone, txtGender, txtCCCD, txtAddress, txtPosition, txtSpecialty, txtLicense, txtConsultationFee, txtExperienceYears, txtBiography };
+            foreach (var tb in tbs) UIHelper.SetupReadOnlyHandler(tb, pnlMain);
         }
 
         public void InitData()
@@ -307,18 +290,8 @@ namespace UI_Tier
 
         private void SectionPanel_Paint(object sender, PaintEventArgs e)
         {
-            Panel p = sender as Panel;
-            // Vẽ viền bo góc nhẹ
-            UIHelper.DrawControlBorder(p, e, 20, Color.FromArgb(226, 232, 240), 1);
-
-            // Vẽ một đường trang trí màu sắc ở trên cùng của panel để tạo điểm nhấn
-            Color accentColor = Color.FromArgb(37, 99, 235); // Blue cho bác sĩ
-            if (p == pnlSecurity) accentColor = Color.FromArgb(244, 63, 94); // Rose cho bảo mật
-
-            using (Pen accentPen = new Pen(accentColor, 6))
-            {
-                e.Graphics.DrawLine(accentPen, 20, 0, p.Width - 20, 0);
-            }
+            Color accentColor = (sender == pnlSecurity) ? Color.FromArgb(244, 63, 94) : Color.FromArgb(37, 99, 235);
+            UIHelper.DrawSectionShadow(sender, e, 20, accentColor);
         }
 
         private void dtpBirthday_ValueChanged(object sender, EventArgs e)

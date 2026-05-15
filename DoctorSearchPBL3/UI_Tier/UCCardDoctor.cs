@@ -167,8 +167,12 @@ namespace UI_Tier
             if (!IsClickable || _isHovered) return;
             _isHovered = true;
 
-            // Hiệu ứng "Nhấc lên": Giảm padding trên, tăng padding dưới
-            this.Padding = new Padding(13, 8, 13, 18);
+            // Kiểm tra nếu là giao diện Bệnh nhân mới nhấc card lên
+            if (this.FindForm() is frmPatient)
+            {
+                // Hiệu ứng "Nhấc lên": Giảm Margin Top, tăng Margin Bottom
+                this.Margin = new Padding(15, 10, 15, 20);
+            }
             
             Color hoverColor = Color.FromArgb(252, 253, 255);
             this.BackColor = hoverColor;
@@ -187,8 +191,9 @@ namespace UI_Tier
 
             _isHovered = false;
             
-            // Trả về Margin mặc định
+            // Trả về Margin và Padding mặc định
             this.Margin = new Padding(15);
+            this.Padding = new Padding(0);
             
             this.BackColor = Color.White;
             pnlContainer.BackColor = Color.White;

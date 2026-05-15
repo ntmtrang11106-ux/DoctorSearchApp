@@ -57,7 +57,7 @@ namespace UI_Tier
             panelHeader.Name = "panelHeader";
             panelHeader.Size = new Size(794, 72);
             panelHeader.TabIndex = 0;
-            panelHeader.Click += Global_Click;
+
             panelHeader.MouseDown += panelHeader_MouseDown;
             // 
             // btnClose
@@ -287,7 +287,7 @@ namespace UI_Tier
             pnlDoctorInfo.Name = "pnlDoctorInfo";
             pnlDoctorInfo.Size = new Size(778, 183);
             pnlDoctorInfo.TabIndex = 16;
-            pnlDoctorInfo.Click += Global_Click;
+
             // 
             // pictureBox1
             // 
@@ -339,7 +339,7 @@ namespace UI_Tier
             pnlMainBackground.Name = "pnlMainBackground";
             pnlMainBackground.Size = new Size(794, 1094);
             pnlMainBackground.TabIndex = 17;
-            pnlMainBackground.Click += Global_Click;
+
             // 
             // pnlCommentBorder
             // 

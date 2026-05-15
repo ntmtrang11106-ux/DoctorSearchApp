@@ -45,17 +45,9 @@ namespace DAL_Tier
         // 1. Thêm khung giờ (Dùng WorkDate theo SQL)
         public bool AddSingle(TimeSlotsDTO slot)
         {
-            try
-            {
-                if (slot.CreatedAt == default) slot.CreatedAt = DateTime.Now;
-                _context.TimeSlots.Add(slot);
-                return _context.SaveChanges() > 0;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Lỗi AddSingle: " + ex.Message);
-                return false;
-            }
+            if (slot.CreatedAt == default) slot.CreatedAt = DateTime.Now;
+            _context.TimeSlots.Add(slot);
+            return _context.SaveChanges() > 0;
         }
 
         // 2. Kiểm tra trùng lịch (So sánh WorkDate)
@@ -72,7 +64,9 @@ namespace DAL_Tier
         public TimeSlotsDTO GetConflictSlot(DateTime date, TimeSpan start, TimeSpan end, int roomId)
         {
             // Kiểm tra trùng: Cùng ngày, cùng phòng và (Giờ bắt đầu hoặc Giờ kết thúc nằm trong khoảng đã có)
-            return _context.TimeSlots.FirstOrDefault(s =>
+            return _context.TimeSlots
+                .Include(s => s.Doctor)
+                .FirstOrDefault(s =>
                 s.WorkDate.Date == date.Date &&
                 s.RoomId == roomId &&
                 s.IsDeleted == false &&
@@ -113,19 +107,21 @@ namespace DAL_Tier
         // 5. Xóa mềm (Soft Delete) theo thiết kế có IsDeleted trong SQL
         public bool SoftDeleteSlot(int slotId)
         {
-            try
-            {
-                var slot = _context.TimeSlots.Find(slotId);
-                if (slot == null) return false;
+            var slot = _context.TimeSlots.Find(slotId);
+            if (slot == null) return false;
 
-                slot.IsDeleted = true;
-                slot.DeletedAt = DateTime.Now;
-                return _context.SaveChanges() > 0;
-            }
-            catch
-            {
-                return false;
-            }
+            slot.IsDeleted = true;
+            slot.DeletedAt = DateTime.Now;
+            slot.BookedCount = 0; // Reset count khi xóa
+            return _context.SaveChanges() > 0;
+        }
+
+        public bool ResetBookedCount(int slotId)
+        {
+            var slot = _context.TimeSlots.Find(slotId);
+            if (slot == null) return false;
+            slot.BookedCount = 0;
+            return _context.SaveChanges() > 0;
         }
 
         // 6. Lấy ID của khung giờ dựa trên bác sĩ và ngày (Dùng cho đặt lịch lặp lại)
@@ -155,7 +151,12 @@ namespace DAL_Tier
             try
             {
                 return _context.TimeSlots
-                    .Where(s => s.IsDeleted == false)
+                    .AsNoTracking()
+                    .Include(s => s.Doctor).ThenInclude(d => d.User)
+                    .Include(s => s.Doctor).ThenInclude(d => d.Department)
+                    .Include(s => s.Room)
+                    .Include(s => s.Appointments).ThenInclude(a => a.Patient).ThenInclude(p => p.User)
+                    // Bao gồm cả lịch đã xóa
                     .OrderByDescending(s => s.WorkDate)
                     .ThenBy(s => s.StartTime)
                     .ToList();
@@ -173,6 +174,9 @@ namespace DAL_Tier
             try
             {
                 return _context.TimeSlots
+                    .AsNoTracking()
+                    .Include(s => s.Room)
+                    .Include(s => s.Doctor).ThenInclude(d => d.User)
                     .Where(s => s.DoctorId == doctorId && s.IsDeleted == false)
                     .OrderByDescending(s => s.WorkDate)
                     .ThenBy(s => s.StartTime)
@@ -224,6 +228,38 @@ namespace DAL_Tier
             catch (Exception ex)
             {
                 Console.WriteLine("Lỗi AddRange (DAL): " + ex.Message);
+                return false;
+            }
+        }
+
+        public TimeSlotsDTO GetById(int id)
+        {
+            return _context.TimeSlots
+                .Include(s => s.Doctor).ThenInclude(d => d.User)
+                .Include(s => s.Appointments)
+                .FirstOrDefault(s => s.Id == id && !s.IsDeleted);
+        }
+
+        public bool Update(TimeSlotsDTO slot)
+        {
+            try
+            {
+                var existing = _context.TimeSlots.Find(slot.Id);
+                if (existing == null) return false;
+
+                existing.DoctorId = slot.DoctorId;
+                existing.RoomId = slot.RoomId;
+                existing.WorkDate = slot.WorkDate;
+                existing.StartTime = slot.StartTime;
+                existing.EndTime = slot.EndTime;
+                existing.MaxAppointments = slot.MaxAppointments;
+                existing.UpdatedAt = DateTime.Now;
+
+                return _context.SaveChanges() > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi Update DAL: " + ex.Message);
                 return false;
             }
         }

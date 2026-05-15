@@ -63,6 +63,10 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(pnlDoctorInfo, 15);
             UIHelper.ApplyRoundedRegion(pictureBox1, pictureBox1.Width / 2);
 
+            // Hiệu ứng Focus và Click-outside sử dụng Helper
+            UIHelper.SetupInputFocusEffect(txtComment, pnlCommentBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+            UIHelper.RegisterClickToUnfocus(this, lblTitle);
+
             // Đổ dữ liệu bác sĩ
             if (_doctor != null)
             {
@@ -154,11 +158,6 @@ namespace UI_Tier
                 txtComment.Text      = "";
                 txtComment.ForeColor = Color.Black;
             }
-            // Highlight viền khi focus
-            pnlCommentBorder.BackColor = Color.FromArgb(242, 248, 255); // Xanh nhạt
-            txtComment.BackColor = Color.FromArgb(242, 248, 255);
-            pnlCommentBorder.Paint += Control_Paint_Focus;
-            pnlCommentBorder.Invalidate();
         }
 
         private void txtComment_Leave(object sender, EventArgs e)
@@ -168,10 +167,6 @@ namespace UI_Tier
                 txtComment.Text      = "Chia sẻ trải nghiệm của bạn về bác sĩ...";
                 txtComment.ForeColor = Color.Gray;
             }
-            pnlCommentBorder.BackColor = Color.White;
-            txtComment.BackColor = Color.White;
-            pnlCommentBorder.Paint -= Control_Paint_Focus;
-            pnlCommentBorder.Invalidate();
         }
 
         private void txtComment_TextChanged(object sender, EventArgs e)
@@ -182,21 +177,9 @@ namespace UI_Tier
         }
         #endregion
 
-        private void Control_Paint_Focus(object sender, PaintEventArgs e)
-        {
-            Control ctrl = sender as Control;
-            using (Pen p = new Pen(Color.FromArgb(37, 99, 235), 4))
-            {
-                // Vẽ ở sát đáy panel cha
-                e.Graphics.DrawLine(p, 10, ctrl.Height - 3, ctrl.Width - 10, ctrl.Height - 3);
-            }
-        }
 
-        private void Global_Click(object sender, EventArgs e)
-        {
-            // Thoát khỏi ô nhập liệu khi click ra ngoài (chuyển focus sang control tĩnh)
-            this.ActiveControl = label1;
-        }
+
+
 
         private void btnCancel_Click(object sender, EventArgs e) => CloseRequested?.Invoke(this, EventArgs.Empty);
 

@@ -26,14 +26,7 @@ namespace UI_Tier
             Panel[] cards = { pnlCard1, pnlCard2, pnlCard3, pnlCard4 };
             foreach (var card in cards)
             {
-                // UIHelper.ApplyRoundedRegion(card, 10);
-                card.Paint += (s, e) => {
-                    using (Pen p = new Pen(Color.FromArgb(230, 230, 230), 3)) // Viền dày 2, màu xám nhẹ
-                    {
-                        e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                        e.Graphics.DrawPath(p, UIHelper.GetRoundedPath(card.ClientRectangle, 10));
-                    }
-                };
+                card.Paint += (s, e) => UIHelper.DrawControlBorder(card, e, 10, Color.FromArgb(230, 230, 230), 3);
             }
 
             // Bo góc cho các panel icon bên trong cho đồng bộ

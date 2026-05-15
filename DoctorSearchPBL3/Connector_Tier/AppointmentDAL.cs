@@ -93,7 +93,8 @@ namespace DAL_Tier
                     .AsNoTracking()
                     .Include(a => a.Patient).ThenInclude(p => p.User)
                     .Include(a => a.Doctor).ThenInclude(d => d.User)
-                    .Include(a => a.TimeSlot)
+                    .Include(a => a.Doctor).ThenInclude(d => d.Department)
+                    .Include(a => a.TimeSlot).ThenInclude(ts => ts.Room)
                     .OrderByDescending(a => a.CreatedAt)
                     .ToList();
             }
@@ -278,19 +279,25 @@ namespace DAL_Tier
                         if (app.TimeSlot != null)
                         {
                             app.TimeSlot.BookedCount = Math.Max(0, app.TimeSlot.BookedCount - 1);
+                            // Luôn mở lại trạng thái Open nếu đã giảm số lượng đặt
                             if (app.TimeSlot.BookedCount < app.TimeSlot.MaxAppointments)
                                 app.TimeSlot.Status = "Open";
                         }
 
                         // 2. Kiểm tra và chiếm khung giờ mới
                         var newSlot = _context.TimeSlots.FirstOrDefault(ts => ts.Id == newTimeSlotId && !ts.IsDeleted);
-                        if (newSlot == null || (newSlot.Status != "Open" && newSlot.Id != app.TimeSlotId)) return false;
+                        // Nếu slot mới không hợp lệ (không tồn tại hoặc đã đầy)
+                        if (newSlot == null || (newSlot.Status != "Open" && newSlot.BookedCount >= newSlot.MaxAppointments)) 
+                            return false;
 
                         newSlot.BookedCount += 1;
                         if (newSlot.BookedCount >= newSlot.MaxAppointments)
                             newSlot.Status = "Full";
 
                         app.TimeSlotId = newTimeSlotId;
+                        
+                        // 3. QUAN TRỌNG: Đổi giờ khám thì phải đưa về "Chờ duyệt" để bác sĩ duyệt lại
+                        app.Status = "Pending";
                     }
 
                     app.Reason = newReason;
@@ -300,9 +307,10 @@ namespace DAL_Tier
                     transaction.Commit();
                     return true;
                 }
-                catch
+                catch (Exception ex)
                 {
                     transaction.Rollback();
+                    Console.WriteLine("Lỗi UpdateAppointment: " + ex.Message);
                     return false;
                 }
             }
@@ -358,6 +366,24 @@ namespace DAL_Tier
             catch
             {
                 return null;
+            }
+        }
+        public bool UpdateStatus(int appointmentId, string newStatus, string note = null)
+        {
+            try
+            {
+                var app = _context.Appointments.Find(appointmentId);
+                if (app == null) return false;
+
+                app.Status = newStatus;
+                if (note != null) app.Note = note;
+                app.UpdatedAt = DateTime.Now;
+
+                return _context.SaveChanges() > 0;
+            }
+            catch
+            {
+                return false;
             }
         }
     }

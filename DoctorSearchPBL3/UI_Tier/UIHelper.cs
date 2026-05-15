@@ -9,6 +9,28 @@ namespace UI_Tier
 {
     public static class UIHelper
     {
+        // Import các hàm API để kéo form mượt hơn (giảm load)
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern bool ReleaseCapture();
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
+        public const int WM_NCLBUTTONDOWN = 0xA1;
+        public const int HT_CAPTION = 0x2;
+
+        public static void EnableNativeDrag(Control handle, Control target)
+        {
+            handle.MouseDown += (s, e) => {
+                if (e.Button == MouseButtons.Left)
+                {
+                    ReleaseCapture();
+                    SendMessage(target.Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+                }
+            };
+            handle.Cursor = Cursors.SizeAll;
+        }
+
         // Hàm tạo đường dẫn hình chữ nhật bo tròn (Số nguyên)
         public static GraphicsPath GetRoundedPath(Rectangle rect, int radius)
         {
@@ -120,6 +142,214 @@ namespace UI_Tier
                     e.Graphics.DrawPath(pen, path);
                 }
             }
+        }
+
+        // --- HÀM MỚI: Hiệu ứng Hover nhấc lên và đổi màu ---
+        public static void SetupHoverEffect(Control ctrl, Color hoverColor, Color defaultColor, int liftAmount = 2)
+        {
+            if (ctrl == null) return;
+            ctrl.Cursor = Cursors.Hand;
+            ctrl.MouseEnter += (s, e) => {
+                ctrl.ForeColor = hoverColor;
+                ctrl.Top -= liftAmount;
+            };
+            ctrl.MouseLeave += (s, e) => {
+                ctrl.ForeColor = defaultColor;
+                ctrl.Top += liftAmount;
+            };
+        }
+
+        public static void SetupPaginationLabels(Label lblPrev, Label lblNext)
+        {
+            Color defaultColor = Color.FromArgb(0, 120, 212);
+            Color hoverColor = Color.FromArgb(0, 90, 158);
+            SetupHoverEffect(lblPrev, hoverColor, defaultColor, 2);
+            SetupHoverEffect(lblNext, hoverColor, defaultColor, 2);
+        }
+
+        public static void SetupSearchTextBox(TextBox txt, string placeholder)
+        {
+            txt.BackColor = Color.White;
+            SetupPlaceholder(txt, placeholder);
+        }
+
+        public static void SetupComboBox(ComboBox cbo)
+        {
+            cbo.FlatStyle = FlatStyle.Standard;
+            cbo.BackColor = Color.White;
+            // Một số phiên bản Windows cần Invalidate để vẽ lại border chuẩn
+            cbo.Invalidate();
+        }
+
+        public static void SetupPlaceholder(TextBox txt, string placeholder)
+        {
+            txt.Text = placeholder;
+            txt.ForeColor = Color.Gray;
+
+            txt.Enter += (s, e) => {
+                if (txt.Text == placeholder)
+                {
+                    txt.Text = "";
+                    txt.ForeColor = Color.Black;
+                }
+            };
+
+            txt.Leave += (s, e) => {
+                if (string.IsNullOrWhiteSpace(txt.Text))
+                {
+                    txt.Text = placeholder;
+                    txt.ForeColor = Color.Gray;
+                }
+            };
+        }
+
+        // --- HÀM MỚI: Hiệu ứng Focus cho ô nhập liệu (Đổi nền và vẽ highlight đáy) ---
+        public static void SetupInputFocusEffect(Control inputControl, Control borderControl, int radius, Color focusBorderColor, Color unfocusBorderColor, int borderSize = 2)
+        {
+            inputControl.Enter += (s, e) => borderControl.Invalidate();
+            inputControl.Leave += (s, e) => borderControl.Invalidate();
+
+            borderControl.Paint += (s, e) => {
+                Color currentColor = inputControl.Focused ? focusBorderColor : unfocusBorderColor;
+                DrawControlBorder(borderControl, e, radius, currentColor, borderSize);
+            };
+        }
+
+        // --- Overload cũ để tương thích với các màn hình khác ---
+        public static void SetupInputFocusEffect(Control inputControl, Control borderControl, Color focusBackColor, Color unfocusBackColor, Color highlightColor)
+        {
+            borderControl.Paint += (s, e) => {
+                if (inputControl.Focused)
+                {
+                    using (Pen p = new Pen(highlightColor, 4))
+                    {
+                        e.Graphics.DrawLine(p, 15, borderControl.Height - 2, borderControl.Width - 15, borderControl.Height - 2);
+                    }
+                }
+            };
+
+            inputControl.Enter += (s, e) => {
+                borderControl.BackColor = focusBackColor;
+                inputControl.BackColor = focusBackColor;
+                borderControl.Invalidate();
+            };
+            inputControl.Leave += (s, e) => {
+                borderControl.BackColor = unfocusBackColor;
+                inputControl.BackColor = unfocusBackColor;
+                borderControl.Invalidate();
+            };
+        }
+
+        // --- HÀM MỚI: Đăng ký đệ quy để thoát focus khi click ra ngoài ---
+        public static void RegisterClickToUnfocus(Control parent, Control focusTarget)
+        {
+            parent.Click += (s, e) => { 
+                // Không cướp focus nếu đang thao tác với ComboBox
+                if (parent.FindForm()?.ActiveControl is ComboBox cbo && cbo.DroppedDown) return;
+                
+                if (focusTarget != null) focusTarget.Focus(); 
+            };
+            foreach (Control child in parent.Controls)
+            {
+                if (!(child is TextBox || child is RichTextBox || child is Button || child is DateTimePicker || child is ComboBox))
+                {
+                    RegisterClickToUnfocus(child, focusTarget);
+                }
+            }
+        }
+
+        // --- HÀM MỚI: Cấu hình Label thông báo trống ở giữa container ---
+        public static void SetupEmptyStateLabel(Label lbl, Control container, string text)
+        {
+            lbl.Text = text;
+            lbl.Font = new Font("Segoe UI", 11, FontStyle.Italic);
+            lbl.ForeColor = Color.Gray;
+            lbl.TextAlign = ContentAlignment.MiddleCenter;
+            lbl.AutoSize = false;
+            lbl.Size = new Size(container.Width - 40, container.Height - 40);
+            lbl.Margin = new Padding(20);
+        }
+
+        // --- HÀM MỚI: Vẽ đổ bóng và đường trang trí cho các Section ---
+        public static void DrawSectionShadow(object sender, PaintEventArgs e, int radius, Color accentColor)
+        {
+            Control pnl = sender as Control;
+            if (pnl == null) return;
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            // Đổ bóng mờ (Shadow)
+            for (int i = 1; i <= 6; i++)
+            {
+                Rectangle shadowRect = new Rectangle(i, i, pnl.Width - i * 2, pnl.Height - i * 2);
+                using (var path = GetRoundedPath(shadowRect, radius))
+                {
+                    using (Pen shadowPen = new Pen(Color.FromArgb(12 / i, Color.Black), i))
+                    {
+                        e.Graphics.DrawPath(shadowPen, path);
+                    }
+                }
+            }
+
+            // Vẽ viền và đường trang trí trên cùng
+            Rectangle rect = new Rectangle(0, 0, pnl.Width - 1, pnl.Height - 1);
+            using (var path = GetRoundedPath(rect, radius))
+            {
+                using (Pen pen = new Pen(Color.FromArgb(226, 232, 240), 1))
+                {
+                    pen.Alignment = PenAlignment.Inset;
+                    e.Graphics.DrawPath(pen, path);
+                }
+            }
+            using (Pen accentPen = new Pen(accentColor, 6))
+            {
+                e.Graphics.DrawLine(accentPen, 20, 0, pnl.Width - 20, 0);
+            }
+        }
+
+        // --- HÀM MỚI: Ngăn ô ReadOnly nhận focus ---
+        public static void SetupReadOnlyHandler(TextBox tb, Control alternativeFocus)
+        {
+            tb.Enter += (s, e) => {
+                if (tb.ReadOnly) alternativeFocus.Focus();
+            };
+        }
+
+        public static void SetupPaginationPanel(Panel pnl, int topPadding = 10)
+        {
+            pnl.Dock = DockStyle.Bottom;
+            pnl.Height = 60;
+            pnl.BackColor = Color.FromArgb(242, 246, 250); // Màu xanh nhạt nhẹ
+            pnl.Padding = new Padding(0, topPadding, 0, 0); // Tạo khoảng cách phía trên
+
+            // Vẽ đường kẻ mờ ở trên cùng để phân tách với danh sách
+            pnl.Paint += (s, e) => {
+                e.Graphics.DrawLine(new Pen(Color.FromArgb(230, 230, 230), 1), 0, 0, pnl.Width, 0);
+            };
+        }
+        // --- HÀM MỚI: Cho phép di chuyển Control bằng cách nắm kéo một handle (ví dụ: Title) ---
+        public static void MakeDraggable(Control handle, Control target)
+        {
+            bool isDragging = false;
+            Point dragStartPoint = new Point(0, 0);
+
+            handle.MouseDown += (s, ev) => {
+                if (ev.Button == MouseButtons.Left)
+                {
+                    isDragging = true;
+                    dragStartPoint = ev.Location;
+                }
+            };
+
+            handle.MouseMove += (s, ev) => {
+                if (isDragging)
+                {
+                    Point p = target.Parent.PointToClient(Control.MousePosition);
+                    target.Location = new Point(p.X - dragStartPoint.X, p.Y - dragStartPoint.Y);
+                }
+            };
+
+            handle.MouseUp += (s, ev) => { isDragging = false; };
+            handle.Cursor = Cursors.SizeAll;
         }
     }
 }

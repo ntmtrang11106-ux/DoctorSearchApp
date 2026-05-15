@@ -57,25 +57,12 @@ namespace UI_Tier
                 if (_currentPage < totalPages) { _currentPage++; DisplayRecentReviews(); } 
             };
 
-            // Hiệu ứng "nhảy" và đổi màu khi di chuột
-            ApplyHoverEffect(lblReviewPrevBtn);
-            ApplyHoverEffect(lblReviewNext);
+            // Hiệu ứng "nhảy" và đổi màu khi di chuột sử dụng Helper
+            UIHelper.SetupHoverEffect(lblReviewPrevBtn, Color.FromArgb(0, 102, 180), Color.FromArgb(0, 120, 212));
+            UIHelper.SetupHoverEffect(lblReviewNext, Color.FromArgb(0, 102, 180), Color.FromArgb(0, 120, 212));
         }
 
-        private void ApplyHoverEffect(Label lbl)
-        {
-            Color originalColor = lbl.ForeColor;
-            Point originalLocation = lbl.Location;
 
-            lbl.MouseEnter += (s, e) => {
-                lbl.ForeColor = Color.FromArgb(0, 102, 180); // Đậm hơn chút
-                lbl.Top -= 2; // Nhảy lên 2px
-            };
-            lbl.MouseLeave += (s, e) => {
-                lbl.ForeColor = originalColor;
-                lbl.Top += 2; // Trở lại vị trí cũ
-            };
-        }
 
 
         private void CboFilter_SelectedIndexChanged(object sender, EventArgs e)
@@ -134,25 +121,7 @@ namespace UI_Tier
         {
             if (sender is Control ctrl)
             {
-                using (Pen pen = new Pen(Color.Black, 1)) // Viền đen dày 1
-                {
-                    e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                    int radius = 25;
-                    int width = ctrl.Width;
-                    int height = ctrl.Height;
-
-                    System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
-                    float arcSize = radius * 2f;
-                    float offset = 0.5f;
-
-                    path.AddArc(offset, offset, arcSize, arcSize, 180, 90);
-                    path.AddArc(width - arcSize - offset, offset, arcSize, arcSize, 270, 90);
-                    path.AddArc(width - arcSize - offset, height - arcSize - offset, arcSize, arcSize, 0, 90);
-                    path.AddArc(offset, height - arcSize - offset, arcSize, arcSize, 90, 90);
-                    path.CloseAllFigures();
-
-                    e.Graphics.DrawPath(pen, path);
-                }
+                UIHelper.DrawControlBorder(ctrl, e, 25, Color.Black, 1);
             }
         }
 
@@ -160,25 +129,7 @@ namespace UI_Tier
         {
             if (sender is Panel pnl)
             {
-                using (Pen pen = new Pen(Color.Black, 2)) // Viền đen dày 2
-                {
-                    e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                    int radius = 25;
-                    int width = pnl.Width;
-                    int height = pnl.Height;
-
-                    System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
-                    float arcSize = radius * 2f;
-                    float offset = 1.5f; // Lùi vào để không bị xén viền
-
-                    path.AddArc(offset, offset, arcSize, arcSize, 180, 90);
-                    path.AddArc(width - arcSize - offset, offset, arcSize, arcSize, 270, 90);
-                    path.AddArc(width - arcSize - offset, height - arcSize - offset, arcSize, arcSize, 0, 90);
-                    path.AddArc(offset, height - arcSize - offset, arcSize, arcSize, 90, 90);
-                    path.CloseAllFigures();
-
-                    e.Graphics.DrawPath(pen, path);
-                }
+                UIHelper.DrawControlBorder(pnl, e, 25, Color.Black, 2);
             }
         }
 

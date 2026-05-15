@@ -39,10 +39,6 @@ namespace UI_Tier
             lblReasonIcon = new Label();
             txtReason = new RichTextBox();
             lblCharCount = new Label();
-            pnlNotice = new Panel();
-            lblNoticeText = new Label();
-            lblNoticeTitle = new Label();
-            picNoticeIcon = new PictureBox();
             btnConfirm = new Button();
             btnCancel = new Button();
             label1 = new Label();
@@ -55,8 +51,6 @@ namespace UI_Tier
             ((System.ComponentModel.ISupportInitialize)picLegendSelected).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picLegendAvailable).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picLegendBooked).BeginInit();
-            pnlNotice.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)picNoticeIcon).BeginInit();
             SuspendLayout();
             // 
             // pnlHeader
@@ -305,7 +299,7 @@ namespace UI_Tier
             txtReason.ForeColor = Color.Gray;
             txtReason.Location = new Point(40, 1036);
             txtReason.Name = "txtReason";
-            txtReason.Size = new Size(870, 166);
+            txtReason.Size = new Size(870, 180);
             txtReason.TabIndex = 7;
             txtReason.Text = "Vui lòng mô tả lý do bạn cần khám bệnh...";
             txtReason.TextChanged += txtReason_TextChanged;
@@ -315,52 +309,11 @@ namespace UI_Tier
             lblCharCount.AutoSize = true;
             lblCharCount.Font = new Font("Segoe UI", 9F);
             lblCharCount.ForeColor = Color.Gray;
-            lblCharCount.Location = new Point(40, 1205);
+            lblCharCount.Location = new Point(40, 1219);
             lblCharCount.Name = "lblCharCount";
             lblCharCount.Size = new Size(135, 32);
             lblCharCount.TabIndex = 8;
             lblCharCount.Text = "0/500 ký tự";
-            // 
-            // pnlNotice
-            // 
-            pnlNotice.BackColor = Color.FromArgb(255, 251, 235);
-            pnlNotice.Controls.Add(lblNoticeText);
-            pnlNotice.Controls.Add(lblNoticeTitle);
-            pnlNotice.Controls.Add(picNoticeIcon);
-            pnlNotice.Location = new Point(40, 1249);
-            pnlNotice.Name = "pnlNotice";
-            pnlNotice.Size = new Size(870, 196);
-            pnlNotice.TabIndex = 9;
-            // 
-            // lblNoticeText
-            // 
-            lblNoticeText.AutoSize = true;
-            lblNoticeText.Font = new Font("Segoe UI", 9.5F);
-            lblNoticeText.ForeColor = Color.FromArgb(146, 64, 14);
-            lblNoticeText.Location = new Point(100, 70);
-            lblNoticeText.Name = "lblNoticeText";
-            lblNoticeText.Size = new Size(562, 108);
-            lblNoticeText.TabIndex = 1;
-            lblNoticeText.Text = "• Vui lòng đến trước giờ hẹn 10-15 phút\r\n• Mang theo CMND/CCCD và thẻ BHYT (nếu có)\r\n• Lịch hẹn cần được bác sĩ xác nhận";
-            // 
-            // lblNoticeTitle
-            // 
-            lblNoticeTitle.AutoSize = true;
-            lblNoticeTitle.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Bold);
-            lblNoticeTitle.ForeColor = Color.FromArgb(146, 64, 14);
-            lblNoticeTitle.Location = new Point(100, 25);
-            lblNoticeTitle.Name = "lblNoticeTitle";
-            lblNoticeTitle.Size = new Size(241, 31);
-            lblNoticeTitle.TabIndex = 0;
-            lblNoticeTitle.Text = "Lưu ý quan trọng:";
-            // 
-            // picNoticeIcon
-            // 
-            picNoticeIcon.Location = new Point(30, 25);
-            picNoticeIcon.Name = "picNoticeIcon";
-            picNoticeIcon.Size = new Size(40, 40);
-            picNoticeIcon.TabIndex = 2;
-            picNoticeIcon.TabStop = false;
             // 
             // btnConfirm
             // 
@@ -370,7 +323,7 @@ namespace UI_Tier
             btnConfirm.FlatStyle = FlatStyle.Flat;
             btnConfirm.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
             btnConfirm.ForeColor = Color.White;
-            btnConfirm.Location = new Point(55, 1460);
+            btnConfirm.Location = new Point(40, 1278);
             btnConfirm.Name = "btnConfirm";
             btnConfirm.Size = new Size(591, 80);
             btnConfirm.TabIndex = 10;
@@ -386,7 +339,7 @@ namespace UI_Tier
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
             btnCancel.ForeColor = Color.FromArgb(31, 41, 55);
-            btnCancel.Location = new Point(698, 1460);
+            btnCancel.Location = new Point(708, 1278);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(202, 80);
             btnCancel.TabIndex = 11;
@@ -439,7 +392,6 @@ namespace UI_Tier
             Controls.Add(lblDateIcon);
             Controls.Add(btnCancel);
             Controls.Add(btnConfirm);
-            Controls.Add(pnlNotice);
             Controls.Add(lblCharCount);
             Controls.Add(txtReason);
             Controls.Add(lblReasonTitle);
@@ -450,7 +402,7 @@ namespace UI_Tier
             Controls.Add(lblDateTitle);
             Controls.Add(pnlHeader);
             Name = "ucBookingDialog";
-            Size = new Size(950, 1560);
+            Size = new Size(950, 1382);
             Load += ucBookingDialog_Load;
             pnlHeader.ResumeLayout(false);
             pnlHeader.PerformLayout();
@@ -462,9 +414,6 @@ namespace UI_Tier
             ((System.ComponentModel.ISupportInitialize)picLegendSelected).EndInit();
             ((System.ComponentModel.ISupportInitialize)picLegendAvailable).EndInit();
             ((System.ComponentModel.ISupportInitialize)picLegendBooked).EndInit();
-            pnlNotice.ResumeLayout(false);
-            pnlNotice.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)picNoticeIcon).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }

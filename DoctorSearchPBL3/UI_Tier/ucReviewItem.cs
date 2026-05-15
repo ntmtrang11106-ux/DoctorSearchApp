@@ -29,6 +29,8 @@ namespace UI_Tier
             // ToolTip của btnHide sẽ được Set linh hoạt trong SetReviewData và BtnToggleVisibility
         }
 
+
+
         public void SetReviewData(ReviewsDTO review, DoctorDTO doctor, int currentPatientId)
         {
             if (review == null) return;
@@ -53,6 +55,8 @@ namespace UI_Tier
                 fullComment = fullComment.Split(new string[] { "|CHAT_MSG|" }, StringSplitOptions.None)[0];
 
             lblComment.Text = string.IsNullOrEmpty(fullComment) ? "Không có bình luận." : fullComment.Trim();
+
+
 
             bool isOwner = (review.PatientId == currentPatientId);
             if (lblYourReview != null) lblYourReview.Visible = isOwner;
@@ -156,17 +160,7 @@ namespace UI_Tier
             if (btnHide != null) btnHide.Click += BtnToggleVisibility_Click;
             if (btnEdit != null) btnEdit.Click += BtnEdit_Click;
 
-            this.Paint += (s, ev) => {
-                ev.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                Rectangle rect = new Rectangle(0, 0, this.Width - 1, this.Height - 1);
-                using (System.Drawing.Drawing2D.GraphicsPath path = UIHelper.GetRoundedPath(rect, 15)) {
-                    using (SolidBrush brush = new SolidBrush(this.BackColor)) ev.Graphics.FillPath(brush, path);
-                    using (Pen pen = new Pen(Color.FromArgb(220, 220, 220), 1)) {
-                        pen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
-                        ev.Graphics.DrawPath(pen, path);
-                    }
-                }
-            };
+            this.Paint += (s, ev) => UIHelper.DrawControlBorder(this, ev, 15, Color.FromArgb(220, 220, 220), 1);
         }
 
         private void BtnEdit_Click(object sender, EventArgs e)

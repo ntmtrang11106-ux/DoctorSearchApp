@@ -95,22 +95,22 @@ namespace UI_Tier
             // 
             dtpEnd.CalendarFont = new Font("Segoe UI", 12F);
             dtpEnd.CustomFormat = "  dd / MM / yyyy";
-            dtpEnd.Font = new Font("Segoe UI", 12F);
+            dtpEnd.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
             dtpEnd.Format = DateTimePickerFormat.Custom;
             dtpEnd.Location = new Point(1045, 166);
             dtpEnd.Name = "dtpEnd";
-            dtpEnd.Size = new Size(360, 50);
+            dtpEnd.Size = new Size(360, 57);
             dtpEnd.TabIndex = 26;
             // 
             // dtpBegin
             // 
             dtpBegin.CalendarFont = new Font("Segoe UI", 12F);
             dtpBegin.CustomFormat = "  dd / MM / yyyy";
-            dtpBegin.Font = new Font("Segoe UI", 12F);
+            dtpBegin.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
             dtpBegin.Format = DateTimePickerFormat.Custom;
             dtpBegin.Location = new Point(294, 166);
             dtpBegin.Name = "dtpBegin";
-            dtpBegin.Size = new Size(360, 50);
+            dtpBegin.Size = new Size(360, 57);
             dtpBegin.TabIndex = 25;
             // 
             // pictureBox2
@@ -216,7 +216,7 @@ namespace UI_Tier
             flpAppItem.Location = new Point(0, 358);
             flpAppItem.Margin = new Padding(0);
             flpAppItem.Name = "flpAppItem";
-            flpAppItem.Size = new Size(1845, 424);
+            flpAppItem.Size = new Size(1845, 504);
             flpAppItem.TabIndex = 7;
             flpAppItem.WrapContents = false;
             // 

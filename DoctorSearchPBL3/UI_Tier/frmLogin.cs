@@ -43,27 +43,14 @@ namespace UI_Tier
             panel4.Paint += (s, e) => UIHelper.uc_Paint(s, e, 10, Color.Black, 2);
             panel5.Paint += (s, e) => UIHelper.uc_Paint(s, e, 10, Color.Black, 2);
             
-            // Hiệu ứng cho nút Con mắt (Ẩn/Hiện mật khẩu)
-            picShowPass.Cursor = Cursors.Hand;
-            picShowPass.MouseEnter += (s, e) => {
-                picShowPass.Location = new Point(picShowPass.Location.X, picShowPass.Location.Y - 2);
-            };
-            picShowPass.MouseLeave += (s, e) => {
-                picShowPass.Location = new Point(picShowPass.Location.X, picShowPass.Location.Y + 2);
-            };
-
-            // Thiết lập cho link Đăng ký
-            label5.Cursor = Cursors.Hand;
-            label5.MouseEnter += (s, e) => {
-                label5.Font = new Font("Segoe UI", 11F, FontStyle.Bold | FontStyle.Underline);
-                label5.ForeColor = Color.FromArgb(0, 80, 200);
-                label5.Location = new Point(label5.Location.X, label5.Location.Y - 2); // Nổi lên 2px
-            };
-            label5.MouseLeave += (s, e) => {
-                label5.Font = new Font("Segoe UI", 10.125F, FontStyle.Underline);
-                label5.ForeColor = Color.Blue;
-                label5.Location = new Point(label5.Location.X, label5.Location.Y + 2); // Trở về vị trí cũ
-            };
+            // Hiệu ứng Hover chuẩn sử dụng Helper
+            UIHelper.SetupHoverEffect(picShowPass, Color.Gray, Color.Transparent, 2);
+            UIHelper.SetupHoverEffect(label5, Color.FromArgb(0, 80, 200), Color.Blue, 2);
+            
+            // Hiệu ứng Focus và Click-outside sử dụng Helper
+            UIHelper.SetupInputFocusEffect(txtUsername, panel4, Color.FromArgb(243, 248, 255), Color.White, Color.Black);
+            UIHelper.SetupInputFocusEffect(txtPassword, panel5, Color.FromArgb(243, 248, 255), Color.White, Color.Black);
+            UIHelper.RegisterClickToUnfocus(this, label1); // Chuyển focus về tiêu đề khi click ngoài
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)

@@ -8,14 +8,15 @@ namespace DAL_Tier
 {
     public class ReviewDAL
     {
-        private readonly AppDbContext _context = new AppDbContext();
-
         public bool Add(ReviewsDTO review)
         {
             try
             {
-                _context.Reviews.Add(review);
-                return _context.SaveChanges() > 0;
+                using (var db = new AppDbContext())
+                {
+                    db.Reviews.Add(review);
+                    return db.SaveChanges() > 0;
+                }
             }
             catch (Exception ex)
             {
@@ -28,12 +29,15 @@ namespace DAL_Tier
         {
             try
             {
-                return _context.Reviews
-                    .Include(r => r.Patient).ThenInclude(p => p.User)
-                    .Include(r => r.Doctor).ThenInclude(d => d.User)
-                    .Where(r => r.DoctorId == doctorId && !r.IsDeleted && r.IsVisible)
-                    .OrderByDescending(r => r.CreatedAt)
-                    .ToList();
+                using (var db = new AppDbContext())
+                {
+                    return db.Reviews
+                        .Include(r => r.Patient).ThenInclude(p => p.User)
+                        .Include(r => r.Doctor).ThenInclude(d => d.User)
+                        .Where(r => r.DoctorId == doctorId && !r.IsDeleted && r.IsVisible)
+                        .OrderByDescending(r => r.CreatedAt)
+                        .ToList();
+                }
             }
             catch (Exception ex)
             {
@@ -42,19 +46,21 @@ namespace DAL_Tier
             }
         }
 
-        /// <summary>Cập nhật rating và comment của một đánh giá.</summary>
         public bool UpdateReview(int reviewId, int newRating, string newComment)
         {
             try
             {
-                var existing = _context.Reviews.Find(reviewId);
-                if (existing == null || existing.IsDeleted) return false;
+                using (var db = new AppDbContext())
+                {
+                    var existing = db.Reviews.Find(reviewId);
+                    if (existing == null || existing.IsDeleted) return false;
 
-                existing.Rating    = newRating;
-                existing.Comment   = newComment;
-                existing.UpdatedAt = DateTime.Now;
+                    existing.Rating = newRating;
+                    existing.Comment = newComment;
+                    existing.UpdatedAt = DateTime.Now;
 
-                return _context.SaveChanges() > 0;
+                    return db.SaveChanges() > 0;
+                }
             }
             catch (Exception ex)
             {
@@ -67,12 +73,15 @@ namespace DAL_Tier
         {
             try
             {
-                return _context.Reviews
-                    .Include(r => r.Patient).ThenInclude(p => p.User)
-                    .Include(r => r.Doctor).ThenInclude(d => d.User)
-                    // Bỏ filter !r.IsDeleted để admin có thể lọc xem các bản ghi đã xóa
-                    .OrderByDescending(r => r.CreatedAt)
-                    .ToList();
+                using (var db = new AppDbContext())
+                {
+                    return db.Reviews
+                        .AsNoTracking() // Đảm bảo không lấy cache
+                        .Include(r => r.Patient).ThenInclude(p => p.User)
+                        .Include(r => r.Doctor).ThenInclude(d => d.User)
+                        .OrderByDescending(r => r.CreatedAt)
+                        .ToList();
+                }
             }
             catch (Exception ex)
             {
@@ -85,13 +94,16 @@ namespace DAL_Tier
         {
             try
             {
-                var existing = _context.Reviews.Find(reviewId);
-                if (existing == null || existing.IsDeleted) return false;
+                using (var db = new AppDbContext())
+                {
+                    var existing = db.Reviews.Find(reviewId);
+                    if (existing == null || existing.IsDeleted) return false;
 
-                existing.IsVisible = isVisible;
-                existing.UpdatedAt = DateTime.Now;
+                    existing.IsVisible = isVisible;
+                    existing.UpdatedAt = DateTime.Now;
 
-                return _context.SaveChanges() > 0;
+                    return db.SaveChanges() > 0;
+                }
             }
             catch (Exception ex)
             {
@@ -100,18 +112,20 @@ namespace DAL_Tier
             }
         }
 
-        /// <summary>Xóa mềm (soft-delete) một đánh giá theo Id.</summary>
         public bool DeleteReview(int reviewId)
         {
             try
             {
-                var existing = _context.Reviews.Find(reviewId);
-                if (existing == null || existing.IsDeleted) return false;
+                using (var db = new AppDbContext())
+                {
+                    var existing = db.Reviews.Find(reviewId);
+                    if (existing == null || existing.IsDeleted) return false;
 
-                existing.IsDeleted = true;
-                existing.DeletedAt = DateTime.Now;
+                    existing.IsDeleted = true;
+                    existing.DeletedAt = DateTime.Now;
 
-                return _context.SaveChanges() > 0;
+                    return db.SaveChanges() > 0;
+                }
             }
             catch (Exception ex)
             {
@@ -119,24 +133,27 @@ namespace DAL_Tier
                 return false;
             }
         }
+
         public bool UpdateAdminReply(int reviewId, string reply)
         {
             try
             {
-                var existing = _context.Reviews.Find(reviewId);
-                if (existing == null || existing.IsDeleted) return false;
+                using (var db = new AppDbContext())
+                {
+                    var existing = db.Reviews.Find(reviewId);
+                    if (existing == null || existing.IsDeleted) return false;
 
-                // Quay lại logic chỉ lưu 1 phản hồi duy nhất
-                string baseComment = existing.Comment ?? "";
-                if (baseComment.Contains("|ADMIN_REPLY|"))
-                    baseComment = baseComment.Split(new string[] { "|ADMIN_REPLY|" }, StringSplitOptions.None)[0];
-                else if (baseComment.Contains("|CHAT_MSG|"))
-                    baseComment = baseComment.Split(new string[] { "|CHAT_MSG|" }, StringSplitOptions.None)[0];
-                
-                existing.Comment = $"{baseComment.Trim()}|ADMIN_REPLY|{reply.Trim()}";
-                existing.UpdatedAt = DateTime.Now;
+                    string baseComment = existing.Comment ?? "";
+                    if (baseComment.Contains("|ADMIN_REPLY|"))
+                        baseComment = baseComment.Split(new string[] { "|ADMIN_REPLY|" }, StringSplitOptions.None)[0];
+                    else if (baseComment.Contains("|CHAT_MSG|"))
+                        baseComment = baseComment.Split(new string[] { "|CHAT_MSG|" }, StringSplitOptions.None)[0];
 
-                return _context.SaveChanges() > 0;
+                    existing.Comment = $"{baseComment.Trim()}|ADMIN_REPLY|{reply.Trim()}";
+                    existing.UpdatedAt = DateTime.Now;
+
+                    return db.SaveChanges() > 0;
+                }
             }
             catch (Exception ex)
             {

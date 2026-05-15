@@ -33,39 +33,19 @@ namespace UI_Tier
                 e.Graphics.DrawLine(new Pen(Color.Gainsboro, 1), 0, 0, pnlAppPagination.Width, 0);
             };
 
-            // Hiệu ứng hover cho các nút phân trang
-            lblReviewPrev.MouseEnter += PaginationLabel_MouseEnter;
-            lblReviewPrev.MouseLeave += PaginationLabel_MouseLeave;
-            lblReviewNext.MouseEnter += PaginationLabel_MouseEnter;
-            lblReviewNext.MouseLeave += PaginationLabel_MouseLeave;
-            lblAppPrev.MouseEnter += PaginationLabel_MouseEnter;
-            lblAppPrev.MouseLeave += PaginationLabel_MouseLeave;
-            lblAppNext.MouseEnter += PaginationLabel_MouseEnter;
-            lblAppNext.MouseLeave += PaginationLabel_MouseLeave;
+            // Hiệu ứng hover sử dụng Helper
+            UIHelper.SetupHoverEffect(lblReviewPrev, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
+            UIHelper.SetupHoverEffect(lblReviewNext, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
+            UIHelper.SetupHoverEffect(lblAppPrev, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
+            UIHelper.SetupHoverEffect(lblAppNext, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
 
-            lblReviewPrev.Cursor = Cursors.Hand;
-            lblReviewNext.Cursor = Cursors.Hand;
-            lblAppPrev.Cursor = Cursors.Hand;
-            lblAppNext.Cursor = Cursors.Hand;
+            lblReviewPrev.Click += lblReviewPrev_Click;
+            lblReviewNext.Click += lblReviewNext_Click;
+            lblAppPrev.Click += lblAppPrev_Click;
+            lblAppNext.Click += lblAppNext_Click;
         }
 
-        private void PaginationLabel_MouseEnter(object sender, EventArgs e)
-        {
-            if (sender is Label lbl)
-            {
-                lbl.ForeColor = Color.FromArgb(0, 90, 158); // Xanh đậm hơn khi hover
-                lbl.Top -= 2; // Hiệu ứng "nhảy lên"
-            }
-        }
 
-        private void PaginationLabel_MouseLeave(object sender, EventArgs e)
-        {
-            if (sender is Label lbl)
-            {
-                lbl.ForeColor = Color.FromArgb(0, 120, 212); // Trở lại màu chuẩn
-                lbl.Top += 2;
-            }
-        }
 
         // Hàm này dùng để "đổ" dữ liệu từ đối tượng Doctor vào các Label
 
@@ -79,6 +59,7 @@ namespace UI_Tier
         private int _appPageSize = 3;
         private int _appCurrentPage = 1;
         private List<AppointmentsDTO> _allAppointments = new List<AppointmentsDTO>();
+        private List<AppointmentsDTO> _filteredAppointments = new List<AppointmentsDTO>();
 
         public void SetDoctorData(DoctorDTO doctor)
         {
@@ -168,10 +149,6 @@ namespace UI_Tier
             
             // Đăng ký sự kiện nút Đặt lịch ngay
             btnBook.Click += btnBook_Click;
-            
-            // Đăng ký sự kiện lọc theo thời gian
-            dtpStartTime.ValueChanged += (s, e) => InitData();
-            dtpEndTime.ValueChanged += (s, e) => InitData();
         }
 
         private void ucPatient_DocProfile_Load(object sender, EventArgs e)
@@ -183,10 +160,15 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(panel4, 25);
             UIHelper.ApplyRoundedRegion(panel5, 25);
 
-            flpAppItem.Dock = DockStyle.None; // Tạm bỏ dock
-            //flpAppItem.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+            // Đảm bảo các panel luôn bám sát khung khi khởi tạo
+            flpAppItem.Dock = DockStyle.Top;
+            flpReview.Dock = DockStyle.Top;
 
-            flpAppItem.Width = panel4.Width;
+            // Kết nối sự kiện lọc (Lọc ngay khi thay đổi giá trị)
+            dateTimePicker3.ValueChanged += (s, e) => InitData();
+            dateTimePicker4.ValueChanged += (s, e) => InitData();
+            dtpStartTime.ValueChanged += (s, e) => InitData();
+            dtpEndTime.ValueChanged += (s, e) => InitData();
 
             InitData();
 
@@ -200,16 +182,16 @@ namespace UI_Tier
                 {
                     if (ctrl is ucAppItem card)
                     {
-                        card.Width = flpAppItem.Width - 40;
+                        card.Width = flpAppItem.ClientSize.Width - (flpAppItem.Padding.Left + flpAppItem.Padding.Right);
                     }
                 }
 
                 // Cập nhật độ rộng cho các đánh giá khi resize
                 foreach (Control ctrl in flpReview.Controls)
                 {
-                    if (ctrl is var review)
+                    if (ctrl is ucReviewItem review)
                     {
-                        review.Width = flpReview.ClientSize.Width - 40;
+                        review.Width = flpReview.ClientSize.Width - (flpReview.Padding.Left + flpReview.Padding.Right);
                     }
                 }
             };
@@ -278,9 +260,16 @@ namespace UI_Tier
         {
             try
             {
-                // 1. Lấy thông tin từ giao diện
-                DateTime fromDate = dateTimePicker3.Value;
-                DateTime toDate = dateTimePicker4.Value;
+                // 1. Kiểm tra và gán giá trị mặc định nếu cần
+                if (dtpStartTime.Value.TimeOfDay == TimeSpan.Zero && dtpEndTime.Value.TimeOfDay == TimeSpan.Zero)
+                {
+                    dtpStartTime.Value = DateTime.Today; // 00:00
+                    dtpEndTime.Value = DateTime.Today.AddHours(23).AddMinutes(59); // 23:59
+                }
+
+                // 2. Lấy thông tin từ giao diện
+                DateTime fromDate = dateTimePicker3.Value.Date;
+                DateTime toDate = dateTimePicker4.Value.Date;
                 TimeSpan fromTime = dtpStartTime.Value.TimeOfDay;
                 TimeSpan toTime = dtpEndTime.Value.TimeOfDay;
 
@@ -349,7 +338,7 @@ namespace UI_Tier
                         editUc.BringToFront();
                     };
 
-                    card.Width = flpAppItem.Width - 40;
+                    card.Width = flpAppItem.ClientSize.Width - (flpAppItem.Padding.Left + flpAppItem.Padding.Right);
                     flpAppItem.Controls.Add(card);
                 }
             }
@@ -457,7 +446,7 @@ namespace UI_Tier
                     item.SetReviewData(rev, _currentDoctor, currentPatientId);
                     item.ReviewDeleted += (s, ev) => LoadReviews();
                     item.ReviewEdited += (s, ev) => LoadReviews();
-                    item.Width = flpReview.ClientSize.Width - 40;
+                    item.Width = flpReview.ClientSize.Width - (flpReview.Padding.Left + flpReview.Padding.Right);
                     flpReview.Controls.Add(item);
                 }
             }
@@ -484,7 +473,7 @@ namespace UI_Tier
 
         private void lblAppNext_Click(object sender, EventArgs e)
         {
-            int totalPages = (int)Math.Ceiling((double)_allAppointments.Count / _appPageSize);
+            int totalPages = (int)Math.Ceiling((double)_filteredAppointments.Count / _appPageSize);
             if (_appCurrentPage < totalPages) { _appCurrentPage++; DisplayPage(); }
         }
         #endregion

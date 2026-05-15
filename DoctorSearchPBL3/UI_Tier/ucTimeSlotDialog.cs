@@ -17,10 +17,42 @@ namespace UI_Tier
         private readonly RoomBUS _roomBus = new RoomBUS();
 
         public event EventHandler OnCloseModal;
+        private int _editSlotId = 0;
+        private bool _isDragging = false;
+        private Point _dragStartPoint;
 
         public ucTimeSlotDialog()
         {
             InitializeComponent();
+        }
+
+        public void SetupEditMode(TimeSlotsDTO data)
+        {
+            _editSlotId = data.Id;
+            lblTitle.Text = "Chỉnh sửa lịch hẹn";
+            btnCreate.Text = "CẬP NHẬT";
+
+            // 1. Phải load dữ liệu vào ComboBox trước khi gán SelectedValue
+            LoadInitialData();
+
+            // 2. Điền dữ liệu
+            cbDept.SelectedValue = data.Doctor?.DepartmentId ?? 0;
+            
+            // Ép filter doctor theo khoa vừa chọn để cbDoctor có dữ liệu mà chọn
+            if (data.Doctor?.DepartmentId != null) {
+                var allDoctors = _doctorBus.GetListDoctors();
+                cbDoctor.DataSource = allDoctors.Where(d => d.DepartmentId == data.Doctor.DepartmentId).ToList();
+            }
+            
+            cbDoctor.SelectedValue = data.DoctorId;
+            dtpWorkDate.Value = data.WorkDate;
+            dtpStartTime.Value = DateTime.Today.Add(data.StartTime);
+            dtpEndTime.Value = DateTime.Today.Add(data.EndTime);
+            cbRoom.SelectedValue = data.RoomId;
+            numMax.Value = data.MaxAppointments;
+
+            // Ẩn phần lặp lại khi chỉnh sửa
+            cbRepeat.Visible = false;
         }
 
         private void ucTimeSlotCheckbox_Load(object sender, EventArgs e)
@@ -30,9 +62,60 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(btnCreate, 8);
             UIHelper.ApplyRoundedRegion(btnCancel, 8);
 
-            this.Paint += (s, ev) => UIHelper.uc_Paint(s, ev, 12, Color.FromArgb(226, 232, 240), 1);
+            // Gán sự kiện kéo form cho Title thông qua UIHelper (Dùng API mượt hơn)
+            UIHelper.EnableNativeDrag(pnlHeader, this);
+            UIHelper.EnableNativeDrag(lblTitle, this);
 
-            LoadInitialData();
+            // 1. Viền đen dày 3 cho form (Tăng độ dày theo yêu cầu)
+            this.Paint += (s, ev) => {
+                ev.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                using (Pen p = new Pen(Color.Black, 3)) {
+                    var rect = new Rectangle(1, 1, this.Width - 3, this.Height - 3);
+                    using (var path = UIHelper.GetRoundedPath(rect, 12))
+                        ev.Graphics.DrawPath(p, path);
+                }
+            };
+
+            // Vẽ viền cho Panel Header để tránh bị Dock che mất phần trên
+            pnlHeader.Paint += (s, ev) => {
+                ev.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                using (Pen p = new Pen(Color.Black, 4)) {
+                    // Vẽ cung tròn phía trên cho Header
+                    var rect = new Rectangle(1, 1, this.Width - 3, this.Height + 50); // Vẽ cao hơn để chỉ lấy phần trên
+                    using (var path = UIHelper.GetRoundedPath(rect, 12))
+                        ev.Graphics.DrawPath(p, path);
+                }
+            };
+
+            // 2. Style Label chữ màu đen
+            foreach (Control c in this.Controls) {
+                if (c is Label lbl) lbl.ForeColor = Color.Black;
+                if (c is Panel pnl) {
+                    foreach (Control pc in pnl.Controls) if (pc is Label plbl) plbl.ForeColor = Color.Black;
+                }
+            }
+            lblTitle.ForeColor = Color.Black;
+
+            // 3. Register unfocus khi click ra ngoài
+            UIHelper.RegisterClickToUnfocus(this, lblTitle);
+
+            // 4. Hiệu ứng Focus cho các ô nhập (Nền xanh nhẹ, đường xanh dưới)
+            Color focusColor = Color.FromArgb(240, 247, 255);
+            Color unfocusColor = Color.White;
+            Color highlightColor = Color.FromArgb(37, 99, 235);
+
+            UIHelper.SetupInputFocusEffect(cbDept, pnlDeptBorder, focusColor, unfocusColor, highlightColor);
+            UIHelper.SetupInputFocusEffect(cbDoctor, pnlDoctorBorder, focusColor, unfocusColor, highlightColor);
+            UIHelper.SetupInputFocusEffect(dtpWorkDate, pnlDateBorder, focusColor, unfocusColor, highlightColor);
+            UIHelper.SetupInputFocusEffect(dtpStartTime, pnlStartBorder, focusColor, unfocusColor, highlightColor);
+            UIHelper.SetupInputFocusEffect(dtpEndTime, pnlEndBorder, focusColor, unfocusColor, highlightColor);
+            UIHelper.SetupInputFocusEffect(cbRoom, pnlRoomBorder, focusColor, unfocusColor, highlightColor);
+            UIHelper.SetupInputFocusEffect(numMax, pnlMaxBorder, focusColor, unfocusColor, highlightColor);
+
+            if (_editSlotId == 0)
+            {
+                LoadInitialData();
+            }
             InitDayPicker();
         }
 
@@ -92,9 +175,9 @@ namespace UI_Tier
                 {
                     if (chk.Checked)
                     {
-                        chk.BackColor = Color.FromArgb(37, 99, 235);
+                        chk.BackColor = Color.FromArgb(30, 64, 175);
                         chk.ForeColor = Color.White;
-                        chk.FlatAppearance.BorderColor = Color.FromArgb(37, 99, 235);
+                        chk.FlatAppearance.BorderColor = Color.FromArgb(30, 64, 175);
                     }
                     else
                     {
@@ -112,7 +195,7 @@ namespace UI_Tier
             bool isRepeat = cbRepeat.Checked;
             pnlRepeatRange.Visible = isRepeat;
             lblDate.Visible = !isRepeat;
-            dtpWorkDate.Visible = !isRepeat;
+            pnlDateBorder.Visible = !isRepeat;
 
             // Adjust height if needed, but the current Size 1280 should be enough
         }
@@ -126,19 +209,42 @@ namespace UI_Tier
 
             int doctorId = (int)cbDoctor.SelectedValue;
             int roomId = (int)cbRoom.SelectedValue;
-            TimeSpan startTime = dtpStartTime.Value.TimeOfDay;
-            TimeSpan endTime = dtpEndTime.Value.TimeOfDay;
+            TimeSpan startTime = new TimeSpan(dtpStartTime.Value.Hour, dtpStartTime.Value.Minute, 0);
+            TimeSpan endTime = new TimeSpan(dtpEndTime.Value.Hour, dtpEndTime.Value.Minute, 0);
             int maxApp = (int)numMax.Value;
 
             string result = "";
 
-            if (cbRepeat.Checked)
+            if (_editSlotId > 0)
+            {
+                // Kiểm tra nếu có bệnh nhân đang chờ duyệt thì phải hỏi trước
+                if (_timeSlotsBus.HasPendingAppointments(_editSlotId))
+                {
+                    var confirm = MessageBox.Show("Khung giờ này đang có bệnh nhân chờ duyệt. Nếu bạn cập nhật, các lịch hẹn này sẽ bị HỦY tự động. Bạn có chắc chắn muốn tiếp tục?", 
+                        "Xác nhận thay đổi", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (confirm == DialogResult.No) return;
+                }
+
+                TimeSlotsDTO updateSlot = new TimeSlotsDTO
+                {
+                    Id = _editSlotId,
+                    DoctorId = doctorId,
+                    RoomId = roomId,
+                    WorkDate = dtpWorkDate.Value.Date,
+                    StartTime = startTime,
+                    EndTime = endTime,
+                    MaxAppointments = maxApp
+                };
+                result = _timeSlotsBus.UpdateTimeSlot(updateSlot);
+            }
+            else if (cbRepeat.Checked)
             {
                 List<string> selectedDays = GetCheckedDays();
                 DateTime startDate = dtpStartDateRange.Value.Date;
                 DateTime endDate = dtpEndDateRange.Value.Date;
+                int adminId = GlobalAccount.GetProfileId();
 
-                result = _timeSlotsBus.CreateBulkTimeSlots(doctorId, selectedDays, startDate, endDate, startTime, endTime, roomId, maxApp);
+                result = _timeSlotsBus.CreateBulkTimeSlots(doctorId, selectedDays, startDate, endDate, startTime, endTime, roomId, maxApp, adminId);
             }
             else
             {
@@ -153,15 +259,26 @@ namespace UI_Tier
                     BookedCount = 0,
                     Status = "Open",
                     IsDeleted = false,
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.Now,
+                    CreatedByAdminId = GlobalAccount.GetProfileId()
                 };
                 result = _timeSlotsBus.CreateSingleTimeSlot(newSlot);
             }
 
             if (result == "Success")
             {
-                MessageBox.Show("Tạo lịch hẹn thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                OnCloseModal?.Invoke(this, EventArgs.Empty);
+                if (_editSlotId > 0)
+                {
+                    // Nếu là chỉnh sửa, đóng form và load lại ngay lập tức phía sau rồi mới hiện thông báo
+                    OnCloseModal?.Invoke(this, EventArgs.Empty);
+                    MessageBox.Show("Cập nhật lịch hẹn thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    // Nếu là tạo mới, hiện thông báo trước rồi mới đóng form
+                    MessageBox.Show("Tạo lịch hẹn thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    OnCloseModal?.Invoke(this, EventArgs.Empty);
+                }
             }
             else
             {

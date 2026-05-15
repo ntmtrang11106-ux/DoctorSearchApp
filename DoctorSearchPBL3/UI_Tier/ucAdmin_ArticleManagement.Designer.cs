@@ -319,11 +319,11 @@ namespace UI_Tier
             btnAddArticle.BackColor = Color.FromArgb(37, 99, 235);
             btnAddArticle.FlatAppearance.BorderSize = 0;
             btnAddArticle.FlatStyle = FlatStyle.Flat;
-            btnAddArticle.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnAddArticle.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnAddArticle.ForeColor = Color.White;
-            btnAddArticle.Location = new Point(1435, 27);
+            btnAddArticle.Location = new Point(1410, 27);
             btnAddArticle.Name = "btnAddArticle";
-            btnAddArticle.Size = new Size(350, 75);
+            btnAddArticle.Size = new Size(375, 75);
             btnAddArticle.TabIndex = 2;
             btnAddArticle.Text = "+  Thêm bài viết";
             btnAddArticle.UseVisualStyleBackColor = false;

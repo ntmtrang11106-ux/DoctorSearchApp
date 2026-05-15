@@ -82,11 +82,11 @@ namespace UI_Tier
             // lblTitle
             // 
             lblTitle.AutoSize = true;
-            lblTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTitle.ForeColor = Color.Black;
-            lblTitle.Location = new Point(30, 30);
+            lblTitle.Location = new Point(30, 20);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(323, 51);
+            lblTitle.Size = new Size(411, 65);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Quản lý đánh giá";
             // 
@@ -95,7 +95,7 @@ namespace UI_Tier
             pnlSearch.BackColor = Color.White;
             pnlSearch.Controls.Add(txtSearch);
             pnlSearch.Controls.Add(lblSearchIcon);
-            pnlSearch.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            pnlSearch.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
             pnlSearch.Location = new Point(30, 100);
             pnlSearch.Name = "pnlSearch";
             pnlSearch.Size = new Size(1200, 65);
@@ -107,7 +107,7 @@ namespace UI_Tier
             txtSearch.BorderStyle = BorderStyle.None;
             txtSearch.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtSearch.ForeColor = Color.Gray;
-            txtSearch.Location = new Point(48, 8);
+            txtSearch.Location = new Point(73, 7);
             txtSearch.Name = "txtSearch";
             txtSearch.PlaceholderText = "Tìm kiếm theo bệnh nhân, bác sĩ, nội dung...";
             txtSearch.Size = new Size(1124, 43);

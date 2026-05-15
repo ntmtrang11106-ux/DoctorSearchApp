@@ -30,7 +30,10 @@ namespace UI_Tier
 
         private void SetupUI()
         {
-            // 1. Bo góc cho các Panel lớn
+            // 1. Thay đổi màu viền chính và làm mỏng lại (độ dày 3)
+            panel2.BackColor = Color.Black;
+            panel3.Location = new Point(3, 3);
+            panel3.Size = new Size(panel2.Width - 6, panel2.Height - 6);
             UIHelper.ApplyRoundedRegion(panel2, 30);
             UIHelper.ApplyRoundedRegion(panel3, 30);
                    // 2. Xử lý cho ô Nơi ở thường trú (Sử dụng panel22 và txtAddress có sẵn)
@@ -49,51 +52,23 @@ namespace UI_Tier
             dtpDOB.Location = new Point(15, 12);
             dtpDOB.Width = 721;
 
-            // Danh sách các Panel nhập liệu cần bo góc và vẽ viền đen
-            Panel[] inputPanels = { panel5, panel6, panel11, panel9, panel10, panel28, panel24, panel22, pnlDOBContainer };
-            foreach (var pnl in inputPanels)
-            {
-                UIHelper.ApplyRoundedRegion(pnl, 10);
-                pnl.BorderStyle = BorderStyle.None;
-                pnl.Paint += (s, e) => UIHelper.uc_Paint(s, e, 10, Color.Black, 2);
-            }
+            // Hiệu ứng Hover và Focus sử dụng Helper
+            UIHelper.SetupHoverEffect(label7, Color.FromArgb(0, 80, 200), Color.Blue, 2);
+            UIHelper.SetupHoverEffect(radioButton1, Color.FromArgb(0, 80, 200), Color.Black, 2);
+            UIHelper.SetupHoverEffect(radioButton2, Color.FromArgb(0, 80, 200), Color.Black, 2);
+
+            // Đăng ký Focus cho các ô nhập liệu (Đã sửa lỗi gán nhầm panel)
+            UIHelper.SetupInputFocusEffect(txtUsername, panel5, Color.FromArgb(243, 248, 255), Color.White, Color.Black);
+            UIHelper.SetupInputFocusEffect(txtPhoneNumber, panel6, Color.FromArgb(243, 248, 255), Color.White, Color.Black);
+            UIHelper.SetupInputFocusEffect(txtCCCD, panel11, Color.FromArgb(243, 248, 255), Color.White, Color.Black);
+            UIHelper.SetupInputFocusEffect(txtAddress, panel22, Color.FromArgb(243, 248, 255), Color.White, Color.Black);
+            UIHelper.SetupInputFocusEffect(textBox4, panel9, Color.FromArgb(243, 248, 255), Color.White, Color.Black);
+            UIHelper.SetupInputFocusEffect(textBox5, panel10, Color.FromArgb(243, 248, 255), Color.White, Color.Black);
+            UIHelper.SetupInputFocusEffect(textBox7, panel28, Color.FromArgb(243, 248, 255), Color.White, Color.Black);
+
+            UIHelper.RegisterClickToUnfocus(this, label1); // Click ngoài để thoát focus
 
             UIHelper.ApplyRoundedRegion(btnLogin, 15);
-
-            // 3. Con trỏ bàn tay cho các nút tương tác
-            btnLogin.Cursor = Cursors.Hand;
-            label7.Cursor = Cursors.Hand;
-
-            // Con trỏ bàn tay cho các tấm thẻ chọn Vai trò
-            Control[] roleControls = { panel7, panel8, label2, label3, label4, label5 };
-            foreach (var ctrl in roleControls) ctrl.Cursor = Cursors.Hand;
-
-            // Hiệu ứng cho các nút Giới tính
-            RadioButton[] genderButtons = { radioButton1, radioButton2 };
-            foreach (var rb in genderButtons)
-            {
-                rb.Cursor = Cursors.Hand;
-                rb.MouseEnter += (s, e) => {
-                    rb.ForeColor = Color.FromArgb(0, 80, 200);
-                    rb.Location = new Point(rb.Location.X, rb.Location.Y - 2);
-                };
-                rb.MouseLeave += (s, e) => {
-                    rb.ForeColor = Color.Black;
-                    rb.Location = new Point(rb.Location.X, rb.Location.Y + 2);
-                };
-            }
-
-            // 4. Hiệu ứng "Nổi lên" cho link Đăng nhập
-            label7.MouseEnter += (s, e) => {
-                label7.Font = new Font("Segoe UI", 11F, FontStyle.Bold | FontStyle.Underline);
-                label7.ForeColor = Color.FromArgb(0, 80, 200);
-                label7.Location = new Point(label7.Location.X, label7.Location.Y - 2);
-            };
-            label7.MouseLeave += (s, e) => {
-                label7.Font = new Font("Segoe UI", 10.125F, FontStyle.Underline);
-                label7.ForeColor = Color.Blue;
-                label7.Location = new Point(label7.Location.X, label7.Location.Y + 2);
-            };
         }
 
         private void label7_Click(object sender, EventArgs e)

@@ -51,19 +51,17 @@ namespace UI_Tier
             txtReason.Dock = DockStyle.Fill;
             txtReason.BorderStyle = BorderStyle.None;
             txtReason.BackColor = Color.White; // Nền trắng mặc định đồng bộ
-            // Chừa lề một chút để text không dính vào viền
             pnlReasonBorder.Padding = new Padding(12, 10, 12, 10);
-
+            
+            // Bo góc và vẽ viền đen độ dày 2 cho khung lý do
             UIHelper.ApplyRoundedRegion(pnlReasonBorder, 15);
-            pnlReasonBorder.Paint += (s, ev) =>
-            {
-                // Vẽ viền xám mờ bao quanh - Độ dày 2 theo yêu cầu
-                using (Pen penGray = new Pen(Color.FromArgb(209, 213, 219), 2))
-                {
-                    ev.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                    ev.Graphics.DrawPath(penGray, UIHelper.GetRoundedPath(new Rectangle(0, 0, pnlReasonBorder.Width - 1, pnlReasonBorder.Height - 1), 15));
-                }
+            pnlReasonBorder.Paint += (s, ev) => {
+                UIHelper.DrawControlBorder(s, ev, 15, Color.Black, 2);
             };
+
+            // Hiệu ứng Focus và Click-outside sử dụng Helper
+            UIHelper.SetupInputFocusEffect(txtReason, pnlReasonBorder, Color.FromArgb(243, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+            UIHelper.RegisterClickToUnfocus(this, lblTitle);
 
             UIHelper.ApplyRoundedRegion(flpTimeSlots, 15);
             flpTimeSlots.Paint += (s, ev) => UIHelper.DrawControlBorder(flpTimeSlots, ev, 15, Color.Black, 2);
@@ -71,9 +69,6 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(pnlNotice, 15);
             UIHelper.ApplyRoundedRegion(btnConfirm, 15);
             UIHelper.ApplyRoundedRegion(btnCancel, 15);
-
-            // Click ra vùng trắng để thoát ô nhập (Đăng ký cho tất cả các control không phải input)
-            RegisterUnfocus(this);
 
             // Placeholder cho txtReason
             txtReason.Text = "Vui lòng mô tả lý do bạn cần khám bệnh...";
@@ -149,14 +144,7 @@ namespace UI_Tier
             if (slots == null || slots.Count == 0)
             {
                 Label lblEmpty = new Label();
-                lblEmpty.Text = "Không có lịch khám nào trong ngày này.";
-                lblEmpty.Font = new Font("Segoe UI", 12, FontStyle.Italic);
-                lblEmpty.ForeColor = Color.Gray;
-                lblEmpty.TextAlign = ContentAlignment.MiddleCenter;
-                // Căn giữa chính xác bằng cách chiếm toàn bộ chiều cao container
-                lblEmpty.AutoSize = false;
-                lblEmpty.Size = new Size(flpTimeSlots.Width - 40, flpTimeSlots.Height - 40);
-                lblEmpty.Margin = new Padding(20, 20, 20, 20);
+                UIHelper.SetupEmptyStateLabel(lblEmpty, flpTimeSlots, "Không có lịch khám nào trong ngày này.");
                 flpTimeSlots.Controls.Add(lblEmpty);
             }
             else
@@ -172,12 +160,12 @@ namespace UI_Tier
                     btnSlot.Font = new Font("Segoe UI", 10);
                     btnSlot.Margin = new Padding(5, 5, 5, 5);
 
-                    // Status based styling
-                    if (slot.Status == "Full" || slot.BookedCount >= slot.MaxAppointments)
+                    // Status based styling - Nếu là slot đang sửa thì LUÔN cho phép chọn lại
+                    if (slot.Id != _preselectedSlotId && (slot.Status == "Full" || slot.BookedCount >= slot.MaxAppointments))
                     {
-                        btnSlot.BackColor = Color.FromArgb(249, 250, 251); // Màu xám rất nhạt
+                        btnSlot.BackColor = Color.FromArgb(249, 250, 251); 
                         btnSlot.ForeColor = Color.FromArgb(156, 163, 175);
-                        btnSlot.FlatAppearance.BorderColor = Color.FromArgb(249, 250, 251); // Không dùng Transparent vì lỗi WinForms
+                        btnSlot.FlatAppearance.BorderColor = Color.FromArgb(249, 250, 251); 
                         btnSlot.Enabled = false;
                     }
                     else
@@ -210,18 +198,29 @@ namespace UI_Tier
             Button clickedBtn = (Button)sender;
             int slotId = (int)clickedBtn.Tag;
 
-            // Deselect previous
+            // 1. Giải màu cho tất cả các nút
             foreach (Control ctrl in flpTimeSlots.Controls)
             {
-                if (ctrl is Button btn && btn.Enabled)
+                if (ctrl is Button btn)
                 {
-                    btn.BackColor = Color.White;
-                    btn.ForeColor = Color.FromArgb(31, 41, 55);
-                    btn.FlatAppearance.BorderColor = Color.FromArgb(209, 213, 219);
+                    if (btn.Enabled)
+                    {
+                        // Khôi phục màu trắng cho các ô có thể chọn
+                        btn.BackColor = Color.White;
+                        btn.ForeColor = Color.FromArgb(31, 41, 55);
+                        btn.FlatAppearance.BorderColor = Color.FromArgb(209, 213, 219);
+                    }
+                    else
+                    {
+                        // Khôi phục màu xám nhạt cho các ô đã đầy (Full)
+                        btn.BackColor = Color.FromArgb(249, 250, 251);
+                        btn.ForeColor = Color.FromArgb(156, 163, 175);
+                        btn.FlatAppearance.BorderColor = Color.FromArgb(249, 250, 251);
+                    }
                 }
             }
 
-            // Select new
+            // 2. Kích hoạt màu xanh cho ô vừa chọn
             _selectedTimeSlotId = slotId;
             clickedBtn.BackColor = Color.FromArgb(37, 99, 235);
             clickedBtn.ForeColor = Color.White;
@@ -320,11 +319,6 @@ namespace UI_Tier
                 txtReason.Text = "";
                 txtReason.ForeColor = Color.Black;
             }
-            // Highlight khi chọn: Nền xanh nhạt và viền xanh ở đáy
-            txtReason.Parent.BackColor = Color.FromArgb(243, 248, 255);
-            txtReason.BackColor = Color.FromArgb(243, 248, 255);
-            txtReason.Parent.Paint += DrawFocusHighlight;
-            txtReason.Parent.Invalidate();
         }
 
         private void txtReason_Leave(object sender, EventArgs e)
@@ -334,38 +328,9 @@ namespace UI_Tier
                 txtReason.Text = "Vui lòng mô tả lý do bạn cần khám bệnh...";
                 txtReason.ForeColor = Color.Gray;
             }
-            // Trở về bình thường khi thoát: Nền trắng
-            txtReason.Parent.BackColor = Color.White;
-            txtReason.BackColor = Color.White;
-            txtReason.Parent.Paint -= DrawFocusHighlight;
-            txtReason.Parent.Invalidate();
         }
 
-        private void DrawFocusHighlight(object sender, PaintEventArgs e)
-        {
-            Control ctrl = (Control)sender;
-            using (Pen penBlue = new Pen(Color.FromArgb(37, 99, 235), 4))
-            {
-                e.Graphics.DrawLine(penBlue, 15, ctrl.Height - 2, ctrl.Width - 15, ctrl.Height - 2);
-            }
-        }
-
-        #region Draggable Header & Unfocus
-        private void RegisterUnfocus(Control ctrl)
-        {
-            // Sử dụng ActiveControl để đẩy focus ra khỏi ô nhập liệu một cách triệt để
-            ctrl.Click += (s, e) => this.ActiveControl = lblTitle;
-            
-            foreach (Control child in ctrl.Controls)
-            {
-                // Không đăng ký cho các ô nhập liệu hoặc nút bấm
-                if (!(child is RichTextBox || child is TextBox || child is Button || child is DateTimePicker))
-                {
-                    RegisterUnfocus(child);
-                }
-            }
-        }
-
+        #region Draggable Header
         private Point _mouseLoc;
         private void panelHeader_MouseDown(object sender, MouseEventArgs e) => _mouseLoc = e.Location;
         private void panelHeader_MouseMove(object sender, MouseEventArgs e)

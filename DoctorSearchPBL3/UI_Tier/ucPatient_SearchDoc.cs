@@ -23,6 +23,10 @@ namespace UI_Tier
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
             SetupUI();
+            
+            // Hiệu ứng hover cho nút phân trang
+            UIHelper.SetupHoverEffect(lblPrev, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212), 3);
+            UIHelper.SetupHoverEffect(lblNext, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212), 3);
         }
 
         private void SetupUI()
@@ -108,6 +112,10 @@ namespace UI_Tier
                 UCCardDoctor card = new UCCardDoctor();
                 card.SetDoctorData(doc);
                 card.Margin = new Padding(15);
+                
+                // Hiệu ứng hover nhấc card lên đã được xử lý nội bộ trong UCCardDoctor
+                // UIHelper.SetupHoverEffect(card, card.ForeColor, card.ForeColor, 8);
+                
                 flpDoctors.Controls.Add(card);
             }
 

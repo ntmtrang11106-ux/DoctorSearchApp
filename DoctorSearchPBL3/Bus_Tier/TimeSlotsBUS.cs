@@ -69,12 +69,14 @@ namespace BUS_Tier
                 // Nếu trùng ID bác sĩ hiện tại
                 if (conflict.DoctorId == slot.DoctorId)
                 {
-                    return $"Bạn đã đăng ký lịch khám này rồi ({conflict.StartTime:hh\\:mm} - {conflict.EndTime:hh\\:mm})!";
+                    //string drName = conflict.Doctor?.User?.FullName ?? "";
+                    return $"Bác sĩ này đã có lịch vào ngày {conflict.WorkDate:dd/MM/yyyy} vào giờ {conflict.StartTime:hh\\:mm} - {conflict.EndTime:hh\\:mm} rồi!";
                 }
                 // Nếu ID bác sĩ khác đang dùng phòng này
                 else
                 {
-                    return "Phòng này đã có bác sĩ khác đăng ký vào khung giờ này!";
+                    //string drName = conflict.Doctor?.User?.FullName ?? "";
+                    return $"Phòng này đã được Bác sĩ khác đăng ký vào khung giờ này ({conflict.StartTime:hh\\:mm} - {conflict.EndTime:hh\\:mm})!";
                 }
             }
 
@@ -82,6 +84,7 @@ namespace BUS_Tier
             slot.Status = "Open";
             slot.CreatedAt = DateTime.Now;
             slot.IsDeleted = false;
+            slot.CreatedByAdminId = 1; // Luôn lưu là 1 theo yêu cầu
 
             return _dal.AddSingle(slot) ? "Success" : "Lỗi hệ thống khi lưu!";
         }
@@ -141,7 +144,7 @@ namespace BUS_Tier
         //    return duplicateCount > 0 ? "Tất cả các ngày đã chọn đều đã có lịch!" : "Không tìm thấy ngày phù hợp trong khoảng thời gian này.";
         //}
 
-        public string CreateBulkTimeSlots(int doctorId, List<string> selectedDays, DateTime startDate, DateTime endDate, TimeSpan startT, TimeSpan endT, int roomId, int maxApp)
+        public string CreateBulkTimeSlots(int doctorId, List<string> selectedDays, DateTime startDate, DateTime endDate, TimeSpan startT, TimeSpan endT, int roomId, int maxApp, int adminId = 0)
         {
             // 1. Kiểm tra ràng buộc cơ bản
             string error = ValidateInputs(doctorId, roomId, startT, endT);
@@ -184,7 +187,8 @@ namespace BUS_Tier
                         BookedCount = 0,
                         Status = "Open",
                         IsDeleted = false,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.Now,
+                        CreatedByAdminId = 1 // Luôn lưu là 1 theo yêu cầu
                     });
                 }
             }
@@ -253,7 +257,163 @@ namespace BUS_Tier
         public bool DeleteTimeSlot(int slotId)
         {
             if (slotId <= 0) return false;
+
+            // 1. Kiểm tra sự tồn tại và các cuộc hẹn liên quan
+            var slot = _dal.GetById(slotId);
+            if (slot == null) return false;
+
+            // 2. NGHIỆP VỤ: Nếu đã có bệnh nhân được DUYỆT (Confirmed) -> Không cho xóa lịch này
+            if (slot.Appointments != null && slot.Appointments.Any(a => a.Status == "Confirmed"))
+            {
+                return false; 
+            }
+
+            // 3. Nếu có bệnh nhân đang CHỜ DUYỆT -> Phải hủy lịch của họ trước
+            if (slot.Appointments != null && slot.Appointments.Any(a => a.Status == "Pending"))
+            {
+                AppointmentDAL appDal = new AppointmentDAL();
+                foreach (var app in slot.Appointments.Where(a => a.Status == "Pending"))
+                {
+                    // Chuyển trạng thái sang Cancelled với lý do: Lịch làm việc bị Admin xóa
+                    appDal.UpdateStatus(app.Id, "Cancelled", "Lịch khám đã bị Admin hủy.");
+                }
+                _dal.ResetBookedCount(slotId);
+            }
+
+            // 4. Tiến hành xóa mềm khung giờ
             return _dal.SoftDeleteSlot(slotId);
+        }
+
+        public bool UpdateSlotStatus(int slotId, string newStatus)
+        {
+            if (slotId <= 0 || string.IsNullOrEmpty(newStatus)) return false;
+            return _dal.UpdateSlotStatus(slotId, newStatus);
+        }
+
+        public string HideTimeSlot(int slotId)
+        {
+            if (slotId <= 0) return "ID không hợp lệ.";
+            var slot = _dal.GetById(slotId);
+            if (slot == null) return "Không tìm thấy lịch.";
+
+            // Nếu đang ẩn -> Hiện lại
+            if (slot.Status == "Hidden")
+            {
+                _dal.UpdateSlotStatus(slotId, "Open");
+                return "Success";
+            }
+
+            // Nếu muốn ẩn:
+            // 1. Kiểm tra Confirmed
+            if (slot.Appointments != null && slot.Appointments.Any(a => a.Status == "Confirmed"))
+                return "ConfirmedExists";
+
+            // 2. Kiểm tra Pending
+            if (slot.Appointments != null && slot.Appointments.Any(a => a.Status == "Pending"))
+                return "PendingExists";
+
+            // 3. Ẩn bình thường
+            return _dal.UpdateSlotStatus(slotId, "Hidden") ? "Success" : "Lỗi khi cập nhật.";
+        }
+
+        public bool ForceHideTimeSlot(int slotId)
+        {
+            var slot = _dal.GetById(slotId);
+            if (slot == null) return false;
+
+            if (slot.Appointments != null)
+            {
+                AppointmentDAL appDal = new AppointmentDAL();
+                foreach (var app in slot.Appointments.Where(a => a.Status == "Pending"))
+                {
+                    appDal.UpdateStatus(app.Id, "Cancelled", "Lịch khám đã bị Admin ẩn.");
+                }
+                _dal.ResetBookedCount(slotId);
+            }
+            return _dal.UpdateSlotStatus(slotId, "Hidden");
+        }
+
+        public bool HasPendingAppointments(int slotId)
+        {
+            var slot = _dal.GetById(slotId);
+            return slot?.Appointments?.Any(a => a.Status == "Pending") ?? false;
+        }
+
+        public string UpdateTimeSlot(TimeSlotsDTO slot)
+        {
+            // 1. Validation
+            string error = ValidateInputs(slot.DoctorId, slot.RoomId, slot.StartTime, slot.EndTime);
+            if (error != null) return error;
+
+            // 2. Kiểm tra trùng (loại trừ chính nó)
+            var conflict = _dal.GetConflictSlot(slot.WorkDate, slot.StartTime, slot.EndTime, slot.RoomId);
+            if (conflict != null && conflict.Id != slot.Id)
+            {
+                string drName = conflict.Doctor?.User?.FullName ?? "Chưa cập nhật";
+                return $"Trùng lịch với Bác sĩ {drName} ({conflict.StartTime:hh\\:mm} - {conflict.EndTime:hh\\:mm})!";
+            }
+
+            // 3. Kiểm tra các cuộc hẹn (Appointments)
+            var fullSlot = _dal.GetById(slot.Id);
+            if (fullSlot == null) return "Không tìm thấy lịch hẹn để cập nhật!";
+
+            if (fullSlot.Appointments != null && fullSlot.Appointments.Any())
+            {
+                // Nếu có lịch đã duyệt -> Không cho sửa
+                if (fullSlot.Appointments.Any(a => a.Status == "Confirmed"))
+                {
+                    return "Lịch này đã có bệnh nhân được duyệt khám, không thể chỉnh sửa!";
+                }
+
+                // Nếu có lịch chờ duyệt -> Hủy tự động
+                var pendingApps = fullSlot.Appointments.Where(a => a.Status == "Pending").ToList();
+                if (pendingApps.Any())
+                {
+                    AppointmentBUS appBus = new AppointmentBUS();
+                    foreach (var app in pendingApps)
+                    {
+                        appBus.UpdateStatus(app.Id, "Cancelled", "Lịch khám đã được Admin thay đổi khung giờ/phòng.");
+                    }
+                }
+            }
+
+            try
+            {
+                // Bước 4.1: Xóa mềm lịch cũ
+                if (!_dal.SoftDeleteSlot(slot.Id))
+                {
+                    return "Không thể xóa mềm lịch cũ. Vui lòng kiểm tra lại.";
+                }
+
+                // Bước 4.2: Tạo lịch mới với thông tin đã chỉnh sửa
+                TimeSlotsDTO newSlot = new TimeSlotsDTO
+                {
+                    DoctorId = slot.DoctorId,
+                    RoomId = slot.RoomId,
+                    WorkDate = slot.WorkDate,
+                    StartTime = slot.StartTime,
+                    EndTime = slot.EndTime,
+                    MaxAppointments = slot.MaxAppointments,
+                    BookedCount = 0,
+                    Status = "Open",
+                    IsDeleted = false,
+                    CreatedAt = DateTime.Now,
+                    CreatedByAdminId = 1 // Luôn lưu là 1 theo yêu cầu
+                };
+
+                if (!_dal.AddSingle(newSlot))
+                {
+                    return "Lỗi khi lưu khung giờ mới vào CSDL. Vui lòng kiểm tra lại quyền Admin hoặc kết nối.";
+                }
+
+                return "Success";
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message;
+                if (ex.InnerException != null) msg += "\nChi tiết: " + ex.InnerException.Message;
+                return "Lỗi phát sinh: " + msg;
+            }
         }
     }
 }

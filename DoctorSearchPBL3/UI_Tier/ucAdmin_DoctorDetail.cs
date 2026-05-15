@@ -82,35 +82,13 @@ namespace UI_Tier
         private void SetupEditControl(Control edit, Control label)
         {
             edit.Location = label.Location;
-            // Ensure even width
             edit.Width = label.Parent.Width - label.Left - 15;
             edit.Height = label.Height + 18;
             edit.Visible = false;
             edit.BackColor = Color.FromArgb(249, 250, 251);
 
-            // Create a blue underline panel for focus effect
-            Panel focusLine = new Panel();
-            focusLine.Height = 2;
-            focusLine.BackColor = Color.FromArgb(59, 130, 246); // Blue-500
-            focusLine.Width = edit.Width;
-            focusLine.Location = new Point(edit.Left, edit.Bottom);
-            focusLine.Visible = false;
-            focusLine.Name = "focus_" + edit.Name;
-            label.Parent.Controls.Add(focusLine);
-
-            // Add focus effects
-            if (edit is TextBox || edit is ComboBox || edit is NumericUpDown || edit is DateTimePicker)
-            {
-                edit.Enter += (s, e) => {
-                    edit.BackColor = Color.White;
-                    focusLine.Visible = _isEditMode;
-                    focusLine.BringToFront();
-                };
-                edit.Leave += (s, e) => {
-                    edit.BackColor = Color.FromArgb(249, 250, 251);
-                    focusLine.Visible = false;
-                };
-            }
+            // Sử dụng Helper để quản lý hiệu ứng Focus thay vì tạo Panel thủ công
+            UIHelper.SetupInputFocusEffect(edit, edit, Color.White, Color.FromArgb(249, 250, 251), Color.FromArgb(59, 130, 246));
 
             label.Parent.Controls.Add(edit);
         }

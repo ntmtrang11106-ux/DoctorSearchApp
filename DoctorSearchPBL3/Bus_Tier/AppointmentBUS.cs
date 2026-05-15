@@ -190,5 +190,9 @@ namespace BUS_Tier
         {
             return _appointmentDAL.CheckPatientOverlap(patientId, timeSlotId, excludeAppointmentId);
         }
+        public bool UpdateStatus(int appointmentId, string newStatus, string note = null)
+        {
+            return _appointmentDAL.UpdateStatus(appointmentId, newStatus, note);
+        }
     }
 }

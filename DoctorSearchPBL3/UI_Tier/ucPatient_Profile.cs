@@ -37,25 +37,8 @@ namespace UI_Tier
 
         private void AttachReadOnlyHandlers()
         {
-            txtFullName.Enter += TextBox_Enter;
-            txtPhone.Enter += TextBox_Enter;
-            txtGender.Enter += TextBox_Enter;
-            txtCCCD.Enter += TextBox_Enter;
-            txtAddress.Enter += TextBox_Enter;
-            txtBHYT.Enter += TextBox_Enter;
-            txtPatientID.Enter += TextBox_Enter;
-            txtEmergencyContact.Enter += TextBox_Enter;
-            txtEmergencyPhone.Enter += TextBox_Enter;
-            txtBloodType.Enter += TextBox_Enter;
-            txtMedicalHistory.Enter += TextBox_Enter;
-        }
-
-        private void TextBox_Enter(object sender, EventArgs e)
-        {
-            if (sender is TextBox tb && tb.ReadOnly)
-            {
-                pnlMain.Focus();
-            }
+            TextBox[] tbs = { txtFullName, txtPhone, txtGender, txtCCCD, txtAddress, txtBHYT, txtPatientID, txtEmergencyContact, txtEmergencyPhone, txtBloodType, txtMedicalHistory };
+            foreach (var tb in tbs) UIHelper.SetupReadOnlyHandler(tb, pnlMain);
         }
 
         public void InitData()
@@ -342,42 +325,8 @@ namespace UI_Tier
 
         private void SectionPanel_Paint(object sender, PaintEventArgs e)
         {
-            Control pnl = sender as Control;
-            if (pnl == null) return;
-
-            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-
-            // Extra soft shadow
-            for (int i = 1; i <= 6; i++)
-            {
-                Rectangle shadowRect = new Rectangle(i, i, pnl.Width - i * 2, pnl.Height - i * 2);
-                using (var path = UIHelper.GetRoundedPath(shadowRect, 20))
-                {
-                    using (Pen shadowPen = new Pen(Color.FromArgb(12 / i, Color.Black), i))
-                    {
-                        e.Graphics.DrawPath(shadowPen, path);
-                    }
-                }
-            }
-
-            Rectangle rect = new Rectangle(0, 0, pnl.Width - 1, pnl.Height - 1);
-            using (var path = UIHelper.GetRoundedPath(rect, 20))
-            {
-                using (Pen pen = new Pen(Color.FromArgb(226, 232, 240), 1))
-                {
-                    pen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
-                    e.Graphics.DrawPath(pen, path);
-                }
-            }
-
-            // Draw accent line at the top
-            Color accentColor = Color.FromArgb(37, 99, 235); // Blue
-            if (pnl == pnlSecurity) accentColor = Color.FromArgb(244, 63, 94); // Rose
-            
-            using (Pen accentPen = new Pen(accentColor, 6))
-            {
-                e.Graphics.DrawLine(accentPen, 20, 0, pnl.Width - 20, 0);
-            }
+            Color accentColor = (sender == pnlSecurity) ? Color.FromArgb(244, 63, 94) : Color.FromArgb(37, 99, 235);
+            UIHelper.DrawSectionShadow(sender, e, 20, accentColor);
         }
 
         private void Button_Paint(object sender, PaintEventArgs e)

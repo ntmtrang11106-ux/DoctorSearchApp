@@ -16,11 +16,11 @@ namespace UI_Tier
         private DoctorDTO _currentDoctor;
         private int _doctorId;
 
-        private int _reviewPageSize = 4;
+        private int _reviewPageSize = 5;
         private int _reviewCurrentPage = 1;
         private List<ReviewsDTO> _allReviews = new List<ReviewsDTO>();
 
-        private int _appPageSize = 4;
+        private int _appPageSize = 10;
         private int _appCurrentPage = 1;
         private List<AppointmentsDTO> _allTodayApps = new List<AppointmentsDTO>();
 
@@ -29,19 +29,14 @@ namespace UI_Tier
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
             
-            // Hiệu ứng hover cho Review pagination
-            lblReviewPrev.MouseEnter += PaginationLabel_MouseEnter;
-            lblReviewPrev.MouseLeave += PaginationLabel_MouseLeave;
-            lblReviewNext.MouseEnter += PaginationLabel_MouseEnter;
-            lblReviewNext.MouseLeave += PaginationLabel_MouseLeave;
+            // Hiệu ứng hover sử dụng Helper
+            UIHelper.SetupHoverEffect(lblReviewPrev, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
+            UIHelper.SetupHoverEffect(lblReviewNext, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
+            UIHelper.SetupHoverEffect(lblAppPrev, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
+            UIHelper.SetupHoverEffect(lblAppNext, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
+
             lblReviewPrev.Click += lblReviewPrev_Click;
             lblReviewNext.Click += lblReviewNext_Click;
-
-            // Hiệu ứng hover cho App pagination
-            lblAppPrev.MouseEnter += PaginationLabel_MouseEnter;
-            lblAppPrev.MouseLeave += PaginationLabel_MouseLeave;
-            lblAppNext.MouseEnter += PaginationLabel_MouseEnter;
-            lblAppNext.MouseLeave += PaginationLabel_MouseLeave;
             lblAppPrev.Click += lblAppPrev_Click;
             lblAppNext.Click += lblAppNext_Click;
 
@@ -99,46 +94,11 @@ namespace UI_Tier
         {
             if (sender is Panel pnl)
             {
-                using (Pen pen = new Pen(Color.Black, 2)) // Viền đen dày 2
-                {
-                    e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                    int radius = 20;
-                    int width = pnl.Width;
-                    int height = pnl.Height;
-
-                    System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
-                    float arcSize = radius * 2f;
-                    float offset = 1.5f; // Lùi vào để không bị xén viền
-
-                    path.AddArc(offset, offset, arcSize, arcSize, 180, 90);
-                    path.AddArc(width - arcSize - offset, offset, arcSize, arcSize, 270, 90);
-                    path.AddArc(width - arcSize - offset, height - arcSize - offset, arcSize, arcSize, 0, 90);
-                    path.AddArc(offset, height - arcSize - offset, arcSize, arcSize, 90, 90);
-                    path.CloseAllFigures();
-
-                    e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                    e.Graphics.DrawPath(pen, path);
-                }
+                UIHelper.DrawControlBorder(pnl, e, 20, Color.Black, 2);
             }
         }
 
-        private void PaginationLabel_MouseEnter(object sender, EventArgs e)
-        {
-            if (sender is Label lbl)
-            {
-                lbl.ForeColor = Color.FromArgb(0, 90, 158); // Xanh đậm hơn khi hover
-                lbl.Top -= 2; // Hiệu ứng "nhảy lên"
-            }
-        }
 
-        private void PaginationLabel_MouseLeave(object sender, EventArgs e)
-        {
-            if (sender is Label lbl)
-            {
-                lbl.ForeColor = Color.FromArgb(0, 120, 212); // Trở lại màu chuẩn
-                lbl.Top += 2;
-            }
-        }
 
         public void SetDoctorData(DoctorDTO doctor)
         {

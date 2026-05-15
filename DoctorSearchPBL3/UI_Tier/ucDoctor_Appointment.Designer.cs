@@ -1,4 +1,4 @@
-﻿namespace UI_Tier
+namespace UI_Tier
 {
     partial class ucDoctor_Appointment
     {
@@ -44,15 +44,15 @@
             btnAccepted = new Button();
             btnCanceled = new Button();
             btnDone = new Button();
-            pnlAlert = new Panel();
-            lblPageStatus = new Label();
-            lblPrev = new Label();
-            lblNext = new Label();
             flpAppItem = new FlowLayoutPanel();
+            pnlReviewPagination = new Panel();
+            lblReviewPageStatus = new Label();
+            lblReviewPrevBtn = new Label();
+            lblReviewNext = new Label();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             flpFilter.SuspendLayout();
-            pnlAlert.SuspendLayout();
+            pnlReviewPagination.SuspendLayout();
             SuspendLayout();
             // 
             // panel3
@@ -68,11 +68,10 @@
             panel3.Controls.Add(label2);
             panel3.Controls.Add(label1);
             panel3.Controls.Add(flpFilter);
-            panel3.Controls.Add(pnlAlert);
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 0);
             panel3.Name = "panel3";
-            panel3.Size = new Size(1845, 528);
+            panel3.Size = new Size(1845, 321);
             panel3.TabIndex = 6;
             // 
             // btnAddTimeSlot
@@ -82,9 +81,9 @@
             btnAddTimeSlot.FlatStyle = FlatStyle.Flat;
             btnAddTimeSlot.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnAddTimeSlot.ForeColor = Color.White;
-            btnAddTimeSlot.Location = new Point(1396, 264);
+            btnAddTimeSlot.Location = new Point(1480, 140);
             btnAddTimeSlot.Name = "btnAddTimeSlot";
-            btnAddTimeSlot.Size = new Size(418, 70);
+            btnAddTimeSlot.Size = new Size(317, 70);
             btnAddTimeSlot.TabIndex = 29;
             btnAddTimeSlot.Text = "+ Tạo lịch hẹn mới";
             btnAddTimeSlot.UseVisualStyleBackColor = false;
@@ -94,7 +93,7 @@
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 12F);
-            label4.Location = new Point(865, 290);
+            label4.Location = new Point(863, 157);
             label4.Name = "label4";
             label4.Size = new Size(154, 45);
             label4.TabIndex = 28;
@@ -104,7 +103,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 12F);
-            label3.Location = new Point(144, 284);
+            label3.Location = new Point(144, 157);
             label3.Name = "label3";
             label3.Size = new Size(133, 45);
             label3.TabIndex = 27;
@@ -116,7 +115,7 @@
             dtpEnd.CustomFormat = "  dd / MM / yyyy";
             dtpEnd.Font = new Font("Segoe UI", 12F);
             dtpEnd.Format = DateTimePickerFormat.Custom;
-            dtpEnd.Location = new Point(1052, 284);
+            dtpEnd.Location = new Point(1051, 152);
             dtpEnd.Name = "dtpEnd";
             dtpEnd.Size = new Size(360, 50);
             dtpEnd.TabIndex = 26;
@@ -127,7 +126,7 @@
             dtpBegin.CustomFormat = "  dd / MM / yyyy";
             dtpBegin.Font = new Font("Segoe UI", 12F);
             dtpBegin.Format = DateTimePickerFormat.Custom;
-            dtpBegin.Location = new Point(295, 284);
+            dtpBegin.Location = new Point(283, 152);
             dtpBegin.Name = "dtpBegin";
             dtpBegin.Size = new Size(360, 50);
             dtpBegin.TabIndex = 25;
@@ -135,7 +134,7 @@
             // pictureBox2
             // 
             pictureBox2.Image = Properties.Resources.filter;
-            pictureBox2.Location = new Point(56, 284);
+            pictureBox2.Location = new Point(43, 140);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(65, 62);
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
@@ -145,20 +144,20 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 13F, FontStyle.Italic);
-            label2.Location = new Point(56, 84);
+            label2.Font = new Font("Segoe UI", 13.875F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label2.Location = new Point(43, 71);
             label2.Name = "label2";
-            label2.Size = new Size(678, 47);
+            label2.Size = new Size(713, 50);
             label2.TabIndex = 1;
             label2.Text = "Xem và quản lý các lịch hẹn với bệnh nhân";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 17F, FontStyle.Bold);
+            label1.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.Location = new Point(43, 12);
             label1.Name = "label1";
-            label1.Size = new Size(474, 62);
+            label1.Size = new Size(440, 59);
             label1.TabIndex = 0;
             label1.Text = "Quản lý lịch làm việc";
             // 
@@ -171,7 +170,7 @@
             flpFilter.Controls.Add(btnAccepted);
             flpFilter.Controls.Add(btnCanceled);
             flpFilter.Controls.Add(btnDone);
-            flpFilter.Location = new Point(144, 356);
+            flpFilter.Location = new Point(144, 229);
             flpFilter.Name = "flpFilter";
             flpFilter.Padding = new Padding(10);
             flpFilter.Size = new Size(1653, 77);
@@ -238,72 +237,73 @@
             btnDone.Text = "Thành công";
             btnDone.UseVisualStyleBackColor = true;
             // 
-            // pnlAlert
-            // 
-            pnlAlert.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            pnlAlert.BackColor = Color.AliceBlue;
-            pnlAlert.Controls.Add(lblPageStatus);
-            pnlAlert.Controls.Add(lblPrev);
-            pnlAlert.Controls.Add(lblNext);
-            pnlAlert.Location = new Point(0, 458);
-            pnlAlert.Name = "pnlAlert";
-            pnlAlert.Padding = new Padding(10);
-            pnlAlert.Size = new Size(1845, 67);
-            pnlAlert.TabIndex = 8;
-            // 
-            // lblPageStatus
-            // 
-            lblPageStatus.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            lblPageStatus.AutoSize = true;
-            lblPageStatus.Font = new Font("Segoe UI", 11F);
-            lblPageStatus.Location = new Point(1396, 16);
-            lblPageStatus.Name = "lblPageStatus";
-            lblPageStatus.RightToLeft = RightToLeft.No;
-            lblPageStatus.Size = new Size(67, 41);
-            lblPageStatus.TabIndex = 2;
-            lblPageStatus.Text = "1/...";
-            // 
-            // lblPrev
-            // 
-            lblPrev.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            lblPrev.AutoSize = true;
-            lblPrev.Font = new Font("Segoe UI", 11F);
-            lblPrev.Location = new Point(1157, 16);
-            lblPrev.Name = "lblPrev";
-            lblPrev.Size = new Size(219, 41);
-            lblPrev.TabIndex = 1;
-            lblPrev.Text = "Trang trước <<";
-            lblPrev.Click += lblPrev_Click;
-            // 
-            // lblNext
-            // 
-            lblNext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            lblNext.AutoSize = true;
-            lblNext.Font = new Font("Segoe UI", 11F);
-            lblNext.Location = new Point(1590, 16);
-            lblNext.Name = "lblNext";
-            lblNext.Size = new Size(194, 41);
-            lblNext.TabIndex = 0;
-            lblNext.Text = ">> Trang sau";
-            lblNext.Click += lblNext_Click;
-            // 
             // flpAppItem
             // 
-            flpAppItem.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             flpAppItem.AutoScroll = true;
+            flpAppItem.Dock = DockStyle.Fill;
             flpAppItem.FlowDirection = FlowDirection.TopDown;
-            flpAppItem.Location = new Point(0, 528);
+            flpAppItem.Location = new Point(0, 321);
             flpAppItem.Margin = new Padding(0);
             flpAppItem.Name = "flpAppItem";
-            flpAppItem.Size = new Size(1845, 334);
+            flpAppItem.Size = new Size(1845, 541);
             flpAppItem.TabIndex = 7;
             flpAppItem.WrapContents = false;
+            // 
+            // pnlReviewPagination
+            // 
+            pnlReviewPagination.BackColor = Color.FromArgb(242, 246, 250);
+            pnlReviewPagination.Controls.Add(lblReviewPageStatus);
+            pnlReviewPagination.Controls.Add(lblReviewPrevBtn);
+            pnlReviewPagination.Controls.Add(lblReviewNext);
+            pnlReviewPagination.Dock = DockStyle.Bottom;
+            pnlReviewPagination.Location = new Point(0, 782);
+            pnlReviewPagination.Name = "pnlReviewPagination";
+            pnlReviewPagination.Size = new Size(1845, 80);
+            pnlReviewPagination.TabIndex = 8;
+            // 
+            // lblReviewPageStatus
+            // 
+            lblReviewPageStatus.Anchor = AnchorStyles.Top;
+            lblReviewPageStatus.AutoSize = true;
+            lblReviewPageStatus.Font = new Font("Segoe UI", 10.5F);
+            lblReviewPageStatus.Location = new Point(889, 20);
+            lblReviewPageStatus.Name = "lblReviewPageStatus";
+            lblReviewPageStatus.Size = new Size(151, 38);
+            lblReviewPageStatus.TabIndex = 2;
+            lblReviewPageStatus.Text = "Trang 1 / 1";
+            lblReviewPageStatus.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lblReviewPrevBtn
+            // 
+            lblReviewPrevBtn.AutoSize = true;
+            lblReviewPrevBtn.Cursor = Cursors.Hand;
+            lblReviewPrevBtn.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
+            lblReviewPrevBtn.ForeColor = Color.FromArgb(0, 120, 212);
+            lblReviewPrevBtn.Location = new Point(30, 20);
+            lblReviewPrevBtn.Name = "lblReviewPrevBtn";
+            lblReviewPrevBtn.Size = new Size(219, 38);
+            lblReviewPrevBtn.TabIndex = 1;
+            lblReviewPrevBtn.Text = "<< Trang trước";
+            // 
+            // lblReviewNext
+            // 
+            lblReviewNext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblReviewNext.AutoSize = true;
+            lblReviewNext.Cursor = Cursors.Hand;
+            lblReviewNext.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
+            lblReviewNext.ForeColor = Color.FromArgb(0, 120, 212);
+            lblReviewNext.Location = new Point(1609, 20);
+            lblReviewNext.Name = "lblReviewNext";
+            lblReviewNext.Size = new Size(191, 38);
+            lblReviewNext.TabIndex = 0;
+            lblReviewNext.Text = "Trang sau >>";
             // 
             // ucDoctor_Appointment
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
+            Controls.Add(pnlReviewPagination);
             Controls.Add(flpAppItem);
             Controls.Add(panel3);
             Name = "ucDoctor_Appointment";
@@ -313,8 +313,8 @@
             panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             flpFilter.ResumeLayout(false);
-            pnlAlert.ResumeLayout(false);
-            pnlAlert.PerformLayout();
+            pnlReviewPagination.ResumeLayout(false);
+            pnlReviewPagination.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -341,5 +341,9 @@
         private Label label3;
         private DateTimePicker dtpEnd;
         private Button btnAddTimeSlot;
+        private Panel pnlReviewPagination;
+        private Label lblReviewPageStatus;
+        private Label lblReviewPrevBtn;
+        private Label lblReviewNext;
     }
 }
