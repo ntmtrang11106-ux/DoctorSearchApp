@@ -41,6 +41,7 @@ namespace DAL_Tier
                     existingPatient.User.Gender = updatedPatient.User.Gender;
                     existingPatient.User.CCCD = updatedPatient.User.CCCD;
                     existingPatient.User.Residential_Address = updatedPatient.User.Residential_Address;
+                    existingPatient.User.Picture = updatedPatient.User.Picture;
                     existingPatient.User.UpdatedAt = DateTime.Now;
                 }
 

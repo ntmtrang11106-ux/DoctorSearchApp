@@ -16,6 +16,17 @@ namespace UI_Tier
         private readonly DoctorBUS _doctorBUS = new DoctorBUS();
         private readonly UserBUS _userBUS = new UserBUS();
         private DoctorDTO _currentDoctor;
+        private bool _isEditingBasic = false;
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
+                return cp;
+            }
+        }
 
         public ucDoctor_Profile()
         {
@@ -33,35 +44,87 @@ namespace UI_Tier
             //UIHelper.ApplyRoundedRegion(btnCancelPass, 12);
 
             SetEditMode(false, "basic");
-            this.HandleCreated += (s, e) => InitData();
-            AttachReadOnlyHandlers();
-            AddUploadButton();
+
+            // Fix blinking
+            UIHelper.SetDoubleBuffered(pnlBasicInfo);
+            UIHelper.SetDoubleBuffered(pnlSecurity);
+            UIHelper.SetDoubleBuffered(pnlChangePassword);
+            UIHelper.SetDoubleBuffered(pnlBasicInfoActions);
+            UIHelper.SetDoubleBuffered(pnlPassActions);
+
+            SetupFocusEffects();
+
+            // Gán sự kiện Paint để vẽ viền và bóng đổ
+            pnlBasicInfo.Paint += SectionPanel_Paint;
+            pnlSecurity.Paint += SectionPanel_Paint;
+            pnlChangePassword.Paint += SectionPanel_Paint;
+
+            this.HandleCreated += (s, e) => {
+                InitData();
+                AddAvatarOverlay();
+                UIHelper.ApplyRoundedRegion(picAvatar, picAvatar.Width / 2);
+            };
             dtpBirthday.ValueChanged += dtpBirthday_ValueChanged;
+            picAvatar.Cursor = Cursors.Hand;
+            picAvatar.Click += (s, e) => ChangeAvatar();
+
+            // Đăng ký click ra ngoài để thoát focus cho toàn bộ form và các panel chính
+            UIHelper.RegisterClickToUnfocus(this);
+            UIHelper.RegisterClickToUnfocus(pnlMain);
+            UIHelper.RegisterClickToUnfocus(pnlBasicInfo);
+            UIHelper.RegisterClickToUnfocus(pnlSecurity);
+            UIHelper.RegisterClickToUnfocus(pnlChangePassword);
         }
 
-        private Button btnUploadAvatar;
-        private void AddUploadButton()
+        private void SetupFocusEffects()
         {
-            btnUploadAvatar = new Button
+            TextBox[] inputs = { txtFullName, txtPhone, txtGender, txtCCCD, txtAddress, txtPosition, txtSpecialty, txtLicense, txtExperienceYears, txtConsultationFee, txtBiography, txtCurrentPass, txtNewPass, txtConfirmPass };
+            foreach (var input in inputs)
             {
-                Text = "📷 Thay đổi ảnh",
-                Size = new Size(200, 45),
-                Location = new Point(picAvatar.Left + (picAvatar.Width - 200) / 2, picAvatar.Bottom + 15),
-                FlatStyle = FlatStyle.Flat,
-                BackColor = Color.FromArgb(241, 245, 249),
-                ForeColor = Color.FromArgb(71, 85, 105),
-                Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold),
+                input.Font = new Font("Segoe UI", 12F);
+                UIHelper.SetupInputFocusEffect(input, null, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+            }
+        }
+
+        private Label lblUpload;
+        private void AddAvatarOverlay()
+        {
+            lblUpload = new Label
+            {
+                Size = new Size(40, 40),
+                BackColor = Color.FromArgb(200, 37, 99, 235), // Blue semi-transparent
+                ForeColor = Color.White,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Font = new Font("Segoe MDL2 Assets", 14F),
+                Text = "\uE722", // Camera icon
                 Cursor = Cursors.Hand,
                 Visible = false
             };
-            btnUploadAvatar.FlatAppearance.BorderSize = 0;
-            btnUploadAvatar.Click += btnUploadAvatar_Click;
-            pnlBasicInfo.Controls.Add(btnUploadAvatar);
-            UIHelper.ApplyRoundedRegion(btnUploadAvatar, 10);
+
+            // Vị trí: Góc dưới bên phải của picAvatar
+            lblUpload.Location = new Point(
+                picAvatar.Right - lblUpload.Width - 5,
+                picAvatar.Bottom - lblUpload.Height - 5
+            );
+
+            UIHelper.ApplyRoundedRegion(lblUpload, lblUpload.Width / 2);
+            
+            picAvatar.Parent.Controls.Add(lblUpload);
+            lblUpload.BringToFront();
+            
+            lblUpload.Click += (s, e) => ChangeAvatar();
         }
 
-        private void btnUploadAvatar_Click(object sender, EventArgs e)
+        private void ChangeAvatar()
         {
+            if (!_isEditingBasic) return;
+
+            if (_currentDoctor == null || _currentDoctor.User == null)
+            {
+                MessageBox.Show("Không thể đổi ảnh khi dữ liệu hồ sơ chưa được tải.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
                 ofd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
@@ -74,10 +137,19 @@ namespace UI_Tier
 
                         string fileName = $"doc_{GlobalAccount.GetUserId()}_{DateTime.Now.Ticks}{Path.GetExtension(ofd.FileName)}";
                         string destPath = Path.Combine(uploadDir, fileName);
+                        string relativePath = Path.Combine("uploads", "avatars", fileName);
 
                         File.Copy(ofd.FileName, destPath, true);
-                        picAvatar.ImageLocation = destPath;
-                        _currentDoctor.User.Picture = destPath;
+                        
+                        // Save to database immediately
+                        string result = _userBUS.UpdateAvatar(GlobalAccount.GetUserId(), relativePath);
+                        if (result == "Success")
+                        {
+                            picAvatar.ImageLocation = destPath;
+                            picAvatar.SizeMode = PictureBoxSizeMode.Zoom;
+                            _currentDoctor.User.Picture = relativePath;
+                            MessageBox.Show("Cập nhật ảnh đại diện thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -85,12 +157,6 @@ namespace UI_Tier
                     }
                 }
             }
-        }
-
-        private void AttachReadOnlyHandlers()
-        {
-            TextBox[] tbs = { txtFullName, txtPhone, txtGender, txtCCCD, txtAddress, txtPosition, txtSpecialty, txtLicense, txtConsultationFee, txtExperienceYears, txtBiography };
-            foreach (var tb in tbs) UIHelper.SetupReadOnlyHandler(tb, pnlMain);
         }
 
         public void InitData()
@@ -117,9 +183,17 @@ namespace UI_Tier
                 txtBiography.Text = _currentDoctor.Biography ?? "";
 
                 string picPath = _currentDoctor.User.Picture;
-                if (!string.IsNullOrEmpty(picPath) && File.Exists(picPath))
+                if (!string.IsNullOrEmpty(picPath))
                 {
-                    try { picAvatar.ImageLocation = picPath; } catch { LoadDefaultAvatar(); }
+                    string fullPath = Path.IsPathRooted(picPath) ? picPath : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, picPath);
+                    if (File.Exists(fullPath))
+                    {
+                        try { 
+                            picAvatar.ImageLocation = fullPath;
+                            picAvatar.SizeMode = PictureBoxSizeMode.Zoom;
+                        } catch { LoadDefaultAvatar(); }
+                    }
+                    else LoadDefaultAvatar();
                 }
                 else LoadDefaultAvatar();
             }
@@ -127,14 +201,28 @@ namespace UI_Tier
 
         private void LoadDefaultAvatar()
         {
-            picAvatar.Image = null; // or set a default image from resources
-            picAvatar.BackColor = Color.FromArgb(241, 245, 249);
+            try
+            {
+                string defaultPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources_Images", "default.jpg");
+                if (File.Exists(defaultPath))
+                {
+                    picAvatar.ImageLocation = defaultPath;
+                    picAvatar.SizeMode = PictureBoxSizeMode.Zoom;
+                }
+                else
+                {
+                    picAvatar.Image = null;
+                    picAvatar.BackColor = Color.FromArgb(241, 245, 249);
+                }
+            }
+            catch { }
         }
 
         private void SetEditMode(bool isEdit, string section)
         {
             if (section == "basic")
             {
+                _isEditingBasic = isEdit;
                 // Editable fields
                 txtFullName.ReadOnly = !isEdit;
                 txtPhone.ReadOnly = !isEdit;
@@ -155,7 +243,7 @@ namespace UI_Tier
                 btnEditBasicInfo.Visible = !isEdit;
 
                 Color editColor = Color.White;
-                Color readOnlyColor = Color.FromArgb(250, 251, 252);
+                Color readOnlyColor = Color.FromArgb(241, 243, 245);
 
                 // Set backgrounds based on editability
                 txtFullName.BackColor = isEdit ? editColor : readOnlyColor;
@@ -172,7 +260,7 @@ namespace UI_Tier
                 txtLicense.BackColor = readOnlyColor;
                 txtExperienceYears.BackColor = readOnlyColor;
 
-                if (btnUploadAvatar != null) btnUploadAvatar.Visible = isEdit;
+                if (lblUpload != null) lblUpload.Visible = isEdit;
 
                 if (isEdit)
                 {
@@ -290,8 +378,55 @@ namespace UI_Tier
 
         private void SectionPanel_Paint(object sender, PaintEventArgs e)
         {
-            Color accentColor = (sender == pnlSecurity) ? Color.FromArgb(244, 63, 94) : Color.FromArgb(37, 99, 235);
-            UIHelper.DrawSectionShadow(sender, e, 20, accentColor);
+            Control pnl = sender as Control;
+            
+            // Chỉ vẽ shadow và accent line cho các panel chính
+            if (pnl == pnlBasicInfo || pnl == pnlSecurity)
+            {
+                Color accentColor = (pnl == pnlSecurity) ? Color.FromArgb(244, 63, 94) : Color.FromArgb(37, 99, 235);
+                UIHelper.DrawSectionShadow(sender, e, 20, accentColor);
+            }
+
+            // Draw Bottom Borders for all inputs in this panel
+            DrawInputBorders(pnl, e.Graphics);
+        }
+
+        private void DrawInputBorders(Control container, Graphics g)
+        {
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            foreach (Control c in container.Controls)
+            {
+                if ((c is TextBox || c is DateTimePicker) && c.Visible)
+                {
+                    bool isFocused = c.Focused;
+                    Color borderColor = isFocused ? Color.FromArgb(37, 99, 235) : Color.Black;
+                    int borderThickness = isFocused ? 2 : 1;
+
+                    using (Pen pen = new Pen(borderColor, borderThickness))
+                    {
+                        g.DrawLine(pen, c.Left, c.Bottom, c.Right, c.Bottom);
+                    }
+                }
+                else if (c is Panel && c.HasChildren && c.Visible)
+                {
+                    // For nested panels like pnlChangePassword
+                    foreach (Control subC in c.Controls)
+                    {
+                        if ((subC is TextBox || subC is DateTimePicker) && subC.Visible)
+                        {
+                            bool isFocused = subC.Focused;
+                            Color borderColor = isFocused ? Color.FromArgb(37, 99, 235) : Color.Black;
+                            int borderThickness = isFocused ? 2 : 1;
+
+                            Point relPos = container.PointToClient(c.PointToScreen(subC.Location));
+                            using (Pen pen = new Pen(borderColor, borderThickness))
+                            {
+                                g.DrawLine(pen, relPos.X, relPos.Y + subC.Height, relPos.X + subC.Width, relPos.Y + subC.Height);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void dtpBirthday_ValueChanged(object sender, EventArgs e)

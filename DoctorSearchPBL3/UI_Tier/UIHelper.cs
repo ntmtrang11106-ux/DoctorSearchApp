@@ -218,36 +218,65 @@ namespace UI_Tier
         // --- Overload cũ để tương thích với các màn hình khác ---
         public static void SetupInputFocusEffect(Control inputControl, Control borderControl, Color focusBackColor, Color unfocusBackColor, Color highlightColor)
         {
-            borderControl.Paint += (s, e) => {
-                if (inputControl.Focused)
-                {
-                    using (Pen p = new Pen(highlightColor, 4))
+            if (borderControl != null)
+            {
+                UIHelper.ApplyRoundedRegion(borderControl, 8); // Áp dụng bo góc 8px cho khung
+                
+                borderControl.Paint += (s, e) => {
+                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    
+                    // 1. Vẽ khung viền dày 2px quanh toàn bộ borderControl (Đen - Bo góc 8)
+                    Rectangle borderRect = new Rectangle(0, 0, borderControl.Width - 1, borderControl.Height - 1);
+                    using (var path = UIHelper.GetRoundedPath(borderRect, 8))
                     {
-                        e.Graphics.DrawLine(p, 15, borderControl.Height - 2, borderControl.Width - 15, borderControl.Height - 2);
+                        using (Pen blackPen = new Pen(Color.Black, 2))
+                        {
+                            blackPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+                            e.Graphics.DrawPath(blackPen, path);
+                        }
                     }
-                }
-            };
+
+                    // 2. Nếu đang focus, vẽ vạch dưới màu xanh dày 4px
+                    if (inputControl.Focused)
+                    {
+                        using (Pen bluePen = new Pen(highlightColor, 4))
+                        {
+                            e.Graphics.DrawLine(bluePen, 0, borderControl.Height - 1, borderControl.Width, borderControl.Height - 1);
+                        }
+                    }
+                };
+            }
+
+            Color originalBackColor = inputControl.BackColor;
 
             inputControl.Enter += (s, e) => {
-                borderControl.BackColor = focusBackColor;
+                originalBackColor = inputControl.BackColor; // Lưu lại màu hiện tại (có thể là xám hoặc trắng)
+                if (borderControl != null) borderControl.BackColor = focusBackColor;
                 inputControl.BackColor = focusBackColor;
-                borderControl.Invalidate();
+                if (borderControl != null) borderControl.Invalidate();
+                else inputControl.Parent?.Invalidate(); 
             };
             inputControl.Leave += (s, e) => {
-                borderControl.BackColor = unfocusBackColor;
-                inputControl.BackColor = unfocusBackColor;
-                borderControl.Invalidate();
+                if (borderControl != null) borderControl.BackColor = originalBackColor;
+                inputControl.BackColor = originalBackColor; // Khôi phục lại màu cũ
+                if (borderControl != null) borderControl.Invalidate();
+                else inputControl.Parent?.Invalidate();
             };
         }
 
-        // --- HÀM MỚI: Đăng ký đệ quy để thoát focus khi click ra ngoài ---
+        public static void RegisterClickToUnfocus(Control parent)
+        {
+            RegisterClickToUnfocus(parent, parent);
+        }
+
         public static void RegisterClickToUnfocus(Control parent, Control focusTarget)
         {
             parent.Click += (s, e) => { 
                 // Không cướp focus nếu đang thao tác với ComboBox
-                if (parent.FindForm()?.ActiveControl is ComboBox cbo && cbo.DroppedDown) return;
+                Form f = parent.FindForm();
+                if (f?.ActiveControl is ComboBox cbo && cbo.DroppedDown) return;
                 
-                if (focusTarget != null) focusTarget.Focus(); 
+                if (f != null) f.ActiveControl = null; 
             };
             foreach (Control child in parent.Controls)
             {

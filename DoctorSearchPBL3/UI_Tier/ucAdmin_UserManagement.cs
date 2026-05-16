@@ -18,8 +18,6 @@ namespace UI_Tier
         private int _currentPage = 1;
         private int _totalItems = 0;
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        private static extern Int32 SendMessage(IntPtr hWnd, int msg, int wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
         private const int EM_SETCUEBANNER = 0x1501;
 
         public ucAdmin_UserManagement()
@@ -37,13 +35,22 @@ namespace UI_Tier
             // Hiệu ứng hover cho các nút phân trang sử dụng Helper
             UIHelper.SetupHoverEffect(lblPrev, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
             UIHelper.SetupHoverEffect(lblNext, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
+
+            pnlSearch.Paint += pnlSearch_Paint;
+            pnlSearch.Click += (s, e) => txtSearch.Focus();
+            lblSearchIcon.Click += (s, e) => txtSearch.Focus();
+        }
+
+        private void pnlSearch_Paint(object sender, PaintEventArgs e)
+        {
+            UIHelper.DrawControlBorder(sender, e, 15, Color.FromArgb(203, 213, 225), 2);
         }
 
 
 
         private void ucAdmin_UserManagement_Load(object sender, EventArgs e)
         {
-            UIHelper.ApplyRoundedRegion(pnlSearch, 20);
+            UIHelper.ApplyRoundedRegion(pnlSearch, 15);
             // Hiệu ứng Focus cho thanh tìm kiếm
             UIHelper.SetupInputFocusEffect(txtSearch, pnlSearch, Color.White, Color.White, Color.FromArgb(59, 130, 246));
             UIHelper.RegisterClickToUnfocus(this, lblTitle);
@@ -51,20 +58,16 @@ namespace UI_Tier
             cboStatusFilter.SelectedIndex = 0;
             LoadData();
 
-            // Set placeholder using native Windows API (very stable)
-            SendMessage(txtSearch.Handle, EM_SETCUEBANNER, 0, "🔍 Tìm kiếm theo tên, SĐT...");
+            UIHelper.SetupSearchTextBox(txtSearch, "Tìm kiếm theo tên, SĐT...");
             
             this.ActiveControl = lblTitle;
         }
 
-        private void pnlSearch_Click(object sender, EventArgs e)
-        {
-            txtSearch.Focus();
-        }
 
         private void LoadData()
         {
             string keyword = txtSearch.Text.Trim();
+            if (keyword == "Tìm kiếm theo tên, SĐT...") keyword = "";
             string status = cboStatusFilter.SelectedItem?.ToString() ?? "Tất cả trạng thái";
             
             // Get all users (filtered by keyword, excluding admins)
@@ -114,7 +117,7 @@ namespace UI_Tier
             }
             else if (status == "Bị khóa")
             {
-                filteredList = allUsers.Where(u => u.Status == "Inactive");
+                filteredList = allUsers.Where(u => u.Status == "Blocked");
             }
 
             // Apply Tab Filter
@@ -272,6 +275,13 @@ namespace UI_Tier
                 _currentPage++;
                 LoadData();
             }
+        }
+
+        public void ShowOverlay(UserControl uc)
+        {
+            uc.Location = new Point((this.Width - uc.Width) / 2, Math.Max(20, (this.Height - uc.Height) / 2));
+            this.Controls.Add(uc);
+            uc.BringToFront();
         }
     }
 }

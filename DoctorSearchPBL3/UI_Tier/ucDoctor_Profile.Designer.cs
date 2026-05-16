@@ -76,7 +76,7 @@ namespace UI_Tier
             // txtConsultationFee
             // 
             txtConsultationFee.Font = new Font("Segoe UI", 12F);
-            txtConsultationFee.Location = new Point(1271, 780);
+            txtConsultationFee.Location = new Point(1290, 780);
             txtConsultationFee.Name = "txtConsultationFee";
             txtConsultationFee.ReadOnly = true;
             txtConsultationFee.Size = new Size(735, 50);
@@ -87,7 +87,7 @@ namespace UI_Tier
             lblConsultationFee.AutoSize = true;
             lblConsultationFee.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
             lblConsultationFee.ForeColor = Color.FromArgb(71, 85, 105);
-            lblConsultationFee.Location = new Point(1271, 735);
+            lblConsultationFee.Location = new Point(1290, 735);
             lblConsultationFee.Name = "lblConsultationFee";
             lblConsultationFee.Size = new Size(132, 37);
             lblConsultationFee.TabIndex = 28;
@@ -439,8 +439,7 @@ namespace UI_Tier
             // 
             // txtLicense
             // 
-            txtLicense.Font = new Font("Segoe UI", 12F);
-            txtLicense.Location = new Point(1271, 538);
+            txtLicense.Location = new Point(1290, 538);
             txtLicense.Name = "txtLicense";
             txtLicense.ReadOnly = true;
             txtLicense.Size = new Size(735, 50);
@@ -451,7 +450,7 @@ namespace UI_Tier
             lblLicense.AutoSize = true;
             lblLicense.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
             lblLicense.ForeColor = Color.FromArgb(71, 85, 105);
-            lblLicense.Location = new Point(1271, 493);
+            lblLicense.Location = new Point(1290, 493);
             lblLicense.Name = "lblLicense";
             lblLicense.Size = new Size(322, 37);
             lblLicense.TabIndex = 18;
@@ -459,8 +458,7 @@ namespace UI_Tier
             // 
             // txtCCCD
             // 
-            txtCCCD.Font = new Font("Segoe UI", 12F);
-            txtCCCD.Location = new Point(1271, 416);
+            txtCCCD.Location = new Point(1290, 416);
             txtCCCD.Name = "txtCCCD";
             txtCCCD.ReadOnly = true;
             txtCCCD.Size = new Size(735, 50);
@@ -471,7 +469,7 @@ namespace UI_Tier
             lblCCCD.AutoSize = true;
             lblCCCD.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
             lblCCCD.ForeColor = Color.FromArgb(71, 85, 105);
-            lblCCCD.Location = new Point(1271, 366);
+            lblCCCD.Location = new Point(1290, 366);
             lblCCCD.Name = "lblCCCD";
             lblCCCD.Size = new Size(257, 37);
             lblCCCD.TabIndex = 14;
@@ -502,7 +500,7 @@ namespace UI_Tier
             dtpBirthday.CustomFormat = "dd / MM / yyyy";
             dtpBirthday.Font = new Font("Segoe UI", 12F);
             dtpBirthday.Format = DateTimePickerFormat.Custom;
-            dtpBirthday.Location = new Point(1271, 294);
+            dtpBirthday.Location = new Point(1290, 294);
             dtpBirthday.Name = "dtpBirthday";
             dtpBirthday.Size = new Size(735, 50);
             dtpBirthday.TabIndex = 11;
@@ -512,7 +510,7 @@ namespace UI_Tier
             lblBirthday.AutoSize = true;
             lblBirthday.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
             lblBirthday.ForeColor = Color.FromArgb(71, 85, 105);
-            lblBirthday.Location = new Point(1271, 250);
+            lblBirthday.Location = new Point(1290, 250);
             lblBirthday.Name = "lblBirthday";
             lblBirthday.Size = new Size(140, 37);
             lblBirthday.TabIndex = 10;
@@ -540,8 +538,7 @@ namespace UI_Tier
             // 
             // txtPhone
             // 
-            txtPhone.Font = new Font("Segoe UI", 12F);
-            txtPhone.Location = new Point(1271, 173);
+            txtPhone.Location = new Point(1290, 173);
             txtPhone.Name = "txtPhone";
             txtPhone.ReadOnly = true;
             txtPhone.Size = new Size(735, 50);
@@ -552,7 +549,7 @@ namespace UI_Tier
             lblPhone.AutoSize = true;
             lblPhone.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
             lblPhone.ForeColor = Color.FromArgb(71, 85, 105);
-            lblPhone.Location = new Point(1271, 128);
+            lblPhone.Location = new Point(1290, 128);
             lblPhone.Name = "lblPhone";
             lblPhone.Size = new Size(178, 37);
             lblPhone.TabIndex = 6;

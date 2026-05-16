@@ -111,9 +111,14 @@ namespace BUS_Tier
 
             if (user != null && SecurityHelper.VerifyPassword(pass, user.Password))
             {
-                if (user.Status == "Inactive")
+                if (user.Status == "Blocked")
                 {
-                    msg = "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để được hỗ trợ.";
+                    msg = "Tài khoản của bạn đã bị khóa (Blocked). Vui lòng liên hệ quản trị viên để được hỗ trợ.";
+                    return "";
+                }
+                if (user.Status == "Deleted" || user.IsDeleted)
+                {
+                    msg = "Tài khoản của bạn đã bị xóa khỏi hệ thống.";
                     return "";
                 }
 

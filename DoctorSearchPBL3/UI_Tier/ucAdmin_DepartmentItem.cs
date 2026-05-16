@@ -18,6 +18,14 @@ namespace UI_Tier
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
             UIHelper.SetDoubleBuffered(pnlCard);
+
+            pnlCard.Paint += pnlCard_Paint;
+            pnlCard.Resize += (s, e) => UIHelper.ApplyRoundedRegion(pnlCard, 15);
+        }
+
+        private void pnlCard_Paint(object sender, PaintEventArgs e)
+        {
+            UIHelper.DrawControlBorder(sender, e, 15, Color.FromArgb(200, 200, 200), 3);
         }
 
         public void SetData(DepartmentDTO dept)
@@ -33,9 +41,9 @@ namespace UI_Tier
             lblName.Text = _dept.DepartmentName;
             lblDesc.Text = _dept.Description ?? "Không có mô tả";
             
-            // Get doctor count (Mocking for now if AdminBUS doesn't have it, but usually we can query it)
-            // For now, let's just display a mock number or implement it in BUS
-            lblCount.Text = "85 bác sĩ"; // Placeholder
+            // Get doctor count directly from DoctorBUS
+            int count = new DoctorBUS().GetDoctorCountByDepartmentId(_dept.Id);
+            lblCount.Text = $"{count} bác sĩ";
             
             // Status Badge
             lblStatus.Text = _dept.IsActive ? "Hiển thị" : "Ẩn";
@@ -84,27 +92,35 @@ namespace UI_Tier
 
         private void ShowAddEditDialog(DepartmentDTO dept)
         {
-            Form f = new Form
-            {
-                FormBorderStyle = FormBorderStyle.None,
-                StartPosition = FormStartPosition.CenterScreen,
-                BackColor = Color.White,
-                Size = new Size(800, 700),
-                ControlBox = false
-            };
-
             ucAdmin_AddDepartment uc = new ucAdmin_AddDepartment();
-            uc.Dock = DockStyle.Fill;
             uc.SetData(dept);
-            uc.OnCancel += (s, ev) => f.Close();
-            uc.OnSuccess += (s, ev) => {
-                f.Close();
-                DataChanged?.Invoke(this, EventArgs.Empty);
-            };
 
-            f.Controls.Add(uc);
-            UIHelper.ApplyRoundedRegion(f, 15);
-            f.ShowDialog();
+            // Tìm Parent là ucAdmin_DepartmentManagement để hiển thị Overlay
+            Control p = this.Parent;
+            while (p != null && !(p is ucAdmin_DepartmentManagement))
+            {
+                p = p.Parent;
+            }
+
+            if (p is ucAdmin_DepartmentManagement deptMgmt)
+            {
+                uc.OnCancel += (s, ev) => deptMgmt.Controls.Remove(uc);
+                uc.OnSuccess += (s, ev) => {
+                    deptMgmt.Controls.Remove(uc);
+                    DataChanged?.Invoke(this, EventArgs.Empty);
+                };
+                deptMgmt.ShowOverlay(uc);
+            }
+            else
+            {
+                // Fallback
+                Form f = new Form { Size = new Size(1000, 850), FormBorderStyle = FormBorderStyle.None, StartPosition = FormStartPosition.CenterScreen };
+                uc.Dock = DockStyle.Fill;
+                f.Controls.Add(uc);
+                uc.OnCancel += (s, ev) => f.Close();
+                uc.OnSuccess += (s, ev) => { f.Close(); DataChanged?.Invoke(this, EventArgs.Empty); };
+                f.ShowDialog();
+            }
         }
     }
 }

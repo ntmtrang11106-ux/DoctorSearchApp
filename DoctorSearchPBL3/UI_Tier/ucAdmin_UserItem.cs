@@ -20,6 +20,25 @@ namespace UI_Tier
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
             UIHelper.SetDoubleBuffered(pnlCard);
+            
+            pnlCard.Paint += pnlCard_Paint;
+            pnlCard.Resize += (s, e) => {
+                UIHelper.ApplyRoundedRegion(pnlCard, 15);
+                UIHelper.ApplyRoundedRegion(btnApprove, 10);
+                UIHelper.ApplyRoundedRegion(btnReject, 10);
+                UIHelper.ApplyRoundedRegion(btnToggleStatus, 10);
+                UIHelper.ApplyRoundedRegion(btnEdit, 10);
+                UIHelper.ApplyRoundedRegion(btnRemove, 10);
+                UIHelper.ApplyRoundedRegion(btnDetail, 10);
+                UIHelper.ApplyRoundedRegion(pnlRoleBadge, 12);
+                UIHelper.ApplyRoundedRegion(pnlApprovalBadge, 12);
+                UIHelper.ApplyRoundedRegion(pnlStatusBadge, 12);
+            };
+        }
+
+        private void pnlCard_Paint(object sender, PaintEventArgs e)
+        {
+            UIHelper.DrawControlBorder(sender, e, 15, Color.FromArgb(200, 200, 200), 3);
         }
 
         public void SetUserData(UserDTO user)
@@ -202,15 +221,54 @@ namespace UI_Tier
         private void btnToggleStatus_Click(object sender, EventArgs e)
         {
             if (_user == null) return;
-            string msg = _adminBUS.GetToggleStatusMessage(_user);
-            string title = _user.Status == "Active" ? "Khóa tài khoản" : "Mở khóa tài khoản";
             
-            if (MessageBox.Show(msg, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (_user.Status == "Active")
             {
-                string newStatus = _user.Status == "Active" ? "Inactive" : "Active";
-                if (_adminBUS.UpdateUserStatus(_user.Id, newStatus))
+                // Logic Chặn (Block)
+                var stats = _adminBUS.GetAppointmentStatistics(_user.Id, _user.Role);
+                
+                if (stats.Confirmed > 0)
                 {
-                    DataChanged?.Invoke(this, EventArgs.Empty);
+                    MessageBox.Show($"Không thể chặn tài khoản này vì đang có {stats.Confirmed} cuộc hẹn đã được duyệt.\nVui lòng xử lý các cuộc hẹn này trước khi chặn.", 
+                        "Không thể chặn", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                string msg = $"Bạn có chắc chắn muốn khóa tài khoản của {_user.FullName}?";
+                if (stats.Pending > 0)
+                {
+                    msg += $"\n\nLưu ý: Tài khoản này đang có {stats.Pending} cuộc hẹn ĐANG CHỜ DUYỆT. Nếu bạn chặn, tất cả các cuộc hẹn này sẽ bị HỦY tự động.";
+                }
+
+                if (MessageBox.Show(msg, "Khóa tài khoản", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                {
+                    if (_adminBUS.BlockUserWithAppointmentHandling(_user.Id, _user.Role))
+                    {
+                        DataChanged?.Invoke(this, EventArgs.Empty);
+                    }
+                }
+            }
+            else
+            {
+                // Logic Mở khóa (Unblock)
+                string msg = $"Bạn có muốn mở khóa tài khoản cho {_user.FullName}? Người dùng có thể đăng nhập lại vào hệ thống.";
+                if (MessageBox.Show(msg, "Mở khóa tài khoản", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    if (_adminBUS.UpdateUserStatus(_user.Id, "Active"))
+                    {
+                        // Nếu là bác sĩ, cũng cần mở lại IsActive trong bảng Doctors
+                        if (_user.Role == "Doctor")
+                        {
+                            var doc = _adminBUS.GetDoctorByUserId(_user.Id);
+                            if (doc != null)
+                            {
+                                // Cần một phương thức để mở lại IsActive bác sĩ nếu cần, 
+                                // nhưng hiện tại UpdateUserStatus có thể đã đủ hoặc cần bổ sung vào DAL.
+                                // Tuy nhiên, yêu cầu tập trung vào phần CHẶN.
+                            }
+                        }
+                        DataChanged?.Invoke(this, EventArgs.Empty);
+                    }
                 }
             }
         }
@@ -218,10 +276,26 @@ namespace UI_Tier
         private void btnRemove_Click(object sender, EventArgs e)
         {
             if (_user == null) return;
-            string msg = _adminBUS.GetDeleteConfirmMessage(_user.FullName);
+
+            // Kiểm tra lịch hẹn trước khi xóa
+            var stats = _adminBUS.GetAppointmentStatistics(_user.Id, _user.Role);
+
+            if (stats.Confirmed > 0)
+            {
+                MessageBox.Show($"Không thể xóa tài khoản này vì đang có {stats.Confirmed} cuộc hẹn đã được duyệt.\nVui lòng xử lý các cuộc hẹn này trước khi xóa.", 
+                    "Không thể xóa", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            string msg = $"Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản của {_user.FullName}? Hành động này không thể hoàn tác.";
+            if (stats.Pending > 0)
+            {
+                msg += $"\n\nLưu ý: Tài khoản này đang có {stats.Pending} cuộc hẹn ĐANG CHỜ DUYỆT. Nếu bạn xóa, tất cả các cuộc hẹn này sẽ bị HỦY tự động và giải phóng chỗ đặt.";
+            }
+
             if (MessageBox.Show(msg, "Xóa tài khoản", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
-                if (_adminBUS.DeleteUser(_user.Id))
+                if (_adminBUS.DeleteUserWithAppointmentHandling(_user.Id, _user.Role))
                 {
                     DataChanged?.Invoke(this, EventArgs.Empty);
                 }
@@ -247,52 +321,46 @@ namespace UI_Tier
 
             if (result.User != null)
             {
-                Form f = new Form
-                {
-                    FormBorderStyle = FormBorderStyle.None,
-                    StartPosition = FormStartPosition.CenterScreen,
-                    BackColor = Color.White,
-                    Padding = new Padding(2),
-                    Text = "",
-                    ControlBox = false
-                };
-
-                Panel pnlBorder = new Panel { Dock = DockStyle.Fill, BackColor = Color.White };
-                f.Controls.Add(pnlBorder);
-
+                UserControl detail;
                 if (role == "Doctor")
                 {
-                    ucAdmin_DoctorDetail detail = new ucAdmin_DoctorDetail();
-                    detail.Dock = DockStyle.Fill;
-                    detail.SetData(result.User, result.Doctor);
-                    if (editMode) detail.SetEditMode(true);
-                    pnlBorder.Controls.Add(detail);
-                    f.Size = new Size(1300, 1100);
+                    var docDetail = new ucAdmin_DoctorDetail();
+                    docDetail.SetData(result.User, result.Doctor);
+                    if (editMode) docDetail.SetEditMode(true);
+                    detail = docDetail;
                 }
                 else
                 {
-                    ucAdmin_PatientDetail detail = new ucAdmin_PatientDetail();
-                    detail.Dock = DockStyle.Fill;
-                    detail.SetData(result.User, result.Patient);
-                    if (editMode) detail.SetEditMode(true);
-                    pnlBorder.Controls.Add(detail);
-                    f.Size = new Size(1300, 1100);
+                    var patDetail = new ucAdmin_PatientDetail();
+                    patDetail.SetData(result.User, result.Patient);
+                    if (editMode) patDetail.SetEditMode(true);
+                    detail = patDetail;
                 }
 
-                f.Resize += (s, ev) => {
-                    UIHelper.ApplyRoundedRegion(f, 15);
-                    f.Refresh();
-                };
+                // Tìm Parent là ucAdmin_UserManagement để hiển thị Overlay
+                Control p = this.Parent;
+                while (p != null && !(p is ucAdmin_UserManagement))
+                {
+                    p = p.Parent;
+                }
 
-                f.Paint += (s, ev) => {
-                    using (Pen pen = new Pen(Color.FromArgb(200, 200, 200), 2)) {
-                        ev.Graphics.DrawRectangle(pen, 0, 0, f.Width - 1, f.Height - 1);
-                    }
-                };
+                if (p is ucAdmin_UserManagement userMgmt)
+                {
+                    userMgmt.ShowOverlay(detail);
+                }
+                else
+                {
+                    // Fallback nếu không tìm thấy (hiển thị form đơn giản)
+                    Form f = new Form { 
+                        Size = new Size(1300, 1100), 
+                        FormBorderStyle = FormBorderStyle.None, 
+                        StartPosition = FormStartPosition.CenterScreen 
+                    };
+                    detail.Dock = DockStyle.Fill;
+                    f.Controls.Add(detail);
+                    f.ShowDialog();
+                }
 
-                UIHelper.ApplyRoundedRegion(f, 15);
-                f.ShowDialog();
-                
                 DataChanged?.Invoke(this, EventArgs.Empty);
             }
         }

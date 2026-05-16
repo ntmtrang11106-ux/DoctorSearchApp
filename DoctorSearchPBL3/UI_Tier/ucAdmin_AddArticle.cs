@@ -46,6 +46,14 @@ namespace UI_Tier
             lblStatusLabel.Click += Global_Click;
             lblPriorityLabel.Click += Global_Click;
             lblThumbnailLabel.Click += Global_Click;
+
+            this.Paint += ucAdmin_AddArticle_Paint;
+            this.Padding = new Padding(3);
+        }
+
+        private void ucAdmin_AddArticle_Paint(object sender, PaintEventArgs e)
+        {
+            UIHelper.DrawControlBorder(sender, e, 30, Color.Black, 3);
         }
 
         private void SetupUI()
@@ -110,9 +118,15 @@ namespace UI_Tier
             ApplyInternalControlStyle(cboStatus);
             ApplyInternalControlStyle(numPriority);
 
-            // Bo góc cho các nút bấm (15px)
-            UIHelper.ApplyRoundedRegion(btnSave, 15);
-            UIHelper.ApplyRoundedRegion(btnCancel, 15);
+            // Bo góc cho các nút bấm (12px)
+            UIHelper.ApplyRoundedRegion(btnSave, 12);
+            UIHelper.ApplyRoundedRegion(btnCancel, 12);
+
+            // Font sizes
+            lblHeaderTitle.Font = new Font("Segoe UI", 16, FontStyle.Bold);
+            txtTitle.Font = new Font("Segoe UI", 12, FontStyle.Regular);
+            txtSummary.Font = new Font("Segoe UI", 12, FontStyle.Regular);
+            rtbBody.Font = new Font("Segoe UI", 12, FontStyle.Regular);
 
             _thumbnailPath = ""; 
         }
@@ -121,8 +135,8 @@ namespace UI_Tier
         {
             UIHelper.ApplyRoundedRegion(pnl, 10);
             pnl.Paint += (s, e) => {
-                // Vẽ viền đen/xám đậm độ dày 2px
-                UIHelper.DrawControlBorder(s, e, 10, Color.FromArgb(64, 64, 64), 2);
+                // Vẽ viền đen độ dày 2px
+                UIHelper.DrawControlBorder(s, e, 10, Color.Black, 2);
             };
         }
 
@@ -156,10 +170,10 @@ namespace UI_Tier
         private void Control_Paint_Focus(object sender, PaintEventArgs e)
         {
             Control ctrl = sender as Control;
-            using (Pen p = new Pen(Color.FromArgb(37, 99, 235), 4))
+            using (Pen p = new Pen(Color.FromArgb(24, 112, 255), 4))
             {
                 // Vẽ ở sát đáy panel cha
-                e.Graphics.DrawLine(p, 10, ctrl.Height - 3, ctrl.Width - 10, ctrl.Height - 3);
+                e.Graphics.DrawLine(p, 10, e.ClipRectangle.Height - 3, e.ClipRectangle.Width - 10, e.ClipRectangle.Height - 3);
             }
         }
 

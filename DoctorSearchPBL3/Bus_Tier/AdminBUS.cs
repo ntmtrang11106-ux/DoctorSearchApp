@@ -68,5 +68,20 @@ namespace BUS_Tier
         {
             return _adminDAL.GetPatientByUserId(userId);
         }
+
+        public (int Confirmed, int Pending) GetAppointmentStatistics(int userId, string role)
+        {
+            return _adminDAL.GetAppointmentStatistics(userId, role);
+        }
+
+        public bool BlockUserWithAppointmentHandling(int userId, string role)
+        {
+            return _adminDAL.BlockUserWithAppointmentHandling(userId, role);
+        }
+
+        public bool DeleteUserWithAppointmentHandling(int userId, string role)
+        {
+            return _adminDAL.DeleteUserWithAppointmentHandling(userId, role);
+        }
     }
 }

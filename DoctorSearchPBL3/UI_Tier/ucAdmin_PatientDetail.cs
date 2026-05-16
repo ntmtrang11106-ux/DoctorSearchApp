@@ -19,12 +19,40 @@ namespace UI_Tier
             
             // Wire up events
             btnExit.Click += btnClose_Click;
+            btnClose.Click += btnClose_Click;
             btnSave.Click += BtnSave_Click;
 
             // Apply rounding
             UIHelper.ApplyRoundedRegion(btnSave, 12);
 
             InitializeEditControls();
+
+            this.Resize += (s, e) => UIHelper.ApplyRoundedRegion(this, 25);
+            this.Paint += ucAdmin_PatientDetail_Paint;
+            this.Padding = new Padding(2); // Thêm padding để không bị các panel con che mất viền
+
+            // Cho phép di chuyển form bằng cách kéo Header
+            UIHelper.EnableNativeDrag(pnlHeader, this);
+            UIHelper.EnableNativeDrag(lblTitle, this);
+            UIHelper.EnableNativeDrag(lblSubtitle, this);
+
+            // Đăng ký click ra ngoài để thoát focus
+            UIHelper.RegisterClickToUnfocus(this);
+        }
+
+        private void ucAdmin_PatientDetail_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            // Độ dày viền form chính là 3
+            using (Pen pen = new Pen(Color.Black, 3))
+            {
+                pen.Alignment = System.Drawing.Drawing2D.PenAlignment.Center;
+                float offset = 1.5f; // Căn giữa cho pen 3px
+                using (var path = UIHelper.GetRoundedPath(new RectangleF(offset, offset, this.Width - offset * 2, this.Height - offset * 2), 25))
+                {
+                    e.Graphics.DrawPath(pen, path);
+                }
+            }
         }
 
         private void InitializeEditControls()
@@ -48,34 +76,82 @@ namespace UI_Tier
 
         private void SetupEditControl(Control edit, Control label)
         {
-            edit.Location = label.Location;
-            edit.Width = label.Parent.Width - label.Left - 15;
-            edit.Height = label.Height + 18;
-            edit.Visible = false;
-            edit.BackColor = Color.FromArgb(249, 250, 251);
+            Panel pnlWrapper = new Panel();
+            pnlWrapper.Name = edit.Name + "_wrapper";
+            
+            // Đặc biệt cho phần Ghi chú (Notes)
+            if (edit == txtEditNotes)
+            {
+                pnlWrapper.Location = pnlNotesContainer.Location;
+                pnlWrapper.Size = pnlNotesContainer.Size;
+                pnlWrapper.BackColor = Color.White;
+                pnlWrapper.Visible = false;
+                pnlWrapper.Padding = new Padding(10);
+                
+                edit.Parent = pnlWrapper;
+                edit.Dock = DockStyle.Fill;
+                edit.BackColor = Color.White;
+                edit.Visible = true;
+                if (edit is TextBox tb) tb.BorderStyle = BorderStyle.None;
+                
+                pnlNotes.Controls.Add(pnlWrapper);
+                pnlWrapper.BringToFront();
+            }
+            else
+            {
+                pnlWrapper.Location = new Point(label.Left, label.Top - 8); 
+                pnlWrapper.Width = label.Parent.Width - label.Left - 15;
+                pnlWrapper.Height = label.Height + 20; // Giảm chiều cao xuống một chút
+                pnlWrapper.BackColor = Color.White;
+                pnlWrapper.Visible = false;
+                pnlWrapper.Padding = new Padding(5, 4, 5, 2);
 
-            // Sử dụng Helper để quản lý hiệu ứng Focus
-            UIHelper.SetupInputFocusEffect(edit, edit, Color.White, Color.FromArgb(249, 250, 251), Color.FromArgb(59, 130, 246));
+                edit.Parent = pnlWrapper;
+                edit.Dock = DockStyle.Fill;
+                edit.BackColor = Color.White;
+                edit.Visible = true; 
 
-            label.Parent.Controls.Add(edit);
+                if (edit is TextBox tb) tb.BorderStyle = BorderStyle.None;
+                if (edit is RichTextBox rtb) rtb.BorderStyle = BorderStyle.None;
+
+                label.Parent.Controls.Add(pnlWrapper);
+                pnlWrapper.BringToFront();
+            }
+
+            UIHelper.SetDoubleBuffered(pnlWrapper);
+            UIHelper.SetupInputFocusEffect(edit, pnlWrapper, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
         }
 
-
+        private void SetEditVisible(Control edit, bool visible)
+        {
+            if (edit.Parent is Panel pnl && pnl.Name == edit.Name + "_wrapper")
+            {
+                pnl.Visible = visible;
+                if (visible) pnl.BringToFront();
+            }
+            else
+            {
+                edit.Visible = visible;
+            }
+        }
 
         private void SwitchMode(bool editMode)
         {
             _isEditMode = editMode;
+            
+            // Toggle visibility
+            lblVName.Visible = !editMode; SetEditVisible(txtEditName, editMode);
+            lblVPhone.Visible = !editMode; SetEditVisible(txtEditPhone, editMode);
+            lblVDob.Visible = !editMode; SetEditVisible(dtpEditDob, editMode);
+            lblVGender.Visible = !editMode; SetEditVisible(cboEditGender, editMode);
+            lblVCCCD.Visible = !editMode; SetEditVisible(txtEditCCCD, editMode);
+            lblVAddress.Visible = !editMode; SetEditVisible(txtEditAddress, editMode);
+            lblVInsCode.Visible = !editMode; SetEditVisible(txtEditInsCode, editMode);
+            lblVEmerName.Visible = !editMode; SetEditVisible(txtEditEmerName, editMode);
+            lblVEmerPhone.Visible = !editMode; SetEditVisible(txtEditEmerPhone, editMode);
+            lblVNotes.Visible = !editMode; SetEditVisible(txtEditNotes, editMode);
 
-            lblVName.Visible = !editMode; txtEditName.Visible = editMode;
-            lblVPhone.Visible = !editMode; txtEditPhone.Visible = editMode;
-            lblVDob.Visible = !editMode; dtpEditDob.Visible = editMode;
-            lblVGender.Visible = !editMode; cboEditGender.Visible = editMode;
-            lblVCCCD.Visible = !editMode; txtEditCCCD.Visible = editMode;
-            lblVAddress.Visible = !editMode; txtEditAddress.Visible = editMode;
-            lblVInsCode.Visible = !editMode; txtEditInsCode.Visible = editMode;
-            lblVEmerName.Visible = !editMode; txtEditEmerName.Visible = editMode;
-            lblVEmerPhone.Visible = !editMode; txtEditEmerPhone.Visible = editMode;
-            lblVNotes.Visible = !editMode; txtEditNotes.Visible = editMode;
+            pnlNotesContainer.Visible = !editMode; // Ẩn container cũ khi edit
 
             btnSave.Visible = editMode;
 
@@ -190,7 +266,7 @@ namespace UI_Tier
                 lblVInsCode.Text = patient.InsuranceCode ?? "Chưa cập nhật";
                 lblVEmerName.Text = patient.EmergencyContactName ?? "Chưa cập nhật";
                 lblVEmerPhone.Text = patient.EmergencyContactPhone ?? "Chưa cập nhật";
-                lblVRegDate.Text = patient.CreatedAt.ToString("dd/MM/yyyy");
+                //lblVRegDate.Text = patient.CreatedAt.ToString("dd/MM/yyyy");
                 lblVNotes.Text = patient.Note ?? "Chưa có ghi chú";
             }
 
@@ -202,7 +278,19 @@ namespace UI_Tier
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            if (this.ParentForm != null) this.ParentForm.Close();
+            if (this.Parent != null)
+            {
+                if (this.Parent is Form f && f.FormBorderStyle != FormBorderStyle.None)
+                {
+                    f.Close();
+                }
+                else
+                {
+                    Control p = this.Parent;
+                    p.Controls.Remove(this);
+                    this.Dispose();
+                }
+            }
         }
 
         private void pnlHeader_Paint(object sender, PaintEventArgs e)

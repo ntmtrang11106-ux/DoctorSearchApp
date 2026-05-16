@@ -11,20 +11,24 @@ namespace DAL_Tier
         public List<DepartmentDTO> GetActiveDepartments()
         {
             using var context = new AppDbContext();
-            return context.Departments
+            var list = context.Departments
                 .AsNoTracking()
                 .Where(d => d.IsActive == true && d.IsDeleted == false)
                 .OrderBy(d => d.DisplayOrder)
                 .ToList();
+
+            return list;
         }
 
         public List<DepartmentDTO> GetAllDepartments()
         {
             using var context = new AppDbContext();
-            return context.Departments
+            var list = context.Departments
                 .Where(d => !d.IsDeleted)
                 .OrderByDescending(d => d.DisplayOrder) // Mới nhất lên đầu
                 .ToList();
+
+            return list;
         }
 
         public DepartmentDTO? GetDepartmentById(int id)

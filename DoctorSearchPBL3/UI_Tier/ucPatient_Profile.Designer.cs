@@ -580,7 +580,7 @@ namespace UI_Tier
             // txtPatientID
             // 
             txtPatientID.Font = new Font("Segoe UI", 12F);
-            txtPatientID.Location = new Point(1271, 538);
+            txtPatientID.Location = new Point(1290, 537);
             txtPatientID.Margin = new Padding(4);
             txtPatientID.Name = "txtPatientID";
             txtPatientID.ReadOnly = true;
@@ -592,7 +592,7 @@ namespace UI_Tier
             lblPatientID.AutoSize = true;
             lblPatientID.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
             lblPatientID.ForeColor = Color.FromArgb(73, 80, 87);
-            lblPatientID.Location = new Point(1271, 493);
+            lblPatientID.Location = new Point(1290, 493);
             lblPatientID.Margin = new Padding(4, 0, 4, 0);
             lblPatientID.Name = "lblPatientID";
             lblPatientID.Size = new Size(194, 37);
@@ -602,7 +602,7 @@ namespace UI_Tier
             // txtCCCD
             // 
             txtCCCD.Font = new Font("Segoe UI", 12F);
-            txtCCCD.Location = new Point(1271, 416);
+            txtCCCD.Location = new Point(1290, 410);
             txtCCCD.Margin = new Padding(4);
             txtCCCD.Name = "txtCCCD";
             txtCCCD.ReadOnly = true;
@@ -614,7 +614,7 @@ namespace UI_Tier
             lblCCCD.AutoSize = true;
             lblCCCD.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
             lblCCCD.ForeColor = Color.FromArgb(73, 80, 87);
-            lblCCCD.Location = new Point(1271, 366);
+            lblCCCD.Location = new Point(1290, 366);
             lblCCCD.Margin = new Padding(4, 0, 4, 0);
             lblCCCD.Name = "lblCCCD";
             lblCCCD.Size = new Size(257, 37);
@@ -649,7 +649,7 @@ namespace UI_Tier
             dtpBirthday.CustomFormat = "dd / MM / yyyy";
             dtpBirthday.Font = new Font("Segoe UI", 12F);
             dtpBirthday.Format = DateTimePickerFormat.Custom;
-            dtpBirthday.Location = new Point(1271, 294);
+            dtpBirthday.Location = new Point(1290, 294);
             dtpBirthday.Margin = new Padding(4);
             dtpBirthday.Name = "dtpBirthday";
             dtpBirthday.Size = new Size(735, 50);
@@ -660,7 +660,7 @@ namespace UI_Tier
             lblBirthday.AutoSize = true;
             lblBirthday.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
             lblBirthday.ForeColor = Color.FromArgb(73, 80, 87);
-            lblBirthday.Location = new Point(1271, 250);
+            lblBirthday.Location = new Point(1290, 250);
             lblBirthday.Margin = new Padding(4, 0, 4, 0);
             lblBirthday.Name = "lblBirthday";
             lblBirthday.Size = new Size(140, 37);
@@ -692,7 +692,7 @@ namespace UI_Tier
             // txtPhone
             // 
             txtPhone.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtPhone.Location = new Point(1271, 173);
+            txtPhone.Location = new Point(1290, 173);
             txtPhone.Margin = new Padding(4);
             txtPhone.Name = "txtPhone";
             txtPhone.ReadOnly = true;
@@ -704,7 +704,7 @@ namespace UI_Tier
             lblPhone.AutoSize = true;
             lblPhone.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
             lblPhone.ForeColor = Color.FromArgb(73, 80, 87);
-            lblPhone.Location = new Point(1271, 128);
+            lblPhone.Location = new Point(1290, 129);
             lblPhone.Margin = new Padding(4, 0, 4, 0);
             lblPhone.Name = "lblPhone";
             lblPhone.Size = new Size(178, 37);

@@ -206,5 +206,10 @@ namespace BUS_Tier
                 return "Lỗi: " + ex.Message;
             }
         }
+        public int GetDoctorCountByDepartmentId(int departmentId)
+        {
+            if (departmentId <= 0) return 0;
+            return doctorDAL.GetDoctorCountByDepartmentId(departmentId);
+        }
     }
 }

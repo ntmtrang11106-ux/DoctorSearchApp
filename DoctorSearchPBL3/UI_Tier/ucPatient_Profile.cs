@@ -1,3 +1,4 @@
+using DTO_Tier;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,6 +15,18 @@ namespace UI_Tier
         private readonly BUS_Tier.PatientBUS _patientBUS = new BUS_Tier.PatientBUS();
         private readonly BUS_Tier.UserBUS _userBUS = new BUS_Tier.UserBUS();
         private DTO_Tier.PatientDTO _currentPatient;
+        private UserDTO _currentUser;
+        private bool _isEditingBasic = false;
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
+                return cp;
+            }
+        }
 
         public ucPatient_Profile()
         {
@@ -28,24 +41,138 @@ namespace UI_Tier
             SetEditMode(false, "basic");
             SetEditMode(false, "medical");
 
+            // Fix blinking
+            UIHelper.SetDoubleBuffered(pnlBasicInfo);
+            UIHelper.SetDoubleBuffered(pnlMedicalProfile);
+            UIHelper.SetDoubleBuffered(pnlSecurity);
+            UIHelper.SetDoubleBuffered(pnlChangePassword);
+            UIHelper.SetDoubleBuffered(pnlBasicInfoActions);
+            UIHelper.SetDoubleBuffered(pnlMedicalActions);
+
             // Wire up events
             picAvatar.Cursor = Cursors.Hand;
-            picAvatar.Click += picAvatar_Click;
+            picAvatar.Click += (s, e) => ChangeAvatar();
             dtpBirthday.ValueChanged += dtpBirthday_ValueChanged;
-            AttachReadOnlyHandlers();
+            SetupFocusEffects();
+
+            // Gán sự kiện Paint để vẽ viền và bóng đổ
+            pnlBasicInfo.Paint += SectionPanel_Paint;
+            pnlMedicalProfile.Paint += SectionPanel_Paint;
+            pnlSecurity.Paint += SectionPanel_Paint;
+            pnlChangePassword.Paint += SectionPanel_Paint;
+
+            this.HandleCreated += (s, e) => {
+                InitData();
+                AddAvatarOverlay();
+                UIHelper.ApplyRoundedRegion(picAvatar, picAvatar.Width / 2);
+            };
+
+            // Đăng ký click ra ngoài để thoát focus cho toàn bộ form và các panel chính
+            UIHelper.RegisterClickToUnfocus(this);
+            UIHelper.RegisterClickToUnfocus(pnlMain);
+            UIHelper.RegisterClickToUnfocus(pnlBasicInfo);
+            UIHelper.RegisterClickToUnfocus(pnlMedicalProfile);
+            UIHelper.RegisterClickToUnfocus(pnlSecurity);
+            UIHelper.RegisterClickToUnfocus(pnlChangePassword);
         }
 
-        private void AttachReadOnlyHandlers()
+        private Label lblUpload;
+        private void AddAvatarOverlay()
         {
-            TextBox[] tbs = { txtFullName, txtPhone, txtGender, txtCCCD, txtAddress, txtBHYT, txtPatientID, txtEmergencyContact, txtEmergencyPhone, txtBloodType, txtMedicalHistory };
-            foreach (var tb in tbs) UIHelper.SetupReadOnlyHandler(tb, pnlMain);
+            lblUpload = new Label
+            {
+                Size = new Size(40, 40),
+                BackColor = Color.FromArgb(200, 37, 99, 235), // Blue semi-transparent
+                ForeColor = Color.White,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Font = new Font("Segoe MDL2 Assets", 14F),
+                Text = "\uE722", // Camera icon
+                Cursor = Cursors.Hand,
+                Visible = false
+            };
+
+            // Vị trí: Góc dưới bên phải của picAvatar
+            lblUpload.Location = new Point(
+                picAvatar.Right - lblUpload.Width - 5,
+                picAvatar.Bottom - lblUpload.Height - 5
+            );
+
+            UIHelper.ApplyRoundedRegion(lblUpload, lblUpload.Width / 2);
+            
+            picAvatar.Parent.Controls.Add(lblUpload);
+            lblUpload.BringToFront();
+            
+            lblUpload.Click += (s, e) => ChangeAvatar();
         }
+
+        private void ChangeAvatar()
+        {
+            if (!_isEditingBasic) return;
+
+            if (_currentPatient == null || _currentPatient.User == null)
+            {
+                MessageBox.Show("Không thể đổi ảnh khi dữ liệu hồ sơ chưa được tải.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        string uploadDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "uploads", "avatars");
+                        if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
+
+                        string fileName = $"pat_{DTO_Tier.GlobalAccount.GetUserId()}_{DateTime.Now.Ticks}{Path.GetExtension(ofd.FileName)}";
+                        string destPath = Path.Combine(uploadDir, fileName);
+                        string relativePath = Path.Combine("uploads", "avatars", fileName);
+
+                        File.Copy(ofd.FileName, destPath, true);
+
+                        // Save to database immediately
+                        string result = _userBUS.UpdateAvatar(DTO_Tier.GlobalAccount.GetUserId(), relativePath);
+                        if (result == "Success")
+                        {
+                            picAvatar.ImageLocation = destPath;
+                            picAvatar.SizeMode = PictureBoxSizeMode.Zoom;
+                            _currentPatient.User.Picture = relativePath;
+                            MessageBox.Show("Cập nhật ảnh đại diện thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Lỗi tải ảnh: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+        private void SetupFocusEffects()
+        {
+            TextBox[] inputs = { txtFullName, txtPhone, txtGender, txtCCCD, txtAddress, txtBHYT, txtPatientID, txtEmergencyContact, txtEmergencyPhone, txtBloodType, txtMedicalHistory, txtCurrentPass, txtNewPass, txtConfirmPass };
+            foreach (var input in inputs)
+            {
+                input.Font = new Font("Segoe UI", 12F);
+                UIHelper.SetupInputFocusEffect(input, null, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+            }
+        }
+
 
         public void InitData()
         {
             int profileId = DTO_Tier.GlobalAccount.GetProfileId();
             
-            // Nếu chưa đăng nhập (profileId = 0), không tự động load tài khoản đầu tiên nữa
+            // Fallback: If profileId is 0, try to get it from UserId
+            if (profileId <= 0)
+            {
+                int userId = DTO_Tier.GlobalAccount.GetUserId();
+                if (userId > 0)
+                {
+                    profileId = _userBUS.GetProfileIdByRole(userId, "Patient");
+                }
+            }
+
             if (profileId <= 0)
             {
                 LoadPlaceholderData();
@@ -72,14 +199,17 @@ namespace UI_Tier
                 ParseMedicalNote(_currentPatient.Note);
 
                 string picPath = _currentPatient.User.Picture;
-                if (!string.IsNullOrEmpty(picPath) && File.Exists(picPath))
+                if (!string.IsNullOrEmpty(picPath))
                 {
-                    picAvatar.ImageLocation = picPath;
+                    string fullPath = Path.IsPathRooted(picPath) ? picPath : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, picPath);
+                    if (File.Exists(fullPath))
+                    {
+                        picAvatar.ImageLocation = fullPath;
+                        picAvatar.SizeMode = PictureBoxSizeMode.Zoom;
+                    }
+                    else LoadDefaultAvatar();
                 }
-                else
-                {
-                    LoadDefaultAvatar();
-                }
+                else LoadDefaultAvatar();
             }
             else
             {
@@ -133,6 +263,7 @@ namespace UI_Tier
         {
             if (section == "basic")
             {
+                _isEditingBasic = isEditing;
                 txtFullName.ReadOnly = !isEditing;
                 txtPhone.ReadOnly = !isEditing;
                 txtAddress.ReadOnly = !isEditing;
@@ -144,19 +275,20 @@ namespace UI_Tier
                 txtEmergencyContact.ReadOnly = !isEditing;
                 txtEmergencyPhone.ReadOnly = !isEditing;
 
-                Color bg = isEditing ? Color.White : Color.FromArgb(250, 251, 252);
+                Color bg = isEditing ? Color.White : Color.FromArgb(241, 243, 245);
                 txtFullName.BackColor = bg;
                 txtPhone.BackColor = bg;
                 txtGender.BackColor = bg;
                 txtCCCD.BackColor = bg;
                 txtBHYT.BackColor = bg;
-                txtPatientID.BackColor = Color.FromArgb(250, 251, 252);
+                txtPatientID.BackColor = Color.FromArgb(241, 243, 245); // Luôn xám vì là ID
                 txtEmergencyContact.BackColor = bg;
                 txtEmergencyPhone.BackColor = bg;
                 txtAddress.BackColor = bg;
 
                 pnlBasicInfoActions.Visible = isEditing;
                 btnEditBasicInfo.Visible = !isEditing;
+                if (lblUpload != null) lblUpload.Visible = isEditing;
                 
                 if (isEditing) txtFullName.Focus();
             }
@@ -165,7 +297,7 @@ namespace UI_Tier
                 txtBloodType.ReadOnly = !isEditing;
                 txtMedicalHistory.ReadOnly = !isEditing;
 
-                Color bg = isEditing ? Color.White : Color.FromArgb(250, 251, 252);
+                Color bg = isEditing ? Color.White : Color.FromArgb(241, 243, 245);
                 txtBloodType.BackColor = bg;
                 txtMedicalHistory.BackColor = bg;
 
@@ -325,8 +457,81 @@ namespace UI_Tier
 
         private void SectionPanel_Paint(object sender, PaintEventArgs e)
         {
-            Color accentColor = (sender == pnlSecurity) ? Color.FromArgb(244, 63, 94) : Color.FromArgb(37, 99, 235);
-            UIHelper.DrawSectionShadow(sender, e, 20, accentColor);
+            Control pnl = sender as Control;
+            
+            // Chỉ vẽ shadow và accent line cho các panel chính (không vẽ cho panel con như pnlChangePassword)
+            if (pnl == pnlBasicInfo || pnl == pnlMedicalProfile || pnl == pnlSecurity)
+            {
+                Color accentColor = (pnl == pnlSecurity) ? Color.FromArgb(244, 63, 94) : Color.FromArgb(37, 99, 235);
+                UIHelper.DrawSectionShadow(sender, e, 20, accentColor);
+            }
+            
+            // Vẽ đường kẻ dưới cho các ô nhập liệu
+            DrawInputBorders(pnl, e.Graphics);
+        }
+
+        private void DrawInputBorders(Control container, Graphics g)
+        {
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            foreach (Control c in container.Controls)
+            {
+                if ((c is TextBox || c is DateTimePicker) && c.Visible)
+                {
+                    bool isFocused = c.Focused;
+                    
+                    // 1. Vẽ khung viền dày 2px quanh toàn bộ ô (Đen - Bo góc 8)
+                    Rectangle borderRect = new Rectangle(c.Left - 1, c.Top - 1, c.Width + 1, c.Height + 1);
+                    using (var path = UIHelper.GetRoundedPath(borderRect, 8))
+                    {
+                        using (Pen blackPen = new Pen(Color.Black, 2))
+                        {
+                            blackPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+                            g.DrawPath(blackPen, path);
+                        }
+                        
+                        // 2. Nếu đang focus, vẽ vạch dưới màu xanh dày 4px (Cực kỳ rõ nét)
+                        if (isFocused)
+                        {
+                            using (Pen bluePen = new Pen(Color.FromArgb(37, 99, 235), 4))
+                            {
+                                g.DrawLine(bluePen, c.Left, c.Bottom, c.Right, c.Bottom);
+                            }
+                        }
+                    }
+                }
+                else if (c is Panel && c.HasChildren && c.Visible)
+                {
+                    // For nested panels like pnlChangePassword
+                    foreach (Control subC in c.Controls)
+                    {
+                        if ((subC is TextBox || subC is DateTimePicker) && subC.Visible)
+                        {
+                            bool isFocused = subC.Focused;
+                            Point relPos = container.PointToClient(c.PointToScreen(subC.Location));
+                            
+                            // 1. Vẽ khung viền dày 2px (Đen, Bo góc 8)
+                            Rectangle borderRect = new Rectangle(relPos.X - 1, relPos.Y - 1, subC.Width + 1, subC.Height + 1);
+                            using (var path = UIHelper.GetRoundedPath(borderRect, 8))
+                            {
+                                using (Pen blackPen = new Pen(Color.Black, 2))
+                                {
+                                    blackPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+                                    g.DrawPath(blackPen, path);
+                                }
+
+                                // 2. Vẽ vạch dưới xanh 4px khi focus
+                                if (isFocused)
+                                {
+                                    using (Pen bluePen = new Pen(Color.FromArgb(37, 99, 235), 4))
+                                    {
+                                        g.DrawLine(bluePen, relPos.X, relPos.Y + subC.Height, relPos.X + subC.Width, relPos.Y + subC.Height);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void Button_Paint(object sender, PaintEventArgs e)

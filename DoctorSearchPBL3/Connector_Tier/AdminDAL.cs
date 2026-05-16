@@ -184,5 +184,160 @@ namespace DAL_Tier
                 CreatedAt = patient.CreatedAt
             };
         }
+
+        public (int Confirmed, int Pending) GetAppointmentStatistics(int userId, string role)
+        {
+            using var db = new AppDbContext();
+            if (role == "Doctor")
+            {
+                var doctor = db.Doctors.FirstOrDefault(d => d.UserId == userId);
+                if (doctor == null) return (0, 0);
+                int confirmed = db.Appointments.Count(a => a.DoctorId == doctor.Id && a.Status == "Confirmed");
+                int pending = db.Appointments.Count(a => a.DoctorId == doctor.Id && a.Status == "Pending");
+                return (confirmed, pending);
+            }
+            else if (role == "Patient")
+            {
+                var patient = db.Patients.FirstOrDefault(p => p.UserId == userId);
+                if (patient == null) return (0, 0);
+                int confirmed = db.Appointments.Count(a => a.PatientId == patient.Id && a.Status == "Confirmed");
+                int pending = db.Appointments.Count(a => a.PatientId == patient.Id && a.Status == "Pending");
+                return (confirmed, pending);
+            }
+            return (0, 0);
+        }
+
+        public bool DeleteUserWithAppointmentHandling(int userId, string role)
+        {
+            using var db = new AppDbContext();
+            var user = db.Users.Find(userId);
+            if (user == null) return false;
+
+            // 1. Đánh dấu xóa tài khoản
+            user.IsDeleted = true;
+            user.DeletedAt = DateTime.Now;
+            user.Status = "Deleted";
+
+            // 2. Xử lý lịch hẹn và thông tin vai trò
+            if (role == "Doctor")
+            {
+                var doctor = db.Doctors.FirstOrDefault(d => d.UserId == userId);
+                if (doctor != null)
+                {
+                    doctor.IsDeleted = true;
+                    doctor.DeletedAt = DateTime.Now;
+                    doctor.IsActive = false;
+
+                    // Hủy các lịch hẹn đang chờ duyệt
+                    var pendingApps = db.Appointments.Where(a => a.DoctorId == doctor.Id && a.Status == "Pending").ToList();
+                    foreach (var app in pendingApps)
+                    {
+                        app.Status = "Cancelled";
+                        app.Note = (app.Note ?? "") + "\n[Hệ thống] Tự động hủy do tài khoản bác sĩ bị xóa.";
+                        app.UpdatedAt = DateTime.Now;
+
+                        // Giảm số lượng đã đặt của TimeSlot
+                        var ts = db.TimeSlots.Find(app.TimeSlotId);
+                        if (ts != null && ts.BookedCount > 0)
+                        {
+                            ts.BookedCount--;
+                            ts.UpdatedAt = DateTime.Now;
+                        }
+                    }
+                }
+            }
+            else if (role == "Patient")
+            {
+                var patient = db.Patients.FirstOrDefault(p => p.UserId == userId);
+                if (patient != null)
+                {
+                    patient.IsDeleted = true;
+                    patient.DeletedAt = DateTime.Now;
+
+                    // Hủy các lịch hẹn đang chờ duyệt
+                    var pendingApps = db.Appointments.Where(a => a.PatientId == patient.Id && a.Status == "Pending").ToList();
+                    foreach (var app in pendingApps)
+                    {
+                        app.Status = "Cancelled";
+                        app.Note = (app.Note ?? "") + "\n[Hệ thống] Tự động hủy do tài khoản người dùng bị xóa.";
+                        app.UpdatedAt = DateTime.Now;
+
+                        // Giảm số lượng đã đặt của TimeSlot
+                        var ts = db.TimeSlots.Find(app.TimeSlotId);
+                        if (ts != null && ts.BookedCount > 0)
+                        {
+                            ts.BookedCount--;
+                            ts.UpdatedAt = DateTime.Now;
+                        }
+                    }
+                }
+            }
+
+            return db.SaveChanges() > 0;
+        }
+
+        public bool BlockUserWithAppointmentHandling(int userId, string role)
+        {
+            using var db = new AppDbContext();
+            var user = db.Users.Find(userId);
+            if (user == null) return false;
+
+            // 1. Chặn tài khoản (Blocked)
+            user.Status = "Blocked";
+            user.UpdatedAt = DateTime.Now;
+
+            // 2. Nếu là bác sĩ, cập nhật thêm IsActive = false trong bảng Doctors
+            if (role == "Doctor")
+            {
+                var doctor = db.Doctors.FirstOrDefault(d => d.UserId == userId);
+                if (doctor != null)
+                {
+                    doctor.IsActive = false;
+                    doctor.UpdatedAt = DateTime.Now;
+
+                    // Hủy các lịch hẹn đang chờ duyệt của bác sĩ này
+                    var pendingApps = db.Appointments.Where(a => a.DoctorId == doctor.Id && a.Status == "Pending").ToList();
+                    foreach (var app in pendingApps)
+                    {
+                        app.Status = "Cancelled";
+                        app.Note = (app.Note ?? "") + "\n[Hệ thống] Tự động hủy do tài khoản bác sĩ bị khóa.";
+                        app.UpdatedAt = DateTime.Now;
+
+                        // Giảm số lượng đã đặt của TimeSlot
+                        var ts = db.TimeSlots.Find(app.TimeSlotId);
+                        if (ts != null && ts.BookedCount > 0)
+                        {
+                            ts.BookedCount--;
+                            ts.UpdatedAt = DateTime.Now;
+                        }
+                    }
+                }
+            }
+            else if (role == "Patient")
+            {
+                // Hủy các lịch hẹn đang chờ duyệt của bệnh nhân này
+                var patient = db.Patients.FirstOrDefault(p => p.UserId == userId);
+                if (patient != null)
+                {
+                    var pendingApps = db.Appointments.Where(a => a.PatientId == patient.Id && a.Status == "Pending").ToList();
+                    foreach (var app in pendingApps)
+                    {
+                        app.Status = "Cancelled";
+                        app.Note = (app.Note ?? "") + "\n[Hệ thống] Tự động hủy do tài khoản bị khóa.";
+                        app.UpdatedAt = DateTime.Now;
+
+                        // Giảm số lượng đã đặt của TimeSlot
+                        var ts = db.TimeSlots.Find(app.TimeSlotId);
+                        if (ts != null && ts.BookedCount > 0)
+                        {
+                            ts.BookedCount--;
+                            ts.UpdatedAt = DateTime.Now;
+                        }
+                    }
+                }
+            }
+
+            return db.SaveChanges() > 0;
+        }
     }
 }

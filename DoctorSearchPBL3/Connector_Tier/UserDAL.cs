@@ -180,6 +180,7 @@ namespace DAL_Tier
                 user.Gender = userDto.Gender;
                 user.CCCD = userDto.CCCD;
                 user.Residential_Address = userDto.Residential_Address;
+                user.Picture = userDto.Picture;
                 user.UpdatedAt = DateTime.Now;
 
                 _context.SaveChanges();

@@ -27,6 +27,7 @@ namespace UI_Tier
             cboStatusFilter = new ComboBox();
             pnlSearch = new Panel();
             txtSearch = new TextBox();
+            lblSearchIcon = new Label();
             pnlListHeader = new Panel();
             lblHeaderJoined = new Label();
             lblHeaderStatus = new Label();
@@ -49,34 +50,35 @@ namespace UI_Tier
             // 
             // pnlHeader
             // 
+            pnlHeader.BackColor = Color.WhiteSmoke;
             pnlHeader.Controls.Add(lblSubtitle);
             pnlHeader.Controls.Add(lblTitle);
             pnlHeader.Dock = DockStyle.Top;
-            pnlHeader.Location = new Point(32, 40);
+            pnlHeader.Location = new Point(5, 5);
             pnlHeader.Margin = new Padding(5, 6, 5, 6);
             pnlHeader.Name = "pnlHeader";
-            pnlHeader.Size = new Size(1561, 140);
+            pnlHeader.Size = new Size(1615, 133);
             pnlHeader.TabIndex = 0;
             // 
             // lblSubtitle
             // 
             lblSubtitle.AutoSize = true;
-            lblSubtitle.Font = new Font("Segoe UI", 10F);
+            lblSubtitle.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblSubtitle.ForeColor = Color.FromArgb(249, 115, 22);
-            lblSubtitle.Location = new Point(0, 75);
+            lblSubtitle.Location = new Point(15, 61);
             lblSubtitle.Name = "lblSubtitle";
-            lblSubtitle.Size = new Size(434, 37);
+            lblSubtitle.Size = new Size(600, 50);
             lblSubtitle.TabIndex = 1;
             lblSubtitle.Text = "⚠️ Có 0 bác sĩ đang chờ phê duyệt";
             // 
             // lblTitle
             // 
             lblTitle.AutoSize = true;
-            lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            lblTitle.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTitle.ForeColor = Color.FromArgb(31, 41, 55);
-            lblTitle.Location = new Point(0, 0);
+            lblTitle.Location = new Point(15, 0);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(480, 65);
+            lblTitle.Size = new Size(431, 59);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Quản lý người dùng";
             // 
@@ -87,18 +89,18 @@ namespace UI_Tier
             pnlTabs.Controls.Add(btnPatients);
             pnlTabs.Controls.Add(btnAllUsers);
             pnlTabs.Dock = DockStyle.Top;
-            pnlTabs.Location = new Point(32, 180);
+            pnlTabs.Location = new Point(5, 138);
             pnlTabs.Margin = new Padding(5, 6, 5, 6);
             pnlTabs.Name = "pnlTabs";
-            pnlTabs.Size = new Size(1561, 80);
+            pnlTabs.Size = new Size(1615, 80);
             pnlTabs.TabIndex = 1;
             // 
             // pnlTabIndicator
             // 
             pnlTabIndicator.BackColor = Color.FromArgb(59, 130, 246);
-            pnlTabIndicator.Location = new Point(0, 75);
+            pnlTabIndicator.Location = new Point(0, 70);
             pnlTabIndicator.Name = "pnlTabIndicator";
-            pnlTabIndicator.Size = new Size(150, 5);
+            pnlTabIndicator.Size = new Size(195, 4);
             pnlTabIndicator.TabIndex = 4;
             // 
             // btnDoctors
@@ -106,13 +108,16 @@ namespace UI_Tier
             btnDoctors.BackColor = Color.Transparent;
             btnDoctors.FlatAppearance.BorderSize = 0;
             btnDoctors.FlatStyle = FlatStyle.Flat;
-            btnDoctors.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnDoctors.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold);
             btnDoctors.ForeColor = Color.FromArgb(75, 85, 99);
-            btnDoctors.Location = new Point(435, 1);
+            btnDoctors.Location = new Point(435, -5);
+            btnDoctors.Margin = new Padding(0);
             btnDoctors.Name = "btnDoctors";
-            btnDoctors.Size = new Size(228, 70);
+            btnDoctors.Padding = new Padding(0);
+            btnDoctors.Size = new Size(228, 76);
             btnDoctors.TabIndex = 3;
             btnDoctors.Text = "Bác sĩ (0)";
+            btnDoctors.TextAlign = ContentAlignment.MiddleCenter;
             btnDoctors.UseVisualStyleBackColor = false;
             btnDoctors.Click += btnDoctors_Click;
             // 
@@ -121,13 +126,16 @@ namespace UI_Tier
             btnPatients.BackColor = Color.Transparent;
             btnPatients.FlatAppearance.BorderSize = 0;
             btnPatients.FlatStyle = FlatStyle.Flat;
-            btnPatients.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnPatients.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold);
             btnPatients.ForeColor = Color.FromArgb(75, 85, 99);
-            btnPatients.Location = new Point(201, 0);
+            btnPatients.Location = new Point(201, 3);
+            btnPatients.Margin = new Padding(0);
             btnPatients.Name = "btnPatients";
-            btnPatients.Size = new Size(228, 70);
+            btnPatients.Padding = new Padding(0);
+            btnPatients.Size = new Size(228, 72);
             btnPatients.TabIndex = 2;
             btnPatients.Text = "Bệnh nhân (0)";
+            btnPatients.TextAlign = ContentAlignment.MiddleCenter;
             btnPatients.UseVisualStyleBackColor = false;
             btnPatients.Click += btnPatients_Click;
             // 
@@ -136,13 +144,16 @@ namespace UI_Tier
             btnAllUsers.BackColor = Color.Transparent;
             btnAllUsers.FlatAppearance.BorderSize = 0;
             btnAllUsers.FlatStyle = FlatStyle.Flat;
-            btnAllUsers.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnAllUsers.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold);
             btnAllUsers.ForeColor = Color.FromArgb(59, 130, 246);
-            btnAllUsers.Location = new Point(0, 0);
+            btnAllUsers.Location = new Point(0, 3);
+            btnAllUsers.Margin = new Padding(0);
             btnAllUsers.Name = "btnAllUsers";
-            btnAllUsers.Size = new Size(195, 70);
+            btnAllUsers.Padding = new Padding(0);
+            btnAllUsers.Size = new Size(195, 72);
             btnAllUsers.TabIndex = 0;
             btnAllUsers.Text = "Tất cả (0)";
+            btnAllUsers.TextAlign = ContentAlignment.MiddleCenter;
             btnAllUsers.UseVisualStyleBackColor = false;
             btnAllUsers.Click += btnAllUsers_Click;
             // 
@@ -151,46 +162,57 @@ namespace UI_Tier
             pnlFilters.Controls.Add(cboStatusFilter);
             pnlFilters.Controls.Add(pnlSearch);
             pnlFilters.Dock = DockStyle.Top;
-            pnlFilters.Location = new Point(32, 260);
+            pnlFilters.Location = new Point(5, 218);
             pnlFilters.Margin = new Padding(5, 6, 5, 6);
             pnlFilters.Name = "pnlFilters";
-            pnlFilters.Size = new Size(1561, 120);
+            pnlFilters.Size = new Size(1615, 114);
             pnlFilters.TabIndex = 2;
             // 
             // cboStatusFilter
             // 
             cboStatusFilter.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cboStatusFilter.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboStatusFilter.Font = new Font("Segoe UI", 13.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cboStatusFilter.Font = new Font("Segoe UI", 14F);
             cboStatusFilter.FormattingEnabled = true;
             cboStatusFilter.Items.AddRange(new object[] { "Tất cả trạng thái", "Hoạt động", "Chờ duyệt", "Bị khóa" });
-            cboStatusFilter.Location = new Point(1221, 20);
+            cboStatusFilter.Location = new Point(1232, 34);
             cboStatusFilter.Name = "cboStatusFilter";
-            cboStatusFilter.Size = new Size(340, 55);
+            cboStatusFilter.Size = new Size(340, 58);
             cboStatusFilter.TabIndex = 1;
             cboStatusFilter.SelectedIndexChanged += cboStatusFilter_SelectedIndexChanged;
             // 
             // pnlSearch
             // 
-            pnlSearch.BackColor = Color.FromArgb(243, 244, 246);
+            pnlSearch.BackColor = Color.White;
             pnlSearch.Controls.Add(txtSearch);
-            pnlSearch.Location = new Point(0, 10);
+            pnlSearch.Controls.Add(lblSearchIcon);
+            pnlSearch.Location = new Point(15, 22);
             pnlSearch.Name = "pnlSearch";
-            pnlSearch.Padding = new Padding(24, 20, 24, 20);
-            pnlSearch.Size = new Size(1191, 80);
+            pnlSearch.Padding = new Padding(15, 12, 15, 12);
+            pnlSearch.Size = new Size(1191, 75);
             pnlSearch.TabIndex = 0;
             // 
             // txtSearch
             // 
             txtSearch.BackColor = Color.FromArgb(243, 244, 246);
             txtSearch.BorderStyle = BorderStyle.None;
-            txtSearch.Dock = DockStyle.Fill;
-            txtSearch.Font = new Font("Segoe UI", 11F);
-            txtSearch.Location = new Point(24, 20);
+            txtSearch.Font = new Font("Segoe UI", 14F);
+            txtSearch.Location = new Point(75, 15);
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new Size(1143, 40);
+            txtSearch.Size = new Size(1100, 50);
             txtSearch.TabIndex = 0;
             txtSearch.TextChanged += txtSearch_TextChanged;
+            // 
+            // lblSearchIcon
+            // 
+            lblSearchIcon.AutoSize = true;
+            lblSearchIcon.Font = new Font("Segoe MDL2 Assets", 16F);
+            lblSearchIcon.ForeColor = Color.FromArgb(156, 163, 175);
+            lblSearchIcon.Location = new Point(15, 15);
+            lblSearchIcon.Name = "lblSearchIcon";
+            lblSearchIcon.Size = new Size(62, 43);
+            lblSearchIcon.TabIndex = 1;
+            lblSearchIcon.Text = "";
             // 
             // pnlListHeader
             // 
@@ -278,10 +300,11 @@ namespace UI_Tier
             flpUserList.AutoScroll = true;
             flpUserList.Dock = DockStyle.Fill;
             flpUserList.FlowDirection = FlowDirection.TopDown;
-            flpUserList.Location = new Point(32, 380);
+            flpUserList.Location = new Point(5, 332);
+            flpUserList.Margin = new Padding(10);
             flpUserList.Name = "flpUserList";
             flpUserList.Padding = new Padding(0, 10, 0, 10);
-            flpUserList.Size = new Size(1561, 1100);
+            flpUserList.Size = new Size(1615, 1188);
             flpUserList.TabIndex = 3;
             flpUserList.WrapContents = false;
             // 
@@ -292,9 +315,10 @@ namespace UI_Tier
             pnlPagination.Controls.Add(lblPrev);
             pnlPagination.Controls.Add(lblPageStatus);
             pnlPagination.Dock = DockStyle.Bottom;
-            pnlPagination.Location = new Point(32, 1480);
+            pnlPagination.Location = new Point(5, 1520);
+            pnlPagination.Margin = new Padding(5);
             pnlPagination.Name = "pnlPagination";
-            pnlPagination.Size = new Size(1561, 80);
+            pnlPagination.Size = new Size(1615, 80);
             pnlPagination.TabIndex = 4;
             // 
             // lblNext
@@ -304,7 +328,7 @@ namespace UI_Tier
             lblNext.Cursor = Cursors.Hand;
             lblNext.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblNext.ForeColor = Color.FromArgb(0, 120, 212);
-            lblNext.Location = new Point(1350, 24);
+            lblNext.Location = new Point(1404, 24);
             lblNext.Name = "lblNext";
             lblNext.Size = new Size(185, 37);
             lblNext.TabIndex = 0;
@@ -329,7 +353,7 @@ namespace UI_Tier
             lblPageStatus.Anchor = AnchorStyles.None;
             lblPageStatus.AutoSize = true;
             lblPageStatus.Font = new Font("Segoe UI", 10F);
-            lblPageStatus.Location = new Point(708, 24);
+            lblPageStatus.Location = new Point(735, 24);
             lblPageStatus.Name = "lblPageStatus";
             lblPageStatus.Size = new Size(145, 37);
             lblPageStatus.TabIndex = 2;
@@ -346,8 +370,9 @@ namespace UI_Tier
             Controls.Add(pnlFilters);
             Controls.Add(pnlTabs);
             Controls.Add(pnlHeader);
+            Margin = new Padding(10);
             Name = "ucAdmin_UserManagement";
-            Padding = new Padding(32, 40, 32, 40);
+            Padding = new Padding(5, 5, 5, 0);
             Size = new Size(1625, 1600);
             Load += ucAdmin_UserManagement_Load;
             pnlHeader.ResumeLayout(false);
@@ -374,6 +399,7 @@ namespace UI_Tier
         private System.Windows.Forms.Button btnDoctors;
         private System.Windows.Forms.Panel pnlFilters;
         private System.Windows.Forms.Panel pnlSearch;
+        private System.Windows.Forms.Label lblSearchIcon;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.ComboBox cboStatusFilter;
         private System.Windows.Forms.Panel pnlListHeader;

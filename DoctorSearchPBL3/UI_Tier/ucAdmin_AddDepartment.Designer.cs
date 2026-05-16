@@ -36,74 +36,74 @@ namespace UI_Tier
             lblHeaderTitle.ForeColor = Color.FromArgb(17, 24, 39);
             lblHeaderTitle.Location = new Point(40, 40);
             lblHeaderTitle.Name = "lblHeaderTitle";
-            lblHeaderTitle.Size = new Size(502, 59);
+            lblHeaderTitle.Size = new Size(496, 59);
             lblHeaderTitle.TabIndex = 0;
             lblHeaderTitle.Text = "Thêm chuyên khoa mới";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 10F);
+            label1.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.FromArgb(107, 114, 128);
             label1.Location = new Point(45, 110);
             label1.Name = "label1";
-            label1.Size = new Size(491, 37);
+            label1.Size = new Size(801, 50);
             label1.TabIndex = 1;
             label1.Text = "Nhập thông tin để thêm mục mới vào hệ thống";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            label2.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label2.ForeColor = Color.FromArgb(17, 24, 39);
-            label2.Location = new Point(45, 190);
+            label2.Location = new Point(45, 181);
             label2.Name = "label2";
-            label2.Size = new Size(71, 41);
+            label2.Size = new Size(72, 45);
             label2.TabIndex = 2;
             label2.Text = "Tên";
             // 
             // txtName
             // 
-            txtName.BackColor = Color.FromArgb(243, 244, 246);
+            txtName.BackColor = Color.White;
             txtName.BorderStyle = BorderStyle.FixedSingle;
             txtName.Font = new Font("Segoe UI", 12F);
             txtName.Location = new Point(45, 240);
             txtName.Name = "txtName";
             txtName.PlaceholderText = "Nhập tên chuyên khoa";
-            txtName.Size = new Size(710, 50);
+            txtName.Size = new Size(910, 50);
             txtName.TabIndex = 3;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            label3.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label3.ForeColor = Color.FromArgb(17, 24, 39);
-            label3.Location = new Point(45, 330);
+            label3.Location = new Point(45, 319);
             label3.Name = "label3";
-            label3.Size = new Size(100, 41);
+            label3.Size = new Size(109, 45);
             label3.TabIndex = 4;
             label3.Text = "Mô tả";
             // 
             // txtDesc
             // 
-            txtDesc.BackColor = Color.FromArgb(243, 244, 246);
+            txtDesc.BackColor = Color.White;
             txtDesc.BorderStyle = BorderStyle.FixedSingle;
             txtDesc.Font = new Font("Segoe UI", 12F);
             txtDesc.Location = new Point(45, 380);
             txtDesc.Multiline = true;
             txtDesc.Name = "txtDesc";
             txtDesc.PlaceholderText = "Nhập mô tả (tùy chọn)";
-            txtDesc.Size = new Size(710, 100);
+            txtDesc.Size = new Size(910, 218);
             txtDesc.TabIndex = 5;
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            label4.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label4.ForeColor = Color.FromArgb(17, 24, 39);
-            label4.Location = new Point(45, 520);
+            label4.Location = new Point(46, 619);
             label4.Name = "label4";
-            label4.Size = new Size(160, 41);
+            label4.Size = new Size(172, 45);
             label4.TabIndex = 6;
             label4.Text = "Trạng thái";
             // 
@@ -112,9 +112,9 @@ namespace UI_Tier
             rbShow.AutoSize = true;
             rbShow.Checked = true;
             rbShow.Font = new Font("Segoe UI", 12F);
-            rbShow.Location = new Point(50, 575);
+            rbShow.Location = new Point(46, 667);
             rbShow.Name = "rbShow";
-            rbShow.Size = new Size(161, 49);
+            rbShow.Size = new Size(163, 49);
             rbShow.TabIndex = 7;
             rbShow.TabStop = true;
             rbShow.Text = "Hiển thị";
@@ -124,9 +124,9 @@ namespace UI_Tier
             // 
             rbHide.AutoSize = true;
             rbHide.Font = new Font("Segoe UI", 12F);
-            rbHide.Location = new Point(230, 575);
+            rbHide.Location = new Point(238, 667);
             rbHide.Name = "rbHide";
-            rbHide.Size = new Size(93, 49);
+            rbHide.Size = new Size(90, 49);
             rbHide.TabIndex = 8;
             rbHide.Text = "Ẩn";
             rbHide.UseVisualStyleBackColor = true;
@@ -136,11 +136,11 @@ namespace UI_Tier
             btnSave.BackColor = Color.FromArgb(37, 99, 235);
             btnSave.FlatAppearance.BorderSize = 0;
             btnSave.FlatStyle = FlatStyle.Flat;
-            btnSave.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnSave.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnSave.ForeColor = Color.White;
-            btnSave.Location = new Point(535, 620);
+            btnSave.Location = new Point(467, 726);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(220, 60);
+            btnSave.Size = new Size(300, 72);
             btnSave.TabIndex = 9;
             btnSave.Text = "Thêm mới";
             btnSave.UseVisualStyleBackColor = false;
@@ -151,11 +151,11 @@ namespace UI_Tier
             btnCancel.BackColor = Color.White;
             btnCancel.FlatAppearance.BorderColor = Color.FromArgb(229, 231, 235);
             btnCancel.FlatStyle = FlatStyle.Flat;
-            btnCancel.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnCancel.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnCancel.ForeColor = Color.FromArgb(107, 114, 128);
-            btnCancel.Location = new Point(365, 620);
+            btnCancel.Location = new Point(784, 726);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(150, 60);
+            btnCancel.Size = new Size(171, 72);
             btnCancel.TabIndex = 10;
             btnCancel.Text = "Hủy";
             btnCancel.UseVisualStyleBackColor = false;
@@ -165,11 +165,11 @@ namespace UI_Tier
             // 
             btnClose.FlatAppearance.BorderSize = 0;
             btnClose.FlatStyle = FlatStyle.Flat;
-            btnClose.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            btnClose.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnClose.ForeColor = Color.FromArgb(107, 114, 128);
-            btnClose.Location = new Point(740, 20);
+            btnClose.Location = new Point(906, 20);
             btnClose.Name = "btnClose";
-            btnClose.Size = new Size(40, 40);
+            btnClose.Size = new Size(74, 79);
             btnClose.TabIndex = 11;
             btnClose.Text = "✕";
             btnClose.UseVisualStyleBackColor = true;
@@ -193,7 +193,7 @@ namespace UI_Tier
             Controls.Add(label1);
             Controls.Add(lblHeaderTitle);
             Name = "ucAdmin_AddDepartment";
-            Size = new Size(800, 700);
+            Size = new Size(986, 819);
             ResumeLayout(false);
             PerformLayout();
         }

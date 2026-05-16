@@ -21,19 +21,54 @@ namespace UI_Tier
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
             UIHelper.SetDoubleBuffered(flpList);
+            
+            pnlSearch.Paint += pnlSearch_Paint;
+            pnlSearch.Click += (s, e) => txtSearch.Focus();
+            lblSearchIcon.Click += (s, e) => txtSearch.Focus();
+            UIHelper.SetupInputFocusEffect(txtSearch, pnlSearch, Color.White, Color.White, Color.FromArgb(24, 112, 255));
+            UIHelper.RegisterClickToUnfocus(this, lblTitle);
+
+            this.Paint += ucAdmin_DepartmentManagement_Paint;
+            this.Resize += (s, e) => UIHelper.ApplyRoundedRegion(this, 15);
+
+            // Wire up pagination
+            lblPrev.Click += btnPrev_Click;
+            lblNext.Click += btnNext_Click;
+            UIHelper.SetupHoverEffect(lblPrev, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
+            UIHelper.SetupHoverEffect(lblNext, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
+
+            // Apply rounding to buttons and search
+            UIHelper.ApplyRoundedRegion(btnAdd, 12);
+            UIHelper.ApplyRoundedRegion(pnlSearch, 15);
+
             InitData();
+            this.Load += (s, e) => ApplyFilters();
+        }
+
+        private void ucAdmin_DepartmentManagement_Paint(object sender, PaintEventArgs e)
+        {
+            UIHelper.DrawControlBorder(this, e, 15, Color.Black, 2);
+        }
+
+        private void pnlSearch_Paint(object sender, PaintEventArgs e)
+        {
+            UIHelper.DrawControlBorder(sender, e, 15, Color.FromArgb(203, 213, 225), 2);
         }
 
         public void InitData()
         {
             _allDepts = _deptBUS.GetAllDepartments();
             if (cboStatusFilter.SelectedIndex == -1) cboStatusFilter.SelectedIndex = 0;
+            
+            UIHelper.SetupSearchTextBox(txtSearch, "Tìm kiếm theo tên chuyên khoa, mô tả...");
+            
             ApplyFilters();
         }
 
         private void ApplyFilters()
         {
             string keyword = txtSearch.Text.ToLower().Trim();
+            if (keyword == "tìm kiếm theo tên chuyên khoa, mô tả...") keyword = "";
             string statusFilter = cboStatusFilter.SelectedItem?.ToString() ?? "Tất cả trạng thái";
 
             _filteredDepts = _allDepts.Where(d => 
@@ -65,15 +100,17 @@ namespace UI_Tier
                 ucAdmin_DepartmentItem item = new ucAdmin_DepartmentItem();
                 item.SetData(dept);
                 item.DataChanged += (s, ev) => InitData();
-                item.Width = flpList.Width - 45;
+                item.Width = flpList.ClientSize.Width - 20;
                 flpList.Controls.Add(item);
             }
 
             int totalPages = (int)Math.Ceiling((double)_filteredDepts.Count / _pageSize);
-            lblPageInfo.Text = $"Trang {_currentPage} / {Math.Max(1, totalPages)}";
+            lblPageStatus.Text = $"Trang {_currentPage} / {Math.Max(1, totalPages)}";
             
-            btnPrev.Enabled = _currentPage > 1;
-            btnNext.Enabled = _currentPage < totalPages;
+            lblPrev.Enabled = _currentPage > 1;
+            lblNext.Enabled = _currentPage < totalPages;
+            lblPrev.ForeColor = lblPrev.Enabled ? Color.FromArgb(0, 120, 212) : Color.Gray;
+            lblNext.ForeColor = lblNext.Enabled ? Color.FromArgb(0, 120, 212) : Color.Gray;
 
             flpList.ResumeLayout();
         }
@@ -82,33 +119,28 @@ namespace UI_Tier
         {
             foreach (Control ctrl in flpList.Controls)
             {
-                ctrl.Width = flpList.Width - 45;
+                ctrl.Width = flpList.ClientSize.Width - 20;
             }
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            Form f = new Form
-            {
-                FormBorderStyle = FormBorderStyle.None,
-                StartPosition = FormStartPosition.CenterScreen,
-                BackColor = Color.White,
-                Size = new Size(800, 700),
-                ControlBox = false
-            };
-
             ucAdmin_AddDepartment uc = new ucAdmin_AddDepartment();
-            uc.Dock = DockStyle.Fill;
             uc.SetData(null);
-            uc.OnCancel += (s, ev) => f.Close();
+            uc.OnCancel += (s, ev) => this.Controls.Remove(uc);
             uc.OnSuccess += (s, ev) => {
-                f.Close();
+                this.Controls.Remove(uc);
                 InitData();
             };
 
-            f.Controls.Add(uc);
-            UIHelper.ApplyRoundedRegion(f, 15);
-            f.ShowDialog();
+            ShowOverlay(uc);
+        }
+
+        public void ShowOverlay(UserControl uc)
+        {
+            uc.Location = new Point((this.Width - uc.Width) / 2, Math.Max(20, (this.Height - uc.Height) / 2));
+            this.Controls.Add(uc);
+            uc.BringToFront();
         }
 
         private void btnPrev_Click(object sender, EventArgs e)

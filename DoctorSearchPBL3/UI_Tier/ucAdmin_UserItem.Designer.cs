@@ -54,7 +54,7 @@ namespace UI_Tier
             flpHeader.Controls.Add(pnlStatusBadge);
             flpHeader.Location = new Point(32, 44);
             flpHeader.Name = "flpHeader";
-            flpHeader.Size = new Size(1236, 60);
+            flpHeader.Size = new Size(1183, 60);
             flpHeader.TabIndex = 13;
             flpHeader.WrapContents = false;
             // 
@@ -64,7 +64,7 @@ namespace UI_Tier
             pnlRoleBadge.Location = new Point(0, 5);
             pnlRoleBadge.Margin = new Padding(0, 5, 10, 0);
             pnlRoleBadge.Name = "pnlRoleBadge";
-            pnlRoleBadge.Size = new Size(200, 45);
+            pnlRoleBadge.Size = new Size(220, 45);
             pnlRoleBadge.TabIndex = 0;
             // 
             // lblRole
@@ -74,7 +74,7 @@ namespace UI_Tier
             lblRole.Location = new Point(0, 0);
             lblRole.Margin = new Padding(5, 0, 5, 0);
             lblRole.Name = "lblRole";
-            lblRole.Size = new Size(200, 45);
+            lblRole.Size = new Size(220, 45);
             lblRole.TabIndex = 0;
             lblRole.Text = "BỆNH NHÂN";
             lblRole.TextAlign = ContentAlignment.MiddleCenter;
@@ -84,7 +84,7 @@ namespace UI_Tier
             lblFullName.AutoSize = true;
             lblFullName.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblFullName.ForeColor = Color.FromArgb(31, 41, 55);
-            lblFullName.Location = new Point(170, 5);
+            lblFullName.Location = new Point(210, 5);
             lblFullName.Margin = new Padding(0, 5, 10, 0);
             lblFullName.Name = "lblFullName";
             lblFullName.Size = new Size(313, 50);
@@ -94,19 +94,19 @@ namespace UI_Tier
             // pnlApprovalBadge
             // 
             pnlApprovalBadge.Controls.Add(lblApproval);
-            pnlApprovalBadge.Location = new Point(503, 0);
+            pnlApprovalBadge.Location = new Point(543, 0);
             pnlApprovalBadge.Margin = new Padding(10, 0, 10, 0);
             pnlApprovalBadge.Name = "pnlApprovalBadge";
-            pnlApprovalBadge.Size = new Size(220, 60);
+            pnlApprovalBadge.Size = new Size(320, 60);
             pnlApprovalBadge.TabIndex = 2;
             // 
             // lblApproval
             // 
             lblApproval.Dock = DockStyle.Fill;
-            lblApproval.Font = new Font("Segoe UI", 10.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblApproval.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblApproval.Location = new Point(0, 0);
             lblApproval.Name = "lblApproval";
-            lblApproval.Size = new Size(220, 60);
+            lblApproval.Size = new Size(320, 60);
             lblApproval.TabIndex = 0;
             lblApproval.Text = "Chờ duyệt";
             lblApproval.TextAlign = ContentAlignment.MiddleCenter;
@@ -114,19 +114,19 @@ namespace UI_Tier
             // pnlStatusBadge
             // 
             pnlStatusBadge.Controls.Add(lblStatus);
-            pnlStatusBadge.Location = new Point(743, 0);
+            pnlStatusBadge.Location = new Point(783, 0);
             pnlStatusBadge.Margin = new Padding(10, 0, 10, 0);
             pnlStatusBadge.Name = "pnlStatusBadge";
-            pnlStatusBadge.Size = new Size(220, 60);
+            pnlStatusBadge.Size = new Size(320, 60);
             pnlStatusBadge.TabIndex = 3;
             // 
             // lblStatus
             // 
             lblStatus.Dock = DockStyle.Fill;
-            lblStatus.Font = new Font("Segoe UI", 10.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblStatus.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblStatus.Location = new Point(0, 0);
             lblStatus.Name = "lblStatus";
-            lblStatus.Size = new Size(220, 60);
+            lblStatus.Size = new Size(320, 60);
             lblStatus.TabIndex = 0;
             lblStatus.Text = "Hoạt động";
             lblStatus.TextAlign = ContentAlignment.MiddleCenter;
@@ -146,7 +146,7 @@ namespace UI_Tier
             pnlCard.Margin = new Padding(5, 6, 5, 6);
             pnlCard.Name = "pnlCard";
             pnlCard.Padding = new Padding(32, 40, 10, 40);
-            pnlCard.Size = new Size(1757, 226);
+            pnlCard.Size = new Size(1757, 238);
             pnlCard.TabIndex = 0;
             // 
             // flpActions
@@ -275,24 +275,24 @@ namespace UI_Tier
             // lblExp
             // 
             lblExp.AutoSize = true;
-            lblExp.Font = new Font("Segoe UI", 10.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblExp.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblExp.ForeColor = Color.FromArgb(64, 64, 64);
-            lblExp.Location = new Point(450, 170);
+            lblExp.Location = new Point(450, 175);
             lblExp.Margin = new Padding(5, 0, 5, 0);
             lblExp.Name = "lblExp";
-            lblExp.Size = new Size(254, 37);
+            lblExp.Size = new Size(304, 45);
             lblExp.TabIndex = 12;
             lblExp.Text = "Kinh nghiệm: 5 năm";
             // 
             // lblDepartment
             // 
             lblDepartment.AutoSize = true;
-            lblDepartment.Font = new Font("Segoe UI", 10.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblDepartment.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblDepartment.ForeColor = Color.FromArgb(64, 64, 64);
             lblDepartment.Location = new Point(63, 130);
             lblDepartment.Margin = new Padding(5, 0, 5, 0);
             lblDepartment.Name = "lblDepartment";
-            lblDepartment.Size = new Size(292, 37);
+            lblDepartment.Size = new Size(349, 45);
             lblDepartment.TabIndex = 11;
             lblDepartment.Text = "Chuyên khoa: Nội khoa";
             lblDepartment.Visible = false;
@@ -300,35 +300,35 @@ namespace UI_Tier
             // lblPhone
             // 
             lblPhone.AutoSize = true;
-            lblPhone.Font = new Font("Segoe UI", 10.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblPhone.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblPhone.ForeColor = Color.FromArgb(64, 64, 64);
             lblPhone.Location = new Point(450, 115);
             lblPhone.Margin = new Padding(5, 0, 5, 0);
             lblPhone.Name = "lblPhone";
-            lblPhone.Size = new Size(307, 37);
+            lblPhone.Size = new Size(360, 45);
             lblPhone.TabIndex = 10;
             lblPhone.Text = "Số điện thoại: 09345678";
             // 
             // lblLicenseOrBHYT
             // 
             lblLicenseOrBHYT.AutoSize = true;
-            lblLicenseOrBHYT.Font = new Font("Segoe UI", 10.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblLicenseOrBHYT.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblLicenseOrBHYT.ForeColor = Color.FromArgb(64, 64, 64);
-            lblLicenseOrBHYT.Location = new Point(32, 167);
+            lblLicenseOrBHYT.Location = new Point(32, 175);
             lblLicenseOrBHYT.Margin = new Padding(5, 0, 5, 0);
             lblLicenseOrBHYT.Name = "lblLicenseOrBHYT";
-            lblLicenseOrBHYT.Size = new Size(261, 40);
+            lblLicenseOrBHYT.Size = new Size(287, 45);
             lblLicenseOrBHYT.TabIndex = 9;
             lblLicenseOrBHYT.Text = "Số CCHN: BS12345";
             // 
             // lblDeptOrCode
             // 
             lblDeptOrCode.AutoSize = true;
-            lblDeptOrCode.Font = new Font("Segoe UI", 10.125F);
+            lblDeptOrCode.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblDeptOrCode.ForeColor = Color.FromArgb(64, 64, 64);
             lblDeptOrCode.Location = new Point(32, 115);
             lblDeptOrCode.Name = "lblDeptOrCode";
-            lblDeptOrCode.Size = new Size(202, 37);
+            lblDeptOrCode.Size = new Size(241, 45);
             lblDeptOrCode.TabIndex = 22;
             lblDeptOrCode.Text = "Chuyên khoa: ...";
             // 
@@ -354,7 +354,7 @@ namespace UI_Tier
             Margin = new Padding(5, 6, 5, 6);
             Name = "ucAdmin_UserItem";
             Padding = new Padding(16, 20, 16, 20);
-            Size = new Size(1789, 266);
+            Size = new Size(1789, 278);
             flpHeader.ResumeLayout(false);
             flpHeader.PerformLayout();
             pnlRoleBadge.ResumeLayout(false);

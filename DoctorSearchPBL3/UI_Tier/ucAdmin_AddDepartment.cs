@@ -17,15 +17,71 @@ namespace UI_Tier
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
+            
+            this.Paint += ucAdmin_AddDepartment_Paint;
+            this.Padding = new Padding(3); // To show the border
+
             SetupUI();
+            InitializeInputStyling();
+        }
+
+        private void ucAdmin_AddDepartment_Paint(object sender, PaintEventArgs e)
+        {
+            // Viền Dialog cũng để 2px cho đồng bộ với ô nhập liệu và các form khác
+            UIHelper.DrawControlBorder(sender, e, 15, Color.Black, 2);
+        }
+
+        private void InitializeInputStyling()
+        {
+            // Register click to unfocus for the whole form
+            UIHelper.RegisterClickToUnfocus(this);
+
+            // Wrap Name
+            Panel pnlName = SetupInputWrapper(txtName);
+            // Wrap Description
+            Panel pnlDesc = SetupInputWrapper(txtDesc);
+
+            // Apply focus effects with the new global standard (1px black border, 4px blue underline)
+            // Note: UIHelper.SetupInputFocusEffect now handles the 1px/4px drawing automatically
+            UIHelper.SetupInputFocusEffect(txtName, pnlName, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+            UIHelper.SetupInputFocusEffect(txtDesc, pnlDesc, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+        }
+
+        private Panel SetupInputWrapper(Control ctrl)
+        {
+            Panel pnl = new Panel();
+            // Tinh chỉnh padding mỏng lại (3px mỗi bên) để viền đen ôm sát hơn
+            int padding = 3;
+            pnl.Bounds = new Rectangle(ctrl.Left - padding, ctrl.Top - padding, ctrl.Width + (padding * 2), ctrl.Height + (padding * 2));
+            pnl.BackColor = Color.White;
+            pnl.Name = "pnlWrapper_" + ctrl.Name;
+            
+            this.Controls.Add(pnl);
+            ctrl.Parent = pnl;
+            ctrl.Location = new Point(padding, padding);
+            ctrl.Width = pnl.Width - (padding * 2);
+            
+            return pnl;
         }
 
         private void SetupUI()
         {
-            UIHelper.ApplyRoundedRegion(btnSave, 10);
-            UIHelper.ApplyRoundedRegion(btnCancel, 10);
-            UIHelper.ApplyRoundedRegion(txtName, 8);
-            UIHelper.ApplyRoundedRegion(txtDesc, 8);
+            lblHeaderTitle.Font = new Font("Segoe UI", 16, FontStyle.Bold);
+            label1.Font = new Font("Segoe UI", 14, FontStyle.Regular);
+            txtName.Font = new Font("Segoe UI", 12, FontStyle.Regular);
+            txtDesc.Font = new Font("Segoe UI", 12, FontStyle.Regular);
+
+            // Loại bỏ viền mặc định để viền đen custom hiện lên đẹp hơn
+            txtName.BorderStyle = BorderStyle.None;
+            txtDesc.BorderStyle = BorderStyle.None;
+
+            UIHelper.ApplyRoundedRegion(btnSave, 12);
+            UIHelper.ApplyRoundedRegion(btnCancel, 12);
+            
+            // Enable dragging
+            UIHelper.EnableNativeDrag(this, this);
+            UIHelper.EnableNativeDrag(lblHeaderTitle, this);
+            UIHelper.EnableNativeDrag(label1, this);
         }
 
         public void SetData(DepartmentDTO dept)

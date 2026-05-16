@@ -23,26 +23,28 @@ namespace UI_Tier
             cboStatusFilter = new ComboBox();
             pnlSearch = new Panel();
             txtSearch = new TextBox();
-            label1 = new Label();
+            lblSearchIcon = new Label();
             flpList = new FlowLayoutPanel();
             pnlPagination = new Panel();
-            lblPageInfo = new Label();
-            btnNext = new Button();
-            btnPrev = new Button();
+            lblNext = new Label();
+            lblPrev = new Label();
+            lblPageStatus = new Label();
             pnlHeader.SuspendLayout();
             pnlFilter.SuspendLayout();
             pnlSearch.SuspendLayout();
+            pnlPagination.SuspendLayout();
             SuspendLayout();
             // 
             // pnlHeader
             // 
+            pnlHeader.BackColor = Color.WhiteSmoke;
             pnlHeader.Controls.Add(btnAdd);
             pnlHeader.Controls.Add(lblDesc);
             pnlHeader.Controls.Add(lblTitle);
             pnlHeader.Dock = DockStyle.Top;
-            pnlHeader.Location = new Point(20, 20);
+            pnlHeader.Location = new Point(5, 5);
             pnlHeader.Name = "pnlHeader";
-            pnlHeader.Size = new Size(1260, 120);
+            pnlHeader.Size = new Size(1290, 120);
             pnlHeader.TabIndex = 0;
             // 
             // btnAdd
@@ -51,11 +53,11 @@ namespace UI_Tier
             btnAdd.BackColor = Color.FromArgb(37, 99, 235);
             btnAdd.FlatAppearance.BorderSize = 0;
             btnAdd.FlatStyle = FlatStyle.Flat;
-            btnAdd.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnAdd.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnAdd.ForeColor = Color.White;
-            btnAdd.Location = new Point(850, 30);
+            btnAdd.Location = new Point(774, 29);
             btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(380, 60);
+            btnAdd.Size = new Size(486, 70);
             btnAdd.TabIndex = 2;
             btnAdd.Text = "+  Thêm chuyên khoa mới";
             btnAdd.UseVisualStyleBackColor = false;
@@ -64,22 +66,22 @@ namespace UI_Tier
             // lblDesc
             // 
             lblDesc.AutoSize = true;
-            lblDesc.Font = new Font("Segoe UI", 11F);
+            lblDesc.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblDesc.ForeColor = Color.FromArgb(107, 114, 128);
             lblDesc.Location = new Point(5, 65);
             lblDesc.Name = "lblDesc";
-            lblDesc.Size = new Size(600, 41);
+            lblDesc.Size = new Size(744, 50);
             lblDesc.TabIndex = 1;
             lblDesc.Text = "Thêm, sửa, xóa và quản lý trạng thái hiển thị";
             // 
             // lblTitle
             // 
             lblTitle.AutoSize = true;
-            lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            lblTitle.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTitle.ForeColor = Color.FromArgb(17, 24, 39);
             lblTitle.Location = new Point(0, 0);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(500, 65);
+            lblTitle.Size = new Size(448, 59);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Quản lý chuyên khoa";
             // 
@@ -88,21 +90,21 @@ namespace UI_Tier
             pnlFilter.Controls.Add(cboStatusFilter);
             pnlFilter.Controls.Add(pnlSearch);
             pnlFilter.Dock = DockStyle.Top;
-            pnlFilter.Location = new Point(20, 140);
+            pnlFilter.Location = new Point(5, 125);
             pnlFilter.Name = "pnlFilter";
-            pnlFilter.Size = new Size(1260, 80);
+            pnlFilter.Size = new Size(1290, 95);
             pnlFilter.TabIndex = 1;
             // 
             // cboStatusFilter
             // 
             cboStatusFilter.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cboStatusFilter.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboStatusFilter.Font = new Font("Segoe UI", 12F);
+            cboStatusFilter.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cboStatusFilter.FormattingEnabled = true;
             cboStatusFilter.Items.AddRange(new object[] { "Tất cả trạng thái", "Hiển thị", "Ẩn" });
-            cboStatusFilter.Location = new Point(910, 10);
+            cboStatusFilter.Location = new Point(928, 10);
             cboStatusFilter.Name = "cboStatusFilter";
-            cboStatusFilter.Size = new Size(320, 53);
+            cboStatusFilter.Size = new Size(320, 58);
             cboStatusFilter.TabIndex = 2;
             cboStatusFilter.SelectedIndexChanged += cboStatusFilter_SelectedIndexChanged;
             // 
@@ -110,100 +112,96 @@ namespace UI_Tier
             // 
             pnlSearch.BackColor = Color.FromArgb(243, 244, 246);
             pnlSearch.Controls.Add(txtSearch);
-            pnlSearch.Controls.Add(label1);
+            pnlSearch.Controls.Add(lblSearchIcon);
             pnlSearch.Location = new Point(0, 10);
             pnlSearch.Name = "pnlSearch";
-            pnlSearch.Size = new Size(880, 60);
+            pnlSearch.Padding = new Padding(15, 12, 15, 12);
+            pnlSearch.Size = new Size(880, 70);
             pnlSearch.TabIndex = 1;
             // 
             // txtSearch
             // 
             txtSearch.BackColor = Color.FromArgb(243, 244, 246);
             txtSearch.BorderStyle = BorderStyle.None;
-            txtSearch.Font = new Font("Segoe UI", 12F);
-            txtSearch.Location = new Point(60, 12);
+            txtSearch.Font = new Font("Segoe UI", 14F);
+            txtSearch.Location = new Point(70, 12);
             txtSearch.Name = "txtSearch";
-            txtSearch.PlaceholderText = "Tìm kiếm...";
-            txtSearch.Size = new Size(800, 43);
+            txtSearch.Size = new Size(800, 50);
             txtSearch.TabIndex = 1;
             txtSearch.TextChanged += txtSearch_TextChanged;
             // 
-            // label1
+            // lblSearchIcon
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe MDL2 Assets", 15F);
-            label1.ForeColor = Color.FromArgb(156, 163, 175);
-            label1.Location = new Point(15, 10);
-            label1.Name = "label1";
-            label1.Size = new Size(57, 40);
-            label1.TabIndex = 0;
-            label1.Text = "";
+            lblSearchIcon.AutoSize = true;
+            lblSearchIcon.Font = new Font("Segoe MDL2 Assets", 16F);
+            lblSearchIcon.ForeColor = Color.FromArgb(156, 163, 175);
+            lblSearchIcon.Location = new Point(15, 13);
+            lblSearchIcon.Name = "lblSearchIcon";
+            lblSearchIcon.Size = new Size(62, 43);
+            lblSearchIcon.TabIndex = 0;
+            lblSearchIcon.Text = "";
             // 
             // flpList
             // 
             flpList.AutoScroll = true;
             flpList.Dock = DockStyle.Fill;
-            flpList.Location = new Point(20, 220);
+            flpList.Location = new Point(5, 220);
+            flpList.Margin = new Padding(10);
             flpList.Name = "flpList";
-            flpList.Size = new Size(1260, 680);
+            flpList.Padding = new Padding(10);
+            flpList.Size = new Size(1290, 700);
             flpList.TabIndex = 4;
             flpList.Resize += flpList_Resize;
             // 
             // pnlPagination
             // 
-            pnlPagination.BackColor = Color.FromArgb(243, 246, 249);
-            pnlPagination.Controls.Add(lblPageInfo);
-            pnlPagination.Controls.Add(btnNext);
-            pnlPagination.Controls.Add(btnPrev);
+            pnlPagination.BackColor = Color.FromArgb(242, 246, 250);
+            pnlPagination.Controls.Add(lblNext);
+            pnlPagination.Controls.Add(lblPrev);
+            pnlPagination.Controls.Add(lblPageStatus);
             pnlPagination.Dock = DockStyle.Bottom;
-            pnlPagination.Location = new Point(20, 900);
+            pnlPagination.Location = new Point(5, 920);
+            pnlPagination.Margin = new Padding(5);
             pnlPagination.Name = "pnlPagination";
-            pnlPagination.Size = new Size(1260, 80);
+            pnlPagination.Size = new Size(1290, 80);
             pnlPagination.TabIndex = 5;
             // 
-            // lblPageInfo
+            // lblNext
             // 
-            lblPageInfo.Dock = DockStyle.Fill;
-            lblPageInfo.Font = new Font("Segoe UI", 11F);
-            lblPageInfo.ForeColor = Color.FromArgb(17, 24, 39);
-            lblPageInfo.Location = new Point(250, 0);
-            lblPageInfo.Name = "lblPageInfo";
-            lblPageInfo.Size = new Size(760, 80);
-            lblPageInfo.TabIndex = 2;
-            lblPageInfo.Text = "Trang 1 / 1";
-            lblPageInfo.TextAlign = ContentAlignment.MiddleCenter;
+            lblNext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblNext.AutoSize = true;
+            lblNext.Cursor = Cursors.Hand;
+            lblNext.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblNext.ForeColor = Color.FromArgb(0, 120, 212);
+            lblNext.Location = new Point(1075, 24);
+            lblNext.Name = "lblNext";
+            lblNext.Size = new Size(185, 37);
+            lblNext.TabIndex = 0;
+            lblNext.Text = "Trang sau >>";
             // 
-            // btnNext
+            // lblPrev
             // 
-            btnNext.AutoSize = true;
-            btnNext.Dock = DockStyle.Right;
-            btnNext.FlatAppearance.BorderSize = 0;
-            btnNext.FlatStyle = FlatStyle.Flat;
-            btnNext.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            btnNext.ForeColor = Color.FromArgb(37, 99, 235);
-            btnNext.Location = new Point(1010, 0);
-            btnNext.Name = "btnNext";
-            btnNext.Size = new Size(250, 80);
-            btnNext.TabIndex = 1;
-            btnNext.Text = "Trang sau >>";
-            btnNext.UseVisualStyleBackColor = true;
-            btnNext.Click += btnNext_Click;
+            lblPrev.AutoSize = true;
+            lblPrev.Cursor = Cursors.Hand;
+            lblPrev.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblPrev.ForeColor = Color.FromArgb(0, 120, 212);
+            lblPrev.Location = new Point(24, 24);
+            lblPrev.Name = "lblPrev";
+            lblPrev.Size = new Size(212, 37);
+            lblPrev.TabIndex = 1;
+            lblPrev.Text = "<< Trang trước";
             // 
-            // btnPrev
+            // lblPageStatus
             // 
-            btnPrev.AutoSize = true;
-            btnPrev.Dock = DockStyle.Left;
-            btnPrev.FlatAppearance.BorderSize = 0;
-            btnPrev.FlatStyle = FlatStyle.Flat;
-            btnPrev.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            btnPrev.ForeColor = Color.FromArgb(37, 99, 235);
-            btnPrev.Location = new Point(0, 0);
-            btnPrev.Name = "btnPrev";
-            btnPrev.Size = new Size(250, 80);
-            btnPrev.TabIndex = 0;
-            btnPrev.Text = "<< Trang trước";
-            btnPrev.UseVisualStyleBackColor = true;
-            btnPrev.Click += btnPrev_Click;
+            lblPageStatus.Anchor = AnchorStyles.None;
+            lblPageStatus.AutoSize = true;
+            lblPageStatus.Font = new Font("Segoe UI", 10F);
+            lblPageStatus.Location = new Point(574, 24);
+            lblPageStatus.Name = "lblPageStatus";
+            lblPageStatus.Size = new Size(145, 37);
+            lblPageStatus.TabIndex = 2;
+            lblPageStatus.Text = "Trang 1 / 1";
+            lblPageStatus.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // ucAdmin_DepartmentManagement
             // 
@@ -214,14 +212,17 @@ namespace UI_Tier
             Controls.Add(pnlPagination);
             Controls.Add(pnlFilter);
             Controls.Add(pnlHeader);
+            Margin = new Padding(10);
             Name = "ucAdmin_DepartmentManagement";
-            Padding = new Padding(20);
+            Padding = new Padding(5, 5, 5, 0);
             Size = new Size(1300, 1000);
             pnlHeader.ResumeLayout(false);
             pnlHeader.PerformLayout();
             pnlFilter.ResumeLayout(false);
             pnlSearch.ResumeLayout(false);
             pnlSearch.PerformLayout();
+            pnlPagination.ResumeLayout(false);
+            pnlPagination.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -232,12 +233,15 @@ namespace UI_Tier
         private Panel pnlFilter;
         private Panel pnlSearch;
         private TextBox txtSearch;
-        private Label label1;
+        private System.Windows.Forms.Label lblSearchIcon;
         private ComboBox cboStatusFilter;
         private FlowLayoutPanel flpList;
         private Panel pnlPagination;
         private Button btnNext;
         private Button btnPrev;
         private Label lblPageInfo;
+        private Label lblNext;
+        private Label lblPrev;
+        private Label lblPageStatus;
     }
 }
