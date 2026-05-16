@@ -16,13 +16,15 @@ namespace UI_Tier
 
         private Dictionary<Panel, Type> _tabTypeMapping = new Dictionary<Panel, Type>();
         private Dictionary<Panel, UserControl> _tabMapping = new Dictionary<Panel, UserControl>();
-        private UserControl _currentUC = null;
+        private UserControl? _currentUC = null;
 
         public frmAdmin()
         {
             InitializeComponent();
+            this.Opacity = 0;
             UIHelper.SetDoubleBuffered(this);
             InitTabs();
+            PreLoadTabs(false, false); // CHỈ VẼ UI TAB ĐẦU TIÊN (Mở Form cực nhanh)
         }
 
         protected override CreateParams CreateParams
@@ -34,6 +36,14 @@ namespace UI_Tier
                 return cp;
             }
         }
+        private void PreLoadTabs(bool loadAll = true, bool initData = false)
+        {
+            UIHelper.PreLoadTabs(pnMain, _tabTypeMapping, _tabMapping, pnlOverview, loadAll, (uc, pnl) => {
+                if (!initData) return;
+                // Admin hiện tại chưa có logic nạp dữ liệu đặc thù cho từng tab trong lúc preload
+            });
+        }
+
         private void InitTabs()
         {
             _tabTypeMapping.Add(pnlOverview, typeof(ucAdmin_Overview));
@@ -66,27 +76,19 @@ namespace UI_Tier
 
             if (clickedPanel == null || !_tabTypeMapping.ContainsKey(clickedPanel)) return;
 
-            if (!_tabMapping.ContainsKey(clickedPanel))
-            {
-                UserControl uc = (UserControl)Activator.CreateInstance(_tabTypeMapping[clickedPanel]);
-                uc.Dock = DockStyle.Fill;
-                uc.Visible = false;
-                pnMain.Controls.Add(uc);
-                _tabMapping.Add(clickedPanel, uc);
-            }
+            // Lấy UC đã được vẽ sẵn trong RAM
+            if (!_tabMapping.ContainsKey(clickedPanel)) return;
 
             UserControl selectedUC = _tabMapping[clickedPanel];
             if (_currentUC == selectedUC) return;
 
-            if (_currentUC != null) _currentUC.Visible = false;
-            selectedUC.Visible = true;
-            selectedUC.BringToFront();
+            UIHelper.SwitchControlSmoothly(pnMain, _currentUC, selectedUC);
             _currentUC = selectedUC;
 
             UpdateLabelStyles(clickedPanel);
         }
 
-        public UserControl GetCurrentUC() => _currentUC;
+        public UserControl? GetCurrentUC() => _currentUC;
 
         private void UpdateLabelStyles(Panel activePanel)
         {
@@ -105,17 +107,32 @@ namespace UI_Tier
             }
         }
 
-        private void frmAdmin_Load(object sender, EventArgs e)
+        private async void frmAdmin_Load(object sender, EventArgs e)
         {
             lblWelcome.Text = $"Chào mừng, {GlobalAccount.GetFullName()}!";
             UIHelper.ApplyRoundedRegion(btnLogout, 20);
+
+            // 1. CHỈ nạp Tab Tổng quan (Priority) để mở Form nhanh nhất
+            PreLoadTabs(false, true);
             PanelTab_Click(pnlOverview, EventArgs.Empty);
+            
+            this.Update(); // Vẽ xong rồi mới hiện
+
+            // 2. Ẩn Guest (Owner) và hiện mình lên ngay lập tức
+            if (this.Owner != null) this.Owner.Hide();
+            this.Opacity = 1;
+
+            // 3. ÂM THẦM nạp toàn bộ các tab còn lại vào RAM trong lúc người dùng đang xem Tổng quan
+            // Việc nạp này diễn ra từng bước (Staggered) để không làm đơ giao diện
+            await UIHelper.BackgroundPreLoadTabs(pnMain, _tabTypeMapping, _tabMapping, pnlOverview, (uc, pnl) => {
+                // Admin hiện tại chưa cần init data đặc thù lúc preload
+            }); 
         }
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
-            DTO_Tier.GlobalAccount.Logout();
-            this.Close();
+            // Sử dụng Helper để hiện lại Guest mượt mà, không bị lộ desktop
+            UIHelper.LogoutAndCleanup(this, _tabMapping);
         }
 
         public void OpenArticleDetail(ContentDTO art)

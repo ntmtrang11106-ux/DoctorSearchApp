@@ -177,6 +177,13 @@ namespace UI_Tier
             // Khởi tạo các tab và sự kiện click
             InitTabs();
             PanelTab_Click(pnlHome, EventArgs.Empty);
+
+            // Cực kỳ quan trọng: Ẩn Form Guest (Owner) sau khi Patient Dashboard đã load xong UI
+            // Điều này tránh việc hở màn hình Desktop lúc chuyển giao giữa 2 Form
+            if (this.Owner != null)
+            {
+                this.Owner.Hide();
+            }
         }
 
         public void OpenDoctorProfile(DoctorDTO doctor)

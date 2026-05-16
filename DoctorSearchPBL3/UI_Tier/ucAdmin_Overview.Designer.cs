@@ -125,11 +125,11 @@ namespace UI_Tier
             // lblValue1
             // 
             lblValue1.AutoSize = true;
-            lblValue1.Font = new Font("Segoe UI", 30F, FontStyle.Bold);
+            lblValue1.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblValue1.ForeColor = Color.FromArgb(17, 34, 71);
-            lblValue1.Location = new Point(25, 90);
+            lblValue1.Location = new Point(25, 70);
             lblValue1.Name = "lblValue1";
-            lblValue1.Size = new Size(91, 106);
+            lblValue1.Size = new Size(74, 86);
             lblValue1.TabIndex = 1;
             lblValue1.Text = "0";
             // 
@@ -192,11 +192,11 @@ namespace UI_Tier
             // lblValue2
             // 
             lblValue2.AutoSize = true;
-            lblValue2.Font = new Font("Segoe UI", 30F, FontStyle.Bold);
+            lblValue2.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
             lblValue2.ForeColor = Color.FromArgb(17, 34, 71);
-            lblValue2.Location = new Point(25, 90);
+            lblValue2.Location = new Point(30, 70);
             lblValue2.Name = "lblValue2";
-            lblValue2.Size = new Size(91, 106);
+            lblValue2.Size = new Size(74, 86);
             lblValue2.TabIndex = 1;
             lblValue2.Text = "0";
             // 
@@ -259,11 +259,11 @@ namespace UI_Tier
             // lblValue3
             // 
             lblValue3.AutoSize = true;
-            lblValue3.Font = new Font("Segoe UI", 30F, FontStyle.Bold);
+            lblValue3.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
             lblValue3.ForeColor = Color.FromArgb(17, 34, 71);
-            lblValue3.Location = new Point(25, 90);
+            lblValue3.Location = new Point(25, 70);
             lblValue3.Name = "lblValue3";
-            lblValue3.Size = new Size(91, 106);
+            lblValue3.Size = new Size(74, 86);
             lblValue3.TabIndex = 1;
             lblValue3.Text = "0";
             // 
@@ -326,11 +326,11 @@ namespace UI_Tier
             // lblValue4
             // 
             lblValue4.AutoSize = true;
-            lblValue4.Font = new Font("Segoe UI", 30F, FontStyle.Bold);
+            lblValue4.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
             lblValue4.ForeColor = Color.FromArgb(17, 34, 71);
-            lblValue4.Location = new Point(25, 90);
+            lblValue4.Location = new Point(25, 70);
             lblValue4.Name = "lblValue4";
-            lblValue4.Size = new Size(91, 106);
+            lblValue4.Size = new Size(74, 86);
             lblValue4.TabIndex = 1;
             lblValue4.Text = "0";
             // 

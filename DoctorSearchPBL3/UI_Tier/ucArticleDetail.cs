@@ -21,6 +21,10 @@ namespace UI_Tier
 
             // Hide admin actions if the user is not an Admin
             flpAction.Visible = (GlobalAccount.GetRole() == "Admin");
+
+            // Tối ưu thanh cuộn và chống nháy cho nội dung bài viết
+            this.AutoScroll = true;
+            UIHelper.SetupScrollableContainer(this);
         }
 
         private void SetupAdminActions()

@@ -18,6 +18,7 @@ namespace UI_Tier
 
         // === QUAN TRỌNG: THÊM DÒNG NÀY ĐỂ LƯU ID TOÀN CỤC ===
         public static int LoggedInUserId;
+        public Form LoadedDashboard { get; private set; }
 
         public frmLogin()
         {
@@ -166,7 +167,15 @@ namespace UI_Tier
                 // 2. LƯU VÀO DTO: Cất vào GlobalAccount để dùng toàn app
                 DTO_Tier.GlobalAccount.SetLoggedInAccount(userId, profileId, role, fullName);
 
-                // 3. ĐÓNG LOGIN: Trả về OK để Guest biết và mở Form tiếp theo
+                // 3. TÀNG HÌNH LOGIN (Nhưng chưa đóng) để chuẩn bị Dashboard
+                this.Hide();
+
+                // 4. KHỞI TẠO DASHBOARD NGAY TẠI ĐÂY (Trong khi app vẫn đang giữ focus)
+                if (role == "Patient") LoadedDashboard = new frmPatient();
+                else if (role == "Doctor") LoadedDashboard = new frmDoctor();
+                else if (role == "Admin") LoadedDashboard = new frmAdmin();
+
+                // 5. TRẢ VỀ KẾT QUẢ: Guest sẽ nhận được OK và lấy LoadedDashboard ra dùng
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }

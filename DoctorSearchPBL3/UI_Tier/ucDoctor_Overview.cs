@@ -28,8 +28,9 @@ namespace UI_Tier
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
+            UIHelper.SetupScrollableContainer(flpRecentReviews);
+            UIHelper.SetupScrollableContainer(flpTodayApp);
             
-            // Hiệu ứng hover sử dụng Helper
             UIHelper.SetupHoverEffect(lblReviewPrev, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
             UIHelper.SetupHoverEffect(lblReviewNext, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
             UIHelper.SetupHoverEffect(lblAppPrev, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
@@ -52,7 +53,6 @@ namespace UI_Tier
         {
             UpdateUI();
             
-            // Xử lý resize để items luôn full width
             flpRecentReviews.Resize += (s, ev) => {
                 foreach (Control ctrl in flpRecentReviews.Controls) {
                     if (ctrl is ucReviewItem item) {
@@ -102,15 +102,13 @@ namespace UI_Tier
             }
         }
 
-
-
         public void SetDoctorData(DoctorDTO doctor)
         {
             _currentDoctor = doctor;
             _doctorId = doctor.Id;
 
-            lblWelcome.Text = $"Chào mừng, {doctor.Position} {doctor.User?.FullName}";
-            lblDept.Text = $"Chuyên khoa: {doctor.Department?.DepartmentName ?? "Chưa cập nhật"}";
+            lblWelcome.Text = $@"Chào mừng, {doctor.Position} {doctor.User?.FullName}";
+            lblDept.Text = $@"Chuyên khoa: {doctor.Department?.DepartmentName ?? "Chưa cập nhật"}";
 
             LoadDashboardData();
         }
@@ -119,12 +117,10 @@ namespace UI_Tier
         {
             DoctorBUS bus = new DoctorBUS();
             
-            // 1. Stats
             lblValue1.Text = bus.GetTodayAppointments(_doctorId).Count.ToString();
             lblValue2.Text = bus.GetTotalPatientsCount(_doctorId).ToString();
             lblValue3.Text = bus.GetPendingAppointmentsCount(_doctorId).ToString();
             
-            // Tính toán rating
             bus.CalculateDoctorStats(_currentDoctor);
             lblValue4.Text = _currentDoctor.AverageRating.ToString("F1");
             
@@ -138,15 +134,12 @@ namespace UI_Tier
                 lblAvgRating.Text = "0.0";
             }
 
-            // 2. Today's Appointments
             _appCurrentPage = 1;
             LoadTodayAppointments();
 
-            // 3. Recent Reviews
             _reviewCurrentPage = 1;
             LoadRecentReviews();
 
-            // 4. Update Date
             lblTodayDate.Text = DateTime.Now.ToString("dddd, dd/MM/yyyy", new System.Globalization.CultureInfo("vi-VN"));
         }
 
@@ -162,24 +155,42 @@ namespace UI_Tier
             flpTodayApp.SuspendLayout();
             flpTodayApp.Controls.Clear();
 
-            int startIndex = (page - 1) * _appPageSize;
-            var pageItems = _allTodayApps.Skip(startIndex).Take(_appPageSize).ToList();
-
-            foreach (var app in pageItems)
+            if (_allTodayApps.Count == 0)
             {
-                AddAppointmentRow(app);
+                Label lblEmpty = new Label
+                {
+                    Text = "Không có lịch trình nào trong ngày hôm nay.",
+                    AutoSize = false,
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    ForeColor = Color.Gray,
+                    Font = new Font("Segoe UI", 14, FontStyle.Italic),
+                    Height = 150,
+                    Width = flpTodayApp.Width - 10
+                };
+                flpTodayApp.Controls.Add(lblEmpty);
+                pnlAppPagination.Visible = false;
+            }
+            else
+            {
+                int startIndex = (page - 1) * _appPageSize;
+                var pageItems = _allTodayApps.Skip(startIndex).Take(_appPageSize).ToList();
+
+                foreach (var app in pageItems)
+                {
+                    AddAppointmentRow(app);
+                }
+
+                int totalPages = Math.Max(1, (int)Math.Ceiling((double)_allTodayApps.Count / _appPageSize));
+                lblAppPageStatus.Text = $@"Trang {page} / {totalPages}";
+                
+                lblAppPrev.Enabled = true;
+                lblAppNext.Enabled = true;
+                lblAppPrev.ForeColor = Color.FromArgb(0, 120, 212);
+                lblAppNext.ForeColor = Color.FromArgb(0, 120, 212);
+
+                pnlAppPagination.Visible = _allTodayApps.Count > _appPageSize;
             }
 
-            int totalPages = Math.Max(1, (int)Math.Ceiling((double)_allTodayApps.Count / _appPageSize));
-            lblAppPageStatus.Text = $"Trang {page} / {totalPages}";
-            
-            // Luôn xanh và bắt hover
-            lblAppPrev.Enabled = true;
-            lblAppNext.Enabled = true;
-            lblAppPrev.ForeColor = Color.FromArgb(0, 120, 212);
-            lblAppNext.ForeColor = Color.FromArgb(0, 120, 212);
-
-            pnlAppPagination.Visible = _allTodayApps.Count > 0;
             UpdateListLayout(flpTodayApp, pnlAppPagination, pnlAppointments, lblTodayTitle.Height + 20);
             flpTodayApp.ResumeLayout();
         }
@@ -207,7 +218,7 @@ namespace UI_Tier
         {
             ucAppointmentRow row = new ucAppointmentRow();
             row.SetData(app);
-            row.Margin = new Padding(10, 5, 10, 5); // Thêm khoảng cách
+            row.Margin = new Padding(10, 5, 10, 5);
             flpTodayApp.Controls.Add(row);
         }
 
@@ -223,27 +234,45 @@ namespace UI_Tier
             flpRecentReviews.SuspendLayout();
             flpRecentReviews.Controls.Clear();
 
-            int startIndex = (page - 1) * _reviewPageSize;
-            var pageItems = _allReviews.Skip(startIndex).Take(_reviewPageSize).ToList();
-
-            foreach (var rev in pageItems)
+            if (_allReviews.Count == 0)
             {
-                ucReviewItem item = new ucReviewItem();
-                item.SetReviewData(rev, _currentDoctor, -1);
-                item.Margin = new Padding(10, 5, 10, 5); // Thêm khoảng cách
-                flpRecentReviews.Controls.Add(item);
+                Label lblEmpty = new Label
+                {
+                    Text = "Không có đánh giá nào từ bệnh nhân.",
+                    AutoSize = false,
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    ForeColor = Color.Gray,
+                    Font = new Font("Segoe UI", 14, FontStyle.Italic),
+                    Height = 150,
+                    Width = flpRecentReviews.Width - 10
+                };
+                flpRecentReviews.Controls.Add(lblEmpty);
+                pnlReviewPagination.Visible = false;
+            }
+            else
+            {
+                int startIndex = (page - 1) * _reviewPageSize;
+                var pageItems = _allReviews.Skip(startIndex).Take(_reviewPageSize).ToList();
+
+                foreach (var rev in pageItems)
+                {
+                    ucReviewItem item = new ucReviewItem();
+                    item.SetReviewData(rev, _currentDoctor, -1);
+                    item.Margin = new Padding(10, 5, 10, 5);
+                    flpRecentReviews.Controls.Add(item);
+                }
+
+                int totalPages = Math.Max(1, (int)Math.Ceiling((double)_allReviews.Count / _reviewPageSize));
+                lblReviewPageStatus.Text = $@"Trang {page} / {totalPages}";
+                
+                lblReviewPrev.Enabled = true;
+                lblReviewNext.Enabled = true;
+                lblReviewPrev.ForeColor = Color.FromArgb(0, 120, 212);
+                lblReviewNext.ForeColor = Color.FromArgb(0, 120, 212);
+
+                pnlReviewPagination.Visible = _allReviews.Count > _reviewPageSize;
             }
 
-            int totalPages = Math.Max(1, (int)Math.Ceiling((double)_allReviews.Count / _reviewPageSize));
-            lblReviewPageStatus.Text = $"Trang {page} / {totalPages}";
-            
-            // Luôn xanh và bắt hover
-            lblReviewPrev.Enabled = true;
-            lblReviewNext.Enabled = true;
-            lblReviewPrev.ForeColor = Color.FromArgb(0, 120, 212);
-            lblReviewNext.ForeColor = Color.FromArgb(0, 120, 212);
-
-            pnlReviewPagination.Visible = _allReviews.Count > 0;
             UpdateListLayout(flpRecentReviews, pnlReviewPagination, pnlReviews, lblRecentReviewsTitle.Height + 20);
             flpRecentReviews.ResumeLayout();
         }
@@ -279,17 +308,22 @@ namespace UI_Tier
 
             int availableHeight = container.Height - reservedHeight;
 
-            // Xóa buffer cũ nếu có
             Control oldBuffer = flp.Controls.Find("pnlBuffer", false).FirstOrDefault();
             if (oldBuffer != null) flp.Controls.Remove(oldBuffer);
 
             if (totalItemsHeight + pnlPagination.Height < availableHeight)
             {
                 pnlPagination.Dock = DockStyle.Top;
-                pnlPagination.Margin = new Padding(0, 10, 0, 0); // Thêm khoảng cách 10px
+                pnlPagination.Margin = new Padding(0, 10, 0, 0);
                 flp.Dock = DockStyle.Top;
                 flp.Height = totalItemsHeight;
                 flp.AutoScroll = false;
+                
+                if (flp.Controls.Count == 1 && flp.Controls[0] is Label lbl) {
+                    lbl.Width = flp.Width - 10;
+                    lbl.Height = Math.Max(150, availableHeight - 20);
+                    flp.Height = lbl.Height + 10;
+                }
             }
             else
             {

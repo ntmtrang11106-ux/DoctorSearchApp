@@ -33,6 +33,7 @@ namespace UI_Tier
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
             UIHelper.SetDoubleBuffered(pnlMain);
+            UIHelper.SetupSmoothScrolling(pnlMain);
             
             // Apply rounded corners to avatar
             UIHelper.ApplyRoundedRegion(picAvatar, picAvatar.Width / 2);

@@ -60,6 +60,20 @@ namespace UI_Tier
                     child.Cursor = Cursors.Hand;
                 }
             }
+            this.Load += frmDoctor_Load;
+        }
+
+        private void PreLoadTabs(bool loadAll = true, bool initData = false)
+        {
+            UIHelper.PreLoadTabs(pnMain, _tabTypeMapping, _tabMapping, pnlOverview, loadAll, (uc, pnl) => {
+                if (!initData) return;
+                if (uc is ucDoctor_Overview overview) 
+                {
+                    DoctorBUS bus = new DoctorBUS();
+                    var doc = bus.GetDoctorById(GlobalAccount.GetProfileId());
+                    overview.SetDoctorData(doc);
+                }
+            });
         }
 
         private void PanelTab_Click(object sender, EventArgs e)
@@ -154,16 +168,27 @@ namespace UI_Tier
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
-            DTO_Tier.GlobalAccount.Logout();
-            this.Close();
+            UIHelper.LogoutAndCleanup(this, _tabMapping);
         }
 
-        private void frmDoctor_Load(object sender, EventArgs e)
+        private async void frmDoctor_Load(object sender, EventArgs e)
         {
             UIHelper.ApplyRoundedRegion(btnLogout, 20);
 
+            // 1. CHỈ nạp Tab Tổng quan (Priority) để mở Form nhanh nhất
             InitTabs();
-            PanelTab_Click(pnlOverview, EventArgs.Empty); // Mặc định mở Tổng quan
+            PreLoadTabs(false, true);
+            PanelTab_Click(pnlOverview, EventArgs.Empty);
+            
+            this.Update(); // Vẽ xong rồi mới hiện
+
+            // 2. Ẩn Guest (Owner) khi đã vào Dashboard
+            if (this.Owner != null) this.Owner.Hide();
+
+            // 3. ÂM THẦM nạp toàn bộ các tab còn lại vào RAM
+            await UIHelper.BackgroundPreLoadTabs(pnMain, _tabTypeMapping, _tabMapping, pnlOverview, (uc, pnl) => {
+                // Doctor hiện tại chưa cần init data đặc thù lúc preload
+            }); 
         }
 
         public void ShowOverlay(UserControl ucDialog)

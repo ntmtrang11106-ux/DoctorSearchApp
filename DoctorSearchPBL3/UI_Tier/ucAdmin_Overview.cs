@@ -20,12 +20,13 @@ namespace UI_Tier
             InitializeComponent();
             _dashboardBUS = new DashboardBUS();
             UIHelper.SetDoubleBuffered(this);
+            UIHelper.SetupScrollableContainer(flpRecentReviews);
             this.Load += ucAdmin_Overview_Load;
         }
 
         private void ucAdmin_Overview_Load(object sender, EventArgs e)
         {
-            // Set up Filter ComboBox items
+            // 1. Setup UI components (Fast)
             cboFilter.Items.Clear();
             for (int i = 0; i < 12; i++)
             {
@@ -42,7 +43,6 @@ namespace UI_Tier
             LoadRealData(DateTime.Now);
             UpdateUI();
             
-            // Xử lý resize để review item luôn full width và không bị mất viền
             flpRecentReviews.Resize += (s, ev) => {
                 foreach (Control ctrl in flpRecentReviews.Controls) {
                     if (ctrl is ucReviewItem item) {
@@ -57,13 +57,14 @@ namespace UI_Tier
                 if (_currentPage < totalPages) { _currentPage++; DisplayRecentReviews(); } 
             };
 
-            // Hiệu ứng "nhảy" và đổi màu khi di chuột sử dụng Helper
             UIHelper.SetupHoverEffect(lblReviewPrevBtn, Color.FromArgb(0, 102, 180), Color.FromArgb(0, 120, 212));
             UIHelper.SetupHoverEffect(lblReviewNext, Color.FromArgb(0, 102, 180), Color.FromArgb(0, 120, 212));
         }
 
-
-
+        public void LoadData()
+        {
+            LoadRealData(DateTime.Now);
+        }
 
         private void CboFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -103,7 +104,6 @@ namespace UI_Tier
                 }
             }
 
-            // Viền cho 2 biểu đồ chính
             Control[] charts = { chartApp, chartUserGrowth };
             foreach (var c in charts)
             {
@@ -137,7 +137,6 @@ namespace UI_Tier
         {
             try
             {
-                // 1. Load Summary Stats
                 var summary = _dashboardBUS.GetDashboardSummary(targetDate);
                 
                 UpdateStatCard(lblValue1, lblTrend1, summary["Patients"]);
@@ -147,7 +146,6 @@ namespace UI_Tier
                 
                 lblTitle4.Text = $"Lịch hẹn tháng {targetDate.ToString("MM")}";
 
-                // 2. Charts (Dữ liệu thật từ SQL)
                 var monthlyStats = _dashboardBUS.GetYearlyAppointmentStats(targetDate.Year);
                 var months = new List<string>();
                 var dataPoints = new List<double>();
@@ -155,22 +153,19 @@ namespace UI_Tier
                 for (int m = 1; m <= 12; m++)
                 {
                     months.Add("T" + m);
-                    // Lấy dữ liệu thật từ SQL, nếu tháng đó chưa có dữ liệu thì để là 0
                     dataPoints.Add(monthlyStats.ContainsKey(m) ? monthlyStats[m] : 0);
                 }
 
                 chartApp.SetData(dataPoints, months);
                 
-                // 2b. User Growth Chart (Dữ liệu thật 2 đường: Bác sĩ & Bệnh nhân)
                 var userStats = _dashboardBUS.GetYearlyUserGrowthStats(targetDate.Year);
                 chartUserGrowth.SetMultiData(
                     new List<List<double>> { userStats.doctors, userStats.patients },
                     months,
                     new List<string> { "Bác sĩ", "Bệnh nhân" },
-                    new List<Color> { Color.FromArgb(40, 199, 111), Color.FromArgb(24, 112, 255) } // Xanh lá & Xanh dương
+                    new List<Color> { Color.FromArgb(40, 199, 111), Color.FromArgb(24, 112, 255) }
                 );
 
-                // 3. Load Department Stats
                 var deptData = _dashboardBUS.GetDepartmentStats();
                 var deptCounts = new List<double>();
                 var deptNames = new List<string>();
@@ -191,7 +186,6 @@ namespace UI_Tier
                     chartDept.SetData(deptCounts, deptNames, colors.Take(deptCounts.Count).ToList());
                 }
 
-                // 4. Load Recent Reviews
                 LoadRecentReviews();
             }
             catch (Exception ex)
@@ -214,7 +208,7 @@ namespace UI_Tier
 
         private void LoadRecentReviews()
         {
-            _allReviews = _dashboardBUS.GetRecentReviews(20); // Lấy 20 cái mới nhất để phân trang
+            _allReviews = _dashboardBUS.GetRecentReviews(20);
             _currentPage = 1;
             DisplayRecentReviews();
         }

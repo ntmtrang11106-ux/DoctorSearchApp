@@ -23,7 +23,7 @@ namespace UI_Tier
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
-            UIHelper.SetDoubleBuffered(flpAppItem);
+            UIHelper.SetupScrollableContainer(flpAppItem);
             
             // Custom styling for search area
             UIHelper.ApplyRoundedRegion(pnlSearchArea, 15);
@@ -89,12 +89,12 @@ namespace UI_Tier
             cbStatusFilter.SelectedIndex = 0;
         }
 
-        public void InitData()
+        public void InitData(bool keepPage = false)
         {
             try
             {
                 _allApps = _tsBus.GetAllTimeSlots();
-                ApplyFilter();
+                ApplyFilter(keepPage);
             }
             catch (Exception ex)
             {
@@ -102,7 +102,7 @@ namespace UI_Tier
             }
         }
 
-        private void ApplyFilter()
+        private void ApplyFilter(bool keepPage = false)
         {
             string keyword = txtSearch.Text.Trim().ToLower();
             if (keyword == "tìm kiếm theo bác sĩ, khoa, phòng...") keyword = "";
@@ -119,7 +119,12 @@ namespace UI_Tier
                 (statusFilter == "Tất cả trạng thái" || CheckStatusFilter(a, statusFilter))
             ).ToList();
 
-            _currentPage = 1;
+            if (!keepPage) _currentPage = 1;
+            
+            // Validate current page
+            int totalPages = Math.Max(1, (int)Math.Ceiling((double)_filteredApps.Count / _pageSize));
+            if (_currentPage > totalPages) _currentPage = totalPages;
+
             DisplayPage(_currentPage);
         }
 
@@ -153,7 +158,7 @@ namespace UI_Tier
                 card.Height = 252;
                 card.Margin = new Padding(-10, 10, 10, 10);
                 
-                card.RefreshData = () => InitData();
+                card.RefreshData = () => InitData(true);
                 card.AdminTimeSlotEdited += (s, slotId) => {
                     var editDialog = new ucTimeSlotDialog();
                     var slotData = _allApps.FirstOrDefault(ts => ts.Id == slotId);
@@ -210,7 +215,7 @@ namespace UI_Tier
                 dialog.OnCloseModal += (s, e) => {
                     this.Controls.Remove(dialog);
                     dialog.Dispose();
-                    InitData();
+                    InitData(true);
                 };
             }
 

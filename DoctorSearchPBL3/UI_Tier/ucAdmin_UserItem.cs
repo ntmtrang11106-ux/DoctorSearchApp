@@ -15,11 +15,20 @@ namespace UI_Tier
         private PatientDTO _patientDTO = new PatientDTO();
         public event EventHandler DataChanged;
 
+        private ToolTip _toolTip = new ToolTip();
+
         public ucAdmin_UserItem()
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
             UIHelper.SetDoubleBuffered(pnlCard);
+
+            // Cấu hình Tooltip cho các nút hành động
+            _toolTip.SetToolTip(btnDetail, "Xem chi tiết hồ sơ");
+            _toolTip.SetToolTip(btnEdit, "Chỉnh sửa thông tin");
+            _toolTip.SetToolTip(btnRemove, "Xóa tài khoản vĩnh viễn");
+            _toolTip.SetToolTip(btnApprove, "Phê duyệt bác sĩ vào hệ thống");
+            _toolTip.SetToolTip(btnReject, "Từ chối phê duyệt bác sĩ");
             
             pnlCard.Paint += pnlCard_Paint;
             pnlCard.Resize += (s, e) => {
@@ -153,11 +162,13 @@ namespace UI_Tier
             {
                 btnToggleStatus.Text = "🔒 Chặn";
                 btnToggleStatus.BackColor = Color.FromArgb(255, 87, 34);
+                _toolTip.SetToolTip(btnToggleStatus, "Khóa tài khoản người dùng");
             }
             else
             {
                 btnToggleStatus.Text = "🔓 Mở khóa";
                 btnToggleStatus.BackColor = Color.FromArgb(37, 99, 235);
+                _toolTip.SetToolTip(btnToggleStatus, "Mở khóa tài khoản người dùng");
             }
             btnToggleStatus.Visible = !btnApprove.Visible;
 

@@ -133,6 +133,24 @@ namespace UI_Tier
                 }
             }
 
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            if (IsClickable)
+            {
+                // Màu xanh đậm khi hover, xám nhạt khi bình thường
+                Color borderColor = _isHovered ? Color.FromArgb(37, 99, 235) : Color.FromArgb(224, 224, 224);
+                int borderWidth = _isHovered ? 3 : 2;
+                UIHelper.uc_Paint(this, e, 20, borderColor, borderWidth);
+            }
+            else
+            {
+                // Khi không clickable, giữ viền xám mặc định
+                UIHelper.uc_Paint(this, e, 20, Color.FromArgb(224, 224, 224), 2);
+            }
+        }
+
         private void UCCardDoctor_Load(object sender, EventArgs e)
         {
             // Bo góc cho toàn bộ Card (nếu muốn)
@@ -143,62 +161,48 @@ namespace UI_Tier
 
             // Bo góc cho PictureBox (nếu bạn muốn bo nhẹ 4 góc)
             UIHelper.ApplyRoundedRegion(picDoctor, 15);
-
-            // Vẽ border cho Card
-            this.Paint += (s, args) =>
-            {
-                if (IsClickable)
-                {
-                    // Màu xanh đậm khi hover, xám nhạt khi bình thường
-                    Color borderColor = _isHovered ? Color.FromArgb(37, 99, 235) : Color.FromArgb(224, 224, 224);
-                    int borderWidth = _isHovered ? 3 : 2;
-                    UIHelper.uc_Paint(s, args, 20, borderColor, borderWidth);
-                }
-                else
-                {
-                    // Khi không clickable, giữ viền xám mặc định
-                    UIHelper.uc_Paint(s, args, 20, Color.FromArgb(224, 224, 224), 2);
-                }
-            };
         }
 
         private void OnMouseEnter(object sender, EventArgs e)
         {
             if (!IsClickable || _isHovered) return;
-            _isHovered = true;
 
-            // Kiểm tra nếu là giao diện Bệnh nhân mới nhấc card lên
-            if (this.FindForm() is frmPatient)
+            // CHỈ cho phép hiệu ứng Hover (viền xanh, nhấc thẻ) nếu đang đăng nhập là Bệnh nhân
+            if (GlobalAccount.GetRole() == "Patient")
             {
-                // Hiệu ứng "Nhấc lên": Giảm Margin Top, tăng Margin Bottom
+                _isHovered = true;
                 this.Margin = new Padding(15, 10, 15, 20);
+                
+                Color hoverColor = Color.FromArgb(252, 253, 255);
+                this.BackColor = hoverColor;
+                if (pnlContainer != null) pnlContainer.BackColor = hoverColor;
+                
+                this.Refresh(); // Vẽ lại viền xanh
             }
-            
-            Color hoverColor = Color.FromArgb(252, 253, 255);
-            this.BackColor = hoverColor;
-            pnlContainer.BackColor = hoverColor;
-            
-            this.Refresh(); // Vẽ lại viền
+            else
+            {
+                // Ở Guest hoặc các vai trò khác thì giữ nguyên trạng thái tĩnh hoàn toàn
+                _isHovered = false;
+            }
         }
-
+        
         private void OnMouseLeave(object sender, EventArgs e)
         {
             if (!IsClickable) return;
 
             // Kiểm tra xem chuột có thực sự rời khỏi vùng của UC không
-            Point clientMousePos = this.PointToClient(Cursor.Position);
-            if (this.ClientRectangle.Contains(clientMousePos)) return;
+            Rectangle screenBounds = this.RectangleToScreen(this.ClientRectangle);
+            if (screenBounds.Contains(Cursor.Position)) return;
 
-            _isHovered = false;
-            
-            // Trả về Margin và Padding mặc định
-            this.Margin = new Padding(15);
-            this.Padding = new Padding(0);
-            
-            this.BackColor = Color.White;
-            pnlContainer.BackColor = Color.White;
-            
-            this.Invalidate(); // Yêu cầu vẽ lại viền
+            // Chỉ reset nếu trước đó có hiệu ứng (là Patient)
+            if (_isHovered)
+            {
+                _isHovered = false;
+                this.Margin = new Padding(15);
+                this.BackColor = Color.White;
+                if (pnlContainer != null) pnlContainer.BackColor = Color.White;
+                this.Invalidate();
+            }
         }
 
         // Hàm xử lý khi kích vào bất kỳ đâu trên Card

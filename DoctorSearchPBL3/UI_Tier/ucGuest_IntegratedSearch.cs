@@ -36,6 +36,9 @@ namespace UI_Tier
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
+            UIHelper.SetupScrollableContainer(flpDoctors);
+            UIHelper.SetupScrollableContainer(flpArticles);
+            UIHelper.SetupScrollableContainer(flpDepts);
             SetupUI();
             InitTabs();
 
@@ -467,7 +470,7 @@ namespace UI_Tier
             foreach (var doc in items)
             {
                 UCCardDoctor card = new UCCardDoctor();
-                card.IsClickable = false; // Guest không có hiệu ứng nổi và click
+                card.IsClickable = true; // Bật hiệu ứng nổi và click để giống bài viết
                 card.SetDoctorData(doc);
                 card.Margin = new Padding(15);
 

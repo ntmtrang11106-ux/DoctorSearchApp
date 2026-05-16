@@ -13,11 +13,17 @@ namespace UI_Tier
         private AdminBUS _adminBUS = new AdminBUS(); // To get doctor count
         public event EventHandler DataChanged;
 
+        private ToolTip _toolTip = new ToolTip();
+
         public ucAdmin_DepartmentItem()
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
             UIHelper.SetDoubleBuffered(pnlCard);
+
+            _toolTip.SetToolTip(btnEdit, "Chỉnh sửa thông tin chuyên khoa");
+            _toolTip.SetToolTip(btnRemove, "Xóa chuyên khoa khỏi hệ thống");
+            _toolTip.SetToolTip(pnlCountBadge, "Số lượng bác sĩ đang thuộc chuyên khoa này");
 
             pnlCard.Paint += pnlCard_Paint;
             pnlCard.Resize += (s, e) => UIHelper.ApplyRoundedRegion(pnlCard, 15);
@@ -52,12 +58,14 @@ namespace UI_Tier
                 lblStatus.ForeColor = Color.FromArgb(22, 163, 74);
                 pnlStatusBadge.BackColor = Color.FromArgb(220, 252, 231);
                 btnToggleHide.Text = "\uE890"; // Eye-slash icon
+                _toolTip.SetToolTip(btnToggleHide, "Ẩn chuyên khoa này khỏi danh sách tìm kiếm");
             }
             else
             {
                 lblStatus.ForeColor = Color.FromArgb(220, 38, 38);
                 pnlStatusBadge.BackColor = Color.FromArgb(254, 226, 226);
                 btnToggleHide.Text = "\uE7B3"; // Eye icon
+                _toolTip.SetToolTip(btnToggleHide, "Hiển thị lại chuyên khoa này trong danh sách tìm kiếm");
             }
 
             UIHelper.ApplyRoundedRegion(pnlStatusBadge, 10);

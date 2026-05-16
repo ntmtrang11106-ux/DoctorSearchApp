@@ -24,7 +24,10 @@ namespace UI_Tier
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
-            UIHelper.SetDoubleBuffered(flpUserList);
+            //UIHelper.SetDoubleBuffered(pnlMain);
+            UIHelper.SetupScrollableContainer(flpUserList);
+            UIHelper.SetDoubleBuffered(pnlSearch);
+            
             flpUserList.Resize += (s, e) => {
                 foreach (Control ctrl in flpUserList.Controls)
                 {

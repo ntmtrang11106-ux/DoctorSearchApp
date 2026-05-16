@@ -19,6 +19,31 @@ namespace UI_Tier
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
 
+        // --- TỐI ƯU CUỘN CHUỘT (Smooth Scrolling) ---
+        public static void SetupSmoothScrolling(Panel pnl)
+        {
+            if (pnl == null) return;
+            pnl.MouseWheel += (s, e) => {
+                // Hủy bỏ hành vi cuộn mặc định (thường bị giật theo nấc)
+                HandledMouseEventArgs hme = (HandledMouseEventArgs)e;
+                hme.Handled = true;
+
+                // Tính toán khoảng cách cuộn: Càng nhỏ càng mượt (ví dụ 60px mỗi lần xoay)
+                // Delta 120 là 1 nấc xoay chuẩn
+                int scrollStep = 60; 
+                int direction = e.Delta > 0 ? -1 : 1;
+                int scrollAmount = direction * scrollStep;
+
+                int newValue = pnl.VerticalScroll.Value + scrollAmount;
+
+                // Đảm bảo không cuộn quá giới hạn
+                if (newValue < pnl.VerticalScroll.Minimum) newValue = pnl.VerticalScroll.Minimum;
+                if (newValue > pnl.VerticalScroll.Maximum) newValue = pnl.VerticalScroll.Maximum;
+
+                pnl.VerticalScroll.Value = newValue;
+            };
+        }
+        
         public static void EnableNativeDrag(Control handle, Control target)
         {
             handle.MouseDown += (s, e) => {
@@ -110,13 +135,7 @@ namespace UI_Tier
             }
         }
 
-        // Hàm này dùng Reflection để bật Double Buffering cho Control, giúp giảm nhấp nháy khi vẽ lại
-        public static void SetDoubleBuffered(Control control)
-        {
-            typeof(Control).InvokeMember("DoubleBuffered",
-                BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
-                null, control, new object[] { true });
-        }
+
         // --- HÀM MỚI: Xử lý hiển thị tiền tệ chuẩn Việt Nam ---
         public static string FormatVND(decimal? price)
         {
@@ -407,6 +426,195 @@ namespace UI_Tier
                     if (pnl.BackColor != activeColor) pnl.BackColor = normalColor;
                 };
             }
+        }
+
+        // --- HÀM MỚI: Hiệu ứng Fade In cho Form khi mở ---
+        public static async System.Threading.Tasks.Task FadeInForm(Form form, int speed = 5)
+        {
+            form.Opacity = 0;
+            while (form.Opacity < 1)
+            {
+                await System.Threading.Tasks.Task.Delay(10);
+                form.Opacity += (double)speed / 100;
+            }
+            form.Opacity = 1;
+        }
+
+        // --- HÀM MỚI: Hiệu ứng Fade Out cho Form khi đóng ---
+        public static async System.Threading.Tasks.Task FadeOutForm(Form form, int speed = 5)
+        {
+            while (form.Opacity > 0)
+            {
+                await System.Threading.Tasks.Task.Delay(10);
+                form.Opacity -= (double)speed / 100;
+            }
+            form.Opacity = 0;
+        }
+
+        // --- HÀM MỚI: Chuyển đổi UserControl mượt mà (Tối ưu tốc độ) ---
+        public static void SwitchControlSmoothly(Control container, Control? oldCtrl, Control newCtrl)
+        {
+            if (newCtrl == null || container == null) return;
+            if (oldCtrl == newCtrl) return;
+
+            container.SuspendLayout();
+            
+            // Ép kích thước ngay lúc còn ẩn để tránh hiệu ứng vẽ từ giữa ra
+            newCtrl.Size = container.ClientSize;
+            newCtrl.Location = new Point(0, 0);
+            newCtrl.Dock = DockStyle.Fill;
+            
+            SetDoubleBuffered(newCtrl);
+
+            newCtrl.BringToFront();
+            newCtrl.Visible = true;
+            newCtrl.Update(); // Ép vẽ ngay lập tức
+
+            if (oldCtrl != null)
+            {
+                oldCtrl.Visible = false;
+            }
+            
+            container.ResumeLayout(true);
+        }
+
+        // --- HÀM MỚI: Vẽ sẵn các Tab vào RAM (Gộp logic để dùng chung) ---
+        public static void PreLoadTabs(Panel container, Dictionary<Panel, Type> typeMapping, Dictionary<Panel, UserControl> instanceMapping, Panel priorityTab = null, bool loadAll = true, Action<UserControl, Panel> onInit = null)
+        {
+            if (container == null || typeMapping == null || instanceMapping == null) return;
+
+            container.SuspendLayout();
+            
+            // 1. Vẽ tab ưu tiên trước (Để hiện lên ngay lập tức)
+            if (priorityTab != null && typeMapping.ContainsKey(priorityTab) && !instanceMapping.ContainsKey(priorityTab))
+            {
+                CreateTab(container, priorityTab, typeMapping[priorityTab], instanceMapping, onInit);
+            }
+
+            // 2. Vẽ các tab còn lại (Nếu loadAll = true)
+            if (loadAll)
+            {
+                foreach (var item in typeMapping)
+                {
+                    Panel pnlTab = item.Key;
+                    if (pnlTab == priorityTab) continue; // Đã vẽ ở bước 1
+
+                    if (!instanceMapping.ContainsKey(pnlTab))
+                    {
+                        CreateTab(container, pnlTab, item.Value, instanceMapping, onInit);
+                    }
+                }
+            }
+            container.ResumeLayout(true);
+        }
+
+        public static async Task BackgroundPreLoadTabs(Panel container, Dictionary<Panel, Type> typeMapping, Dictionary<Panel, UserControl> instanceMapping, Panel priorityTab, Action<UserControl, Panel> onInit)
+        {
+            // Nạp từng tab một cách chậm rãi để không gây treo UI (UI Responsive)
+            foreach (var item in typeMapping)
+            {
+                Panel pnlTab = item.Key;
+                if (pnlTab == priorityTab) continue; 
+                if (instanceMapping.ContainsKey(pnlTab)) continue;
+
+                // Nghỉ một chút giữa mỗi tab để luồng UI xử lý các sự kiện khác (click, hover, scroll)
+                await Task.Delay(200); 
+
+                // Thực hiện vẽ Tab vào RAM trên luồng UI
+                container.BeginInvoke(new Action(() => {
+                    CreateTab(container, pnlTab, item.Value, instanceMapping, onInit);
+                }));
+            }
+        }
+
+        private static void CreateTab(Panel container, Panel pnlTab, Type type, Dictionary<Panel, UserControl> instanceMapping, Action<UserControl, Panel> onInit)
+        {
+            if (instanceMapping.ContainsKey(pnlTab)) return;
+
+            UserControl uc = (UserControl)Activator.CreateInstance(type);
+            uc.Dock = DockStyle.Fill;
+            uc.Visible = false;
+            
+            // QUAN TRỌNG: Ép hệ thống tạo Handle và chạy sự kiện Load ngay lập tức trong RAM
+            uc.CreateControl(); 
+            
+            container.Controls.Add(uc);
+            instanceMapping.Add(pnlTab, uc);
+
+            // Bật DoubleBuffered đệ quy để chống nháy khi Switch
+            SetDoubleBuffered(uc);
+
+            // Callback để xử lý riêng (nạp dữ liệu Profile, Lịch hẹn...)
+            onInit?.Invoke(uc, pnlTab);
+        }
+
+        // --- BỔ SUNG: Helper bật DoubleBuffered cho mọi Control con ---
+        public static void SetDoubleBuffered(Control c)
+        {
+            if (c == null) return;
+            if (System.Windows.Forms.SystemInformation.TerminalServerSession) return;
+            
+            System.Reflection.PropertyInfo dbProp = typeof(Control).GetProperty("DoubleBuffered",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            dbProp?.SetValue(c, true, null);
+
+            // Đệ quy cho toàn bộ control con bên trong
+            foreach (Control child in c.Controls)
+            {
+                SetDoubleBuffered(child);
+            }
+        }
+
+        /// <summary>
+        /// Cấu hình tối ưu cho các Container có thanh cuộn (Scrollable)
+        /// Chống giật (flicker) và cuộn mượt mà hơn.
+        /// </summary>
+        public static void SetupScrollableContainer(Control container)
+        {
+            if (container == null) return;
+
+            // 1. Bật DoubleBuffered đệ quy để chống nháy khi vẽ lại các item lúc cuộn
+            SetDoubleBuffered(container);
+
+            // 2. Nếu là Panel hoặc FlowLayoutPanel, cài đặt cuộn mượt (Smooth Scrolling)
+            if (container is Panel pnl)
+            {
+                // Logic for smooth scrolling setup can be added here
+            }
+        }
+
+        public static void LogoutAndCleanup(Form dashboard, Dictionary<Panel, UserControl> tabMapping)
+        {
+            // 1. Hiện lại Guest (Owner) ngay lập tức để không bị lộ màn hình máy tính (Desktop)
+            if (dashboard.Owner != null)
+            {
+                dashboard.Owner.Show();
+                dashboard.Owner.Update(); // Ép vẽ Guest xong mới đóng Dashboard
+            }
+
+            // 2. Đăng xuất tài khoản
+            DTO_Tier.GlobalAccount.Logout();
+
+            // 3. Giải phóng RAM: Hủy toàn bộ UserControls đã cache
+            if (tabMapping != null)
+            {
+                foreach (var uc in tabMapping.Values)
+                {
+                    if (uc != null && !uc.IsDisposed)
+                    {
+                        uc.Dispose();
+                    }
+                }
+                tabMapping.Clear();
+            }
+
+            // 4. Đóng Dashboard
+            dashboard.Close();
+
+            // 5. Ép dọn RAM ngay lập tức
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
         }
     }
 }

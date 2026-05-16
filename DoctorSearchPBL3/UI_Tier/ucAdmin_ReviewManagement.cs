@@ -19,7 +19,10 @@ namespace UI_Tier
         public ucAdmin_ReviewManagement()
         {
             InitializeComponent();
-            UIHelper.SetDoubleBuffered(flpList);
+            UIHelper.SetDoubleBuffered(this);
+            UIHelper.SetDoubleBuffered(pnlMainContainer);
+            UIHelper.SetupScrollableContainer(flpList);
+            
             this.Resize += (s, e) => UpdateUI();
             
             // Hiệu ứng hover cho các nút phân trang sử dụng Helper
@@ -104,11 +107,11 @@ namespace UI_Tier
             InitData();
         }
 
-        public void InitData()
+        public void InitData(bool keepPage = false)
         {
             _allReviews = _reviewBUS.GetAllReviewsForAdmin();
             LoadStats();
-            ApplyFilters();
+            ApplyFilters(keepPage);
             
             // Ngăn ô tìm kiếm tự động lấy focus và đảm bảo UI cập nhật
             this.BeginInvoke(new Action(() => {
@@ -135,7 +138,7 @@ namespace UI_Tier
             lblStatValue4.Text = hidden.ToString("N0");
         }
 
-        private void ApplyFilters()
+        private void ApplyFilters(bool keepPage = false)
         {
             string keyword = txtSearch.Text.ToLower().Trim();
             if (keyword == "tìm kiếm theo bệnh nhân, bác sĩ, nội dung...") keyword = "";
@@ -159,7 +162,12 @@ namespace UI_Tier
                 return matchKeyword && matchRating && matchStatus;
             }).ToList();
 
-            _currentPage = 1;
+            if (!keepPage) _currentPage = 1;
+            
+            // Validate current page
+            int totalPages = Math.Max(1, (int)Math.Ceiling((double)_filteredReviews.Count / _pageSize));
+            if (_currentPage > totalPages) _currentPage = totalPages;
+
             DisplayPage(_currentPage);
         }
 
@@ -177,8 +185,8 @@ namespace UI_Tier
                 item.SetAdminReviewData(review);
                 
                 // Đảm bảo cập nhật dữ liệu trên luồng UI chính
-                item.ReviewEdited += (s, e) => this.Invoke(new Action(() => InitData()));
-                item.ReviewDeleted += (s, e) => this.Invoke(new Action(() => InitData()));
+                item.ReviewEdited += (s, e) => this.Invoke(new Action(() => InitData(true)));
+                item.ReviewDeleted += (s, e) => this.Invoke(new Action(() => InitData(true)));
                 
                 item.Width = flpList.Width - 45;
                 flpList.Controls.Add(item);

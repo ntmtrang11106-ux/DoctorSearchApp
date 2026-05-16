@@ -41,8 +41,15 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(btnAdd, 12);
             UIHelper.ApplyRoundedRegion(pnlSearch, 15);
 
+            ToolTip tt = new ToolTip();
+            tt.SetToolTip(btnAdd, "Thêm một chuyên khoa/phòng khám mới");
+
             InitData();
             this.Load += (s, e) => ApplyFilters();
+
+            // Bật bộ đệm đôi đệ quy và cuộn mượt cho danh sách
+            UIHelper.SetupScrollableContainer(flpList);
+            UIHelper.SetDoubleBuffered(this);
         }
 
         private void ucAdmin_DepartmentManagement_Paint(object sender, PaintEventArgs e)
@@ -55,17 +62,17 @@ namespace UI_Tier
             UIHelper.DrawControlBorder(sender, e, 15, Color.FromArgb(203, 213, 225), 2);
         }
 
-        public void InitData()
+        public void InitData(bool keepPage = false)
         {
             _allDepts = _deptBUS.GetAllDepartments();
             if (cboStatusFilter.SelectedIndex == -1) cboStatusFilter.SelectedIndex = 0;
             
             UIHelper.SetupSearchTextBox(txtSearch, "Tìm kiếm theo tên chuyên khoa, mô tả...");
             
-            ApplyFilters();
+            ApplyFilters(keepPage);
         }
 
-        private void ApplyFilters()
+        private void ApplyFilters(bool keepPage = false)
         {
             string keyword = txtSearch.Text.ToLower().Trim();
             if (keyword == "tìm kiếm theo tên chuyên khoa, mô tả...") keyword = "";
@@ -76,7 +83,12 @@ namespace UI_Tier
                 (statusFilter == "Tất cả trạng thái" || (statusFilter == "Hiển thị" && d.IsActive) || (statusFilter == "Ẩn" && !d.IsActive))
             ).ToList();
 
-            _currentPage = 1;
+            if (!keepPage) _currentPage = 1;
+            
+            // Validate current page against total items
+            int totalPages = Math.Max(1, (int)Math.Ceiling((double)_filteredDepts.Count / _pageSize));
+            if (_currentPage > totalPages) _currentPage = totalPages;
+
             DisplayPage(_currentPage);
         }
 
@@ -99,7 +111,7 @@ namespace UI_Tier
             {
                 ucAdmin_DepartmentItem item = new ucAdmin_DepartmentItem();
                 item.SetData(dept);
-                item.DataChanged += (s, ev) => InitData();
+                item.DataChanged += (s, ev) => InitData(true);
                 item.Width = flpList.ClientSize.Width - 20;
                 flpList.Controls.Add(item);
             }

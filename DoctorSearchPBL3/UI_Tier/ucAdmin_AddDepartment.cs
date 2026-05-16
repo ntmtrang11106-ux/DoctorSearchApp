@@ -16,26 +16,24 @@ namespace UI_Tier
         public ucAdmin_AddDepartment()
         {
             InitializeComponent();
-            UIHelper.SetDoubleBuffered(this);
-            
             this.Paint += ucAdmin_AddDepartment_Paint;
-            this.Padding = new Padding(3); // To show the border
+            this.Padding = new Padding(3); // Chừa chỗ để hiện viền
 
             SetupUI();
             InitializeInputStyling();
+            
+            // Bật DoubleBuffered đệ quy sau khi đã khởi tạo hết các Panel/Wrapper
+            UIHelper.SetDoubleBuffered(this);
         }
 
         private void ucAdmin_AddDepartment_Paint(object sender, PaintEventArgs e)
         {
-            // Viền Dialog cũng để 2px cho đồng bộ với ô nhập liệu và các form khác
-            UIHelper.DrawControlBorder(sender, e, 15, Color.Black, 2);
+            // Vẽ viền đen dày 3px như yêu cầu
+            UIHelper.DrawControlBorder(sender, e, 15, Color.Black, 3);
         }
 
         private void InitializeInputStyling()
         {
-            // Register click to unfocus for the whole form
-            UIHelper.RegisterClickToUnfocus(this);
-
             // Wrap Name
             Panel pnlName = SetupInputWrapper(txtName);
             // Wrap Description
@@ -45,6 +43,10 @@ namespace UI_Tier
             // Note: UIHelper.SetupInputFocusEffect now handles the 1px/4px drawing automatically
             UIHelper.SetupInputFocusEffect(txtName, pnlName, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
             UIHelper.SetupInputFocusEffect(txtDesc, pnlDesc, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+
+            // CỰC KỲ QUAN TRỌNG: Gọi sau khi đã tạo xong các Panel Wrapper 
+            // để các Panel này cũng nhận được sự kiện Click để Unfocus
+            UIHelper.RegisterClickToUnfocus(this);
         }
 
         private Panel SetupInputWrapper(Control ctrl)

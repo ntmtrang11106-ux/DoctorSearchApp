@@ -58,7 +58,7 @@ namespace UI_Tier
             picDoctor.BackColor = Color.FromArgb(248, 249, 250);
             picDoctor.Location = new Point(0, 3);
             picDoctor.Name = "picDoctor";
-            picDoctor.Size = new Size(606, 349);
+            picDoctor.Size = new Size(626, 349);
             picDoctor.SizeMode = PictureBoxSizeMode.Zoom;
             picDoctor.TabIndex = 0;
             picDoctor.TabStop = false;
@@ -140,7 +140,7 @@ namespace UI_Tier
             pnlContainer.Location = new Point(13, 13);
             pnlContainer.Name = "pnlContainer";
             pnlContainer.Padding = new Padding(10);
-            pnlContainer.Size = new Size(626, 881);
+            pnlContainer.Size = new Size(646, 881);
             pnlContainer.TabIndex = 19;
             pnlContainer.Click += Card_Click;
             // 
@@ -238,7 +238,7 @@ namespace UI_Tier
             label2.BackColor = Color.Gray;
             label2.Location = new Point(3, 747);
             label2.Name = "label2";
-            label2.Size = new Size(606, 3);
+            label2.Size = new Size(626, 3);
             label2.TabIndex = 20;
             label2.Click += Card_Click;
             // 
@@ -326,7 +326,7 @@ namespace UI_Tier
             Controls.Add(pnlContainer);
             Name = "UCCardDoctor";
             Padding = new Padding(13);
-            Size = new Size(652, 907);
+            Size = new Size(672, 907);
             Load += UCCardDoctor_Load;
             ((System.ComponentModel.ISupportInitialize)picDoctor).EndInit();
             pnlContainer.ResumeLayout(false);

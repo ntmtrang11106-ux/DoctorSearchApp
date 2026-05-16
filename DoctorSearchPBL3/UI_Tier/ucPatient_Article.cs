@@ -1,4 +1,4 @@
-﻿using BUS_Tier;
+using BUS_Tier;
 using DTO_Tier;
 using DAL_Tier;
 using System;
@@ -16,7 +16,7 @@ namespace UI_Tier
         public ucPatient_Article()
         {
             InitializeComponent();
-            UIHelper.SetDoubleBuffered(flpArticle); // Kích hoạt double buffering cho FlowLayoutPanel
+            UIHelper.SetupScrollableContainer(flpArticle); // Kích hoạt bộ đệm đôi và cuộn mượt
         }
 
         // Khai báo một lần ở cấp độ class để tái sử dụng

@@ -20,6 +20,8 @@ namespace UI_Tier
             InitializeComponent();
 
             UIHelper.SetDoubleBuffered(this); // Kích hoạt Double Buffering cho UserControl để giảm nhấp nháy
+            UIHelper.SetupScrollableContainer(flpReview);
+            UIHelper.SetupScrollableContainer(flpAppItem);
 
             // Bo góc cho các nút
             UIHelper.ApplyRoundedRegion(btnWriteReview, 15);

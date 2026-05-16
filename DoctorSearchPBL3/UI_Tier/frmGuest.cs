@@ -23,40 +23,37 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(btnLogin, 15);
             btnLogin.Cursor = Cursors.Hand;
             
+            this.Opacity = 0;
             _searchControl = new ucGuest_IntegratedSearch();
             _searchControl.Dock = DockStyle.Fill;
             pnlMainContainer.Controls.Add(_searchControl);
         }
 
-        //protected override CreateParams CreateParams
-        //{
-        //    get
-        //    {
-        //        CreateParams cp = base.CreateParams;
-        //        cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED (0x02000000)
-        //        return cp;
-        //    }
-        //}
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED (0x02000000)
+                return cp;
+            }
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
             frmLogin loginForm = new frmLogin();
-            if (loginForm.ShowDialog() == DialogResult.OK || DTO_Tier.GlobalAccount.GetUserId() != 0)
+            if (loginForm.ShowDialog(this) == DialogResult.OK)
             {
-                // 1. Xác định Form User cần mở
-                Form mainForm = null;
-                string role = DTO_Tier.GlobalAccount.GetRole();
-                if (role == "Patient") mainForm = new frmPatient();
-                else if (role == "Doctor") mainForm = new frmDoctor();
-                else if (role == "Admin") mainForm = new frmAdmin();
+                // 1. Lấy Dashboard đã được Login chuẩn bị sẵn
+                Form mainForm = loginForm.LoadedDashboard;
 
                 if (mainForm != null)
                 {
-                    // 2. CHỜ HIỆN XONG RỒI MỚI ẨN GUEST (Tránh nháy Desktop)
-                    mainForm.Shown += (s, args) => this.Hide();
+                    // 2. Không ẩn Guest vội ở đây (để Dashboard tự ẩn Guest sau khi đã vẽ xong UI)
+                    // Việc này giúp tránh bị hở màn hình máy tính (Desktop) lúc chuyển tiếp
 
-                    // 3. Mở Form User (Dùng ShowDialog để Guest đứng đợi ngầm)
-                    mainForm.ShowDialog();
+                    // 3. Mở Form User (Sử dụng 'this' làm Owner để dễ quản lý)
+                    mainForm.ShowDialog(this);
 
                     // 4. Khi Form User đóng lại:
                     if (DTO_Tier.GlobalAccount.GetUserId() == 0)
@@ -73,25 +70,23 @@ namespace UI_Tier
             }
         }
 
-        private void frmGuest_Load(object sender, EventArgs e)
+        private async void frmGuest_Load(object sender, EventArgs e)
         {
             _searchControl.ExecuteSearch();
+            this.Update(); // Vẽ xong hết rồi mới bắt đầu FadeIn
+            await UIHelper.FadeInForm(this, 10);
         }
 
         public async void OpenArticleDetail(ContentDTO art)
         {
             if (art == null) return;
 
-            // 1. Ẩn danh sách tìm kiếm
-            _searchControl.Visible = false;
-
-            // 2. Tạo UC Chi tiết bài viết
             ucArticleDetail detail = new ucArticleDetail();
             detail.Dock = DockStyle.Fill;
             detail.SetData(art);
-
             pnlMainContainer.Controls.Add(detail);
-            detail.BringToFront();
+
+            UIHelper.SwitchControlSmoothly(pnlMainContainer, _searchControl, detail);
 
             // 3. Tăng view ngầm (không block UI)
             ContentBUS bus = new ContentBUS();
@@ -100,7 +95,6 @@ namespace UI_Tier
 
         public void BackToSearch()
         {
-            // 1. Tìm và xóa UC Chi tiết bài viết
             ucArticleDetail detail = null;
             foreach (Control ctrl in pnlMainContainer.Controls)
             {
@@ -113,6 +107,7 @@ namespace UI_Tier
 
             if (detail != null)
             {
+                UIHelper.SwitchControlSmoothly(pnlMainContainer, detail, _searchControl);
                 pnlMainContainer.Controls.Remove(detail);
                 detail.Dispose();
             }
