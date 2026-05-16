@@ -106,7 +106,7 @@ namespace UI_Tier
             // 3. Register unfocus khi click ra ngoài
             UIHelper.RegisterClickToUnfocus(this, lblTitle);
 
-            // 4. Hiệu ứng Focus cho các ô nhập (Nền xanh nhẹ, vạch xanh dưới 4px, khung đen 1px, bo góc 8px)
+            // 4. Hiệu ứng Focus cho các ô nhập (Chuẩn 2px Đen / 4px Xanh / Bo góc 8)
             Color focusColor = Color.FromArgb(242, 248, 255);
             Color unfocusColor = Color.White;
             Color highlightColor = Color.FromArgb(37, 99, 235);
@@ -119,11 +119,34 @@ namespace UI_Tier
             UIHelper.SetupInputFocusEffect(cbRoom, pnlRoomBorder, focusColor, unfocusColor, highlightColor);
             UIHelper.SetupInputFocusEffect(numMax, pnlMaxBorder, focusColor, unfocusColor, highlightColor);
 
+            // Bổ sung wrapper và focus cho các ô trong phần lặp lại
+            SetupRepeatInputsStyling(focusColor, unfocusColor, highlightColor);
+
             if (_editSlotId == 0)
             {
                 LoadInitialData();
             }
             InitDayPicker();
+        }
+
+        private void SetupRepeatInputsStyling(Color focusColor, Color unfocusColor, Color highlightColor)
+        {
+            // Tự động tạo wrapper cho dtpStartDateRange và dtpEndDateRange nếu chưa có
+            DateTimePicker[] datePickers = { dtpStartDateRange, dtpEndDateRange };
+            foreach (var dtp in datePickers)
+            {
+                Panel pnl = new Panel();
+                pnl.Size = new Size(dtp.Width + 14, dtp.Height + 14); // Tăng size panel
+                pnl.Location = new Point(dtp.Left - 7, dtp.Top - 7);
+                pnl.BackColor = Color.White;
+                dtp.Parent.Controls.Add(pnl);
+                dtp.Parent = pnl;
+                dtp.Dock = DockStyle.Fill;
+                dtp.Format = DateTimePickerFormat.Custom;
+                dtp.CustomFormat = "dd/MM/yyyy";
+                pnl.Padding = new Padding(12, 10, 12, 8); // Tăng padding
+                UIHelper.SetupInputFocusEffect(dtp, pnl, focusColor, unfocusColor, highlightColor);
+            }
         }
 
         private void LoadInitialData()
@@ -171,9 +194,9 @@ namespace UI_Tier
                 chk.Size = new Size(110, 80);
                 chk.TextAlign = ContentAlignment.MiddleCenter;
                 chk.FlatStyle = FlatStyle.Flat;
-                chk.FlatAppearance.BorderSize = 1;
+                chk.FlatAppearance.BorderSize = 2; // Nâng lên 2px cho sắc nét
                 chk.FlatAppearance.BorderColor = Color.FromArgb(226, 232, 240);
-                UIHelper.ApplyRoundedRegion(chk, 10);
+                UIHelper.ApplyRoundedRegion(chk, 8); // Chuẩn 8px
                 chk.Cursor = Cursors.Hand;
                 chk.BackColor = Color.White;
                 chk.ForeColor = Color.FromArgb(100, 116, 139);
@@ -182,9 +205,9 @@ namespace UI_Tier
                 {
                     if (chk.Checked)
                     {
-                        chk.BackColor = Color.FromArgb(30, 64, 175);
+                        chk.BackColor = Color.FromArgb(37, 99, 235); // Xanh chuẩn highlight
                         chk.ForeColor = Color.White;
-                        chk.FlatAppearance.BorderColor = Color.FromArgb(30, 64, 175);
+                        chk.FlatAppearance.BorderColor = Color.FromArgb(37, 99, 235);
                     }
                     else
                     {

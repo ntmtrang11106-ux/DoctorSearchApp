@@ -134,6 +134,9 @@ namespace UI_Tier
             {
                 input.Font = new Font("Segoe UI", 12F);
                 UIHelper.SetupInputFocusEffect(input, null, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+                
+                // Áp dụng bo góc cho chính ô nhập để màu nền không đè lên viền bo của Parent
+                UIHelper.ApplyRoundedRegion(input, 4);
             }
         }
 
@@ -347,73 +350,47 @@ namespace UI_Tier
         private void SectionPanel_Paint(object sender, PaintEventArgs e)
         {
             Control pnl = sender as Control;
-            if (pnl == pnlBasicInfo || pnl == pnlSecurity || pnl == pnlChangePassword)
+            
+            // Chỉ vẽ shadow cho các panel chính (không vẽ cho pnlChangePassword để tránh khung đè)
+            if (pnl == pnlBasicInfo || pnl == pnlSecurity)
             {
-                Color accentColor = (pnl == pnlBasicInfo) ? Color.FromArgb(37, 99, 235) : Color.Transparent;
+                Color accentColor = (pnl == pnlSecurity) ? Color.FromArgb(244, 63, 94) : Color.FromArgb(37, 99, 235);
                 UIHelper.DrawSectionShadow(sender, e, 20, accentColor);
             }
 
-            // Vẽ viền (vạch dưới) cho các ô nhập liệu
+            // Vẽ viền cho các ô nhập liệu
             DrawInputBorders(pnl, e.Graphics);
         }
 
         private void DrawInputBorders(Control container, Graphics g)
         {
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            Color highlightBlue = Color.FromArgb(37, 99, 235);
             
             foreach (Control c in container.Controls)
             {
                 if ((c is TextBox || c is DateTimePicker) && c.Visible)
                 {
                     bool isFocused = c.Focused;
+                    // Vẽ khít theo đúng tọa độ và kích thước bạn đã đặt trong Designer
+                    // Tăng độ rộng lên 1 chút (2px) để viền bao trọn hẳn bên ngoài control
+                    Rectangle borderRect = new Rectangle(c.Left - 2, c.Top - 2, c.Width + 4, c.Height + 4);
                     
-                    // 1. Vẽ khung viền quanh toàn bộ ô (Đen - 2px, Bo góc 8)
-                    Rectangle borderRect = new Rectangle(c.Left - 1, c.Top - 1, c.Width + 1, c.Height + 1);
-                    using (var path = UIHelper.GetRoundedPath(borderRect, 8))
+                    using (var path = UIHelper.GetRoundedPath(borderRect, 6)) // Bo góc 6px cho rộng rãi hơn
                     {
-                        using (Pen blackPen = new Pen(Color.Black, 2))
+                        using (Pen p = new Pen(Color.Black, 2))
                         {
-                            blackPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
-                            g.DrawPath(blackPen, path);
+                            // PenAlignment.Outset giúp nét vẽ nằm hẳn ra ngoài borderRect
+                            p.Alignment = System.Drawing.Drawing2D.PenAlignment.Outset;
+                            g.DrawPath(p, path);
                         }
-                        
-                        // 2. Nếu đang focus, vẽ vạch dưới màu xanh dày 4px (Cực kỳ rõ nét)
+
                         if (isFocused)
                         {
-                            using (Pen bluePen = new Pen(Color.FromArgb(37, 99, 235), 4))
+                            using (Pen bluePen = new Pen(highlightBlue, 3))
                             {
-                                g.DrawLine(bluePen, c.Left, c.Bottom, c.Right, c.Bottom);
-                            }
-                        }
-                    }
-                }
-                else if (c is Panel && c.HasChildren && c.Visible && c != pnlBasicInfoActions && c != pnlPassActions)
-                {
-                    foreach (Control subC in c.Controls)
-                    {
-                        if ((subC is TextBox || subC is DateTimePicker) && subC.Visible)
-                        {
-                            bool isFocused = subC.Focused;
-                            Point relPos = container.PointToClient(c.PointToScreen(subC.Location));
-                            
-                            // 1. Vẽ khung viền dày 2px (Đen, Bo góc 8)
-                            Rectangle borderRect = new Rectangle(relPos.X - 1, relPos.Y - 1, subC.Width + 1, subC.Height + 1);
-                            using (var path = UIHelper.GetRoundedPath(borderRect, 8))
-                            {
-                                using (Pen blackPen = new Pen(Color.Black, 2))
-                                {
-                                    blackPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
-                                    g.DrawPath(blackPen, path);
-                                }
-
-                                // 2. Vẽ vạch dưới xanh 4px khi focus
-                                if (isFocused)
-                                {
-                                    using (Pen bluePen = new Pen(Color.FromArgb(37, 99, 235), 4))
-                                    {
-                                        g.DrawLine(bluePen, relPos.X, relPos.Y + subC.Height, relPos.X + subC.Width, relPos.Y + subC.Height);
-                                    }
-                                }
+                                // Vẽ vạch xanh ngay dưới chân ô nhập, lùi vào một chút
+                                g.DrawLine(bluePen, borderRect.Left + 10, borderRect.Bottom, borderRect.Right - 10, borderRect.Bottom);
                             }
                         }
                     }

@@ -101,10 +101,10 @@ namespace UI_Tier
             {
                 pnlWrapper.Location = new Point(label.Left, label.Top - 8); 
                 pnlWrapper.Width = label.Parent.Width - label.Left - 15;
-                pnlWrapper.Height = label.Height + 20; // Giảm chiều cao xuống một chút
+                pnlWrapper.Height = label.Height + 30; 
                 pnlWrapper.BackColor = Color.White;
                 pnlWrapper.Visible = false;
-                pnlWrapper.Padding = new Padding(5, 4, 5, 2);
+                pnlWrapper.Padding = new Padding(12, 12, 12, 10);
 
                 edit.Parent = pnlWrapper;
                 edit.Dock = DockStyle.Fill;

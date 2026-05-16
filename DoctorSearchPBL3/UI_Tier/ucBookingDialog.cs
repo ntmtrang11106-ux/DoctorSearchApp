@@ -55,16 +55,21 @@ namespace UI_Tier
             
             // Bo góc và vẽ viền đen độ dày 2 cho khung lý do
             UIHelper.ApplyRoundedRegion(pnlReasonBorder, 15);
-            pnlReasonBorder.Paint += (s, ev) => {
-                UIHelper.DrawControlBorder(s, ev, 15, Color.Black, 2);
-            };
+            pnlReasonBorder.Paint += (s, ev) => UIHelper.DrawControlBorder(s, ev, 15, Color.Black, 2);
 
-            // Hiệu ứng Focus và Click-outside sử dụng Helper
-            UIHelper.SetupInputFocusEffect(txtReason, pnlReasonBorder, Color.FromArgb(243, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
-            UIHelper.RegisterClickToUnfocus(this, lblTitle);
+            // Bo viền cho ô chọn ngày (Dùng panel bọc ngoài)
+            Panel pnlDateBorder = new Panel();
+            pnlDateBorder.Size = dtpDate.Size;
+            pnlDateBorder.Location = dtpDate.Location;
+            pnlDateBorder.BackColor = Color.White;
+            dtpDate.Parent.Controls.Add(pnlDateBorder);
+            dtpDate.Parent = pnlDateBorder;
+            dtpDate.Dock = DockStyle.Fill;
+            pnlDateBorder.Padding = new Padding(10, 5, 10, 5);
+            UIHelper.SetupInputFocusEffect(dtpDate, pnlDateBorder, Color.FromArgb(243, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
 
-            UIHelper.ApplyRoundedRegion(flpTimeSlots, 15);
-            flpTimeSlots.Paint += (s, ev) => UIHelper.DrawControlBorder(flpTimeSlots, ev, 15, Color.Black, 2);
+            UIHelper.ApplyRoundedRegion(flpTimeSlots, 8);
+            flpTimeSlots.Paint += (s, ev) => UIHelper.DrawControlBorder(flpTimeSlots, ev, 8, Color.Black, 2);
 
             UIHelper.ApplyRoundedRegion(pnlNotice, 15);
             UIHelper.ApplyRoundedRegion(btnConfirm, 15);
@@ -96,18 +101,18 @@ namespace UI_Tier
                 }
             }
 
-            // Bo tròn Legend thành hình vuông bo góc nhẹ như hình mẫu
-            UIHelper.ApplyRoundedRegion(picLegendSelected, 6);
-            UIHelper.ApplyRoundedRegion(picLegendAvailable, 6);
-            UIHelper.ApplyRoundedRegion(picLegendBooked, 6);
+            // Bo tròn Legend (8px cho đồng bộ)
+            UIHelper.ApplyRoundedRegion(picLegendSelected, 8);
+            UIHelper.ApplyRoundedRegion(picLegendAvailable, 8);
+            UIHelper.ApplyRoundedRegion(picLegendBooked, 8);
 
-            // Vẽ viền đen đậm hơn cho ô "Còn trống"
-            picLegendAvailable.Paint += (s, ev) => UIHelper.DrawControlBorder(picLegendAvailable, ev, 6, Color.Black, 2);
+            // Vẽ viền đen đậm cho ô "Còn trống"
+            picLegendAvailable.Paint += (s, ev) => UIHelper.DrawControlBorder(picLegendAvailable, ev, 8, Color.Black, 2);
 
             // Set default date hoặc dữ liệu Edit
             if (_editAppointmentId != -1)
             {
-                dtpDate.Value = _currentDate; // Sẽ gán từ SetEditData
+                dtpDate.Value = _currentDate; 
                 txtReason.Text = _prefilledReason;
                 txtReason.ForeColor = string.IsNullOrEmpty(_prefilledReason) || _prefilledReason == "Vui lòng mô tả lý do bạn cần khám bệnh..." ? Color.Gray : Color.Black;
                 _selectedTimeSlotId = _preselectedSlotId;
@@ -172,11 +177,12 @@ namespace UI_Tier
                     {
                         btnSlot.BackColor = Color.White;
                         btnSlot.ForeColor = Color.FromArgb(31, 41, 55);
-                        btnSlot.FlatAppearance.BorderColor = Color.FromArgb(229, 231, 235);
+                        btnSlot.FlatAppearance.BorderColor = Color.Black; // Viền đen chuẩn
+                        btnSlot.FlatAppearance.BorderSize = 2; // Dày 2px
                         btnSlot.Click += Slot_Click;
                     }
 
-                    UIHelper.ApplyRoundedRegion(btnSlot, 10);
+                    UIHelper.ApplyRoundedRegion(btnSlot, 8);
                     flpTimeSlots.Controls.Add(btnSlot);
 
                     // Nếu là slot đang edit thì auto chọn
@@ -186,9 +192,9 @@ namespace UI_Tier
                         btnSlot.BackColor = Color.FromArgb(37, 99, 235);
                         btnSlot.ForeColor = Color.White;
                         btnSlot.FlatAppearance.BorderColor = Color.FromArgb(37, 99, 235);
-                    }
                 }
             }
+        }
 
             flpTimeSlots.ResumeLayout();
         }

@@ -55,9 +55,9 @@ namespace UI_Tier
             btnAdd.FlatStyle = FlatStyle.Flat;
             btnAdd.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnAdd.ForeColor = Color.White;
-            btnAdd.Location = new Point(774, 29);
+            btnAdd.Location = new Point(774, 23);
             btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(486, 70);
+            btnAdd.Size = new Size(486, 81);
             btnAdd.TabIndex = 2;
             btnAdd.Text = "+  Thêm chuyên khoa mới";
             btnAdd.UseVisualStyleBackColor = false;

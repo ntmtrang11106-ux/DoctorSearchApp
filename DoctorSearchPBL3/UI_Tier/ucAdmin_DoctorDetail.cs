@@ -160,10 +160,10 @@ namespace UI_Tier
                 if (edit == txtEditLicense) pnlWrapper.Width = 480;
                 else pnlWrapper.Width = label.Parent.Width - label.Left - 15;
 
-                pnlWrapper.Height = label.Height + 20; // Giảm chiều cao xuống một chút
+                pnlWrapper.Height = label.Height + 30; // Đảm bảo đủ 50px hoặc hơn cho thoáng
                 pnlWrapper.BackColor = Color.White;
                 pnlWrapper.Visible = false;
-                pnlWrapper.Padding = new Padding(5, 4, 5, 2); 
+                pnlWrapper.Padding = new Padding(12, 12, 12, 10); // Chuẩn padding mới
 
                 edit.Parent = pnlWrapper;
                 edit.Dock = DockStyle.Fill;

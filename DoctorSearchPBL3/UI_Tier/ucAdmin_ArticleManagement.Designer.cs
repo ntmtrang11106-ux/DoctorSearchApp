@@ -321,9 +321,9 @@ namespace UI_Tier
             btnAddArticle.FlatStyle = FlatStyle.Flat;
             btnAddArticle.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnAddArticle.ForeColor = Color.White;
-            btnAddArticle.Location = new Point(1410, 27);
+            btnAddArticle.Location = new Point(1410, 13);
             btnAddArticle.Name = "btnAddArticle";
-            btnAddArticle.Size = new Size(375, 75);
+            btnAddArticle.Size = new Size(375, 89);
             btnAddArticle.TabIndex = 2;
             btnAddArticle.Text = "+  Thêm bài viết";
             btnAddArticle.UseVisualStyleBackColor = false;
@@ -331,22 +331,22 @@ namespace UI_Tier
             // lblHeaderSubtitle
             // 
             lblHeaderSubtitle.AutoSize = true;
-            lblHeaderSubtitle.Font = new Font("Segoe UI", 10F);
+            lblHeaderSubtitle.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblHeaderSubtitle.ForeColor = Color.Gray;
-            lblHeaderSubtitle.Location = new Point(15, 65);
+            lblHeaderSubtitle.Location = new Point(5, 59);
             lblHeaderSubtitle.Name = "lblHeaderSubtitle";
-            lblHeaderSubtitle.Size = new Size(503, 37);
+            lblHeaderSubtitle.Size = new Size(695, 50);
             lblHeaderSubtitle.TabIndex = 1;
             lblHeaderSubtitle.Text = "Tạo, chỉnh sửa và quản lý các bài viết y tế";
             // 
             // lblHeaderTitle
             // 
             lblHeaderTitle.AutoSize = true;
-            lblHeaderTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            lblHeaderTitle.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblHeaderTitle.ForeColor = Color.FromArgb(31, 41, 55);
             lblHeaderTitle.Location = new Point(5, 0);
             lblHeaderTitle.Name = "lblHeaderTitle";
-            lblHeaderTitle.Size = new Size(382, 65);
+            lblHeaderTitle.Size = new Size(341, 59);
             lblHeaderTitle.TabIndex = 0;
             lblHeaderTitle.Text = "Quản lý bài viết";
             // 

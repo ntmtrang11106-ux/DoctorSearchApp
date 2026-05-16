@@ -8,7 +8,6 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace UI_Tier
 {
@@ -36,40 +35,69 @@ namespace UI_Tier
             panel3.Size = new Size(panel2.Width - 6, panel2.Height - 6);
             UIHelper.ApplyRoundedRegion(panel2, 30);
             UIHelper.ApplyRoundedRegion(panel3, 30);
-                   // 2. Xử lý cho ô Nơi ở thường trú (Sử dụng panel22 và txtAddress có sẵn)
+                   // 2. Xử lý cho ô Nơi ở thường trú
             txtAddress.BorderStyle = BorderStyle.None;
-            txtAddress.Location = new Point(15, 15);
-            txtAddress.Width = 721;
             txtAddress.Font = new Font("Segoe UI", 12F);
 
-            // Bo góc ô Ngày sinh (tạo panel bao quanh để tô viền đen)
-            Panel pnlDOBContainer = new Panel();
-            pnlDOBContainer.Size = new Size(751, 70);
-            pnlDOBContainer.Location = new Point(37, 65);
-            pnlDOBContainer.BackColor = Color.White;
-            panel19.Controls.Add(pnlDOBContainer);
-            pnlDOBContainer.Controls.Add(dtpDOB);
-            dtpDOB.Location = new Point(15, 12);
-            dtpDOB.Width = 721;
+            // Designer lại toàn bộ ô nhập liệu theo "Mẫu Chuyên khoa" (Cao 70, Viền đen 2px, Bo góc 8)
+            var inputPairs = new[] { 
+                (txtUsername, panel5), (txtPhoneNumber, panel6), 
+                (txtCCCD, panel11), (txtAddress, panel22),
+                (textBox4, panel9), (textBox5, panel10),
+                (textBox7, panel28), (textBox3, panel24)
+            };
 
-            // Hiệu ứng Hover và Focus sử dụng Helper
+            foreach (var pair in inputPairs)
+            {
+                Panel pnl = pair.Item2;
+                TextBox txt = pair.Item1;
+
+                pnl.Height = 70;
+                pnl.BackColor = Color.White;
+                UIHelper.ApplyRoundedRegion(pnl, 8);
+                pnl.BorderStyle = BorderStyle.None;
+                pnl.Paint += (s, ev) => UIHelper.uc_Paint(s, ev, 8, Color.Black, 2);
+
+                txt.BorderStyle = BorderStyle.None;
+                txt.Dock = DockStyle.None; // Không dùng Dock để kiểm soát vị trí chính xác
+                txt.Location = new Point(15, 15);
+                txt.Width = pnl.Width - 30;
+                txt.Font = new Font("Segoe UI", 12F);
+                
+                // Vẫn giữ hiệu ứng đổi màu nền khi focus cho xịn
+                txt.Enter += (s, e) => { pnl.BackColor = Color.FromArgb(243, 248, 255); txt.BackColor = Color.FromArgb(243, 248, 255); };
+                txt.Leave += (s, e) => { pnl.BackColor = Color.White; txt.BackColor = Color.White; };
+            }
+
+            // Ô Ngày sinh (Theo chuẩn Cao 70)
+            Panel pnlDOBContainer = panel19.Controls.Find("pnlDOBContainer", true).Length > 0 ? 
+                (Panel)panel19.Controls.Find("pnlDOBContainer", true)[0] : new Panel();
+            
+            if (pnlDOBContainer.Parent == null) {
+                pnlDOBContainer.Name = "pnlDOBContainer";
+                pnlDOBContainer.Size = new Size(panel19.Width - 70, 70);
+                pnlDOBContainer.Location = new Point(37, 65);
+                pnlDOBContainer.BackColor = Color.White;
+                panel19.Controls.Add(pnlDOBContainer);
+                pnlDOBContainer.Controls.Add(dtpDOB);
+            }
+            pnlDOBContainer.Height = 70;
+            UIHelper.ApplyRoundedRegion(pnlDOBContainer, 8);
+            pnlDOBContainer.Paint += (s, ev) => UIHelper.uc_Paint(s, ev, 8, Color.Black, 2);
+
+            dtpDOB.Dock = DockStyle.None;
+            dtpDOB.Location = new Point(15, 15);
+            dtpDOB.Width = pnlDOBContainer.Width - 30;
+            dtpDOB.Font = new Font("Segoe UI", 12F);
+
+            // Hiệu ứng Hover chuẩn
             UIHelper.SetupHoverEffect(label7, Color.FromArgb(0, 80, 200), Color.Blue, 2);
-            UIHelper.SetupHoverEffect(radioButton1, Color.FromArgb(0, 80, 200), Color.Black, 2);
-            UIHelper.SetupHoverEffect(radioButton2, Color.FromArgb(0, 80, 200), Color.Black, 2);
 
-            // Đăng ký Focus cho các ô nhập liệu (Đã sửa lỗi gán nhầm panel)
-            UIHelper.SetupInputFocusEffect(txtUsername, panel5, Color.FromArgb(243, 248, 255), Color.White, Color.Black);
-            UIHelper.SetupInputFocusEffect(txtPhoneNumber, panel6, Color.FromArgb(243, 248, 255), Color.White, Color.Black);
-            UIHelper.SetupInputFocusEffect(txtCCCD, panel11, Color.FromArgb(243, 248, 255), Color.White, Color.Black);
-            UIHelper.SetupInputFocusEffect(txtAddress, panel22, Color.FromArgb(243, 248, 255), Color.White, Color.Black);
-            UIHelper.SetupInputFocusEffect(textBox4, panel9, Color.FromArgb(243, 248, 255), Color.White, Color.Black);
-            UIHelper.SetupInputFocusEffect(textBox5, panel10, Color.FromArgb(243, 248, 255), Color.White, Color.Black);
-            UIHelper.SetupInputFocusEffect(textBox7, panel28, Color.FromArgb(243, 248, 255), Color.White, Color.Black);
-
-            UIHelper.RegisterClickToUnfocus(this, label1); // Click ngoài để thoát focus
-
+            UIHelper.RegisterClickToUnfocus(this, label1);
             UIHelper.ApplyRoundedRegion(btnLogin, 15);
         }
+
+
 
         private void label7_Click(object sender, EventArgs e)
         {

@@ -215,35 +215,43 @@ namespace UI_Tier
             };
         }
 
-        // --- Overload cũ để tương thích với các màn hình khác ---
+        /// <summary>
+        /// Vẽ khung viền 2px Đen và vạch 4px (Focus) theo chuẩn High-Fidelity (Sắc nét hơn)
+        /// </summary>
+        public static void PaintInputStandard(Graphics g, Rectangle rect, bool isFocused, Color highlightColor)
+        {
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            // 1. Vẽ khung viền đen bo góc 8px (Độ dày 2)
+            // Sử dụng Inset để nét vẽ 2px nằm hoàn toàn bên trong, không bị Region cắt
+            using (var path = UIHelper.GetRoundedPath(new Rectangle(0, 0, rect.Width, rect.Height), 8))
+            {
+                using (Pen blackPen = new Pen(Color.Black, 2))
+                {
+                    blackPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+                    g.DrawPath(blackPen, path);
+                }
+            }
+
+            // 2. Nếu đang focus, vẽ vạch dưới dày 4px (Nằm hẳn bên trong viền đen)
+            if (isFocused)
+            {
+                using (Pen highlightPen = new Pen(highlightColor, 4))
+                {
+                    // Vẽ vạch xanh cách đáy một chút để tách biệt với viền đen
+                    g.DrawLine(highlightPen, 15, rect.Height - 3, rect.Width - 15, rect.Height - 3);
+                }
+            }
+        }
+
         public static void SetupInputFocusEffect(Control inputControl, Control borderControl, Color focusBackColor, Color unfocusBackColor, Color highlightColor)
         {
             if (borderControl != null)
             {
-                UIHelper.ApplyRoundedRegion(borderControl, 8); // Áp dụng bo góc 8px cho khung
-                
-                borderControl.Paint += (s, e) => {
-                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    
-                    // 1. Vẽ khung viền dày 2px quanh toàn bộ borderControl (Đen - Bo góc 8)
-                    Rectangle borderRect = new Rectangle(0, 0, borderControl.Width - 1, borderControl.Height - 1);
-                    using (var path = UIHelper.GetRoundedPath(borderRect, 8))
-                    {
-                        using (Pen blackPen = new Pen(Color.Black, 2))
-                        {
-                            blackPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
-                            e.Graphics.DrawPath(blackPen, path);
-                        }
-                    }
-
-                    // 2. Nếu đang focus, vẽ vạch dưới màu xanh dày 4px
-                    if (inputControl.Focused)
-                    {
-                        using (Pen bluePen = new Pen(highlightColor, 4))
-                        {
-                            e.Graphics.DrawLine(bluePen, 0, borderControl.Height - 1, borderControl.Width, borderControl.Height - 1);
-                        }
-                    }
+                borderControl.Paint += (s, ev) =>
+                {
+                    Rectangle rect = new Rectangle(0, 0, borderControl.Width, borderControl.Height);
+                    PaintInputStandard(ev.Graphics, rect, inputControl.Focused, highlightColor);
                 };
             }
 

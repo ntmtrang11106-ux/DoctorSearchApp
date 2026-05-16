@@ -103,7 +103,7 @@ namespace UI_Tier
             pnlChangePassword.Location = new Point(38, 90);
             pnlChangePassword.Margin = new Padding(4);
             pnlChangePassword.Name = "pnlChangePassword";
-            pnlChangePassword.Size = new Size(1997, 455);
+            pnlChangePassword.Size = new Size(1900, 455); // Giảm chiều rộng để không bị tràn khỏi pnlSecurity
             pnlChangePassword.TabIndex = 3;
             pnlChangePassword.Visible = false;
             // 
@@ -153,10 +153,12 @@ namespace UI_Tier
             // 
             // txtConfirmPass
             // 
+            txtConfirmPass.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             txtConfirmPass.BorderStyle = BorderStyle.None;
             txtConfirmPass.Font = new Font("Segoe UI", 12F);
             txtConfirmPass.Location = new Point(52, 288);
             txtConfirmPass.Margin = new Padding(4);
+            txtConfirmPass.MaximumSize = new Size(1320, 45); // Khống chế độ rộng tối đa như Designer
             txtConfirmPass.Name = "txtConfirmPass";
             txtConfirmPass.PlaceholderText = "Nhập lại mật khẩu mới";
             txtConfirmPass.Size = new Size(1320, 43);
@@ -177,10 +179,12 @@ namespace UI_Tier
             // 
             // txtNewPass
             // 
+            txtNewPass.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             txtNewPass.BorderStyle = BorderStyle.None;
             txtNewPass.Font = new Font("Segoe UI", 12F);
             txtNewPass.Location = new Point(52, 174);
             txtNewPass.Margin = new Padding(4);
+            txtNewPass.MaximumSize = new Size(1320, 45); // Khống chế độ rộng tối đa như Designer
             txtNewPass.Name = "txtNewPass";
             txtNewPass.PlaceholderText = "Nhập mật khẩu mới (tối thiểu 6 ký tự)";
             txtNewPass.Size = new Size(1320, 43);
@@ -201,10 +205,12 @@ namespace UI_Tier
             // 
             // txtCurrentPass
             // 
+            txtCurrentPass.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             txtCurrentPass.BorderStyle = BorderStyle.None;
             txtCurrentPass.Font = new Font("Segoe UI", 12F);
             txtCurrentPass.Location = new Point(52, 57);
             txtCurrentPass.Margin = new Padding(4);
+            txtCurrentPass.MaximumSize = new Size(1320, 45); // Khống chế độ rộng tối đa như Designer
             txtCurrentPass.Name = "txtCurrentPass";
             txtCurrentPass.PlaceholderText = "Nhập mật khẩu hiện tại";
             txtCurrentPass.Size = new Size(1320, 43);
