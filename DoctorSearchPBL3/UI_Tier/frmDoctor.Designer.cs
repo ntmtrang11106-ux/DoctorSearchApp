@@ -40,13 +40,13 @@ namespace UI_Tier
             lblAppText = new Label();
             lblAppIcon = new Label();
             pnlChat = new Panel();
+            lblChatIcon = new Label();
             lblChatText = new Label();
             pnlProfile = new Panel();
             lblProfileText = new Label();
             lblProfileIcon = new Label();
             btnLogout = new Button();
             pnMain = new Panel();
-            lblChatIcon = new Label();
             panel1.SuspendLayout();
             panel7.SuspendLayout();
             pnlOverview.SuspendLayout();
@@ -187,6 +187,17 @@ namespace UI_Tier
             pnlChat.Size = new Size(290, 80);
             pnlChat.TabIndex = 8;
             // 
+            // lblChatIcon
+            // 
+            lblChatIcon.BackColor = Color.Transparent;
+            lblChatIcon.Font = new Font("Segoe MDL2 Assets", 17F);
+            lblChatIcon.ForeColor = SystemColors.ControlDarkDark;
+            lblChatIcon.Location = new Point(22, 11);
+            lblChatIcon.Name = "lblChatIcon";
+            lblChatIcon.Size = new Size(75, 75);
+            lblChatIcon.TabIndex = 4;
+            lblChatIcon.Text = "";
+            // 
             // lblChatText
             // 
             lblChatText.AutoSize = true;
@@ -239,11 +250,11 @@ namespace UI_Tier
             btnLogout.BackColor = Color.FromArgb(24, 112, 255);
             btnLogout.FlatAppearance.BorderSize = 0;
             btnLogout.FlatStyle = FlatStyle.Flat;
-            btnLogout.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnLogout.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             btnLogout.ForeColor = Color.White;
-            btnLogout.Location = new Point(1874, 23);
+            btnLogout.Location = new Point(1894, 12);
             btnLogout.Name = "btnLogout";
-            btnLogout.Size = new Size(277, 65);
+            btnLogout.Size = new Size(260, 80);
             btnLogout.TabIndex = 2;
             btnLogout.Text = "Đăng xuất";
             btnLogout.UseVisualStyleBackColor = false;
@@ -256,17 +267,6 @@ namespace UI_Tier
             pnMain.Name = "pnMain";
             pnMain.Size = new Size(2188, 862);
             pnMain.TabIndex = 3;
-            // 
-            // lblChatIcon
-            // 
-            lblChatIcon.BackColor = Color.Transparent;
-            lblChatIcon.Font = new Font("Segoe MDL2 Assets", 17F);
-            lblChatIcon.ForeColor = SystemColors.ControlDarkDark;
-            lblChatIcon.Location = new Point(22, 11);
-            lblChatIcon.Name = "lblChatIcon";
-            lblChatIcon.Size = new Size(75, 75);
-            lblChatIcon.TabIndex = 4;
-            lblChatIcon.Text = "";
             // 
             // frmDoctor
             // 
@@ -316,6 +316,5 @@ namespace UI_Tier
         private Panel pnlProfile;
         private Label lblProfileText;
         private Label lblProfileIcon;
-        private Label label4;
     }
 }

@@ -10,6 +10,7 @@ namespace UI_Tier
     {
         private Color _activeBack = Color.FromArgb(242, 247, 255);
         private Color _normalBack = Color.Transparent;
+        private Color _hoverBack = Color.FromArgb(230, 242, 255);
         private Color _activeText = Color.FromArgb(0, 98, 255);
         private Color _normalText = Color.Gray;
 
@@ -36,7 +37,7 @@ namespace UI_Tier
         private void InitTabs()
         {
             _tabTypeMapping.Add(pnlOverview, typeof(ucAdmin_Overview));
-            _tabTypeMapping.Add(pnlDoctor, typeof(ucAdmin_UserManagement)); 
+            _tabTypeMapping.Add(pnlDoctor, typeof(ucAdmin_UserManagement));
             _tabTypeMapping.Add(pnlArticles, typeof(ucAdmin_ArticleManagement));
             _tabTypeMapping.Add(pnlAppointment, typeof(ucAdmin_AppointmentManagement));
             _tabTypeMapping.Add(pnlUser, typeof(ucAdmin_DepartmentManagement));
@@ -47,6 +48,8 @@ namespace UI_Tier
             {
                 pnl.Click += PanelTab_Click;
                 pnl.Cursor = Cursors.Hand;
+                UIHelper.SetupTabHover(pnl, _hoverBack, _activeBack, _normalBack);
+                UIHelper.ApplyRoundedRegion(pnl, 15); // Bo góc cho tab
                 foreach (Control child in pnl.Controls)
                 {
                     child.Click += PanelTab_Click;
@@ -91,7 +94,6 @@ namespace UI_Tier
             {
                 bool isActive = (panel == activePanel);
                 panel.BackColor = isActive ? _activeBack : _normalBack;
-                UIHelper.ApplyRoundedRegion(panel, 20);
 
                 foreach (Control child in panel.Controls)
                 {
@@ -123,6 +125,11 @@ namespace UI_Tier
             {
                 artMgmt.ShowArticleDetail(art);
             }
+        }
+
+        private void pnlHeader_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

@@ -31,7 +31,6 @@ namespace UI_Tier
             lblIconAppointment = new Label();
             lblAppointment = new Label();
             pnlArticles = new Panel();
-            lblIconArticles = new Label();
             lblArticles = new Label();
             pnlDoctor = new Panel();
             lblIconDoctor = new Label();
@@ -42,6 +41,7 @@ namespace UI_Tier
             pnlLogo = new Panel();
             lblWelcome = new Label();
             pnMain = new Panel();
+            lblIconArticles = new Label();
             pnlHeader.SuspendLayout();
             pnlTabs.SuspendLayout();
             pnlAdminProfile.SuspendLayout();
@@ -63,8 +63,9 @@ namespace UI_Tier
             pnlHeader.Dock = DockStyle.Top;
             pnlHeader.Location = new Point(0, 0);
             pnlHeader.Name = "pnlHeader";
-            pnlHeader.Size = new Size(2188, 115);
+            pnlHeader.Size = new Size(2884, 115);
             pnlHeader.TabIndex = 0;
+            pnlHeader.Paint += pnlHeader_Paint;
             // 
             // btnLogout
             // 
@@ -72,11 +73,11 @@ namespace UI_Tier
             btnLogout.BackColor = Color.FromArgb(24, 112, 255);
             btnLogout.FlatAppearance.BorderSize = 0;
             btnLogout.FlatStyle = FlatStyle.Flat;
-            btnLogout.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            btnLogout.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnLogout.ForeColor = Color.White;
-            btnLogout.Location = new Point(1888, 23);
+            btnLogout.Location = new Point(2612, 15);
             btnLogout.Name = "btnLogout";
-            btnLogout.Size = new Size(270, 70);
+            btnLogout.Size = new Size(260, 80);
             btnLogout.TabIndex = 5;
             btnLogout.Text = "Đăng xuất";
             btnLogout.UseVisualStyleBackColor = false;
@@ -92,18 +93,18 @@ namespace UI_Tier
             pnlTabs.Controls.Add(pnlArticles);
             pnlTabs.Controls.Add(pnlDoctor);
             pnlTabs.Controls.Add(pnlOverview);
-            pnlTabs.Location = new Point(387, 3);
+            pnlTabs.Location = new Point(587, 3);
             pnlTabs.Name = "pnlTabs";
-            pnlTabs.Size = new Size(1600, 110);
+            pnlTabs.Size = new Size(2019, 110);
             pnlTabs.TabIndex = 1;
             // 
             // pnlAdminProfile
             // 
             pnlAdminProfile.Controls.Add(lblIconAdminProfile);
             pnlAdminProfile.Controls.Add(lblAdminProfile);
-            pnlAdminProfile.Location = new Point(1415, 15);
+            pnlAdminProfile.Location = new Point(1733, 15);
             pnlAdminProfile.Name = "pnlAdminProfile";
-            pnlAdminProfile.Size = new Size(170, 85);
+            pnlAdminProfile.Size = new Size(278, 85);
             pnlAdminProfile.TabIndex = 6;
             // 
             // lblIconAdminProfile
@@ -124,7 +125,7 @@ namespace UI_Tier
             lblAdminProfile.ForeColor = Color.Gray;
             lblAdminProfile.Location = new Point(85, 18);
             lblAdminProfile.Name = "lblAdminProfile";
-            lblAdminProfile.Size = new Size(110, 47);
+            lblAdminProfile.Size = new Size(115, 47);
             lblAdminProfile.TabIndex = 0;
             lblAdminProfile.Text = "Hồ sơ";
             // 
@@ -132,9 +133,9 @@ namespace UI_Tier
             // 
             pnlProfile.Controls.Add(lblIconProfile);
             pnlProfile.Controls.Add(lblProfile);
-            pnlProfile.Location = new Point(1194, 15);
+            pnlProfile.Location = new Point(1449, 15);
             pnlProfile.Name = "pnlProfile";
-            pnlProfile.Size = new Size(215, 85);
+            pnlProfile.Size = new Size(278, 85);
             pnlProfile.TabIndex = 4;
             // 
             // lblIconProfile
@@ -145,7 +146,7 @@ namespace UI_Tier
             lblIconProfile.Name = "lblIconProfile";
             lblIconProfile.Size = new Size(65, 65);
             lblIconProfile.TabIndex = 1;
-            lblIconProfile.Text = "";
+            lblIconProfile.Text = "";
             lblIconProfile.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lblProfile
@@ -161,18 +162,18 @@ namespace UI_Tier
             // 
             // pnlUser
             // 
-            pnlUser.Controls.Add(lblIconUser);
+            pnlUser.Controls.Add(lblIconDoctor);
             pnlUser.Controls.Add(lblUser);
-            pnlUser.Location = new Point(934, 15);
+            pnlUser.Location = new Point(1139, 15);
             pnlUser.Name = "pnlUser";
-            pnlUser.Size = new Size(254, 85);
+            pnlUser.Size = new Size(304, 85);
             pnlUser.TabIndex = 3;
             // 
             // lblIconUser
             // 
             lblIconUser.Font = new Font("Segoe MDL2 Assets", 20F);
             lblIconUser.ForeColor = Color.Gray;
-            lblIconUser.Location = new Point(15, 10);
+            lblIconUser.Location = new Point(17, 10);
             lblIconUser.Name = "lblIconUser";
             lblIconUser.Size = new Size(65, 65);
             lblIconUser.TabIndex = 1;
@@ -186,17 +187,17 @@ namespace UI_Tier
             lblUser.ForeColor = Color.Gray;
             lblUser.Location = new Point(75, 20);
             lblUser.Name = "lblUser";
-            lblUser.Size = new Size(174, 45);
+            lblUser.Size = new Size(214, 45);
             lblUser.TabIndex = 0;
-            lblUser.Text = "C.Khoa";
+            lblUser.Text = "Chuyên khoa";
             // 
             // pnlAppointment
             // 
             pnlAppointment.Controls.Add(lblIconAppointment);
             pnlAppointment.Controls.Add(lblAppointment);
-            pnlAppointment.Location = new Point(685, 15);
+            pnlAppointment.Location = new Point(855, 15);
             pnlAppointment.Name = "pnlAppointment";
-            pnlAppointment.Size = new Size(243, 85);
+            pnlAppointment.Size = new Size(278, 85);
             pnlAppointment.TabIndex = 7;
             // 
             // lblIconAppointment
@@ -217,7 +218,7 @@ namespace UI_Tier
             lblAppointment.ForeColor = Color.Gray;
             lblAppointment.Location = new Point(80, 20);
             lblAppointment.Name = "lblAppointment";
-            lblAppointment.Size = new Size(150, 45);
+            lblAppointment.Size = new Size(143, 45);
             lblAppointment.TabIndex = 0;
             lblAppointment.Text = "Lịch hẹn";
             // 
@@ -225,21 +226,10 @@ namespace UI_Tier
             // 
             pnlArticles.Controls.Add(lblIconArticles);
             pnlArticles.Controls.Add(lblArticles);
-            pnlArticles.Location = new Point(480, 15);
+            pnlArticles.Location = new Point(571, 15);
             pnlArticles.Name = "pnlArticles";
-            pnlArticles.Size = new Size(200, 85);
+            pnlArticles.Size = new Size(278, 85);
             pnlArticles.TabIndex = 5;
-            // 
-            // lblIconArticles
-            // 
-            lblIconArticles.Font = new Font("Segoe MDL2 Assets", 20F);
-            lblIconArticles.ForeColor = Color.Gray;
-            lblIconArticles.Location = new Point(15, 10);
-            lblIconArticles.Name = "lblIconArticles";
-            lblIconArticles.Size = new Size(65, 65);
-            lblIconArticles.TabIndex = 1;
-            lblIconArticles.Text = "";
-            lblIconArticles.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lblArticles
             // 
@@ -254,18 +244,18 @@ namespace UI_Tier
             // 
             // pnlDoctor
             // 
-            pnlDoctor.Controls.Add(lblIconDoctor);
+            pnlDoctor.Controls.Add(lblIconUser);
             pnlDoctor.Controls.Add(lblDoctor);
-            pnlDoctor.Location = new Point(235, 15);
+            pnlDoctor.Location = new Point(287, 15);
             pnlDoctor.Name = "pnlDoctor";
-            pnlDoctor.Size = new Size(240, 85);
+            pnlDoctor.Size = new Size(278, 85);
             pnlDoctor.TabIndex = 2;
             // 
             // lblIconDoctor
             // 
             lblIconDoctor.Font = new Font("Segoe MDL2 Assets", 20F);
             lblIconDoctor.ForeColor = Color.Gray;
-            lblIconDoctor.Location = new Point(15, 10);
+            lblIconDoctor.Location = new Point(17, 10);
             lblIconDoctor.Name = "lblIconDoctor";
             lblIconDoctor.Size = new Size(65, 65);
             lblIconDoctor.TabIndex = 1;
@@ -279,17 +269,17 @@ namespace UI_Tier
             lblDoctor.ForeColor = Color.Gray;
             lblDoctor.Location = new Point(75, 20);
             lblDoctor.Name = "lblDoctor";
-            lblDoctor.Size = new Size(160, 45);
+            lblDoctor.Size = new Size(196, 42);
             lblDoctor.TabIndex = 0;
-            lblDoctor.Text = "N.Dùng";
+            lblDoctor.Text = "Người dùng";
             // 
             // pnlOverview
             // 
             pnlOverview.Controls.Add(lblIconOverview);
             pnlOverview.Controls.Add(lblOverview);
-            pnlOverview.Location = new Point(0, 15);
+            pnlOverview.Location = new Point(3, 15);
             pnlOverview.Name = "pnlOverview";
-            pnlOverview.Size = new Size(230, 85);
+            pnlOverview.Size = new Size(278, 85);
             pnlOverview.TabIndex = 1;
             // 
             // lblIconOverview
@@ -320,7 +310,7 @@ namespace UI_Tier
             pnlLogo.Dock = DockStyle.Left;
             pnlLogo.Location = new Point(0, 0);
             pnlLogo.Name = "pnlLogo";
-            pnlLogo.Size = new Size(555, 115);
+            pnlLogo.Size = new Size(581, 115);
             pnlLogo.TabIndex = 0;
             // 
             // lblWelcome
@@ -340,14 +330,25 @@ namespace UI_Tier
             pnMain.Dock = DockStyle.Fill;
             pnMain.Location = new Point(0, 115);
             pnMain.Name = "pnMain";
-            pnMain.Size = new Size(2188, 862);
+            pnMain.Size = new Size(2884, 862);
             pnMain.TabIndex = 1;
+            // 
+            // lblIconArticles
+            // 
+            lblIconArticles.Font = new Font("Segoe MDL2 Assets", 20F);
+            lblIconArticles.ForeColor = Color.Gray;
+            lblIconArticles.Location = new Point(17, 0);
+            lblIconArticles.Name = "lblIconArticles";
+            lblIconArticles.Size = new Size(62, 69);
+            lblIconArticles.TabIndex = 1;
+            lblIconArticles.Text = "📝";
+            lblIconArticles.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // frmAdmin
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(2188, 977);
+            ClientSize = new Size(2884, 977);
             Controls.Add(pnMain);
             Controls.Add(pnlHeader);
             Name = "frmAdmin";

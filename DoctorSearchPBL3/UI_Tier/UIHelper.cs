@@ -388,5 +388,25 @@ namespace UI_Tier
             handle.MouseUp += (s, ev) => { isDragging = false; };
             handle.Cursor = Cursors.SizeAll;
         }
+
+        public static void SetupTabHover(Panel pnl, Color hoverColor, Color activeColor, Color normalColor)
+        {
+            pnl.MouseEnter += (s, e) => {
+                if (pnl.BackColor != activeColor) pnl.BackColor = hoverColor;
+            };
+            pnl.MouseLeave += (s, e) => {
+                if (pnl.BackColor != activeColor) pnl.BackColor = normalColor;
+            };
+
+            foreach (Control child in pnl.Controls)
+            {
+                child.MouseEnter += (s, e) => {
+                    if (pnl.BackColor != activeColor) pnl.BackColor = hoverColor;
+                };
+                child.MouseLeave += (s, e) => {
+                    if (pnl.BackColor != activeColor) pnl.BackColor = normalColor;
+                };
+            }
+        }
     }
 }

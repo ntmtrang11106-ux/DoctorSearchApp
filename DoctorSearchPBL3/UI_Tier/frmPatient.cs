@@ -34,6 +34,7 @@ namespace UI_Tier
         // Khai báo ở cấp độ Class
         private Color _activeBack = Color.FromArgb(206, 225, 255); // Màu xanh nhạt
         private Color _normalBack = Color.Transparent;
+        private Color _hoverBack = Color.FromArgb(230, 242, 255);
         private Color _activeText = Color.FromArgb(0, 98, 255); // Màu xanh đậm
         private Color _normalText = SystemColors.ControlDarkDark;
 
@@ -57,9 +58,16 @@ namespace UI_Tier
             foreach (var pnl in _tabTypeMapping.Keys)
             {
                 pnl.Click += PanelTab_Click;
+                pnl.Cursor = Cursors.Hand;
+                UIHelper.SetupTabHover(pnl, _hoverBack, _activeBack, _normalBack);
+                UIHelper.ApplyRoundedRegion(pnl, 15); // Bo góc cho tab
                 foreach (Control child in pnl.Controls)
                 {
-                    if (child is Label) child.Click += PanelTab_Click;
+                    if (child is Label)
+                    {
+                        child.Click += PanelTab_Click;
+                        child.Cursor = Cursors.Hand;
+                    }
                 }
             }
         }
@@ -164,12 +172,7 @@ namespace UI_Tier
 
         private void frmPatient_Load(object sender, EventArgs e)
         {
-            UIHelper.ApplyRoundedRegion(btnLogout, 15);
-            UIHelper.ApplyRoundedRegion(pnlHome, 20);
-            UIHelper.ApplyRoundedRegion(pnlAppointment, 20);
-            UIHelper.ApplyRoundedRegion(pnlSearchDoc, 20);
-            UIHelper.ApplyRoundedRegion(pnlChat, 20);
-            UIHelper.ApplyRoundedRegion(pnlProfile, 20);
+            UIHelper.ApplyRoundedRegion(btnLogout, 20);
 
             // Khởi tạo các tab và sự kiện click
             InitTabs();

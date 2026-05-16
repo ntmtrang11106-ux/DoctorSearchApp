@@ -1,4 +1,4 @@
-﻿namespace UI_Tier
+namespace UI_Tier
 {
     partial class frmPatient
     {
@@ -250,11 +250,11 @@
             btnLogout.BackColor = Color.FromArgb(24, 112, 255);
             btnLogout.FlatAppearance.BorderSize = 0;
             btnLogout.FlatStyle = FlatStyle.Flat;
-            btnLogout.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnLogout.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             btnLogout.ForeColor = Color.White;
-            btnLogout.Location = new Point(1804, 23);
+            btnLogout.Location = new Point(1820, 13);
             btnLogout.Name = "btnLogout";
-            btnLogout.Size = new Size(277, 65);
+            btnLogout.Size = new Size(260, 80);
             btnLogout.TabIndex = 2;
             btnLogout.Text = "Đăng xuất";
             btnLogout.UseVisualStyleBackColor = false;
