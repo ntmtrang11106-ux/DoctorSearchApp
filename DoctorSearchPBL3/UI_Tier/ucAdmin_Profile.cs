@@ -72,32 +72,10 @@ namespace UI_Tier
             AddAvatarOverlay();
         }
 
-        private Label lblUpload;
         private void AddAvatarOverlay()
         {
-            lblUpload = new Label
-            {
-                Size = new Size(50, 50),
-                BackColor = Color.FromArgb(200, 37, 99, 235), // Blue semi-transparent
-                ForeColor = Color.White,
-                TextAlign = ContentAlignment.MiddleCenter,
-                Font = new Font("Segoe MDL2 Assets", 18F),
-                Text = "\uE722", // Camera icon
-                Cursor = Cursors.Hand,
-                Visible = false
-            };
-
-            // Vị trí: Góc dưới bên phải của picAvatar
-            lblUpload.Location = new Point(
-                picAvatar.Right - lblUpload.Width - 5,
-                picAvatar.Bottom - lblUpload.Height - 5
-            );
-
             UIHelper.ApplyRoundedRegion(lblUpload, lblUpload.Width / 2);
-            
-            picAvatar.Parent.Controls.Add(lblUpload);
             lblUpload.BringToFront();
-            
             lblUpload.Click += (s, e) => ChangeAvatar();
         }
 
@@ -113,16 +91,37 @@ namespace UI_Tier
 
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
-                ofd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif";
+                ofd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    picAvatar.ImageLocation = ofd.FileName;
-                    picAvatar.SizeMode = PictureBoxSizeMode.Zoom;
-                    
-                    // Nếu muốn lưu ngay lập tức vào DTO:
-                    if (_currentUser != null)
+                    try
                     {
-                        // _currentUser.AvatarPath = ofd.FileName; // Cần kiểm tra logic lưu file thật
+                        string uploadDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "uploads", "avatars");
+                        if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
+
+                        string fileName = $"adm_{GlobalAccount.GetUserId()}_{DateTime.Now.Ticks}{Path.GetExtension(ofd.FileName)}";
+                        string destPath = Path.Combine(uploadDir, fileName);
+                        string relativePath = Path.Combine("uploads", "avatars", fileName);
+
+                        File.Copy(ofd.FileName, destPath, true);
+
+                        // Save to database immediately
+                        string result = _userBUS.UpdateAvatar(GlobalAccount.GetUserId(), relativePath);
+                        if (result == "Success")
+                        {
+                            picAvatar.ImageLocation = destPath;
+                            picAvatar.SizeMode = PictureBoxSizeMode.Zoom;
+                            _currentUser.Picture = relativePath;
+                            MessageBox.Show("Cập nhật ảnh đại diện thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Cập nhật ảnh vào cơ sở dữ liệu thất bại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Lỗi tải ảnh: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -130,15 +129,20 @@ namespace UI_Tier
 
         private void SetupFocusEffects()
         {
-            Control[] inputs = { txtFullName, txtPhone, txtRole, txtGender, dtpBirthday, txtCCCD, txtAddress, txtCurrentPass, txtNewPass, txtConfirmPass };
-            foreach (var input in inputs)
-            {
-                input.Font = new Font("Segoe UI", 12F);
-                UIHelper.SetupInputFocusEffect(input, null, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
-                
-                // Áp dụng bo góc cho chính ô nhập để màu nền không đè lên viền bo của Parent
-                UIHelper.ApplyRoundedRegion(input, 4);
-            }
+            Color focus = Color.FromArgb(242, 248, 255);
+            Color unfocus = Color.White;
+            Color highlight = Color.FromArgb(37, 99, 235);
+            
+            UIHelper.SetupInputFocusEffect(txtFullName, pnlFullNameBorder, focus, unfocus, highlight);
+            UIHelper.SetupInputFocusEffect(txtPhone, pnlPhoneBorder, focus, unfocus, highlight);
+            UIHelper.SetupInputFocusEffect(txtRole, pnlRoleBorder, Color.FromArgb(241, 243, 245), Color.FromArgb(241, 243, 245), highlight);
+            UIHelper.SetupInputFocusEffect(txtGender, pnlGenderBorder, focus, unfocus, highlight);
+            UIHelper.SetupInputFocusEffect(dtpBirthday, pnlBirthdayBorder, focus, unfocus, highlight);
+            UIHelper.SetupInputFocusEffect(txtCCCD, pnlCCCDBorder, focus, unfocus, highlight);
+            UIHelper.SetupInputFocusEffect(txtAddress, pnlAddressBorder, focus, unfocus, highlight);
+            UIHelper.SetupInputFocusEffect(txtCurrentPass, pnlCurrentPassBorder, focus, unfocus, highlight);
+            UIHelper.SetupInputFocusEffect(txtNewPass, pnlNewPassBorder, focus, unfocus, highlight);
+            UIHelper.SetupInputFocusEffect(txtConfirmPass, pnlConfirmPassBorder, focus, unfocus, highlight);
         }
 
         private void dtpBirthday_ValueChanged(object sender, EventArgs e)
@@ -149,12 +153,16 @@ namespace UI_Tier
                 txtCCCD.Text = "Chưa đủ tuổi";
                 txtCCCD.Enabled = false;
                 txtCCCD.BackColor = Color.FromArgb(241, 243, 245);
+                pnlCCCDBorder.BackColor = Color.FromArgb(241, 243, 245);
             }
             else
             {
                 if (txtCCCD.Text == "Chưa đủ tuổi") txtCCCD.Text = "";
                 txtCCCD.Enabled = true;
-                txtCCCD.BackColor = Color.White;
+                bool isEditing = _isEditing;
+                Color bg = isEditing ? Color.White : Color.FromArgb(241, 243, 245);
+                txtCCCD.BackColor = bg;
+                pnlCCCDBorder.BackColor = bg;
             }
         }
 
@@ -204,6 +212,7 @@ namespace UI_Tier
             txtAddress.ReadOnly = !isEditing;
             dtpBirthday.Enabled = isEditing;
             txtGender.ReadOnly = !isEditing;
+            txtRole.ReadOnly = true; // Luôn luôn Read-Only không cho sửa
             
             // Age-based CCCD logic
             int age = _userBUS.CalculateAge(dtpBirthday.Value);
@@ -220,11 +229,25 @@ namespace UI_Tier
 
             Color bg = isEditing ? Color.White : Color.FromArgb(241, 243, 245);
             txtFullName.BackColor = bg;
+            pnlFullNameBorder.BackColor = bg;
+
             txtPhone.BackColor = bg;
+            pnlPhoneBorder.BackColor = bg;
+
             txtGender.BackColor = bg;
-            txtCCCD.BackColor = (isEditing && age < 18) ? Color.FromArgb(241, 243, 245) : bg;
+            pnlGenderBorder.BackColor = bg;
+
+            Color cccdBg = (isEditing && age < 18) ? Color.FromArgb(241, 243, 245) : bg;
+            txtCCCD.BackColor = cccdBg;
+            pnlCCCDBorder.BackColor = cccdBg;
+
             txtAddress.BackColor = bg;
+            pnlAddressBorder.BackColor = bg;
+
             txtRole.BackColor = Color.FromArgb(241, 243, 245); // Luôn xám
+            pnlRoleBorder.BackColor = Color.FromArgb(241, 243, 245); // Luôn xám
+
+            pnlBirthdayBorder.BackColor = bg;
 
             pnlBasicInfoActions.Visible = isEditing;
             btnEditBasicInfo.Visible = !isEditing;
@@ -357,45 +380,6 @@ namespace UI_Tier
             {
                 Color accentColor = (pnl == pnlSecurity) ? Color.FromArgb(244, 63, 94) : Color.FromArgb(37, 99, 235);
                 UIHelper.DrawSectionShadow(sender, e, 20, accentColor);
-            }
-
-            // Vẽ viền cho các ô nhập liệu
-            DrawInputBorders(pnl, e.Graphics);
-        }
-
-        private void DrawInputBorders(Control container, Graphics g)
-        {
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            Color highlightBlue = Color.FromArgb(37, 99, 235);
-            
-            foreach (Control c in container.Controls)
-            {
-                if ((c is TextBox || c is DateTimePicker) && c.Visible)
-                {
-                    bool isFocused = c.Focused;
-                    // Vẽ khít theo đúng tọa độ và kích thước bạn đã đặt trong Designer
-                    // Tăng độ rộng lên 1 chút (2px) để viền bao trọn hẳn bên ngoài control
-                    Rectangle borderRect = new Rectangle(c.Left - 2, c.Top - 2, c.Width + 4, c.Height + 4);
-                    
-                    using (var path = UIHelper.GetRoundedPath(borderRect, 6)) // Bo góc 6px cho rộng rãi hơn
-                    {
-                        using (Pen p = new Pen(Color.Black, 2))
-                        {
-                            // PenAlignment.Outset giúp nét vẽ nằm hẳn ra ngoài borderRect
-                            p.Alignment = System.Drawing.Drawing2D.PenAlignment.Outset;
-                            g.DrawPath(p, path);
-                        }
-
-                        if (isFocused)
-                        {
-                            using (Pen bluePen = new Pen(highlightBlue, 3))
-                            {
-                                // Vẽ vạch xanh ngay dưới chân ô nhập, lùi vào một chút
-                                g.DrawLine(bluePen, borderRect.Left + 10, borderRect.Bottom, borderRect.Right - 10, borderRect.Bottom);
-                            }
-                        }
-                    }
-                }
             }
         }
 

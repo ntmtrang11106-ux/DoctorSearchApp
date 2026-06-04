@@ -518,7 +518,7 @@ namespace UI_Tier
                 if (instanceMapping.ContainsKey(pnlTab)) continue;
 
                 // Nghỉ một chút giữa mỗi tab để luồng UI xử lý các sự kiện khác (click, hover, scroll)
-                await Task.Delay(200); 
+                await Task.Delay(100); 
 
                 // Thực hiện vẽ Tab vào RAM trên luồng UI
                 container.BeginInvoke(new Action(() => {

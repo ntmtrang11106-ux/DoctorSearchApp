@@ -53,9 +53,6 @@ namespace UI_Tier
             numMax = new NumericUpDown();
             btnCancel = new Button();
             btnCreate = new Button();
-            pnlRepeatRange.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numMax).BeginInit();
-            
             pnlDeptBorder = new Panel();
             pnlDoctorBorder = new Panel();
             pnlDateBorder = new Panel();
@@ -63,24 +60,18 @@ namespace UI_Tier
             pnlEndBorder = new Panel();
             pnlRoomBorder = new Panel();
             pnlMaxBorder = new Panel();
-
+            pnlHeader = new Panel();
+            pnlRepeatRange.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numMax).BeginInit();
+            pnlDeptBorder.SuspendLayout();
+            pnlDoctorBorder.SuspendLayout();
+            pnlDateBorder.SuspendLayout();
+            pnlStartBorder.SuspendLayout();
+            pnlEndBorder.SuspendLayout();
             pnlRoomBorder.SuspendLayout();
             pnlMaxBorder.SuspendLayout();
-            pnlHeader = new Panel();
             pnlHeader.SuspendLayout();
-            
             SuspendLayout();
-            // 
-            // pnlHeader
-            // 
-            pnlHeader.BackColor = Color.White;
-            pnlHeader.Controls.Add(lblTitle);
-            pnlHeader.Controls.Add(btnClose);
-            pnlHeader.Dock = DockStyle.Top;
-            pnlHeader.Location = new Point(0, 0);
-            pnlHeader.Name = "pnlHeader";
-            pnlHeader.Size = new Size(1100, 100);
-            pnlHeader.TabIndex = 100;
             // 
             // btnClose
             // 
@@ -88,11 +79,11 @@ namespace UI_Tier
             btnClose.BackColor = Color.Transparent;
             btnClose.FlatAppearance.BorderSize = 0;
             btnClose.FlatStyle = FlatStyle.Flat;
-            btnClose.Font = new Font("Segoe UI", 12F);
-            btnClose.ForeColor = Color.Gray;
-            btnClose.Location = new Point(1040, 10);
+            btnClose.Font = new Font("Segoe UI", 16F);
+            btnClose.ForeColor = Color.Red;
+            btnClose.Location = new Point(986, 15);
             btnClose.Name = "btnClose";
-            btnClose.Size = new Size(50, 50);
+            btnClose.Size = new Size(89, 69);
             btnClose.TabIndex = 0;
             btnClose.Text = "✕";
             btnClose.UseVisualStyleBackColor = false;
@@ -102,33 +93,23 @@ namespace UI_Tier
             // 
             lblTitle.AutoSize = true;
             lblTitle.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
-            lblTitle.Location = new Point(40, 20);
+            lblTitle.ForeColor = Color.Black;
+            lblTitle.Location = new Point(45, 25);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(365, 59);
+            lblTitle.Size = new Size(348, 59);
             lblTitle.TabIndex = 1;
             lblTitle.Text = "Tạo lịch hẹn mới";
             // 
             // lblDept
             // 
             lblDept.AutoSize = true;
-            lblDept.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblDept.ForeColor = Color.FromArgb(100, 116, 139);
-            lblDept.Location = new Point(40, 120);
+            lblDept.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            lblDept.ForeColor = Color.Black;
+            lblDept.Location = new Point(45, 117);
             lblDept.Name = "lblDept";
-            lblDept.Size = new Size(101, 37);
+            lblDept.Size = new Size(118, 45);
             lblDept.TabIndex = 2;
             lblDept.Text = "Khoa *";
-            // 
-            // pnlDeptBorder
-            // 
-            pnlDeptBorder.BackColor = Color.White;
-            pnlDeptBorder.Controls.Add(cbDept);
-            pnlDeptBorder.Location = new Point(40, 160);
-            pnlDeptBorder.Name = "pnlDeptBorder";
-            pnlDeptBorder.Padding = new Padding(10, 5, 10, 5);
-            pnlDeptBorder.Size = new Size(1020, 65);
-            pnlDeptBorder.TabIndex = 3;
-            pnlDeptBorder.Paint += (s, e) => UIHelper.DrawControlBorder(s, e, 8, Color.Black, 2);
             // 
             // cbDept
             // 
@@ -146,24 +127,13 @@ namespace UI_Tier
             // lblDoctor
             // 
             lblDoctor.AutoSize = true;
-            lblDoctor.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblDoctor.ForeColor = Color.FromArgb(100, 116, 139);
-            lblDoctor.Location = new Point(40, 240);
+            lblDoctor.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            lblDoctor.ForeColor = Color.Black;
+            lblDoctor.Location = new Point(45, 237);
             lblDoctor.Name = "lblDoctor";
-            lblDoctor.Size = new Size(111, 37);
+            lblDoctor.Size = new Size(125, 45);
             lblDoctor.TabIndex = 4;
             lblDoctor.Text = "Bác sĩ *";
-            // 
-            // pnlDoctorBorder
-            // 
-            pnlDoctorBorder.BackColor = Color.White;
-            pnlDoctorBorder.Controls.Add(cbDoctor);
-            pnlDoctorBorder.Location = new Point(40, 280);
-            pnlDoctorBorder.Name = "pnlDoctorBorder";
-            pnlDoctorBorder.Padding = new Padding(10, 5, 10, 5);
-            pnlDoctorBorder.Size = new Size(1020, 65);
-            pnlDoctorBorder.TabIndex = 5;
-            pnlDoctorBorder.Paint += (s, e) => UIHelper.DrawControlBorder(s, e, 8, Color.Black, 2);
             // 
             // cbDoctor
             // 
@@ -180,24 +150,13 @@ namespace UI_Tier
             // lblDate
             // 
             lblDate.AutoSize = true;
-            lblDate.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblDate.ForeColor = Color.FromArgb(100, 116, 139);
-            lblDate.Location = new Point(40, 360);
+            lblDate.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            lblDate.ForeColor = Color.Black;
+            lblDate.Location = new Point(45, 357);
             lblDate.Name = "lblDate";
-            lblDate.Size = new Size(105, 37);
+            lblDate.Size = new Size(120, 45);
             lblDate.TabIndex = 6;
             lblDate.Text = "Ngày *";
-            // 
-            // pnlDateBorder
-            // 
-            pnlDateBorder.BackColor = Color.White;
-            pnlDateBorder.Controls.Add(dtpWorkDate);
-            pnlDateBorder.Location = new Point(40, 400);
-            pnlDateBorder.Name = "pnlDateBorder";
-            pnlDateBorder.Padding = new Padding(10, 5, 10, 5);
-            pnlDateBorder.Size = new Size(1020, 65);
-            pnlDateBorder.TabIndex = 7;
-            pnlDateBorder.Paint += (s, e) => UIHelper.DrawControlBorder(s, e, 8, Color.Black, 2);
             // 
             // dtpWorkDate
             // 
@@ -213,24 +172,13 @@ namespace UI_Tier
             // lblFromTime
             // 
             lblFromTime.AutoSize = true;
-            lblFromTime.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblFromTime.ForeColor = Color.FromArgb(100, 116, 139);
-            lblFromTime.Location = new Point(40, 480);
+            lblFromTime.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            lblFromTime.ForeColor = Color.Black;
+            lblFromTime.Location = new Point(45, 477);
             lblFromTime.Name = "lblFromTime";
-            lblFromTime.Size = new Size(71, 37);
+            lblFromTime.Size = new Size(81, 45);
             lblFromTime.TabIndex = 8;
             lblFromTime.Text = "Từ *";
-            // 
-            // pnlStartBorder
-            // 
-            pnlStartBorder.BackColor = Color.White;
-            pnlStartBorder.Controls.Add(dtpStartTime);
-            pnlStartBorder.Location = new Point(40, 520);
-            pnlStartBorder.Name = "pnlStartBorder";
-            pnlStartBorder.Padding = new Padding(10, 5, 10, 5);
-            pnlStartBorder.Size = new Size(495, 65);
-            pnlStartBorder.TabIndex = 9;
-            pnlStartBorder.Paint += (s, e) => UIHelper.DrawControlBorder(s, e, 8, Color.Black, 2);
             // 
             // dtpStartTime
             // 
@@ -247,24 +195,13 @@ namespace UI_Tier
             // lblToTime
             // 
             lblToTime.AutoSize = true;
-            lblToTime.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblToTime.ForeColor = Color.FromArgb(100, 116, 139);
-            lblToTime.Location = new Point(565, 480);
+            lblToTime.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            lblToTime.ForeColor = Color.Black;
+            lblToTime.Location = new Point(570, 477);
             lblToTime.Name = "lblToTime";
-            lblToTime.Size = new Size(88, 37);
+            lblToTime.Size = new Size(102, 45);
             lblToTime.TabIndex = 10;
             lblToTime.Text = "Đến *";
-            // 
-            // pnlEndBorder
-            // 
-            pnlEndBorder.BackColor = Color.White;
-            pnlEndBorder.Controls.Add(dtpEndTime);
-            pnlEndBorder.Location = new Point(565, 520);
-            pnlEndBorder.Name = "pnlEndBorder";
-            pnlEndBorder.Padding = new Padding(10, 5, 10, 5);
-            pnlEndBorder.Size = new Size(495, 65);
-            pnlEndBorder.TabIndex = 11;
-            pnlEndBorder.Paint += (s, e) => UIHelper.DrawControlBorder(s, e, 8, Color.Black, 2);
             // 
             // dtpEndTime
             // 
@@ -281,10 +218,10 @@ namespace UI_Tier
             // cbRepeat
             // 
             cbRepeat.AutoSize = true;
-            cbRepeat.Font = new Font("Segoe UI", 11F);
-            cbRepeat.Location = new Point(40, 600);
+            cbRepeat.Font = new Font("Segoe UI", 12F);
+            cbRepeat.Location = new Point(45, 605);
             cbRepeat.Name = "cbRepeat";
-            cbRepeat.Size = new Size(244, 45);
+            cbRepeat.Size = new Size(263, 49);
             cbRepeat.TabIndex = 12;
             cbRepeat.Text = "Lịch hẹn lặp lại";
             cbRepeat.UseVisualStyleBackColor = true;
@@ -297,29 +234,30 @@ namespace UI_Tier
             pnlRepeatRange.Controls.Add(lblStartDateRange);
             pnlRepeatRange.Controls.Add(dtpStartDateRange);
             pnlRepeatRange.Controls.Add(flpDaySelection);
-            pnlRepeatRange.Location = new Point(40, 650);
+            pnlRepeatRange.Location = new Point(40, 655);
             pnlRepeatRange.Name = "pnlRepeatRange";
-            pnlRepeatRange.Size = new Size(1020, 260);
+            pnlRepeatRange.Size = new Size(1020, 253);
             pnlRepeatRange.TabIndex = 13;
             pnlRepeatRange.Visible = false;
             // 
             // lblEndDateRange
             // 
             lblEndDateRange.AutoSize = true;
-            lblEndDateRange.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            lblEndDateRange.ForeColor = Color.FromArgb(100, 116, 139);
-            lblEndDateRange.Location = new Point(525, 140);
+            lblEndDateRange.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            lblEndDateRange.ForeColor = Color.Black;
+            lblEndDateRange.Location = new Point(525, 131);
             lblEndDateRange.Name = "lblEndDateRange";
-            lblEndDateRange.Size = new Size(118, 32);
+            lblEndDateRange.Size = new Size(159, 45);
             lblEndDateRange.TabIndex = 17;
             lblEndDateRange.Text = "Đến ngày";
             // 
             // dtpEndDateRange
             // 
+            dtpEndDateRange.CalendarFont = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             dtpEndDateRange.CustomFormat = "dd/MM/yyyy";
             dtpEndDateRange.Font = new Font("Segoe UI", 11F);
             dtpEndDateRange.Format = DateTimePickerFormat.Custom;
-            dtpEndDateRange.Location = new Point(525, 180);
+            dtpEndDateRange.Location = new Point(525, 190);
             dtpEndDateRange.Name = "dtpEndDateRange";
             dtpEndDateRange.Size = new Size(475, 47);
             dtpEndDateRange.TabIndex = 16;
@@ -327,20 +265,21 @@ namespace UI_Tier
             // lblStartDateRange
             // 
             lblStartDateRange.AutoSize = true;
-            lblStartDateRange.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            lblStartDateRange.ForeColor = Color.FromArgb(100, 116, 139);
-            lblStartDateRange.Location = new Point(20, 140);
+            lblStartDateRange.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            lblStartDateRange.ForeColor = Color.Black;
+            lblStartDateRange.Location = new Point(20, 131);
             lblStartDateRange.Name = "lblStartDateRange";
-            lblStartDateRange.Size = new Size(101, 32);
-            lblStartDateRange.TabIndex = 15;
+            lblStartDateRange.Size = new Size(138, 45);
+            lblStartDateRange.TabIndex = 2;
             lblStartDateRange.Text = "Từ ngày";
             // 
             // dtpStartDateRange
             // 
+            dtpStartDateRange.CalendarFont = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             dtpStartDateRange.CustomFormat = "dd/MM/yyyy";
             dtpStartDateRange.Font = new Font("Segoe UI", 11F);
             dtpStartDateRange.Format = DateTimePickerFormat.Custom;
-            dtpStartDateRange.Location = new Point(20, 180);
+            dtpStartDateRange.Location = new Point(20, 190);
             dtpStartDateRange.Name = "dtpStartDateRange";
             dtpStartDateRange.Size = new Size(475, 47);
             dtpStartDateRange.TabIndex = 14;
@@ -355,24 +294,13 @@ namespace UI_Tier
             // lblRoom
             // 
             lblRoom.AutoSize = true;
-            lblRoom.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblRoom.ForeColor = Color.FromArgb(100, 116, 139);
-            lblRoom.Location = new Point(40, 930);
+            lblRoom.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            lblRoom.ForeColor = Color.Black;
+            lblRoom.Location = new Point(45, 927);
             lblRoom.Name = "lblRoom";
-            lblRoom.Size = new Size(187, 37);
+            lblRoom.Size = new Size(228, 45);
             lblRoom.TabIndex = 14;
             lblRoom.Text = "Phòng khám *";
-            // 
-            // pnlRoomBorder
-            // 
-            pnlRoomBorder.BackColor = Color.White;
-            pnlRoomBorder.Controls.Add(cbRoom);
-            pnlRoomBorder.Location = new Point(40, 970);
-            pnlRoomBorder.Name = "pnlRoomBorder";
-            pnlRoomBorder.Padding = new Padding(10, 5, 10, 5);
-            pnlRoomBorder.Size = new Size(1020, 65);
-            pnlRoomBorder.TabIndex = 15;
-            pnlRoomBorder.Paint += (s, e) => UIHelper.DrawControlBorder(s, e, 8, Color.Black, 2);
             // 
             // cbRoom
             // 
@@ -389,24 +317,13 @@ namespace UI_Tier
             // lblMaxApp
             // 
             lblMaxApp.AutoSize = true;
-            lblMaxApp.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblMaxApp.ForeColor = Color.FromArgb(100, 116, 139);
-            lblMaxApp.Location = new Point(40, 1050);
+            lblMaxApp.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            lblMaxApp.ForeColor = Color.Black;
+            lblMaxApp.Location = new Point(45, 1047);
             lblMaxApp.Name = "lblMaxApp";
-            lblMaxApp.Size = new Size(270, 37);
+            lblMaxApp.Size = new Size(324, 45);
             lblMaxApp.TabIndex = 16;
             lblMaxApp.Text = "Số lượng đặt tối đa *";
-            // 
-            // pnlMaxBorder
-            // 
-            pnlMaxBorder.BackColor = Color.White;
-            pnlMaxBorder.Controls.Add(numMax);
-            pnlMaxBorder.Location = new Point(40, 1090);
-            pnlMaxBorder.Name = "pnlMaxBorder";
-            pnlMaxBorder.Padding = new Padding(10, 5, 10, 5);
-            pnlMaxBorder.Size = new Size(1020, 65);
-            pnlMaxBorder.TabIndex = 17;
-            pnlMaxBorder.Paint += (s, e) => UIHelper.DrawControlBorder(s, e, 8, Color.Black, 2);
             // 
             // numMax
             // 
@@ -414,9 +331,8 @@ namespace UI_Tier
             numMax.Dock = DockStyle.Fill;
             numMax.Font = new Font("Segoe UI", 12F);
             numMax.Location = new Point(10, 5);
-            numMax.Maximum = new decimal(new int[] { 100, 0, 0, 0 });
             numMax.Name = "numMax";
-            numMax.Size = new Size(1000, 50);
+            numMax.Size = new Size(1000, 46);
             numMax.TabIndex = 0;
             numMax.Value = new decimal(new int[] { 15, 0, 0, 0 });
             // 
@@ -425,11 +341,11 @@ namespace UI_Tier
             btnCancel.BackColor = Color.White;
             btnCancel.FlatAppearance.BorderColor = Color.FromArgb(226, 232, 240);
             btnCancel.FlatStyle = FlatStyle.Flat;
-            btnCancel.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            btnCancel.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
             btnCancel.ForeColor = Color.FromArgb(37, 99, 235);
-            btnCancel.Location = new Point(740, 1180);
+            btnCancel.Location = new Point(625, 1183);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(150, 60);
+            btnCancel.Size = new Size(185, 60);
             btnCancel.TabIndex = 18;
             btnCancel.Text = "HỦY";
             btnCancel.UseVisualStyleBackColor = false;
@@ -440,14 +356,97 @@ namespace UI_Tier
             btnCreate.BackColor = Color.FromArgb(37, 99, 235);
             btnCreate.FlatAppearance.BorderSize = 0;
             btnCreate.FlatStyle = FlatStyle.Flat;
-            btnCreate.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            btnCreate.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
             btnCreate.ForeColor = Color.White;
-            btnCreate.Location = new Point(910, 1180);
-            btnCreate.Size = new Size(150, 60);
+            btnCreate.Location = new Point(816, 1183);
+            btnCreate.Name = "btnCreate";
+            btnCreate.Size = new Size(224, 60);
             btnCreate.TabIndex = 19;
             btnCreate.Text = "TẠO MỚI";
             btnCreate.UseVisualStyleBackColor = false;
             btnCreate.Click += btnConfirm_Click;
+            // 
+            // pnlDeptBorder
+            // 
+            pnlDeptBorder.BackColor = Color.White;
+            pnlDeptBorder.Controls.Add(cbDept);
+            pnlDeptBorder.Location = new Point(40, 160);
+            pnlDeptBorder.Name = "pnlDeptBorder";
+            pnlDeptBorder.Padding = new Padding(10, 5, 10, 5);
+            pnlDeptBorder.Size = new Size(1020, 65);
+            pnlDeptBorder.TabIndex = 3;
+            // 
+            // pnlDoctorBorder
+            // 
+            pnlDoctorBorder.BackColor = Color.White;
+            pnlDoctorBorder.Controls.Add(cbDoctor);
+            pnlDoctorBorder.Location = new Point(40, 280);
+            pnlDoctorBorder.Name = "pnlDoctorBorder";
+            pnlDoctorBorder.Padding = new Padding(10, 5, 10, 5);
+            pnlDoctorBorder.Size = new Size(1020, 65);
+            pnlDoctorBorder.TabIndex = 5;
+            // 
+            // pnlDateBorder
+            // 
+            pnlDateBorder.BackColor = Color.White;
+            pnlDateBorder.Controls.Add(dtpWorkDate);
+            pnlDateBorder.Location = new Point(40, 400);
+            pnlDateBorder.Name = "pnlDateBorder";
+            pnlDateBorder.Padding = new Padding(10, 5, 10, 5);
+            pnlDateBorder.Size = new Size(1020, 65);
+            pnlDateBorder.TabIndex = 7;
+            // 
+            // pnlStartBorder
+            // 
+            pnlStartBorder.BackColor = Color.White;
+            pnlStartBorder.Controls.Add(dtpStartTime);
+            pnlStartBorder.Location = new Point(40, 520);
+            pnlStartBorder.Name = "pnlStartBorder";
+            pnlStartBorder.Padding = new Padding(10, 5, 10, 5);
+            pnlStartBorder.Size = new Size(495, 65);
+            pnlStartBorder.TabIndex = 9;
+            // 
+            // pnlEndBorder
+            // 
+            pnlEndBorder.BackColor = Color.White;
+            pnlEndBorder.Controls.Add(dtpEndTime);
+            pnlEndBorder.Location = new Point(565, 520);
+            pnlEndBorder.Name = "pnlEndBorder";
+            pnlEndBorder.Padding = new Padding(10, 5, 10, 5);
+            pnlEndBorder.Size = new Size(495, 65);
+            pnlEndBorder.TabIndex = 11;
+            // 
+            // pnlRoomBorder
+            // 
+            pnlRoomBorder.BackColor = Color.White;
+            pnlRoomBorder.Controls.Add(cbRoom);
+            pnlRoomBorder.Location = new Point(40, 970);
+            pnlRoomBorder.Name = "pnlRoomBorder";
+            pnlRoomBorder.Padding = new Padding(10, 5, 10, 5);
+            pnlRoomBorder.Size = new Size(1020, 65);
+            pnlRoomBorder.TabIndex = 15;
+            // 
+            // pnlMaxBorder
+            // 
+            pnlMaxBorder.BackColor = Color.White;
+            pnlMaxBorder.Controls.Add(numMax);
+            pnlMaxBorder.Location = new Point(40, 1090);
+            pnlMaxBorder.Name = "pnlMaxBorder";
+            pnlMaxBorder.Padding = new Padding(10, 5, 10, 5);
+            pnlMaxBorder.Size = new Size(1020, 65);
+            pnlMaxBorder.TabIndex = 17;
+            // 
+            // pnlHeader
+            // 
+            pnlHeader.BackColor = Color.White;
+            pnlHeader.Controls.Add(lblTitle);
+            pnlHeader.Controls.Add(btnClose);
+            pnlHeader.Dock = DockStyle.Top;
+            pnlHeader.Location = new Point(5, 5);
+            pnlHeader.Name = "pnlHeader";
+            pnlHeader.Padding = new Padding(5, 5, 5, 0);
+            pnlHeader.Size = new Size(1090, 100);
+            pnlHeader.TabIndex = 100;
             // 
             // ucTimeSlotDialog
             // 
@@ -472,9 +471,10 @@ namespace UI_Tier
             Controls.Add(lblDoctor);
             Controls.Add(pnlDeptBorder);
             Controls.Add(lblDept);
-            Controls.Add(pnlHeader); // Thêm Panel Header
+            Controls.Add(pnlHeader);
             Name = "ucTimeSlotDialog";
-            Size = new Size(1100, 1280);
+            Padding = new Padding(5);
+            Size = new Size(1100, 1258);
             Load += ucTimeSlotCheckbox_Load;
             pnlRepeatRange.ResumeLayout(false);
             pnlRepeatRange.PerformLayout();

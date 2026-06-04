@@ -66,44 +66,19 @@ namespace UI_Tier
             UIHelper.EnableNativeDrag(pnlHeader, this);
             UIHelper.EnableNativeDrag(lblTitle, this);
 
-            // 1. Viền đen dày 2 cho form (Giảm độ dày cho tinh tế hơn)
+            // 1. Viền đen dày 3 cho form
             this.Paint += (s, ev) => {
                 ev.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                using (Pen p = new Pen(Color.Black, 2)) {
-                    var rect = new Rectangle(1, 1, this.Width - 3, this.Height - 3);
+                using (Pen p = new Pen(Color.Black, 3)) {
+                    var rect = new Rectangle(1, 1, this.Width - 4, this.Height - 4);
                     using (var path = UIHelper.GetRoundedPath(rect, 12))
                         ev.Graphics.DrawPath(p, path);
                 }
             };
 
-            // Vẽ viền cho Panel Header để tránh bị Dock che mất phần trên
-            pnlHeader.Paint += (s, ev) => {
-                ev.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                using (Pen p = new Pen(Color.Black, 2)) {
-                    // Vẽ cung tròn phía trên cho Header (Dày 2px đồng bộ)
-                    var rect = new Rectangle(1, 1, this.Width - 3, this.Height + 50); 
-                    using (var path = UIHelper.GetRoundedPath(rect, 12))
-                        ev.Graphics.DrawPath(p, path);
-                }
-            };
 
-            // 2. Style Label chữ màu đen và loại bỏ viền mặc định của Input
-            foreach (Control c in this.Controls) {
-                if (c is Label lbl) lbl.ForeColor = Color.Black;
-                if (c is Panel pnl) {
-                    foreach (Control pc in pnl.Controls) {
-                        if (pc is Label plbl) plbl.ForeColor = Color.Black;
-                        
-                        // Loại bỏ viền mặc định để viền đen custom hiện lên đẹp hơn
-                        if (pc is ComboBox cb) cb.FlatStyle = FlatStyle.Flat;
-                        if (pc is DateTimePicker dtp) dtp.Format = DateTimePickerFormat.Custom; // Một số tùy chỉnh cho DateTimePicker
-                        if (pc is NumericUpDown num) num.BorderStyle = BorderStyle.None;
-                    }
-                }
-            }
-            lblTitle.ForeColor = Color.Black;
 
-            // 3. Register unfocus khi click ra ngoài
+            // Register unfocus khi click ra ngoài
             UIHelper.RegisterClickToUnfocus(this, lblTitle);
 
             // 4. Hiệu ứng Focus cho các ô nhập (Chuẩn 2px Đen / 4px Xanh / Bo góc 8)

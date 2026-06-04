@@ -53,6 +53,7 @@ namespace UI_Tier
             // Wire up events
             picAvatar.Cursor = Cursors.Hand;
             picAvatar.Click += (s, e) => ChangeAvatar();
+            lblUpload.Click += (s, e) => ChangeAvatar();
             dtpBirthday.ValueChanged += dtpBirthday_ValueChanged;
             SetupFocusEffects();
 
@@ -64,7 +65,7 @@ namespace UI_Tier
 
             this.HandleCreated += (s, e) => {
                 InitData();
-                AddAvatarOverlay();
+                UIHelper.ApplyRoundedRegion(lblUpload, lblUpload.Width / 2);
                 UIHelper.ApplyRoundedRegion(picAvatar, picAvatar.Width / 2);
             };
 
@@ -75,35 +76,6 @@ namespace UI_Tier
             UIHelper.RegisterClickToUnfocus(pnlMedicalProfile);
             UIHelper.RegisterClickToUnfocus(pnlSecurity);
             UIHelper.RegisterClickToUnfocus(pnlChangePassword);
-        }
-
-        private Label lblUpload;
-        private void AddAvatarOverlay()
-        {
-            lblUpload = new Label
-            {
-                Size = new Size(40, 40),
-                BackColor = Color.FromArgb(200, 37, 99, 235), // Blue semi-transparent
-                ForeColor = Color.White,
-                TextAlign = ContentAlignment.MiddleCenter,
-                Font = new Font("Segoe MDL2 Assets", 14F),
-                Text = "\uE722", // Camera icon
-                Cursor = Cursors.Hand,
-                Visible = false
-            };
-
-            // Vị trí: Góc dưới bên phải của picAvatar
-            lblUpload.Location = new Point(
-                picAvatar.Right - lblUpload.Width - 5,
-                picAvatar.Bottom - lblUpload.Height - 5
-            );
-
-            UIHelper.ApplyRoundedRegion(lblUpload, lblUpload.Width / 2);
-            
-            picAvatar.Parent.Controls.Add(lblUpload);
-            lblUpload.BringToFront();
-            
-            lblUpload.Click += (s, e) => ChangeAvatar();
         }
 
         private void ChangeAvatar()
@@ -151,12 +123,23 @@ namespace UI_Tier
         }
         private void SetupFocusEffects()
         {
-            TextBox[] inputs = { txtFullName, txtPhone, txtGender, txtCCCD, txtAddress, txtBHYT, txtPatientID, txtEmergencyContact, txtEmergencyPhone, txtBloodType, txtMedicalHistory, txtCurrentPass, txtNewPass, txtConfirmPass };
-            foreach (var input in inputs)
-            {
-                input.Font = new Font("Segoe UI", 12F);
-                UIHelper.SetupInputFocusEffect(input, null, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
-            }
+            UIHelper.SetupInputFocusEffect(txtFullName, pnlFullNameBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+            UIHelper.SetupInputFocusEffect(txtPhone, pnlPhoneBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+            UIHelper.SetupInputFocusEffect(txtGender, pnlGenderBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+            UIHelper.SetupInputFocusEffect(txtCCCD, pnlCCCDBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+            UIHelper.SetupInputFocusEffect(txtAddress, pnlAddressBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+            UIHelper.SetupInputFocusEffect(txtBHYT, pnlBHYTBorder, Color.FromArgb(241, 243, 245), Color.FromArgb(241, 243, 245), Color.FromArgb(37, 99, 235));
+            UIHelper.SetupInputFocusEffect(txtPatientID, pnlPatientIDBorder, Color.FromArgb(241, 243, 245), Color.FromArgb(241, 243, 245), Color.FromArgb(37, 99, 235));
+            UIHelper.SetupInputFocusEffect(txtEmergencyContact, pnlEmergencyContactBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+            UIHelper.SetupInputFocusEffect(txtEmergencyPhone, pnlEmergencyPhoneBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+            UIHelper.SetupInputFocusEffect(txtBloodType, pnlBloodTypeBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+            UIHelper.SetupInputFocusEffect(txtMedicalHistory, pnlMedicalHistoryBorder, Color.FromArgb(242, 248, 255), Color.FromArgb(248, 249, 250), Color.FromArgb(37, 99, 235));
+            UIHelper.SetupInputFocusEffect(txtCurrentPass, pnlCurrentPassBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+            UIHelper.SetupInputFocusEffect(txtNewPass, pnlNewPassBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+            UIHelper.SetupInputFocusEffect(txtConfirmPass, pnlConfirmPassBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+            
+            // Birthday DateTimePicker focus styling
+            UIHelper.SetupInputFocusEffect(dtpBirthday, pnlBirthdayBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
         }
 
 
@@ -271,21 +254,22 @@ namespace UI_Tier
                 dtpBirthday.Enabled = isEditing;
                 txtGender.ReadOnly = !isEditing;
                 txtCCCD.ReadOnly = !isEditing;
-                txtBHYT.ReadOnly = !isEditing;
+                txtBHYT.ReadOnly = true; 
                 txtPatientID.ReadOnly = true; 
                 txtEmergencyContact.ReadOnly = !isEditing;
                 txtEmergencyPhone.ReadOnly = !isEditing;
 
                 Color bg = isEditing ? Color.White : Color.FromArgb(241, 243, 245);
-                txtFullName.BackColor = bg;
-                txtPhone.BackColor = bg;
-                txtGender.BackColor = bg;
-                txtCCCD.BackColor = bg;
-                txtBHYT.BackColor = bg;
-                txtPatientID.BackColor = Color.FromArgb(241, 243, 245); // Luôn xám vì là ID
-                txtEmergencyContact.BackColor = bg;
-                txtEmergencyPhone.BackColor = bg;
-                txtAddress.BackColor = bg;
+                txtFullName.BackColor = bg; pnlFullNameBorder.BackColor = bg;
+                txtPhone.BackColor = bg; pnlPhoneBorder.BackColor = bg;
+                txtGender.BackColor = bg; pnlGenderBorder.BackColor = bg;
+                txtCCCD.BackColor = bg; pnlCCCDBorder.BackColor = bg;
+                txtBHYT.BackColor = Color.FromArgb(241, 243, 245); pnlBHYTBorder.BackColor = Color.FromArgb(241, 243, 245); // Luôn xám không được sửa
+                txtPatientID.BackColor = Color.FromArgb(241, 243, 245); pnlPatientIDBorder.BackColor = Color.FromArgb(241, 243, 245); // Luôn xám vì là ID
+                txtEmergencyContact.BackColor = bg; pnlEmergencyContactBorder.BackColor = bg;
+                txtEmergencyPhone.BackColor = bg; pnlEmergencyPhoneBorder.BackColor = bg;
+                txtAddress.BackColor = bg; pnlAddressBorder.BackColor = bg;
+                pnlBirthdayBorder.BackColor = bg;
 
                 pnlBasicInfoActions.Visible = isEditing;
                 btnEditBasicInfo.Visible = !isEditing;
@@ -299,8 +283,8 @@ namespace UI_Tier
                 txtMedicalHistory.ReadOnly = !isEditing;
 
                 Color bg = isEditing ? Color.White : Color.FromArgb(241, 243, 245);
-                txtBloodType.BackColor = bg;
-                txtMedicalHistory.BackColor = bg;
+                txtBloodType.BackColor = bg; pnlBloodTypeBorder.BackColor = bg;
+                txtMedicalHistory.BackColor = isEditing ? Color.White : Color.FromArgb(248, 249, 250); pnlMedicalHistoryBorder.BackColor = isEditing ? Color.White : Color.FromArgb(248, 249, 250);
 
                 pnlMedicalActions.Visible = isEditing;
                 btnEditMedical.Visible = !isEditing;
@@ -466,73 +450,6 @@ namespace UI_Tier
                 Color accentColor = (pnl == pnlSecurity) ? Color.FromArgb(244, 63, 94) : Color.FromArgb(37, 99, 235);
                 UIHelper.DrawSectionShadow(sender, e, 20, accentColor);
             }
-            
-            // Vẽ đường kẻ dưới cho các ô nhập liệu
-            DrawInputBorders(pnl, e.Graphics);
-        }
-
-        private void DrawInputBorders(Control container, Graphics g)
-        {
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            foreach (Control c in container.Controls)
-            {
-                if ((c is TextBox || c is DateTimePicker) && c.Visible)
-                {
-                    bool isFocused = c.Focused;
-                    
-                    // 1. Vẽ khung viền dày 2px quanh toàn bộ ô (Đen - Bo góc 8)
-                    Rectangle borderRect = new Rectangle(c.Left - 1, c.Top - 1, c.Width + 1, c.Height + 1);
-                    using (var path = UIHelper.GetRoundedPath(borderRect, 8))
-                    {
-                        using (Pen blackPen = new Pen(Color.Black, 2))
-                        {
-                            blackPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
-                            g.DrawPath(blackPen, path);
-                        }
-                        
-                        // 2. Nếu đang focus, vẽ vạch dưới màu xanh dày 4px (Cực kỳ rõ nét)
-                        if (isFocused)
-                        {
-                            using (Pen bluePen = new Pen(Color.FromArgb(37, 99, 235), 4))
-                            {
-                                g.DrawLine(bluePen, c.Left, c.Bottom, c.Right, c.Bottom);
-                            }
-                        }
-                    }
-                }
-                else if (c is Panel && c.HasChildren && c.Visible)
-                {
-                    // For nested panels like pnlChangePassword
-                    foreach (Control subC in c.Controls)
-                    {
-                        if ((subC is TextBox || subC is DateTimePicker) && subC.Visible)
-                        {
-                            bool isFocused = subC.Focused;
-                            Point relPos = container.PointToClient(c.PointToScreen(subC.Location));
-                            
-                            // 1. Vẽ khung viền dày 2px (Đen, Bo góc 8)
-                            Rectangle borderRect = new Rectangle(relPos.X - 1, relPos.Y - 1, subC.Width + 1, subC.Height + 1);
-                            using (var path = UIHelper.GetRoundedPath(borderRect, 8))
-                            {
-                                using (Pen blackPen = new Pen(Color.Black, 2))
-                                {
-                                    blackPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
-                                    g.DrawPath(blackPen, path);
-                                }
-
-                                // 2. Vẽ vạch dưới xanh 4px khi focus
-                                if (isFocused)
-                                {
-                                    using (Pen bluePen = new Pen(Color.FromArgb(37, 99, 235), 4))
-                                    {
-                                        g.DrawLine(bluePen, relPos.X, relPos.Y + subC.Height, relPos.X + subC.Width, relPos.Y + subC.Height);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         private void Button_Paint(object sender, PaintEventArgs e)
@@ -566,6 +483,7 @@ namespace UI_Tier
                 txtCCCD.Text = "Chưa đủ tuổi";
                 txtCCCD.Enabled = false;
                 txtCCCD.BackColor = Color.FromArgb(241, 243, 245); 
+                pnlCCCDBorder.BackColor = Color.FromArgb(241, 243, 245);
             }
             else
             {
@@ -575,6 +493,7 @@ namespace UI_Tier
                 // Chỉ thực sự cho sửa nếu đang trong mode Edit
                 // Logic này sẽ được SetEditMode quản lý thêm
                 txtCCCD.BackColor = Color.White;
+                pnlCCCDBorder.BackColor = Color.White;
             }
         }
     }
