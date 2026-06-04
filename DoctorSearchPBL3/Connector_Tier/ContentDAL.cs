@@ -1,5 +1,6 @@
 using DTO_Tier;
 using Microsoft.EntityFrameworkCore;
+using static DAL_Tier.DBHelper;
 
 namespace DAL_Tier
 {
@@ -16,42 +17,115 @@ namespace DAL_Tier
                 .Where(c => !c.IsDeleted)
                 .AsQueryable();
 
-            // Status filter
-            if (!string.IsNullOrWhiteSpace(status) && status != "Tất cả")
+            if (!string.IsNullOrWhiteSpace(status) && !string.Equals(status, "Tất cả", StringComparison.OrdinalIgnoreCase))
             {
                 query = query.Where(c => c.Status == status);
             }
             else if (string.IsNullOrWhiteSpace(status))
             {
-                // Default behavior for patients (if status not specified)
                 query = query.Where(c => c.Status == "Published");
             }
 
-            if (!string.IsNullOrWhiteSpace(keyword))
-            {
-                query = query.Where(c => EF.Functions.Collate(c.Title, "SQL_Latin1_General_CP1_CI_AI").Contains(keyword));
-            }
-
-            if (!string.IsNullOrWhiteSpace(contentType) && contentType != "Tất cả")
+            if (!string.IsNullOrWhiteSpace(contentType) && !string.Equals(contentType, "Tất cả", StringComparison.OrdinalIgnoreCase))
             {
                 query = query.Where(c => c.ContentType == contentType);
             }
 
             if (departmentNames != null && departmentNames.Any() && !departmentNames.Contains("Tất cả"))
             {
-                query = query.Where(c => c.Department != null && departmentNames.Contains(c.Department.DepartmentName));
+                var selectedDepartments = departmentNames
+                    .Where(name => !string.IsNullOrWhiteSpace(name))
+                    .ToList();
+
+                query = query.Where(c => c.Department != null && selectedDepartments.Contains(c.Department.DepartmentName));
             }
 
-            query = sortType switch
-            {
-                "Mới nhất" => query.OrderByDescending(c => c.PublishedAt ?? c.CreatedAt),
-                "Xem nhiều nhất" => query.OrderByDescending(c => c.ViewCount),
-                "Xem ít nhất" => query.OrderBy(c => c.ViewCount),
-                _ => query.OrderByDescending(c => c.PublishedAt ?? c.CreatedAt)
-            };
+            var result = query.ToList();
 
-            return query.ToList();
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                var normalizedKeyword = NormalizeForSearch(keyword);
+
+                result = result
+                    .Select(content => new
+                    {
+                        Content = content,
+                        Score = CalculateContentSearchScore(content, normalizedKeyword)
+                    })
+                    .Where(x => x.Score > 0)
+                    .OrderByDescending(x => x.Score)
+                    .ThenByDescending(x => x.Content.IsPinned)
+                    .ThenByDescending(x => x.Content.Priority)
+                    .ThenByDescending(x => x.Content.PublishedAt ?? x.Content.CreatedAt)
+                    .Select(x => x.Content)
+                    .ToList();
+            }
+
+            return sortType switch
+            {
+                "Mới nhất" => result.OrderByDescending(c => c.PublishedAt ?? c.CreatedAt).ToList(),
+                "Xem nhiều nhất" => result.OrderByDescending(c => c.ViewCount).ToList(),
+                "Xem ít nhất" => result.OrderBy(c => c.ViewCount).ToList(),
+                _ when string.IsNullOrWhiteSpace(keyword) => result.OrderByDescending(c => c.PublishedAt ?? c.CreatedAt).ToList(),
+                _ => result
+                    .OrderByDescending(c => c.IsPinned)
+                    .ThenByDescending(c => c.Priority)
+                    .ThenByDescending(c => c.PublishedAt ?? c.CreatedAt)
+                    .ToList()
+            };
         }
+
+        private static int CalculateContentSearchScore(ContentDTO content, string normalizedKeyword)
+        {
+            if (string.IsNullOrWhiteSpace(normalizedKeyword))
+            {
+                return 1;
+            }
+
+            var title = NormalizeForSearch(content.Title);
+            var summary = NormalizeForSearch(content.Summary);
+
+            return ScoreField(title, normalizedKeyword, 120)
+                + ScoreField(summary, normalizedKeyword, 40);
+        }
+
+        private static int ScoreField(string? fieldValue, string keyword, int baseScore)
+        {
+            if (string.IsNullOrWhiteSpace(fieldValue) || string.IsNullOrWhiteSpace(keyword))
+            {
+                return 0;
+            }
+
+            if (fieldValue == keyword)
+            {
+                return baseScore + 40;
+            }
+
+            if (fieldValue.StartsWith(keyword, StringComparison.Ordinal))
+            {
+                return baseScore + 30;
+            }
+
+            if (fieldValue.Contains(keyword, StringComparison.Ordinal))
+            {
+                return baseScore + 20;
+            }
+
+            var keywordTokens = keyword.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (keywordTokens.Length == 0)
+            {
+                return 0;
+            }
+
+            var matchedTokens = keywordTokens.Count(token => fieldValue.Contains(token, StringComparison.Ordinal));
+            return matchedTokens > 0 ? baseScore + (matchedTokens * 5) : 0;
+        }
+
+        private static string NormalizeForSearch(string? text)
+        {
+            return RemoveDiacritics(text ?? string.Empty).Trim();
+        }
+
         public List<ContentDTO> GetAllContents()
         {
             // Sử dụng AppDbContext bạn đã cung cấp

@@ -1,5 +1,6 @@
 using DTO_Tier;
 using Microsoft.EntityFrameworkCore;
+using static DAL_Tier.DBHelper;
 
 namespace DAL_Tier
 {
@@ -161,45 +162,138 @@ namespace DAL_Tier
         {
             using var context = new AppDbContext();
 
-            var query = context.Doctors
+            var result = context.Doctors
                 .Include(d => d.User)
                 .Include(d => d.Department)
-                .Include(d => d.Reviews) // Cần Include để tính toán Rating bên dưới
+                .Include(d => d.Reviews)
                 .Where(d => d.IsApproved && d.IsActive && !d.IsDeleted)
-                .AsQueryable();
+                .ToList();
 
-            // 1. Lọc theo từ khóa
-            if (!string.IsNullOrWhiteSpace(keyword))
-                query = query.Where(d => d.User != null && EF.Functions.Collate(d.User.FullName, "SQL_Latin1_General_CP1_CI_AI").Contains(keyword));
-
-            // 2. Lọc theo giới tính
-            if (!string.IsNullOrWhiteSpace(gender) && gender != "Tất cả")
-                query = query.Where(d => d.User != null && d.User.Gender == gender);
-
-            // 3. Lọc theo danh sách chuyên khoa
-            if (departmentNames != null && departmentNames.Any() && !departmentNames.Contains("Tất cả"))
-                query = query.Where(d => d.Department != null && departmentNames.Contains(d.Department.DepartmentName));
-
-            // Chuyển dữ liệu về List để tính toán Rating (Client-side)
-            var result = query.ToList();
-
-            // 4. Tính toán Rating và TotalReviews
-            foreach (var doctor in result)
+            if (!string.IsNullOrWhiteSpace(gender) && !string.Equals(gender, "Tất cả", StringComparison.OrdinalIgnoreCase))
             {
-                var visibleReviews = doctor.Reviews?.Where(r => r.IsVisible && !r.IsDeleted).ToList() ?? new List<ReviewsDTO>();
-                doctor.TotalReviews = visibleReviews.Count;
-                doctor.AverageRating = visibleReviews.Any() ? Math.Round(visibleReviews.Average(r => r.Rating), 1) : 0;
+                result = result
+                    .Where(d => string.Equals(d.User?.Gender, gender, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
             }
 
-            // 5. Sắp xếp trên danh sách đã tính toán 'result'
+            if (departmentNames != null && departmentNames.Any() && !departmentNames.Contains("Tất cả"))
+            {
+                var selectedDepartments = new HashSet<string>(
+                    departmentNames.Where(name => !string.IsNullOrWhiteSpace(name)),
+                    StringComparer.OrdinalIgnoreCase);
+
+                result = result
+                    .Where(d => d.Department != null && selectedDepartments.Contains(d.Department.DepartmentName))
+                    .ToList();
+            }
+
+            EnrichReviewStats(result);
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                var normalizedKeyword = NormalizeForSearch(keyword);
+
+                result = result
+                    .Select(d => new
+                    {
+                        Doctor = d,
+                        Score = CalculateDoctorSearchScore(d, normalizedKeyword)
+                    })
+                    .Where(x => x.Score > 0)
+                    .OrderByDescending(x => x.Score)
+                    .ThenByDescending(x => x.Doctor.AverageRating)
+                    .ThenByDescending(x => x.Doctor.ExperienceYears ?? 0)
+                    .ThenBy(x => x.Doctor.User?.FullName)
+                    .Select(x => x.Doctor)
+                    .ToList();
+            }
+
+            return ApplyDoctorSort(result, sortType, keyword);
+        }
+
+        private static List<DoctorDTO> ApplyDoctorSort(List<DoctorDTO> doctors, string? sortType, string? keyword)
+        {
             return sortType switch
             {
-                "Giá khám thấp đến cao" => result.OrderBy(d => d.ConsultationFee ?? decimal.MaxValue).ToList(),
-                "Giá khám cao đến thấp" => result.OrderByDescending(d => d.ConsultationFee ?? 0).ToList(),
-                "Năm kinh nghiệm cao đến thấp" => result.OrderByDescending(d => d.ExperienceYears ?? 0).ToList(),
-                "Rating cao đến thấp" => result.OrderByDescending(d => d.AverageRating).ToList(),
-                _ => result.OrderByDescending(d => d.CreatedAt).ToList()
+                "Giá khám thấp đến cao" => doctors.OrderBy(d => d.ConsultationFee ?? decimal.MaxValue).ToList(),
+                "Giá khám cao đến thấp" => doctors.OrderByDescending(d => d.ConsultationFee ?? 0).ToList(),
+                "Năm kinh nghiệm cao đến thấp" => doctors.OrderByDescending(d => d.ExperienceYears ?? 0).ToList(),
+                "Rating cao đến thấp" => doctors.OrderByDescending(d => d.AverageRating).ThenByDescending(d => d.TotalReviews).ToList(),
+                _ when string.IsNullOrWhiteSpace(keyword) => doctors.OrderByDescending(d => d.CreatedAt).ToList(),
+                _ => doctors
+                    .OrderByDescending(d => d.AverageRating)
+                    .ThenByDescending(d => d.TotalReviews)
+                    .ThenBy(d => d.User?.FullName)
+                    .ToList()
             };
+        }
+
+        private static void EnrichReviewStats(IEnumerable<DoctorDTO> doctors)
+        {
+            foreach (var doctor in doctors)
+            {
+                var visibleReviews = doctor.Reviews?
+                    .Where(r => r.IsVisible && !r.IsDeleted)
+                    .ToList() ?? new List<ReviewsDTO>();
+
+                doctor.TotalReviews = visibleReviews.Count;
+                doctor.AverageRating = visibleReviews.Count == 0
+                    ? 0
+                    : Math.Round(visibleReviews.Average(r => r.Rating), 1);
+            }
+        }
+
+        private static int CalculateDoctorSearchScore(DoctorDTO doctor, string normalizedKeyword)
+        {
+            if (string.IsNullOrWhiteSpace(normalizedKeyword))
+            {
+                return 1;
+            }
+
+            var name = NormalizeForSearch(doctor.User?.FullName);
+            return ScoreField(name, normalizedKeyword, 120);
+        }
+
+        private static int ScoreField(string? fieldValue, string keyword, int baseScore)
+        {
+            if (string.IsNullOrWhiteSpace(fieldValue) || string.IsNullOrWhiteSpace(keyword))
+            {
+                return 0;
+            }
+
+            if (fieldValue == keyword)
+            {
+                return baseScore + 40;
+            }
+
+            if (fieldValue.StartsWith(keyword, StringComparison.Ordinal))
+            {
+                return baseScore + 30;
+            }
+
+            if (fieldValue.Contains(keyword, StringComparison.Ordinal))
+            {
+                return baseScore + 20;
+            }
+
+            var keywordTokens = keyword.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (keywordTokens.Length == 0)
+            {
+                return 0;
+            }
+
+            var fieldTokens = fieldValue.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var matchedTokens = keywordTokens.Count(token =>
+                fieldTokens.Any(fieldToken =>
+                    fieldToken.Contains(token, StringComparison.Ordinal) ||
+                    token.Contains(fieldToken, StringComparison.Ordinal)));
+
+            return matchedTokens > 0 ? baseScore + (matchedTokens * 5) : 0;
+        }
+
+        private static string NormalizeForSearch(string? text)
+        {
+            return RemoveDiacritics(text ?? string.Empty).Trim();
         }
 
         public List<ReviewsDTO> GetDoctorReviews(int doctorId)

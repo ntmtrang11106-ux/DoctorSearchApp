@@ -1,6 +1,8 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Globalization;
+using System.Text;
 
 namespace DAL_Tier
 {
@@ -89,6 +91,26 @@ namespace DAL_Tier
                 System.Diagnostics.Debug.WriteLine("Lỗi Transaction: " + ex.Message);
                 return false;
             }
+        }
+
+        public static string RemoveDiacritics(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return string.Empty;
+
+            string normalizedString = text.Normalize(NormalizationForm.FormD);
+            var stringBuilder = new StringBuilder();
+
+            foreach (var c in normalizedString)
+            {
+                UnicodeCategory unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            string result = stringBuilder.ToString().Normalize(NormalizationForm.FormC).ToLowerInvariant();
+            return result.Replace('đ', 'd').Replace('Đ', 'd');
         }
     }
 }
