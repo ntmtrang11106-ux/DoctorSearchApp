@@ -4,28 +4,38 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DTO_Tier
 {
    
-    [Table("Conversation")] // 
+    [Table("Conversation")]
     public class ConversationDTO
     {
         [Key]
-        public int Id { get; set; } // Mã cuộc chat 
+        public int Id { get; set; }
 
         [Required]
-        public int PatientID { get; set; } // Liên kết đến bệnh nhân 
+        public int PatientID { get; set; }
 
         [Required]
-        public int DoctorID { get; set; } // Liên kết tới bác sĩ 
+        public int DoctorID { get; set; }
 
-        [Required]
-        public string LastMessage { get; set; } // Nội dung tin nhắn cuối cùng 
+        public string? LastMessage { get; set; }
 
-        public DateTime LastActive { get; set; } = DateTime.Now; // Thời điểm tương tác cuối 
+        public DateTime LastActive { get; set; } = DateTime.Now;
 
-        // --- Liên kết Navigation ---
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        public DateTime? UpdatedAt { get; set; }
+
+        public bool IsActive { get; set; } = true;
+
+        public bool IsDeleted { get; set; }
+
+        public DateTime? DeletedAt { get; set; }
+
         [ForeignKey("PatientID")]
-        public virtual PatientDTO Patient { get; set; }
+        public virtual PatientDTO? Patient { get; set; }
 
         [ForeignKey("DoctorID")]
-        public virtual DoctorDTO Doctor { get; set; }
+        public virtual DoctorDTO? Doctor { get; set; }
+
+        public virtual ICollection<MessagesDTO> Messages { get; set; } = new List<MessagesDTO>();
     }
 }

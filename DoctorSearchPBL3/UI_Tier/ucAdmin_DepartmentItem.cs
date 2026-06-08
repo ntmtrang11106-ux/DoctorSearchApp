@@ -1,19 +1,18 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using DTO_Tier;
 using BUS_Tier;
+using DTO_Tier;
 
 namespace UI_Tier
 {
     public partial class ucAdmin_DepartmentItem : UserControl
     {
         private DepartmentDTO _dept;
-        private DepartmentBUS _deptBUS = new DepartmentBUS();
-        private AdminBUS _adminBUS = new AdminBUS(); // To get doctor count
+        private readonly DepartmentBUS _deptBUS = new DepartmentBUS();
         public event EventHandler DataChanged;
 
-        private ToolTip _toolTip = new ToolTip();
+        private readonly ToolTip _toolTip = new ToolTip();
 
         public ucAdmin_DepartmentItem()
         {
@@ -23,7 +22,7 @@ namespace UI_Tier
 
             _toolTip.SetToolTip(btnEdit, "Chỉnh sửa thông tin chuyên khoa");
             _toolTip.SetToolTip(btnRemove, "Xóa chuyên khoa khỏi hệ thống");
-            _toolTip.SetToolTip(pnlCountBadge, "Số lượng bác sĩ đang thuộc chuyên khoa này");
+            _toolTip.SetToolTip(pnlCountBadge, "Số lượng bác sĩ và phòng hiện có của chuyên khoa");
 
             pnlCard.Paint += pnlCard_Paint;
             pnlCard.Resize += (s, e) => UIHelper.ApplyRoundedRegion(pnlCard, 15);
@@ -42,29 +41,31 @@ namespace UI_Tier
 
         private void UpdateUI()
         {
-            if (_dept == null) return;
+            if (_dept == null)
+            {
+                return;
+            }
 
             lblName.Text = _dept.DepartmentName;
-            lblDesc.Text = _dept.Description ?? "Không có mô tả";
-            
-            // Get doctor count directly from DoctorBUS
-            int count = new DoctorBUS().GetDoctorCountByDepartmentId(_dept.Id);
-            lblCount.Text = $"{count} bác sĩ";
-            
-            // Status Badge
+            lblDesc.Text = string.IsNullOrWhiteSpace(_dept.Description) ? "Không có mô tả" : _dept.Description;
+
+            int doctorCount = new DoctorBUS().GetDoctorCountByDepartmentId(_dept.Id);
+            int roomCount = _deptBUS.GetRoomCountByDepartmentId(_dept.Id);
+            lblCount.Text = $"{doctorCount} bác sĩ | {roomCount} phòng";
+
             lblStatus.Text = _dept.IsActive ? "Hiển thị" : "Ẩn";
             if (_dept.IsActive)
             {
                 lblStatus.ForeColor = Color.FromArgb(22, 163, 74);
                 pnlStatusBadge.BackColor = Color.FromArgb(220, 252, 231);
-                btnToggleHide.Text = "\uE890"; // Eye-slash icon
+                btnToggleHide.Text = "\uE890";
                 _toolTip.SetToolTip(btnToggleHide, "Ẩn chuyên khoa này khỏi danh sách tìm kiếm");
             }
             else
             {
                 lblStatus.ForeColor = Color.FromArgb(220, 38, 38);
                 pnlStatusBadge.BackColor = Color.FromArgb(254, 226, 226);
-                btnToggleHide.Text = "\uE7B3"; // Eye icon
+                btnToggleHide.Text = "\uE7B3";
                 _toolTip.SetToolTip(btnToggleHide, "Hiển thị lại chuyên khoa này trong danh sách tìm kiếm");
             }
 
@@ -88,13 +89,15 @@ namespace UI_Tier
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show($"Bạn có chắc chắn muốn xóa chuyên khoa '{_dept.DepartmentName}'?", 
-                "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            DialogResult result = MessageBox.Show(
+                $"Bạn có chắc chắn muốn xóa chuyên khoa '{_dept.DepartmentName}'?",
+                "Xác nhận xóa",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (result == DialogResult.Yes && _deptBUS.DeleteDepartment(_dept.Id))
             {
-                if (_deptBUS.DeleteDepartment(_dept.Id))
-                {
-                    DataChanged?.Invoke(this, EventArgs.Empty);
-                }
+                DataChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -103,9 +106,8 @@ namespace UI_Tier
             ucAdmin_AddDepartment uc = new ucAdmin_AddDepartment();
             uc.SetData(dept);
 
-            // Tìm Parent là ucAdmin_DepartmentManagement để hiển thị Overlay
-            Control p = this.Parent;
-            while (p != null && !(p is ucAdmin_DepartmentManagement))
+            Control p = Parent;
+            while (p != null && p is not ucAdmin_DepartmentManagement)
             {
                 p = p.Parent;
             }
@@ -113,7 +115,8 @@ namespace UI_Tier
             if (p is ucAdmin_DepartmentManagement deptMgmt)
             {
                 uc.OnCancel += (s, ev) => deptMgmt.Controls.Remove(uc);
-                uc.OnSuccess += (s, ev) => {
+                uc.OnSuccess += (s, ev) =>
+                {
                     deptMgmt.Controls.Remove(uc);
                     DataChanged?.Invoke(this, EventArgs.Empty);
                 };
@@ -121,12 +124,20 @@ namespace UI_Tier
             }
             else
             {
-                // Fallback
-                Form f = new Form { Size = new Size(1000, 850), FormBorderStyle = FormBorderStyle.None, StartPosition = FormStartPosition.CenterScreen };
+                Form f = new Form
+                {
+                    Size = new Size(1000, 980),
+                    FormBorderStyle = FormBorderStyle.None,
+                    StartPosition = FormStartPosition.CenterScreen
+                };
                 uc.Dock = DockStyle.Fill;
                 f.Controls.Add(uc);
                 uc.OnCancel += (s, ev) => f.Close();
-                uc.OnSuccess += (s, ev) => { f.Close(); DataChanged?.Invoke(this, EventArgs.Empty); };
+                uc.OnSuccess += (s, ev) =>
+                {
+                    f.Close();
+                    DataChanged?.Invoke(this, EventArgs.Empty);
+                };
                 f.ShowDialog();
             }
         }

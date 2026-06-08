@@ -178,6 +178,7 @@ namespace UI_Tier
                 txtEmergencyContact.Text = _currentPatient.EmergencyContactName ?? "";
                 txtEmergencyPhone.Text = _currentPatient.EmergencyContactPhone ?? "";
                 txtAddress.Text = _currentPatient.User.Residential_Address ?? "";
+                txtBloodType.Text = _currentPatient.BloodType ?? "";
 
                 // Parse Note for medical info
                 ParseMedicalNote(_currentPatient.Note);
@@ -355,6 +356,7 @@ namespace UI_Tier
             }
             else if (btn == btnSaveMedical) {
                 // Gather Medical Info into Note
+                _currentPatient.BloodType = txtBloodType.Text.Trim();
                 _currentPatient.Note = GenerateMedicalNote();
 
                 string result = _patientBUS.UpdatePatientProfile(_currentPatient);

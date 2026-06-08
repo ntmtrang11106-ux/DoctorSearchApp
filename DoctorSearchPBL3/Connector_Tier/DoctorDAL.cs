@@ -6,21 +6,16 @@ namespace DAL_Tier
 {
     public class DoctorDAL
     {
-        // Không dùng shared _context làm field — mỗi method tự quản lý context
-        // để đảm bảo Dispose đúng cách và tránh conflict giữa các context.
         private readonly AppDbContext _context = new AppDbContext();
 
-        // Trong DoctorDAL.cs
         public int GetDoctorIdByUserId(int userId)
         {
-            using (var db = new AppDbContext()) 
-            {
-                var doctor = db.Doctors.FirstOrDefault(d => d.UserId == userId);
-                return doctor != null ? doctor.Id : 0;
-            }
+            using var db = new AppDbContext();
+            var doctor = db.Doctors.FirstOrDefault(d => d.UserId == userId);
+            return doctor != null ? doctor.Id : 0;
         }
 
-        public DoctorDTO GetDoctorById(int doctorId)
+        public DoctorDTO? GetDoctorById(int doctorId)
         {
             using var context = new AppDbContext();
             return context.Doctors
@@ -60,19 +55,16 @@ namespace DAL_Tier
                 .Where(a => a.DoctorId == doctorId && a.Status == "Pending")
                 .Count();
         }
+
         public List<DoctorDTO> GetAllDoctors()
         {
             return _context.Doctors
-                .Include(d => d.User) // Kết nối bảng User (để lấy FullName, Picture)
-                .Include(d => d.Department) // Kết nối bảng Department (để lấy tên Chuyên khoa)
+                .Include(d => d.User)
+                .Include(d => d.Department)
                 .Include(d => d.Reviews)
                 .Where(d => d.IsApproved && d.IsActive && !d.IsDeleted)
                 .ToList();
         }
-
-
-        //////////////////////////////////////////////////
-        
 
         public bool UpdateDoctor(DoctorDTO updatedDoctor)
         {
@@ -83,9 +75,11 @@ namespace DAL_Tier
                     .Include(d => d.User)
                     .FirstOrDefault(d => d.Id == updatedDoctor.Id);
 
-                if (existingDoctor == null) return false;
+                if (existingDoctor == null)
+                {
+                    return false;
+                }
 
-                // 1. Update User info
                 if (existingDoctor.User != null && updatedDoctor.User != null)
                 {
                     existingDoctor.User.FullName = updatedDoctor.User.FullName;
@@ -98,14 +92,12 @@ namespace DAL_Tier
                     existingDoctor.User.UpdatedAt = DateTime.Now;
                 }
 
-                // 2. Update Doctor info
                 existingDoctor.Position = updatedDoctor.Position;
                 existingDoctor.ExperienceYears = updatedDoctor.ExperienceYears;
                 existingDoctor.ConsultationFee = updatedDoctor.ConsultationFee;
                 existingDoctor.Biography = updatedDoctor.Biography;
                 existingDoctor.LicenseNumber = updatedDoctor.LicenseNumber;
                 existingDoctor.DepartmentId = updatedDoctor.DepartmentId;
-
                 existingDoctor.UpdatedAt = DateTime.Now;
 
                 return context.SaveChanges() > 0;
@@ -123,7 +115,10 @@ namespace DAL_Tier
             try
             {
                 var doctor = context.Doctors.Find(doctorId);
-                if (doctor == null) return false;
+                if (doctor == null)
+                {
+                    return false;
+                }
 
                 doctor.AverageRating = avgRating;
                 doctor.TotalReviews = totalReviews;
@@ -144,11 +139,13 @@ namespace DAL_Tier
             try
             {
                 var doctor = context.Doctors.Find(doctorId);
-                if (doctor == null) return false;
+                if (doctor == null)
+                {
+                    return false;
+                }
 
                 doctor.IsApproved = isApproved;
                 doctor.UpdatedAt = DateTime.Now;
-
                 return context.SaveChanges() > 0;
             }
             catch (Exception ex)
@@ -169,7 +166,9 @@ namespace DAL_Tier
                 .Where(d => d.IsApproved && d.IsActive && !d.IsDeleted)
                 .ToList();
 
-            if (!string.IsNullOrWhiteSpace(gender) && !string.Equals(gender, "Tất cả", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrWhiteSpace(gender) &&
+                !string.Equals(gender, "Tất cả", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(gender, "Tất cả giới tính", StringComparison.OrdinalIgnoreCase))
             {
                 result = result
                     .Where(d => string.Equals(d.User?.Gender, gender, StringComparison.OrdinalIgnoreCase))
@@ -320,25 +319,23 @@ namespace DAL_Tier
             using var context = new AppDbContext();
             try
             {
-                // Đảm bảo không đính kèm đối tượng Doctor để tránh lỗi conflict context nếu có
-                certificate.Doctor = null; 
+                certificate.Doctor = null;
                 context.DoctorCertificates.Add(certificate);
                 return context.SaveChanges() > 0;
             }
             catch (Exception ex)
             {
-                // Log chi tiết lỗi để debug
-                System.Diagnostics.Debug.WriteLine("Lỗi AddDoctorCertificate: " + ex.ToString());
+                System.Diagnostics.Debug.WriteLine("Lỗi AddDoctorCertificate: " + ex);
                 return false;
             }
         }
+
         public bool ReplaceDoctorCertificate(int doctorId, DoctorCertificateDTO newCertificate)
         {
             using var context = new AppDbContext();
             using var transaction = context.Database.BeginTransaction();
             try
             {
-                // 1. Mark all existing certificates as deleted
                 var existingCerts = context.DoctorCertificates
                     .Where(c => c.DoctorId == doctorId && !c.IsDeleted)
                     .ToList();
@@ -351,8 +348,7 @@ namespace DAL_Tier
                     context.Entry(cert).State = EntityState.Modified;
                 }
 
-                // 2. Add the new one
-                newCertificate.Doctor = null; // Avoid attachment issues
+                newCertificate.Doctor = null;
                 context.DoctorCertificates.Add(newCertificate);
 
                 int result = context.SaveChanges();
@@ -362,14 +358,19 @@ namespace DAL_Tier
             catch (Exception ex)
             {
                 transaction.Rollback();
-                System.Diagnostics.Debug.WriteLine("Lỗi ReplaceDoctorCertificate: " + ex.ToString());
+                System.Diagnostics.Debug.WriteLine("Lỗi ReplaceDoctorCertificate: " + ex);
                 return false;
             }
         }
+
         public int GetDoctorCountByDepartmentId(int departmentId)
         {
             using var context = new AppDbContext();
-            return context.Doctors.Count(doc => doc.DepartmentId == departmentId && !doc.IsDeleted && doc.IsActive && doc.IsApproved);
+            return context.Doctors.Count(doc =>
+                doc.DepartmentId == departmentId &&
+                !doc.IsDeleted &&
+                doc.IsActive &&
+                doc.IsApproved);
         }
     }
 }

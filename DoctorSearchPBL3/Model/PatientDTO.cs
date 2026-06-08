@@ -24,6 +24,9 @@ namespace DTO_Tier
         [StringLength(50)]
         public string? InsuranceCode { get; set; }
 
+        [StringLength(10)]
+        public string? BloodType { get; set; }
+
         public string? Note { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
