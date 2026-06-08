@@ -1,4 +1,4 @@
-using BUS_Tier;
+﻿using BUS_Tier;
 using DTO_Tier;
 using System.ComponentModel;
 using System.Drawing.Drawing2D;
@@ -36,12 +36,12 @@ namespace UI_Tier
             _currentDoc = doctor;
             /// 1. Tên Bác sĩ: Kết hợp Chức danh + Họ tên
             // Ví dụ: "Thạc sĩ Nguyễn Văn A" hoặc "Bác sĩ Trần Thị B"
-            string position = doctor.Position ?? "";
-            string fullName = doctor.User?.FullName ?? "Chưa cập nhật";
-            // Nếu có chức danh thì cộng chuỗi, không thì chỉ hiện tên
+            string position = NormalizeDoctorTitle(doctor.Position);
+            string fullName = NormalizeDoctorName(doctor.User?.FullName);
             lblFullName.Text = string.IsNullOrWhiteSpace(position)
-                ? fullName
+                ? $"BS. {fullName}"
                 : $"{position} {fullName}";
+            lblFullName.BringToFront();
 
             //2. Nơi làm việc (Tên phòng khám hoặc bệnh viện)
             lblPhone.Text = doctor.User?.PhoneNumber ?? "Chưa cập nhật";
@@ -89,24 +89,13 @@ namespace UI_Tier
             // 9. Hình ảnh
             // --- XỬ LÝ HÌNH ẢNH ---
             // Kiểm tra null hoặc rỗng để dùng ảnh mặc định
-            string fileName = string.IsNullOrWhiteSpace(doctor.User.Picture) ? "default.jpg" : doctor.User.Picture.Trim();
-
-            // Đường dẫn trỏ vào folder Resources_Images trong thư mục chạy app
-            string imageFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources_Images");
-            string imagePath = Path.Combine(imageFolder, fileName);
-
-            if (File.Exists(imagePath))
+            string fileName = doctor.User?.Picture?.Trim() ?? "";
+            if (string.IsNullOrWhiteSpace(fileName) || fileName.Equals("default.jpg", StringComparison.OrdinalIgnoreCase))
             {
-                try
-                {
-                    if (picDoctor.Image != null) picDoctor.Image.Dispose();
-                    using (FileStream fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
-                    {
-                        picDoctor.Image = new Bitmap(fs); // Dùng Bitmap để không bị khóa file
-                    }
-                }
-                catch (Exception ex) { }
+                fileName = "bs_nguyen_van_an.jpg";
             }
+
+            LoadDoctorImage(fileName);
 
             // --- THIẾT LẬP TƯƠNG TÁC CHUỘT ---
             Control[] interactiveControls = { 
@@ -133,6 +122,66 @@ namespace UI_Tier
                 }
             }
 
+        private static string NormalizeDoctorTitle(string? position)
+        {
+            if (string.IsNullOrWhiteSpace(position)) return "BS.";
+
+            string title = position.Trim();
+            if (title.Contains("Bác sĩ", StringComparison.OrdinalIgnoreCase) ||
+                title.Contains("Bác Sĩ", StringComparison.OrdinalIgnoreCase))
+            {
+                return "BS.";
+            }
+
+            return title;
+        }
+
+        private static string NormalizeDoctorName(string? fullName)
+        {
+            if (string.IsNullOrWhiteSpace(fullName)) return "Chưa cập nhật";
+
+            string name = fullName.Trim();
+            if (name.StartsWith("BS.", StringComparison.OrdinalIgnoreCase))
+            {
+                return name.Substring(3).Trim();
+            }
+            if (name.StartsWith("Bác sĩ", StringComparison.OrdinalIgnoreCase))
+            {
+                return name.Substring("Bác sĩ".Length).Trim();
+            }
+
+            return name;
+        }
+
+        private void LoadDoctorImage(string fileName)
+        {
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string[] candidatePaths =
+            {
+                Path.Combine(baseDir, "Resources_Images", fileName),
+                Path.Combine(baseDir, "Resources", fileName)
+            };
+
+            foreach (string imagePath in candidatePaths)
+            {
+                if (!File.Exists(imagePath)) continue;
+
+                try
+                {
+                    picDoctor.Image?.Dispose();
+                    using FileStream fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read);
+                    picDoctor.Image = new Bitmap(fs);
+                    return;
+                }
+                catch
+                {
+                    // Fallback to embedded resource below.
+                }
+            }
+
+            picDoctor.Image?.Dispose();
+            picDoctor.Image = Properties.Resources.bs_nguyen_van_an;
+        }
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -218,3 +267,8 @@ namespace UI_Tier
 
     }
 }
+
+
+
+
+

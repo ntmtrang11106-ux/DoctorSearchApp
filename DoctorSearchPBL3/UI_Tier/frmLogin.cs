@@ -1,4 +1,4 @@
-using BUS_Tier;
+﻿using BUS_Tier;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,6 +33,7 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(panel3, 30);
             UIHelper.ApplyRoundedRegion(panel4, 10);
             UIHelper.ApplyRoundedRegion(panel5, 10);
+            UIHelper.ApplyRoundedRegion(picLogo, 18);
             panel4.BorderStyle = BorderStyle.None;
             panel5.BorderStyle = BorderStyle.None;
             UIHelper.ApplyRoundedRegion(btnLogin, 15);
@@ -186,3 +187,4 @@ namespace UI_Tier
         }
     }
 }
+
