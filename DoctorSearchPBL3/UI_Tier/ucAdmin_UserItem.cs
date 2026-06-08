@@ -23,13 +23,22 @@ namespace UI_Tier
             UIHelper.SetDoubleBuffered(this);
             UIHelper.SetDoubleBuffered(pnlCard);
 
+            // 1. SET UI CHUẨN NGAY TỪ ĐẦU CHO FLPACTIONS
+            flpActions.Dock = DockStyle.Right; // Ép hẳn về bên phải pnlCard
+            flpActions.AutoSize = true;
+            flpActions.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            flpActions.FlowDirection = FlowDirection.LeftToRight; // Thống nhất luồng từ trái sang phải
+            flpActions.WrapContents = false;
+            // Đẩy các nút dịch xuống một chút cho căn giữa theo chiều dọc thẻ (Top = 85px, Right = 16px)
+            flpActions.Padding = new Padding(0, 85, 16, 0);
+
             // Cấu hình Tooltip cho các nút hành động
             _toolTip.SetToolTip(btnDetail, "Xem chi tiết hồ sơ");
             _toolTip.SetToolTip(btnEdit, "Chỉnh sửa thông tin");
             _toolTip.SetToolTip(btnRemove, "Xóa tài khoản vĩnh viễn");
             _toolTip.SetToolTip(btnApprove, "Phê duyệt bác sĩ vào hệ thống");
             _toolTip.SetToolTip(btnReject, "Từ chối phê duyệt bác sĩ");
-            
+
             pnlCard.Paint += pnlCard_Paint;
             pnlCard.Resize += (s, e) => {
                 UIHelper.ApplyRoundedRegion(pnlCard, 15);
@@ -39,9 +48,9 @@ namespace UI_Tier
                 UIHelper.ApplyRoundedRegion(btnEdit, 10);
                 UIHelper.ApplyRoundedRegion(btnRemove, 10);
                 UIHelper.ApplyRoundedRegion(btnDetail, 10);
-                UIHelper.ApplyRoundedRegion(pnlRoleBadge, 12);
-                UIHelper.ApplyRoundedRegion(pnlApprovalBadge, 12);
-                UIHelper.ApplyRoundedRegion(pnlStatusBadge, 12);
+                UIHelper.ApplyRoundedRegion(lblRole, 12);
+                UIHelper.ApplyRoundedRegion(lblApproval, 12);
+                UIHelper.ApplyRoundedRegion(lblStatus, 12);
             };
         }
 
@@ -88,16 +97,16 @@ namespace UI_Tier
             SetRoleBadge(_user.Role);
 
             // Status Badge
-            lblStatus.Text = _user.Status == "Active" ? "✅ Hoạt động" : "🔒 Bị khóa";
+            lblStatus.Text = _user.Status == "Active" ? "Hoạt động" : "Bị khóa";
             if (_user.Status == "Active")
             {
                 lblStatus.ForeColor = Color.FromArgb(22, 163, 74);
-                pnlStatusBadge.BackColor = Color.FromArgb(220, 252, 231);
+                lblStatus.BackColor = Color.FromArgb(220, 252, 231);
             }
             else
             {
                 lblStatus.ForeColor = Color.FromArgb(220, 38, 38);
-                pnlStatusBadge.BackColor = Color.FromArgb(254, 226, 226);
+                lblStatus.BackColor = Color.FromArgb(254, 226, 226);
             }
 
             // Role specific data
@@ -115,25 +124,25 @@ namespace UI_Tier
                 lblDob.Visible = false;
 
                 // Approval Badge
-                pnlApprovalBadge.Visible = true;
+                lblApproval.Visible = true;
                 btnRemove.Visible = true;
                 if (_doctor.IsApproved)
                 {
                     lblApproval.Text = "✔ Đã duyệt";
                     lblApproval.ForeColor = Color.FromArgb(22, 163, 74);
-                    pnlApprovalBadge.BackColor = Color.FromArgb(220, 252, 231);
+                    lblApproval.BackColor = Color.FromArgb(220, 252, 231);
                 }
                 else
                 {
                     lblApproval.Text = "⏳ Chờ duyệt";
                     lblApproval.ForeColor = Color.FromArgb(161, 98, 7);
-                    pnlApprovalBadge.BackColor = Color.FromArgb(254, 252, 232);
+                    lblApproval.BackColor = Color.FromArgb(254, 252, 232);
                 }
             }
             else
             {
                 // Patient specific
-                pnlApprovalBadge.Visible = false;
+                lblApproval.Visible = false;
                 lblDeptOrCode.Text = "Mã bệnh nhân: " + (_patientDTO?.MedicalCode ?? ("BN" + _user.Id.ToString("D4")));
                 lblPhone.Text = "Số điện thoại: " + (_user.PhoneNumber ?? "Chưa cập nhật");
                 lblLicenseOrBHYT.Text = "Mã BHYT: " + (_patientDTO?.InsuranceCode ?? "Chưa cập nhật");
@@ -178,7 +187,53 @@ namespace UI_Tier
 
             // Apply rounding to badges
             UIHelper.ApplyRoundedRegion(pnlRoleBadge, 10);
-            UIHelper.ApplyRoundedRegion(pnlStatusBadge, 10);
+            UIHelper.ApplyRoundedRegion(lblStatus, 10);
+            UIHelper.ApplyRoundedRegion(lblApproval, 10);
+
+            if (flpActions != null)
+            {
+                // KHÓA Layout của cả Panel Cha để không bị tính toán nhảy cóc vị trí
+                pnlCard.SuspendLayout();
+                flpActions.SuspendLayout();
+
+                flpActions.FlowDirection = FlowDirection.LeftToRight;
+                flpActions.WrapContents = false;
+                flpActions.Controls.Clear();
+
+                Padding uniformMargin = new Padding(8, 5, 0, 5);
+
+                Button[] allButtons = { btnDetail, btnEdit, btnRemove, btnToggleStatus, btnApprove, btnReject };
+                foreach (var btn in allButtons)
+                {
+                    if (btn != null)
+                    {
+                        btn.Anchor = AnchorStyles.None;
+
+                        if (btn == btnToggleStatus || btn == btnApprove || btn == btnReject)
+                            btn.Size = new Size(195, 75);
+                        else
+                            btn.Size = new Size(75, 75);
+                    }
+                }
+
+                // Nạp vào FLP theo thứ tự đọc từ Trái sang Phải:
+                
+                if (btnApprove.Visible) flpActions.Controls.Add(btnApprove);
+                if (btnReject.Visible) flpActions.Controls.Add(btnReject);
+                if (btnToggleStatus.Visible) flpActions.Controls.Add(btnToggleStatus);
+
+                if (btnDetail.Visible) flpActions.Controls.Add(btnDetail);
+                if (btnEdit.Visible) flpActions.Controls.Add(btnEdit);
+                if (btnRemove.Visible) flpActions.Controls.Add(btnRemove);
+
+                
+
+                flpActions.ResumeLayout(true); // Đổi từ false thành true để ép nó dựng lại layout các nút con
+                flpActions.PerformLayout();   // Ép flpActions sắp xếp các nút theo thứ tự LeftToRight ngay lập tức
+
+                pnlCard.ResumeLayout(true);    // Cập nhật lại panel cha
+                this.PerformLayout();
+            }
         }
 
         private void SetRoleBadge(string role)

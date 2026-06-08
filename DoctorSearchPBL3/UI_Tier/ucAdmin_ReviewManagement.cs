@@ -127,7 +127,7 @@ namespace UI_Tier
             int hidden = _allReviews.Count(r => !r.IsVisible);
 
             lblStatValue1.Text = total.ToString("N0");
-            lblStatValue2.Text = avg.ToString("F1") + " ★";
+            lblStatValue2.Text = avg.ToString("F1");
             lblStatValue3.Text = visible.ToString("N0");
             lblStatValue4.Text = hidden.ToString("N0");
         }
