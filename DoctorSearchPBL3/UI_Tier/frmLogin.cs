@@ -1,4 +1,4 @@
-﻿using BUS_Tier;
+using BUS_Tier;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -184,6 +184,12 @@ namespace UI_Tier
             {
                 MessageBox.Show(message, "Lỗi đăng nhập", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
         }
     }
 }

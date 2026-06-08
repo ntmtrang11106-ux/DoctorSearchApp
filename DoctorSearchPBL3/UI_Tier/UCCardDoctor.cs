@@ -1,4 +1,4 @@
-﻿using BUS_Tier;
+using BUS_Tier;
 using DTO_Tier;
 using System.ComponentModel;
 using System.Drawing.Drawing2D;
@@ -11,7 +11,7 @@ namespace UI_Tier
         private bool _isHovered = false;
 
         /// <summary>
-        /// Thuộc tính để xác định thẻ này có cho phép tương tác (Click/Hover) hay không.
+        /// Thuộc tính xác định thẻ bác sĩ này có cho phép tương tác (Click/Hover) hay không.
         /// </summary>
         [Browsable(true)]
         [Category("Behavior")]
@@ -22,20 +22,44 @@ namespace UI_Tier
         public UCCardDoctor()
         {
             InitializeComponent();
+            
+            // Kích hoạt Double Buffered để giảm giật hình khi vẽ lại các control con trong Card
             UIHelper.SetDoubleBuffered(this);
+            
+            // Vẽ lại tên bác sĩ với chữ nổi bật (Highlight) khi có từ khóa tìm kiếm trùng khớp
+            lblFullName.Paint += lblFullName_Paint;
         }
 
+        /// <summary>
+        /// Xử lý sự kiện Paint của lblFullName để tô màu chữ trùng khớp với từ khóa tìm kiếm.
+        /// </summary>
+        private void lblFullName_Paint(object sender, PaintEventArgs e)
+        {
+            if (_currentDoc == null) return;
+            string position = NormalizeDoctorTitle(_currentDoc.Position);
+            string fullName = NormalizeDoctorName(_currentDoc.User?.FullName);
+            string displayName = string.IsNullOrWhiteSpace(position)
+                ? $"BS. {fullName}"
+                : $"{position} {fullName}";
 
-        // Hàm này dùng để "đổ" dữ liệu từ đối tượng Doctor vào các Label
+            // Gọi UIHelper vẽ chữ với từ khóa tìm kiếm được highlight (nền xanh chữ trắng/đen nổi bật)
+            UIHelper.DrawHighlightText(e.Graphics, lblFullName, displayName, _searchKeyword, 
+                Color.Black, Color.FromArgb(206, 225, 255), Color.FromArgb(0, 98, 255));
+        }
 
-        public void SetDoctorData(DoctorDTO doctor)
+        private string _searchKeyword = "";
 
+        /// Nạp dữ liệu của Bác sĩ vào các Control hiển thị trên Card.
+        /// Tính toán động lại khoảng cách chiều dọc (Top) giữa các nhãn thông tin để tránh khoảng trống thừa.
+        public void SetDoctorData(DoctorDTO doctor, string searchKeyword = "")
         {
             if (doctor == null) return;
 
             _currentDoc = doctor;
-            /// 1. Tên Bác sĩ: Kết hợp Chức danh + Họ tên
-            // Ví dụ: "Thạc sĩ Nguyễn Văn A" hoặc "Bác sĩ Trần Thị B"
+            _searchKeyword = searchKeyword;
+            lblFullName.Invalidate(); // Yêu cầu vẽ lại tên bác sĩ để cập nhật Highlight
+
+            // 1. Tên Bác sĩ: Chuẩn hóa chức danh (Position) và Họ tên (FullName)
             string position = NormalizeDoctorTitle(doctor.Position);
             string fullName = NormalizeDoctorName(doctor.User?.FullName);
             lblFullName.Text = string.IsNullOrWhiteSpace(position)
@@ -43,34 +67,63 @@ namespace UI_Tier
                 : $"{position} {fullName}";
             lblFullName.BringToFront();
 
-            //2. Nơi làm việc (Tên phòng khám hoặc bệnh viện)
+            // Tính toán lại vị trí (Top) của các label bên dưới để không bị khoảng trống thừa khi tên ngắn (1 dòng)
+            int nextTop = lblFullName.Top + lblFullName.Height + 10;
+            lblPhone.Top = nextTop;
+            
+            nextTop = lblPhone.Top + lblPhone.Height + 5;
+            lblSpecialties.Top = nextTop;
+            
+            nextTop = lblSpecialties.Top + lblSpecialties.Height + 5;
+            lblGender.Top = nextTop;
+            
+            nextTop = lblGender.Top + lblGender.Height + 5;
+            label3.Top = nextTop;
+            lblSpecificAdress.Top = nextTop;
+            
+            nextTop = lblSpecificAdress.Top + lblSpecificAdress.Height + 15;
+            label4.Top = nextTop;
+            lblWorkingTime.Top = nextTop;
+            
+            nextTop = lblWorkingTime.Top + lblWorkingTime.Height + 15;
+            label5.Top = nextTop;
+            lblPrice.Top = nextTop;
+            
+            nextTop = lblPrice.Top + lblPrice.Height + 22;
+            label2.Top = nextTop;
+            
+            nextTop = label2.Top + label2.Height + 10;
+            label6.Top = nextTop;
+            lblRating.Top = nextTop;
+            lblTotalReviews.Top = nextTop;
+            
+            nextTop = label6.Top + label6.Height + 15;
+            label7.Top = nextTop;
+            lblEx.Top = nextTop;
+
+            // 2. Điện thoại
             lblPhone.Text = doctor.User?.PhoneNumber ?? "Chưa cập nhật";
 
-            //3. Chuyên khoa (Tên chuyên khoa hoặc "Chưa cập nhật" nếu không có)
+            // 3. Chuyên khoa
             string deptName = $"Chuyên khoa: {doctor.Department?.DepartmentName ?? "Chưa cập nhật"}";
             lblSpecialties.Text = deptName;
 
-            //4. Giơí tính
-            lblGender.Text = $"Giới tính: {doctor.User?.Gender ?? "Chưa cập nhật" }";
+            // 4. Giới tính
+            lblGender.Text = $"Giới tính: {doctor.User?.Gender ?? "Chưa cập nhật"}";
 
-            //5. Địa chỉ cụ thể 
+            // 5. Địa chỉ chi tiết
             lblSpecificAdress.Text = doctor.User?.Residential_Address ?? "Chưa cập nhật";
 
-            //6.Thời gian làm việc(Nếu trong DTO bạn có trường Status hoặc WorkingTime)
-            //lblWorkingTime.Text = $"Lịch: {doctor.JoinDate}";
-            //6.Thời gian làm việc
+            // 6. Thời gian làm việc hoặc ngày gia nhập
             lblWorkingTime.Text = doctor.JoinDate.HasValue
                 ? $"Gia nhập: {doctor.JoinDate.Value:dd/MM/yyyy}"
                 : "Lịch: Thứ 2 - Thứ 7";
 
-            // 6. Giá tiền (Đã có cột ConsultationFee trong bảng Doctor)
+            // 7. Giá khám bệnh
             decimal price = doctor.ConsultationFee ?? 0;
             lblPrice.Text = price.ToString("N0") + " đ";
 
-            //// 7. Đánh giá (Số sao và tổng lượt review)
-            //lblRating.Text = doctor.AverageRating.ToString("0.0"); // Ví dụ: 4.5
-            //lblTotalReviews.Text = $"{doctor.TotalReviews} đánh giá";
-            // 7. Đánh giá (Tính từ bảng Reviews)
+            // 8. Đánh giá (Điểm trung bình và tổng lượt đánh giá)
             if (doctor.Reviews != null && doctor.Reviews.Any())
             {
                 double avg = doctor.Reviews.Average(r => r.Rating);
@@ -83,45 +136,21 @@ namespace UI_Tier
                 lblTotalReviews.Text = "0 đánh giá";
             }
 
-            //8.Kinh nghiệm
+            // 9. Số năm kinh nghiệm
             lblEx.Text = $"{doctor.ExperienceYears ?? 0} năm kinh nghiệm";
 
-            // 9. Hình ảnh
-            // --- XỬ LÝ HÌNH ẢNH ---
-            // Kiểm tra null hoặc rỗng để dùng ảnh mặc định
+            // 10. Ảnh đại diện của Bác sĩ
             string fileName = doctor.User?.Picture?.Trim() ?? "";
             if (string.IsNullOrWhiteSpace(fileName) || fileName.Equals("default.jpg", StringComparison.OrdinalIgnoreCase))
             {
                 fileName = "bs_nguyen_van_an.jpg";
             }
-
             LoadDoctorImage(fileName);
+        }
 
-            // --- THIẾT LẬP TƯƠNG TÁC CHUỘT ---
-            Control[] interactiveControls = { 
-                this, pnlContainer, picDoctor, lblFullName, lblPhone, lblSpecialties, 
-                lblGender, lblSpecificAdress, lblWorkingTime, lblPrice, lblRating, 
-                lblTotalReviews, lblEx, label1, label2, label3, label4, label5, label6, label7, lblSpecialtyTag 
-            };
-
-            foreach (var ctrl in interactiveControls)
-            {
-                if (ctrl == null) continue;
-
-                // 1. Luôn dùng con trỏ bàn tay
-                ctrl.Cursor = Cursors.Hand;
-
-                // 2. Đăng ký sự kiện (Việc kiểm tra IsClickable sẽ thực hiện bên trong hàm xử lý)
-                    ctrl.MouseEnter -= OnMouseEnter;
-                    ctrl.MouseEnter += OnMouseEnter;
-                    ctrl.MouseLeave -= OnMouseLeave;
-                    ctrl.MouseLeave += OnMouseLeave;
-
-                    ctrl.Click -= Card_Click;
-                    ctrl.Click += Card_Click;
-                }
-            }
-
+        /// <summary>
+        /// Chuẩn hóa chức danh hiển thị của bác sĩ (ví dụ: PGS, TS, ThS, BS).
+        /// </summary>
         private static string NormalizeDoctorTitle(string? position)
         {
             if (string.IsNullOrWhiteSpace(position)) return "BS.";
@@ -136,6 +165,9 @@ namespace UI_Tier
             return title;
         }
 
+        /// <summary>
+        /// Chuẩn hóa tên bác sĩ, loại bỏ các chữ tiền tố lặp lại.
+        /// </summary>
         private static string NormalizeDoctorName(string? fullName)
         {
             if (string.IsNullOrWhiteSpace(fullName)) return "Chưa cập nhật";
@@ -153,6 +185,10 @@ namespace UI_Tier
             return name;
         }
 
+        /// <summary>
+        /// Tải hình ảnh của Bác sĩ từ các thư mục tài nguyên cục bộ.
+        /// Nếu không tồn tại tệp ảnh hoặc xảy ra lỗi, tự động tải ảnh mặc định từ Resources.
+        /// </summary>
         private void LoadDoctorImage(string fileName)
         {
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
@@ -175,100 +211,139 @@ namespace UI_Tier
                 }
                 catch
                 {
-                    // Fallback to embedded resource below.
+                    // Tiếp tục thử đường dẫn khác hoặc fallback nếu lỗi
                 }
             }
 
             picDoctor.Image?.Dispose();
             picDoctor.Image = Properties.Resources.bs_nguyen_van_an;
         }
+
+        /// <summary>
+        /// Tự vẽ viền và bo góc cho Card.
+        /// Thay đổi màu sắc và độ dày viền tùy thuộc vào trạng thái Hover (khi di chuột qua).
+        /// </summary>
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
 
             if (IsClickable)
             {
-                // Màu xanh đậm khi hover, xám nhạt khi bình thường
+                // Màu xanh dương khi Hover chuột qua, màu xám nhạt khi ở trạng thái bình thường
                 Color borderColor = _isHovered ? Color.FromArgb(37, 99, 235) : Color.FromArgb(224, 224, 224);
                 int borderWidth = _isHovered ? 3 : 2;
                 UIHelper.uc_Paint(this, e, 20, borderColor, borderWidth);
             }
             else
             {
-                // Khi không clickable, giữ viền xám mặc định
+                // Giữ nguyên viền xám mặc định khi Card không được phép Click
                 UIHelper.uc_Paint(this, e, 20, Color.FromArgb(224, 224, 224), 2);
             }
         }
 
+        /// <summary>
+        /// Xử lý sự kiện Load của User Control.
+        /// Thực hiện bo tròn các vùng hiển thị của Card, Tag chuyên khoa và PictureBox.
+        /// Đồng thời cấu hình con trỏ chuột chỉ tay (Cursors.Hand) và đăng ký các sự kiện chuột (Hover/Click) cho các control con.
+        /// </summary>
         private void UCCardDoctor_Load(object sender, EventArgs e)
         {
-            // Bo góc cho toàn bộ Card (nếu muốn)
+            // Bo tròn toàn bộ khung Card bác sĩ (bán kính 15px)
             UIHelper.ApplyRoundedRegion(this, 15);
 
-            // Bo góc cho Label chuyên khoa ở góc phải
+            // Bo tròn tag chuyên khoa ở phía trên bên phải (bán kính 8px)
             UIHelper.ApplyRoundedRegion(lblSpecialtyTag, 8);
 
-            // Bo góc cho PictureBox (nếu bạn muốn bo nhẹ 4 góc)
+            // Bo nhẹ các góc của khung hình ảnh bác sĩ (bán kính 15px)
             UIHelper.ApplyRoundedRegion(picDoctor, 15);
+
+            // --- THIẾT LẬP TƯƠNG TÁC CHUỘT VÀ CON TRỎ ---
+            // Gom tất cả các control cần tương tác vào một mảng để thiết lập tự động một lần duy nhất tại sự kiện Load
+            Control[] interactiveControls = { 
+                this, pnlContainer, picDoctor, lblFullName, lblPhone, lblSpecialties, 
+                lblGender, lblSpecificAdress, lblWorkingTime, lblPrice, lblRating, 
+                lblTotalReviews, lblEx, label1, label2, label3, label4, label5, label6, label7, lblSpecialtyTag 
+            };
+
+            foreach (var ctrl in interactiveControls)
+            {
+                if (ctrl == null) continue;
+
+                // 1. Thay đổi con trỏ chuột thành dạng bàn tay chỉ ngón trỏ (Cursors.Hand) để chỉ thị đối tượng có thể tương tác click
+                ctrl.Cursor = Cursors.Hand;
+
+                // 2. Đăng ký sự kiện Hover khi chuột đi vào (đổi màu viền và nâng thẻ lên nhẹ) và đi ra ngoài
+                ctrl.MouseEnter -= OnMouseEnter;
+                ctrl.MouseEnter += OnMouseEnter;
+                ctrl.MouseLeave -= OnMouseLeave;
+                ctrl.MouseLeave += OnMouseLeave;
+
+                // 3. Đăng ký sự kiện Click cho mọi control con để dù click ở đâu trên card cũng điều hướng đến profile bác sĩ
+                ctrl.Click -= Card_Click;
+                ctrl.Click += Card_Click;
+            }
         }
 
+        /// <summary>
+        /// Xử lý hiệu ứng khi di chuột vào vùng của Card (MouseEnter).
+        /// Hiệu ứng giãn cách và đổi màu nền chỉ kích hoạt nếu người dùng đang đăng nhập với vai trò Bệnh nhân.
+        /// </summary>
         private void OnMouseEnter(object sender, EventArgs e)
         {
             if (!IsClickable || _isHovered) return;
 
-            // CHỈ cho phép hiệu ứng Hover (viền xanh, nhấc thẻ) nếu đang đăng nhập là Bệnh nhân
+            // Chỉ cho phép hiệu ứng Hover (viền xanh, đổi lề nhấc thẻ) nếu người dùng hiện tại là Bệnh nhân
             if (GlobalAccount.GetRole() == "Patient")
             {
                 _isHovered = true;
-                this.Margin = new Padding(15, 10, 15, 20);
+                this.Margin = new Padding(15, 10, 15, 20); // Điều chỉnh Margin tạo cảm giác thẻ nhấc lên
                 
                 Color hoverColor = Color.FromArgb(252, 253, 255);
                 this.BackColor = hoverColor;
                 if (pnlContainer != null) pnlContainer.BackColor = hoverColor;
                 
-                this.Refresh(); // Vẽ lại viền xanh
+                this.Refresh(); // Yêu cầu vẽ lại ngay lập tức để hiện viền xanh mới
             }
             else
             {
-                // Ở Guest hoặc các vai trò khác thì giữ nguyên trạng thái tĩnh hoàn toàn
+                // Giữ nguyên giao diện phẳng ở Guest hoặc các vai trò quản trị khác
                 _isHovered = false;
             }
         }
         
+        /// <summary>
+        /// Xử lý khôi phục giao diện khi di chuột ra khỏi vùng của Card (MouseLeave).
+        /// </summary>
         private void OnMouseLeave(object sender, EventArgs e)
         {
             if (!IsClickable) return;
 
-            // Kiểm tra xem chuột có thực sự rời khỏi vùng của UC không
+            // Kiểm tra thực tế xem con trỏ chuột có thực sự di chuyển ra hẳn bên ngoài ranh giới của Card hay chưa
             Rectangle screenBounds = this.RectangleToScreen(this.ClientRectangle);
             if (screenBounds.Contains(Cursor.Position)) return;
 
-            // Chỉ reset nếu trước đó có hiệu ứng (là Patient)
+            // Reset lại giao diện về trạng thái ban đầu
             if (_isHovered)
             {
                 _isHovered = false;
                 this.Margin = new Padding(15);
                 this.BackColor = Color.White;
                 if (pnlContainer != null) pnlContainer.BackColor = Color.White;
-                this.Invalidate();
+                this.Invalidate(); // Vẽ lại để khôi phục viền xám mặc định
             }
         }
 
-        // Hàm xử lý khi kích vào bất kỳ đâu trên Card
+        /// <summary>
+        /// Xử lý sự kiện click trên toàn bộ các thành phần của Card.
+        /// Điều hướng chuyển tiếp sang trang thông tin chi tiết (Doctor Profile).
+        /// </summary>
         private void Card_Click(object sender, EventArgs e)
         {
-            // Tìm về Form chính để điều hướng trang
             Form parentForm = this.FindForm();
             if (parentForm is frmPatient main)
             {
                 main.OpenDoctorProfile(_currentDoc);
             }
         }
-
     }
 }
-
-
-
-
-

@@ -1,4 +1,4 @@
-﻿namespace UI_Tier
+namespace UI_Tier
 {
     partial class frmLogin
     {
@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            btnBack = new Button();
             panel1 = new Panel();
             panel2 = new Panel();
-            panel3 = new Panel();
-            picLogo = new PictureBox();
-            lblBrand = new Label();
+            lblSloganHospital = new Label();
             lblSlogan = new Label();
+            lblBrand = new Label();
+            picLogo = new PictureBox();
+            panel3 = new Panel();
             panel5 = new Panel();
             picShowPass = new PictureBox();
             txtPassword = new TextBox();
@@ -54,8 +56,23 @@
             panel4.SuspendLayout();
             SuspendLayout();
             // 
+            // btnBack
+            // 
+            btnBack.Cursor = Cursors.Hand;
+            btnBack.FlatAppearance.BorderSize = 0;
+            btnBack.FlatStyle = FlatStyle.Flat;
+            btnBack.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+            btnBack.ForeColor = Color.FromArgb(24, 112, 255);
+            btnBack.Location = new Point(30, 30);
+            btnBack.Name = "btnBack";
+            btnBack.Size = new Size(257, 80);
+            btnBack.TabIndex = 10;
+            btnBack.Text = "< Quay lại";
+            btnBack.Click += btnBack_Click;
+            // 
             // panel1
             // 
+            panel1.Controls.Add(btnBack);
             panel1.Controls.Add(panel2);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
@@ -67,6 +84,7 @@
             // 
             panel2.Anchor = AnchorStyles.Top;
             panel2.BackColor = Color.FromArgb(24, 112, 255);
+            panel2.Controls.Add(lblSloganHospital);
             panel2.Controls.Add(lblSlogan);
             panel2.Controls.Add(lblBrand);
             panel2.Controls.Add(picLogo);
@@ -77,38 +95,49 @@
             panel2.Size = new Size(1844, 1011);
             panel2.TabIndex = 3;
             // 
-            // picLogo
+            // lblSloganHospital
             // 
-            picLogo.BackColor = Color.White;
-            picLogo.Image = Properties.Resources.logo;
-            picLogo.Location = new Point(257, 105);
-            picLogo.Name = "picLogo";
-            picLogo.Size = new Size(360, 260);
-            picLogo.SizeMode = PictureBoxSizeMode.Zoom;
-            picLogo.TabIndex = 6;
-            picLogo.TabStop = false;
+            lblSloganHospital.Font = new Font("Segoe UI", 16F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblSloganHospital.ForeColor = Color.White;
+            lblSloganHospital.Location = new Point(90, 684);
+            lblSloganHospital.Name = "lblSloganHospital";
+            lblSloganHospital.Size = new Size(720, 60);
+            lblSloganHospital.TabIndex = 11;
+            lblSloganHospital.Text = "Bệnh viện Ung Bướu TP. Đà Nẵng";
+            lblSloganHospital.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lblSlogan
+            // 
+            lblSlogan.Font = new Font("Segoe UI Semibold", 13.125F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            lblSlogan.ForeColor = Color.FromArgb(190, 220, 255);
+            lblSlogan.Location = new Point(90, 613);
+            lblSlogan.Name = "lblSlogan";
+            lblSlogan.Size = new Size(720, 50);
+            lblSlogan.TabIndex = 4;
+            lblSlogan.Text = "Giải pháp y tế số cho";
+            lblSlogan.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lblBrand
             // 
             lblBrand.Font = new Font("Segoe UI", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblBrand.ForeColor = Color.White;
-            lblBrand.Location = new Point(80, 470);
+            lblBrand.Location = new Point(80, 493);
             lblBrand.Name = "lblBrand";
             lblBrand.Size = new Size(740, 110);
             lblBrand.TabIndex = 5;
             lblBrand.Text = "MediFar";
             lblBrand.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // lblSlogan
+            // picLogo
             // 
-            lblSlogan.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblSlogan.ForeColor = Color.FromArgb(235, 245, 255);
-            lblSlogan.Location = new Point(90, 590);
-            lblSlogan.Name = "lblSlogan";
-            lblSlogan.Size = new Size(720, 150);
-            lblSlogan.TabIndex = 4;
-            lblSlogan.Text = "Đặt lịch từ xa, an tâm lựa chọn";
-            lblSlogan.TextAlign = ContentAlignment.TopCenter;
+            picLogo.BackColor = Color.White;
+            picLogo.Image = Properties.Resources.logo;
+            picLogo.Location = new Point(172, 54);
+            picLogo.Name = "picLogo";
+            picLogo.Size = new Size(557, 328);
+            picLogo.SizeMode = PictureBoxSizeMode.Zoom;
+            picLogo.TabIndex = 6;
+            picLogo.TabStop = false;
             // 
             // panel3
             // 
@@ -239,10 +268,9 @@
             // label1
             // 
             label1.Anchor = AnchorStyles.Top;
-            label1.AutoSize = false;
             label1.Font = new Font("Segoe UI", 19F, FontStyle.Bold | FontStyle.Italic);
             label1.ForeColor = Color.White;
-            label1.Location = new Point(90, 385);
+            label1.Location = new Point(90, 408);
             label1.Name = "label1";
             label1.RightToLeft = RightToLeft.No;
             label1.Size = new Size(720, 70);
@@ -262,7 +290,6 @@
             WindowState = FormWindowState.Maximized;
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
-            panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)picLogo).EndInit();
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
@@ -293,6 +320,8 @@
         private PictureBox picLogo;
         private Label lblBrand;
         private Label lblSlogan;
+        private Label lblSloganHospital;
+        private Button btnBack;
     }
 }
 

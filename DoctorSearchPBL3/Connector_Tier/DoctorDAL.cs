@@ -284,8 +284,9 @@ namespace DAL_Tier
             var fieldTokens = fieldValue.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             var matchedTokens = keywordTokens.Count(token =>
                 fieldTokens.Any(fieldToken =>
-                    fieldToken.Contains(token, StringComparison.Ordinal) ||
-                    token.Contains(fieldToken, StringComparison.Ordinal)));
+                    fieldToken.Contains(token, StringComparison.Ordinal) 
+                    // || token.Contains(fieldToken, StringComparison.Ordinal)
+                    ));
 
             return matchedTokens > 0 ? baseScore + (matchedTokens * 5) : 0;
         }

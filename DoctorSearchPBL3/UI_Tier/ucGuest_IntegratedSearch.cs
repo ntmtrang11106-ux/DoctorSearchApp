@@ -238,6 +238,16 @@ namespace UI_Tier
             lblPrev.Cursor = Cursors.Hand;
             lblNext.Cursor = Cursors.Hand;
 
+            // Kích hoạt nút Enter khi nhập ô Tìm kiếm
+            txtSearchBar.KeyDown += (sender, e) =>
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    e.SuppressKeyPress = true; // Chặn tiếng bíp mặc định của Windows
+                    ExecuteSearch();
+                }
+            };
+
             Load += (_, _) => ExecuteSearch();
             LoadDepartments();
         }
@@ -403,7 +413,7 @@ namespace UI_Tier
             lblArtText.Text = $"Bài viết ({_foundArticles.Count})";
         }
 
-        private void DisplayResults()
+        public void DisplayResults()
         {
             bool isDoctorTab = _activeTab == tabDoc;
 
@@ -472,6 +482,9 @@ namespace UI_Tier
             int startIndex = (page - 1) * _pageSize;
             var items = _foundDoctors.Skip(startIndex).Take(_pageSize).ToList();
 
+            string keyword = txtSearchBar.Text.Trim();
+            if (keyword == "Nhập tên bác sĩ hoặc tiêu đề bài viết...") keyword = "";
+
             foreach (var doc in items)
             {
                 UCCardDoctor card = new UCCardDoctor
@@ -479,7 +492,7 @@ namespace UI_Tier
                     IsClickable = true,
                     Margin = new Padding(15)
                 };
-                card.SetDoctorData(doc);
+                card.SetDoctorData(doc, keyword);
 
                 int containerWidth = flpDoctors.ClientSize.Width;
                 if (containerWidth > 100)
@@ -502,13 +515,16 @@ namespace UI_Tier
             int startIndex = (page - 1) * _pageSize;
             var items = _foundArticles.Skip(startIndex).Take(_pageSize).ToList();
 
+            string keyword = txtSearchBar.Text.Trim();
+            if (keyword == "Nhập tên bác sĩ hoặc tiêu đề bài viết...") keyword = "";
+
             foreach (var art in items)
             {
                 UCCardArticle card = new UCCardArticle
                 {
                     Margin = new Padding(15)
                 };
-                card.SetData(art);
+                card.SetData(art, keyword);
 
                 int containerWidth = flpArticles.ClientSize.Width;
                 if (containerWidth > 50)

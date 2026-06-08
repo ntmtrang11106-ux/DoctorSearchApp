@@ -1,4 +1,4 @@
-﻿namespace UI_Tier
+namespace UI_Tier
 {
     partial class UCCardDoctor
     {
@@ -67,15 +67,15 @@
             // lblFullName
             // 
             lblFullName.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            lblFullName.AutoSize = false;
+            lblFullName.AutoSize = true;
             lblFullName.BackColor = Color.White;
             lblFullName.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblFullName.ForeColor = Color.Black;
             lblFullName.Location = new Point(24, 360);
             lblFullName.Margin = new Padding(0, 5, 0, 5);
+            lblFullName.MaximumSize = new Size(585, 0);
             lblFullName.Name = "lblFullName";
             lblFullName.Size = new Size(585, 112);
-            lblFullName.TextAlign = ContentAlignment.TopLeft;
             lblFullName.TabIndex = 1;
             lblFullName.Text = "BS. Nguyễn Văn Minh";
             lblFullName.Click += Card_Click;
@@ -100,7 +100,7 @@
             lblEx.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             lblEx.AutoSize = true;
             lblEx.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblEx.Location = new Point(97, 868);
+            lblEx.Location = new Point(97, 892);
             lblEx.Name = "lblEx";
             lblEx.Size = new Size(105, 45);
             lblEx.TabIndex = 16;
@@ -111,7 +111,7 @@
             // 
             lblTotalReviews.AutoSize = true;
             lblTotalReviews.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblTotalReviews.Location = new Point(222, 808);
+            lblTotalReviews.Location = new Point(222, 832);
             lblTotalReviews.Name = "lblTotalReviews";
             lblTotalReviews.Size = new Size(105, 45);
             lblTotalReviews.TabIndex = 17;
@@ -143,7 +143,7 @@
             pnlContainer.Location = new Point(13, 13);
             pnlContainer.Name = "pnlContainer";
             pnlContainer.Padding = new Padding(10);
-            pnlContainer.Size = new Size(646, 954);
+            pnlContainer.Size = new Size(646, 958);
             pnlContainer.TabIndex = 19;
             pnlContainer.Click += Card_Click;
             // 
@@ -152,7 +152,7 @@
             lblGender.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             lblGender.AutoSize = true;
             lblGender.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblGender.Location = new Point(24, 558);
+            lblGender.Location = new Point(24, 582);
             lblGender.Name = "lblGender";
             lblGender.Size = new Size(141, 45);
             lblGender.TabIndex = 27;
@@ -165,7 +165,7 @@
             lblSpecialties.AutoSize = true;
             lblSpecialties.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblSpecialties.ForeColor = Color.FromArgb(37, 99, 235);
-            lblSpecialties.Location = new Point(24, 508);
+            lblSpecialties.Location = new Point(24, 532);
             lblSpecialties.Margin = new Padding(0, 5, 0, 5);
             lblSpecialties.MaximumSize = new Size(600, 0);
             lblSpecialties.Name = "lblSpecialties";
@@ -179,7 +179,7 @@
             label7.BackColor = Color.Transparent;
             label7.Font = new Font("Segoe MDL2 Assets", 15F);
             label7.ForeColor = Color.DodgerBlue;
-            label7.Location = new Point(24, 868);
+            label7.Location = new Point(24, 892);
             label7.Margin = new Padding(4, 0, 4, 0);
             label7.Name = "label7";
             label7.Size = new Size(65, 64);
@@ -191,7 +191,7 @@
             // 
             label6.Font = new Font("Segoe MDL2 Assets", 15F);
             label6.ForeColor = Color.Gold;
-            label6.Location = new Point(24, 808);
+            label6.Location = new Point(24, 832);
             label6.Margin = new Padding(4, 0, 4, 0);
             label6.Name = "label6";
             label6.Size = new Size(65, 64);
@@ -203,7 +203,7 @@
             // 
             label5.Font = new Font("Segoe MDL2 Assets", 15F);
             label5.ForeColor = Color.DodgerBlue;
-            label5.Location = new Point(24, 728);
+            label5.Location = new Point(24, 752);
             label5.Margin = new Padding(4, 0, 4, 0);
             label5.Name = "label5";
             label5.Size = new Size(65, 47);
@@ -215,7 +215,7 @@
             // 
             label4.Font = new Font("Segoe MDL2 Assets", 15F);
             label4.ForeColor = Color.DodgerBlue;
-            label4.Location = new Point(24, 668);
+            label4.Location = new Point(24, 692);
             label4.Margin = new Padding(4, 0, 4, 0);
             label4.Name = "label4";
             label4.Size = new Size(65, 64);
@@ -227,7 +227,7 @@
             // 
             label3.Font = new Font("Segoe MDL2 Assets", 15F);
             label3.ForeColor = Color.DodgerBlue;
-            label3.Location = new Point(24, 608);
+            label3.Location = new Point(24, 632);
             label3.Margin = new Padding(4, 0, 4, 0);
             label3.Name = "label3";
             label3.Size = new Size(65, 64);
@@ -239,7 +239,7 @@
             // 
             label2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             label2.BackColor = Color.Gray;
-            label2.Location = new Point(3, 795);
+            label2.Location = new Point(3, 819);
             label2.Name = "label2";
             label2.Size = new Size(626, 3);
             label2.TabIndex = 20;
@@ -259,7 +259,7 @@
             lblRating.AutoSize = true;
             lblRating.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblRating.ForeColor = Color.DimGray;
-            lblRating.Location = new Point(98, 808);
+            lblRating.Location = new Point(98, 832);
             lblRating.Name = "lblRating";
             lblRating.Size = new Size(105, 45);
             lblRating.TabIndex = 9;
@@ -272,7 +272,7 @@
             lblPrice.AutoSize = true;
             lblPrice.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblPrice.ForeColor = Color.Blue;
-            lblPrice.Location = new Point(98, 728);
+            lblPrice.Location = new Point(98, 752);
             lblPrice.Margin = new Padding(0, 5, 0, 5);
             lblPrice.Name = "lblPrice";
             lblPrice.Size = new Size(105, 45);
@@ -286,7 +286,7 @@
             lblWorkingTime.AutoSize = true;
             lblWorkingTime.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblWorkingTime.ForeColor = Color.DimGray;
-            lblWorkingTime.Location = new Point(98, 668);
+            lblWorkingTime.Location = new Point(98, 692);
             lblWorkingTime.Margin = new Padding(0, 5, 0, 5);
             lblWorkingTime.Name = "lblWorkingTime";
             lblWorkingTime.Size = new Size(105, 45);
@@ -300,7 +300,7 @@
             lblSpecificAdress.AutoSize = true;
             lblSpecificAdress.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblSpecificAdress.ForeColor = Color.DimGray;
-            lblSpecificAdress.Location = new Point(98, 608);
+            lblSpecificAdress.Location = new Point(98, 632);
             lblSpecificAdress.Margin = new Padding(0, 5, 0, 5);
             lblSpecificAdress.Name = "lblSpecificAdress";
             lblSpecificAdress.Size = new Size(105, 45);
@@ -314,7 +314,7 @@
             lblPhone.AutoSize = true;
             lblPhone.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblPhone.ForeColor = SystemColors.ControlDarkDark;
-            lblPhone.Location = new Point(24, 458);
+            lblPhone.Location = new Point(24, 482);
             lblPhone.Margin = new Padding(0, 5, 0, 5);
             lblPhone.Name = "lblPhone";
             lblPhone.Size = new Size(190, 45);
@@ -329,7 +329,7 @@
             Controls.Add(pnlContainer);
             Name = "UCCardDoctor";
             Padding = new Padding(13);
-            Size = new Size(672, 980);
+            Size = new Size(672, 984);
             Load += UCCardDoctor_Load;
             ((System.ComponentModel.ISupportInitialize)picDoctor).EndInit();
             pnlContainer.ResumeLayout(false);
@@ -362,5 +362,3 @@
         private Label lblGender;
     }
 }
-
-

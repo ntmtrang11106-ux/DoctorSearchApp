@@ -82,7 +82,6 @@ namespace UI_Tier
             // pnlSearchBox
             // 
             pnlSearchBox.BackColor = Color.White;
-            pnlSearchBox.Controls.Add(lstSuggestions);
             pnlSearchBox.Controls.Add(txtSearchBar);
             pnlSearchBox.Controls.Add(btnSearch);
             pnlSearchBox.Location = new Point(65, 76);
@@ -96,10 +95,10 @@ namespace UI_Tier
             lstSuggestions.BorderStyle = BorderStyle.FixedSingle;
             lstSuggestions.Font = new Font("Segoe UI", 11F);
             lstSuggestions.FormattingEnabled = true;
-            lstSuggestions.Location = new Point(-41, 80);
+            lstSuggestions.Location = new Point(97, 172);
             lstSuggestions.Margin = new Padding(5);
             lstSuggestions.Name = "lstSuggestions";
-            lstSuggestions.Size = new Size(1902, 242);
+            lstSuggestions.Size = new Size(1544, 200);
             lstSuggestions.TabIndex = 2;
             lstSuggestions.Visible = false;
             lstSuggestions.Click += lstSuggestions_Click;
@@ -419,6 +418,7 @@ namespace UI_Tier
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
+            Controls.Add(lstSuggestions);
             Controls.Add(pnlResultContainer);
             Controls.Add(pnlTabHeader);
             Controls.Add(pnlFilters);

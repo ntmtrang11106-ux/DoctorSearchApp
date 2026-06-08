@@ -626,5 +626,99 @@ namespace UI_Tier
             GC.WaitForPendingFinalizers();
             GC.Collect();
         }
+
+        /// <summary>
+        /// Vẽ văn bản lên một nhãn (Label) và làm nổi bật (highlight) từ khóa tìm kiếm trùng khớp.
+        /// Hàm tự động loại bỏ dấu tiếng Việt khi so khớp để đảm bảo độ chính xác.
+        /// </summary>
+        /// <param name="g">Đối tượng Graphics để vẽ.</param>
+        /// <param name="lbl">Nhãn (Label) chứa văn bản.</param>
+        /// <param name="text">Nội dung văn bản gốc đầy đủ.</param>
+        /// <param name="keyword">Từ khóa tìm kiếm cần highlight.</param>
+        /// <param name="defaultColor">Màu chữ mặc định cho phần không trùng khớp.</param>
+        /// <param name="highlightBackColor">Màu nền highlight (ví dụ: xanh nhạt).</param>
+        /// <param name="highlightTextColor">Màu chữ của phần trùng khớp (ví dụ: xanh đậm).</param>
+        public static void DrawHighlightText(Graphics g, Label lbl, string text, string keyword, Color defaultColor, Color highlightBackColor, Color highlightTextColor)
+        {
+            if (string.IsNullOrEmpty(text)) return;
+
+            // 1. Xóa nền nhãn cũ bằng màu nền mặc định của nhãn
+            using (var backBrush = new SolidBrush(lbl.BackColor))
+            {
+                g.FillRectangle(backBrush, lbl.ClientRectangle);
+            }
+
+            // Nếu từ khóa trống, vẽ toàn bộ văn bản bằng màu mặc định và thoát
+            if (string.IsNullOrWhiteSpace(keyword))
+            {
+                TextRenderer.DrawText(g, text, lbl.Font, lbl.ClientRectangle, defaultColor, 
+                    TextFormatFlags.WordBreak | TextFormatFlags.VerticalCenter);
+                return;
+            }
+
+            // 2. Chuẩn hóa không dấu và chuyển chữ thường để so sánh không phân biệt hoa thường/dấu
+            string normText = DAL_Tier.DBHelper.RemoveDiacritics(text).ToLower();
+            string normKeyword = DAL_Tier.DBHelper.RemoveDiacritics(keyword).ToLower();
+
+            // Tìm vị trí bắt đầu của từ khóa trong chuỗi gốc
+            int index = normText.IndexOf(normKeyword);
+            if (index < 0)
+            {
+                // Nếu không tìm thấy trùng khớp, vẽ bình thường và thoát
+                TextRenderer.DrawText(g, text, lbl.Font, lbl.ClientRectangle, defaultColor, 
+                    TextFormatFlags.WordBreak | TextFormatFlags.VerticalCenter);
+                return;
+            }
+
+            int matchLen = normKeyword.Length;
+
+            // 3. Tách văn bản thành 3 phần: Phần trước khớp, Phần khớp, và Phần sau khớp
+            string part1 = text.Substring(0, index);
+            string part2 = text.Substring(index, matchLen);
+            string part3 = text.Substring(index + matchLen);
+
+            // Đo kích thước của phần trước khớp và phần khớp để biết vị trí tọa độ X cần vẽ tiếp theo
+            Size size1 = TextRenderer.MeasureText(g, part1, lbl.Font, lbl.Size, TextFormatFlags.NoPadding);
+            Size size2 = TextRenderer.MeasureText(g, part2, lbl.Font, lbl.Size, TextFormatFlags.NoPadding);
+
+            // Tính toán vị trí Y tùy thuộc vào việc Label có AutoSize hay cố định chiều cao (để khớp với designer)
+            int startY = 3; 
+            if (lbl.AutoSize)
+            {
+                // Nếu là AutoSize (như tên bác sĩ), căn giữa theo chiều dọc của nhãn
+                Size totalSize = TextRenderer.MeasureText(g, text, lbl.Font, lbl.Size, TextFormatFlags.NoPadding);
+                startY = (lbl.Height - totalSize.Height) / 2;
+                if (startY < 3) startY = 3; // Đảm bảo không sát đỉnh quá gây mất dấu mũ
+            }
+            else
+            {
+                // Nếu cố định chiều cao (như tiêu đề bài viết), vẽ sát đỉnh giống TextAlign = TopLeft để đúng vị trí trong designer
+                startY = lbl.Padding.Top + 3;
+            }
+            Point pt = new Point(0, startY);
+
+            // 4. Tiến hành vẽ từng phần:
+            // Vẽ Phần 1 (Phần trước khớp)
+            if (!string.IsNullOrEmpty(part1))
+            {
+                TextRenderer.DrawText(g, part1, lbl.Font, pt, defaultColor, TextFormatFlags.NoPadding);
+                pt.X += size1.Width; // Dịch chuyển con trỏ vẽ sang phải
+            }
+
+            // Vẽ Phần 2 (Phần trùng khớp) - Tô nền highlight trước rồi đè chữ lên
+            Rectangle highlightRect = new Rectangle(pt.X, pt.Y, size2.Width, size2.Height);
+            using (Brush brush = new SolidBrush(highlightBackColor))
+            {
+                g.FillRectangle(brush, highlightRect); // Vẽ hình chữ nhật nền highlight
+            }
+            TextRenderer.DrawText(g, part2, lbl.Font, pt, highlightTextColor, TextFormatFlags.NoPadding);
+            pt.X += size2.Width; // Dịch chuyển con trỏ vẽ sang phải
+
+            // Vẽ Phần 3 (Phần sau khớp) nếu có
+            if (!string.IsNullOrEmpty(part3))
+            {
+                TextRenderer.DrawText(g, part3, lbl.Font, pt, defaultColor, TextFormatFlags.NoPadding);
+            }
+        }
     }
 }
