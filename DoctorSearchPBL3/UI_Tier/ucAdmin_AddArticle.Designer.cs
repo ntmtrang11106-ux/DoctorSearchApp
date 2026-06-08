@@ -62,36 +62,37 @@ namespace UI_Tier
             // 
             // pnlHeader
             // 
-            pnlHeader.BackColor = Color.FromArgb(37, 99, 235);
+            pnlHeader.BackColor = Color.FromArgb(60, 140, 250);
             pnlHeader.Controls.Add(label1);
             pnlHeader.Controls.Add(lblHeaderTitle);
             pnlHeader.Controls.Add(btnCancelTop);
             pnlHeader.Dock = DockStyle.Top;
             pnlHeader.Location = new Point(0, 0);
             pnlHeader.Name = "pnlHeader";
-            pnlHeader.Size = new Size(894, 100);
+            pnlHeader.Size = new Size(994, 100);
             pnlHeader.TabIndex = 0;
             pnlHeader.MouseDown += panelHeader_MouseDown;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.BackColor = Color.White;
-            label1.Font = new Font("Segoe UI", 16.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.Location = new Point(40, 25);
+            label1.BackColor = Color.Transparent;
+            label1.Font = new Font("Segoe UI Black", 19.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.ForeColor = Color.White;
+            label1.Location = new Point(40, 17);
             label1.Name = "label1";
-            label1.Size = new Size(54, 59);
+            label1.Size = new Size(68, 71);
             label1.TabIndex = 3;
             label1.Text = "+";
             // 
             // lblHeaderTitle
             // 
             lblHeaderTitle.AutoSize = true;
-            lblHeaderTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+            lblHeaderTitle.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
             lblHeaderTitle.ForeColor = Color.White;
             lblHeaderTitle.Location = new Point(100, 25);
             lblHeaderTitle.Name = "lblHeaderTitle";
-            lblHeaderTitle.Size = new Size(389, 59);
+            lblHeaderTitle.Size = new Size(391, 59);
             lblHeaderTitle.TabIndex = 1;
             lblHeaderTitle.Text = "Thêm bài viết mới";
             // 
@@ -102,20 +103,21 @@ namespace UI_Tier
             btnCancelTop.FlatStyle = FlatStyle.Flat;
             btnCancelTop.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnCancelTop.ForeColor = Color.White;
-            btnCancelTop.Location = new Point(824, 20);
+            btnCancelTop.Location = new Point(924, -2);
             btnCancelTop.Name = "btnCancelTop";
-            btnCancelTop.Size = new Size(50, 50);
+            btnCancelTop.Size = new Size(50, 92);
             btnCancelTop.TabIndex = 2;
-            btnCancelTop.Text = "X";
+            btnCancelTop.Text = "x";
             btnCancelTop.UseVisualStyleBackColor = true;
             btnCancelTop.Click += btnCancel_Click;
             // 
             // lblTitleLabel
             // 
             lblTitleLabel.AutoSize = true;
+            lblTitleLabel.BackColor = Color.White;
             lblTitleLabel.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             lblTitleLabel.ForeColor = Color.FromArgb(64, 64, 64);
-            lblTitleLabel.Location = new Point(40, 130);
+            lblTitleLabel.Location = new Point(40, 121);
             lblTitleLabel.Name = "lblTitleLabel";
             lblTitleLabel.Size = new Size(130, 41);
             lblTitleLabel.TabIndex = 1;
@@ -124,11 +126,10 @@ namespace UI_Tier
             // txtTitle
             // 
             txtTitle.BorderStyle = BorderStyle.None;
-            txtTitle.Dock = DockStyle.Fill;
             txtTitle.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtTitle.Location = new Point(10, 5);
+            txtTitle.Location = new Point(10, 14);
             txtTitle.Name = "txtTitle";
-            txtTitle.Size = new Size(800, 43);
+            txtTitle.Size = new Size(889, 43);
             txtTitle.TabIndex = 0;
             // 
             // lblSummaryLabel
@@ -136,7 +137,7 @@ namespace UI_Tier
             lblSummaryLabel.AutoSize = true;
             lblSummaryLabel.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             lblSummaryLabel.ForeColor = Color.FromArgb(64, 64, 64);
-            lblSummaryLabel.Location = new Point(40, 240);
+            lblSummaryLabel.Location = new Point(40, 247);
             lblSummaryLabel.Name = "lblSummaryLabel";
             lblSummaryLabel.Size = new Size(134, 41);
             lblSummaryLabel.TabIndex = 3;
@@ -145,12 +146,11 @@ namespace UI_Tier
             // txtSummary
             // 
             txtSummary.BorderStyle = BorderStyle.None;
-            txtSummary.Dock = DockStyle.Fill;
             txtSummary.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtSummary.Location = new Point(10, 10);
             txtSummary.Multiline = true;
             txtSummary.Name = "txtSummary";
-            txtSummary.Size = new Size(800, 80);
+            txtSummary.Size = new Size(889, 126);
             txtSummary.TabIndex = 0;
             // 
             // lblBodyLabel
@@ -158,7 +158,7 @@ namespace UI_Tier
             lblBodyLabel.AutoSize = true;
             lblBodyLabel.Font = new Font("Segoe UI", 10.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblBodyLabel.ForeColor = Color.FromArgb(64, 64, 64);
-            lblBodyLabel.Location = new Point(40, 400);
+            lblBodyLabel.Location = new Point(40, 444);
             lblBodyLabel.Name = "lblBodyLabel";
             lblBodyLabel.Size = new Size(154, 40);
             lblBodyLabel.TabIndex = 5;
@@ -167,11 +167,10 @@ namespace UI_Tier
             // rtbBody
             // 
             rtbBody.BorderStyle = BorderStyle.None;
-            rtbBody.Dock = DockStyle.Fill;
             rtbBody.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            rtbBody.Location = new Point(10, 10);
+            rtbBody.Location = new Point(10, 13);
             rtbBody.Name = "rtbBody";
-            rtbBody.Size = new Size(800, 280);
+            rtbBody.Size = new Size(889, 287);
             rtbBody.TabIndex = 0;
             rtbBody.Text = "";
             // 
@@ -180,7 +179,7 @@ namespace UI_Tier
             lblTypeLabel.AutoSize = true;
             lblTypeLabel.Font = new Font("Segoe UI", 10.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTypeLabel.ForeColor = Color.FromArgb(64, 64, 64);
-            lblTypeLabel.Location = new Point(40, 770);
+            lblTypeLabel.Location = new Point(40, 812);
             lblTypeLabel.Name = "lblTypeLabel";
             lblTypeLabel.Size = new Size(214, 40);
             lblTypeLabel.TabIndex = 7;
@@ -188,12 +187,11 @@ namespace UI_Tier
             // 
             // cboType
             // 
-            cboType.Dock = DockStyle.Fill;
             cboType.DropDownStyle = ComboBoxStyle.DropDownList;
             cboType.FlatStyle = FlatStyle.Flat;
             cboType.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cboType.FormattingEnabled = true;
-            cboType.Location = new Point(10, 5);
+            cboType.Location = new Point(12, 8);
             cboType.Name = "cboType";
             cboType.Size = new Size(370, 53);
             cboType.TabIndex = 0;
@@ -203,7 +201,7 @@ namespace UI_Tier
             lblDeptLabel.AutoSize = true;
             lblDeptLabel.Font = new Font("Segoe UI", 10.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblDeptLabel.ForeColor = Color.FromArgb(64, 64, 64);
-            lblDeptLabel.Location = new Point(470, 770);
+            lblDeptLabel.Location = new Point(523, 812);
             lblDeptLabel.Name = "lblDeptLabel";
             lblDeptLabel.Size = new Size(203, 40);
             lblDeptLabel.TabIndex = 9;
@@ -211,14 +209,13 @@ namespace UI_Tier
             // 
             // cboDept
             // 
-            cboDept.Dock = DockStyle.Fill;
             cboDept.DropDownStyle = ComboBoxStyle.DropDownList;
             cboDept.FlatStyle = FlatStyle.Flat;
             cboDept.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cboDept.FormattingEnabled = true;
-            cboDept.Location = new Point(10, 5);
+            cboDept.Location = new Point(10, 7);
             cboDept.Name = "cboDept";
-            cboDept.Size = new Size(370, 53);
+            cboDept.Size = new Size(399, 53);
             cboDept.TabIndex = 0;
             // 
             // lblStatusLabel
@@ -226,7 +223,7 @@ namespace UI_Tier
             lblStatusLabel.AutoSize = true;
             lblStatusLabel.Font = new Font("Segoe UI", 10.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblStatusLabel.ForeColor = Color.FromArgb(64, 64, 64);
-            lblStatusLabel.Location = new Point(40, 880);
+            lblStatusLabel.Location = new Point(40, 939);
             lblStatusLabel.Name = "lblStatusLabel";
             lblStatusLabel.Size = new Size(164, 40);
             lblStatusLabel.TabIndex = 11;
@@ -234,12 +231,11 @@ namespace UI_Tier
             // 
             // cboStatus
             // 
-            cboStatus.Dock = DockStyle.Fill;
             cboStatus.DropDownStyle = ComboBoxStyle.DropDownList;
             cboStatus.FlatStyle = FlatStyle.Flat;
             cboStatus.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cboStatus.FormattingEnabled = true;
-            cboStatus.Location = new Point(10, 5);
+            cboStatus.Location = new Point(10, 9);
             cboStatus.Name = "cboStatus";
             cboStatus.Size = new Size(370, 53);
             cboStatus.TabIndex = 0;
@@ -249,7 +245,7 @@ namespace UI_Tier
             lblPriorityLabel.AutoSize = true;
             lblPriorityLabel.Font = new Font("Segoe UI", 10.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblPriorityLabel.ForeColor = Color.FromArgb(64, 64, 64);
-            lblPriorityLabel.Location = new Point(470, 880);
+            lblPriorityLabel.Location = new Point(527, 941);
             lblPriorityLabel.Name = "lblPriorityLabel";
             lblPriorityLabel.Size = new Size(127, 40);
             lblPriorityLabel.TabIndex = 13;
@@ -258,9 +254,8 @@ namespace UI_Tier
             // numPriority
             // 
             numPriority.BorderStyle = BorderStyle.None;
-            numPriority.Dock = DockStyle.Fill;
             numPriority.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            numPriority.Location = new Point(10, 5);
+            numPriority.Location = new Point(10, 12);
             numPriority.Name = "numPriority";
             numPriority.Size = new Size(137, 46);
             numPriority.TabIndex = 0;
@@ -270,7 +265,7 @@ namespace UI_Tier
             chkPinned.AutoSize = true;
             chkPinned.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             chkPinned.ForeColor = Color.FromArgb(64, 64, 64);
-            chkPinned.Location = new Point(673, 927);
+            chkPinned.Location = new Point(743, 995);
             chkPinned.Name = "chkPinned";
             chkPinned.Size = new Size(187, 49);
             chkPinned.TabIndex = 15;
@@ -282,7 +277,7 @@ namespace UI_Tier
             lblThumbnailLabel.AutoSize = true;
             lblThumbnailLabel.Font = new Font("Segoe UI", 10.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblThumbnailLabel.ForeColor = Color.FromArgb(64, 64, 64);
-            lblThumbnailLabel.Location = new Point(40, 990);
+            lblThumbnailLabel.Location = new Point(40, 1064);
             lblThumbnailLabel.Name = "lblThumbnailLabel";
             lblThumbnailLabel.Size = new Size(149, 40);
             lblThumbnailLabel.TabIndex = 16;
@@ -295,7 +290,7 @@ namespace UI_Tier
             btnSave.FlatStyle = FlatStyle.Flat;
             btnSave.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             btnSave.ForeColor = Color.White;
-            btnSave.Location = new Point(510, 1120);
+            btnSave.Location = new Point(563, 1205);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(350, 70);
             btnSave.TabIndex = 19;
@@ -309,7 +304,7 @@ namespace UI_Tier
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             btnCancel.ForeColor = Color.FromArgb(71, 85, 105);
-            btnCancel.Location = new Point(40, 1120);
+            btnCancel.Location = new Point(80, 1205);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(350, 70);
             btnCancel.TabIndex = 20;
@@ -320,20 +315,20 @@ namespace UI_Tier
             // panel29
             // 
             panel29.BackColor = Color.White;
-            panel29.BorderStyle = BorderStyle.FixedSingle;
             panel29.Controls.Add(label24);
             panel29.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            panel29.Location = new Point(40, 1030);
+            panel29.Location = new Point(40, 1107);
             panel29.Name = "panel29";
-            panel29.Size = new Size(757, 73);
+            panel29.Size = new Size(912, 73);
             panel29.TabIndex = 24;
             // 
             // label24
             // 
             label24.AutoSize = true;
+            label24.BackColor = Color.Transparent;
             label24.Font = new Font("Segoe UI", 11F);
             label24.ForeColor = SystemColors.ControlDarkDark;
-            label24.Location = new Point(62, 14);
+            label24.Location = new Point(258, 16);
             label24.Name = "label24";
             label24.Size = new Size(374, 41);
             label24.TabIndex = 22;
@@ -343,70 +338,70 @@ namespace UI_Tier
             // 
             pnlTitleBorder.BackColor = Color.White;
             pnlTitleBorder.Controls.Add(txtTitle);
-            pnlTitleBorder.Location = new Point(40, 175);
+            pnlTitleBorder.Location = new Point(40, 166);
             pnlTitleBorder.Name = "pnlTitleBorder";
             pnlTitleBorder.Padding = new Padding(10, 5, 10, 5);
-            pnlTitleBorder.Size = new Size(820, 60);
+            pnlTitleBorder.Size = new Size(912, 70);
             pnlTitleBorder.TabIndex = 2;
             // 
             // pnlSummaryBorder
             // 
             pnlSummaryBorder.BackColor = Color.White;
             pnlSummaryBorder.Controls.Add(txtSummary);
-            pnlSummaryBorder.Location = new Point(40, 285);
+            pnlSummaryBorder.Location = new Point(40, 292);
             pnlSummaryBorder.Name = "pnlSummaryBorder";
             pnlSummaryBorder.Padding = new Padding(10);
-            pnlSummaryBorder.Size = new Size(820, 100);
+            pnlSummaryBorder.Size = new Size(912, 149);
             pnlSummaryBorder.TabIndex = 4;
             // 
             // pnlBodyBorder
             // 
             pnlBodyBorder.BackColor = Color.White;
             pnlBodyBorder.Controls.Add(rtbBody);
-            pnlBodyBorder.Location = new Point(40, 445);
+            pnlBodyBorder.Location = new Point(40, 489);
             pnlBodyBorder.Name = "pnlBodyBorder";
             pnlBodyBorder.Padding = new Padding(10);
-            pnlBodyBorder.Size = new Size(820, 300);
+            pnlBodyBorder.Size = new Size(912, 313);
             pnlBodyBorder.TabIndex = 6;
             // 
             // pnlTypeBorder
             // 
             pnlTypeBorder.BackColor = Color.White;
             pnlTypeBorder.Controls.Add(cboType);
-            pnlTypeBorder.Location = new Point(40, 810);
+            pnlTypeBorder.Location = new Point(40, 854);
             pnlTypeBorder.Name = "pnlTypeBorder";
             pnlTypeBorder.Padding = new Padding(10, 5, 10, 5);
-            pnlTypeBorder.Size = new Size(390, 60);
+            pnlTypeBorder.Size = new Size(390, 70);
             pnlTypeBorder.TabIndex = 8;
             // 
             // pnlDeptBorder
             // 
             pnlDeptBorder.BackColor = Color.White;
             pnlDeptBorder.Controls.Add(cboDept);
-            pnlDeptBorder.Location = new Point(470, 810);
+            pnlDeptBorder.Location = new Point(523, 854);
             pnlDeptBorder.Name = "pnlDeptBorder";
             pnlDeptBorder.Padding = new Padding(10, 5, 10, 5);
-            pnlDeptBorder.Size = new Size(390, 60);
+            pnlDeptBorder.Size = new Size(422, 70);
             pnlDeptBorder.TabIndex = 10;
             // 
             // pnlStatusBorder
             // 
             pnlStatusBorder.BackColor = Color.White;
             pnlStatusBorder.Controls.Add(cboStatus);
-            pnlStatusBorder.Location = new Point(40, 920);
+            pnlStatusBorder.Location = new Point(40, 983);
             pnlStatusBorder.Name = "pnlStatusBorder";
             pnlStatusBorder.Padding = new Padding(10, 5, 10, 5);
-            pnlStatusBorder.Size = new Size(390, 60);
+            pnlStatusBorder.Size = new Size(390, 70);
             pnlStatusBorder.TabIndex = 12;
             // 
             // pnlPriorityBorder
             // 
             pnlPriorityBorder.BackColor = Color.White;
             pnlPriorityBorder.Controls.Add(numPriority);
-            pnlPriorityBorder.Location = new Point(470, 918);
+            pnlPriorityBorder.Location = new Point(523, 983);
             pnlPriorityBorder.Name = "pnlPriorityBorder";
             pnlPriorityBorder.Padding = new Padding(10, 5, 10, 5);
-            pnlPriorityBorder.Size = new Size(157, 60);
+            pnlPriorityBorder.Size = new Size(157, 70);
             pnlPriorityBorder.TabIndex = 14;
             // 
             // pnlMainBackground
@@ -433,20 +428,22 @@ namespace UI_Tier
             pnlMainBackground.Controls.Add(lblTitleLabel);
             pnlMainBackground.Controls.Add(pnlHeader);
             pnlMainBackground.Dock = DockStyle.Fill;
+            pnlMainBackground.ForeColor = Color.White;
             pnlMainBackground.Location = new Point(3, 3);
             pnlMainBackground.Name = "pnlMainBackground";
-            pnlMainBackground.Size = new Size(894, 1214);
+            pnlMainBackground.Size = new Size(994, 1294);
             pnlMainBackground.TabIndex = 0;
             // 
             // ucAdmin_AddArticle
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(64, 64, 64);
+            BackColor = Color.FromArgb(30, 70, 125);
             Controls.Add(pnlMainBackground);
+            ForeColor = Color.White;
             Name = "ucAdmin_AddArticle";
             Padding = new Padding(3);
-            Size = new Size(900, 1220);
+            Size = new Size(1000, 1300);
             Load += ucAdmin_AddArticle_Load;
             pnlHeader.ResumeLayout(false);
             pnlHeader.PerformLayout();
@@ -492,7 +489,6 @@ namespace UI_Tier
         private System.Windows.Forms.Button btnCancel;
         private Panel panel29;
         private Label label24;
-        private Label label1;
         private Panel pnlTitleBorder;
         private Panel pnlSummaryBorder;
         private Panel pnlBodyBorder;
@@ -501,5 +497,6 @@ namespace UI_Tier
         private Panel pnlStatusBorder;
         private Panel pnlPriorityBorder;
         private System.Windows.Forms.Panel pnlMainBackground;
+        private Label label1;
     }
 }

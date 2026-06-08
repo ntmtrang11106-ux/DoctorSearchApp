@@ -54,6 +54,8 @@ namespace UI_Tier
 
         private void ucAdmin_AppointmentManagement_Load(object sender, EventArgs e)
         {
+            UIHelper.ApplyBorderPanelStyle(pnlSearchArea);
+
             UIHelper.SetupSearchTextBox(txtSearch, "Tìm kiếm theo bác sĩ, khoa, phòng...");
             UIHelper.SetupComboBox(cbDept);
             UIHelper.SetupComboBox(cbStatusFilter);

@@ -108,6 +108,15 @@ namespace UI_Tier
             }
         }
 
+        public static void ApplyBorderPanelStyle(Panel pnl)
+        {
+            UIHelper.ApplyRoundedRegion(pnl, 10);
+            pnl.Paint += (s, e) => {
+                // Vẽ viền đen độ dày 2px
+                UIHelper.DrawControlBorder(s, e, 10, Color.DarkGray, 2);
+            };
+        }
+
         // Hàm này dùng để vẽ lại UserControl với bo góc và viền tùy chỉnh
         public static void uc_Paint(object sender, PaintEventArgs e, int radius, Color borderColor, int borderSize)
         {

@@ -131,7 +131,7 @@ namespace UI_Tier
             }
             else
             {
-                lblAvgRating.Text = "0.0";
+                lblValue4.Text = "0.0";
             }
 
             _appCurrentPage = 1;

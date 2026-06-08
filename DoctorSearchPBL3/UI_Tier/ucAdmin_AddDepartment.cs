@@ -16,7 +16,6 @@ namespace UI_Tier
         public ucAdmin_AddDepartment()
         {
             InitializeComponent();
-            this.Paint += ucAdmin_AddDepartment_Paint;
             this.Padding = new Padding(3); // Chừa chỗ để hiện viền
 
             SetupUI();
@@ -26,11 +25,6 @@ namespace UI_Tier
             UIHelper.SetDoubleBuffered(this);
         }
 
-        private void ucAdmin_AddDepartment_Paint(object sender, PaintEventArgs e)
-        {
-            // Vẽ viền đen dày 3px như yêu cầu
-            UIHelper.DrawControlBorder(sender, e, 15, Color.Black, 3);
-        }
 
         private void InitializeInputStyling()
         {
