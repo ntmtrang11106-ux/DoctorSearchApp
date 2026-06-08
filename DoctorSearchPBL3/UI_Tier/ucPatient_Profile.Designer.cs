@@ -70,6 +70,7 @@ namespace UI_Tier
             pnlPatientIDBorder = new Panel();
             txtPatientID = new TextBox();
             lblPatientID = new Label();
+            lblPatientIDRuleHint = new Label();
             lblCccdRuleHint = new Label();
             pnlCCCDBorder = new Panel();
             txtCCCD = new TextBox();
@@ -80,6 +81,7 @@ namespace UI_Tier
             lblGender = new Label();
             lblBirthdayRuleHint = new Label();
             pnlBirthdayBorder = new Panel();
+            lblBirthdayValue = new Label();
             dtpBirthday = new DateTimePicker();
             lblBirthday = new Label();
             pnlAddressBorder = new Panel();
@@ -614,6 +616,7 @@ namespace UI_Tier
             pnlBasicInfo.Controls.Add(lblEmergencyContact);
             pnlBasicInfo.Controls.Add(pnlPatientIDBorder);
             pnlBasicInfo.Controls.Add(lblPatientID);
+            pnlBasicInfo.Controls.Add(lblPatientIDRuleHint);
             pnlBasicInfo.Controls.Add(lblCccdRuleHint);
             pnlBasicInfo.Controls.Add(pnlCCCDBorder);
             pnlBasicInfo.Controls.Add(lblCCCD);
@@ -814,7 +817,7 @@ namespace UI_Tier
             txtPatientID.TabIndex = 19;
             // 
             // lblPatientID
-            // 
+            //
             lblPatientID.AutoSize = true;
             lblPatientID.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             lblPatientID.ForeColor = Color.FromArgb(73, 80, 87);
@@ -822,7 +825,19 @@ namespace UI_Tier
             lblPatientID.Name = "lblPatientID";
             lblPatientID.Size = new Size(173, 32);
             lblPatientID.TabIndex = 18;
-            lblPatientID.Text = "Mã bệnh nhân";
+            lblPatientID.Text = "Mã BN";
+            //
+            // lblPatientIDRuleHint
+            //
+            lblPatientIDRuleHint.BackColor = Color.Transparent;
+            lblPatientIDRuleHint.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
+            lblPatientIDRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
+            lblPatientIDRuleHint.Location = new Point(992, 472);
+            lblPatientIDRuleHint.Name = "lblPatientIDRuleHint";
+            lblPatientIDRuleHint.Size = new Size(565, 32);
+            lblPatientIDRuleHint.TabIndex = 48;
+            lblPatientIDRuleHint.Text = "Mã BN do hệ thống cấp, không thể chỉnh sửa.";
+            lblPatientIDRuleHint.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lblCccdRuleHint
             // 
@@ -929,27 +944,42 @@ namespace UI_Tier
             lblBirthdayRuleHint.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // pnlBirthdayBorder
-            // 
+            //
             pnlBirthdayBorder.BackColor = Color.White;
+            pnlBirthdayBorder.Controls.Add(lblBirthdayValue);
             pnlBirthdayBorder.Controls.Add(dtpBirthday);
             pnlBirthdayBorder.Location = new Point(992, 230);
             pnlBirthdayBorder.Margin = new Padding(2);
             pnlBirthdayBorder.Name = "pnlBirthdayBorder";
-            pnlBirthdayBorder.Padding = new Padding(8, 4, 8, 4);
-            pnlBirthdayBorder.Size = new Size(565, 47);
+            pnlBirthdayBorder.Padding = new Padding(12, 6, 12, 6);
+            pnlBirthdayBorder.Size = new Size(565, 54);
             pnlBirthdayBorder.TabIndex = 11;
-            // 
+            //
+            // lblBirthdayValue
+            //
+            lblBirthdayValue.BackColor = Color.Transparent;
+            lblBirthdayValue.Dock = DockStyle.Fill;
+            lblBirthdayValue.Font = new Font("Segoe UI", 12F);
+            lblBirthdayValue.ForeColor = Color.FromArgb(33, 37, 41);
+            lblBirthdayValue.Location = new Point(12, 6);
+            lblBirthdayValue.Name = "lblBirthdayValue";
+            lblBirthdayValue.Size = new Size(541, 42);
+            lblBirthdayValue.TabIndex = 12;
+            lblBirthdayValue.Text = "01 / 01 / 1990";
+            lblBirthdayValue.TextAlign = ContentAlignment.MiddleLeft;
+            //
             // dtpBirthday
-            // 
+            //
             dtpBirthday.CalendarFont = new Font("Segoe UI", 12F);
             dtpBirthday.CustomFormat = "dd / MM / yyyy";
             dtpBirthday.Dock = DockStyle.Fill;
             dtpBirthday.Font = new Font("Segoe UI", 12F);
             dtpBirthday.Format = DateTimePickerFormat.Custom;
-            dtpBirthday.Location = new Point(8, 4);
+            dtpBirthday.Location = new Point(12, 6);
             dtpBirthday.Name = "dtpBirthday";
-            dtpBirthday.Size = new Size(549, 39);
+            dtpBirthday.Size = new Size(541, 42);
             dtpBirthday.TabIndex = 11;
+            dtpBirthday.Visible = false;
             // 
             // lblBirthday
             // 
@@ -1203,6 +1233,7 @@ namespace UI_Tier
         private Label lblPhone;
         private TextBox txtAddress;
         private DateTimePicker dtpBirthday;
+        private Label lblBirthdayValue;
         private Label lblBirthday;
         private TextBox txtGender;
         private Label lblGender;
@@ -1273,5 +1304,6 @@ namespace UI_Tier
         private Label lblAddressRuleHint;
         private Label lblPhoneRuleHint;
         private Label lblFullNameRuleHint;
+        private Label lblPatientIDRuleHint;
     }
 }
