@@ -16,36 +16,56 @@ namespace UI_Tier
         private void InitializeComponent()
         {
             pnlCard = new Panel();
+            lblStatus = new Label();
+            lblCount = new Label();
             flpAction = new FlowLayoutPanel();
             btnRemove = new Button();
             btnToggleHide = new Button();
             btnEdit = new Button();
-            pnlStatusBadge = new Panel();
-            lblStatus = new Label();
-            pnlCountBadge = new Panel();
-            lblCount = new Label();
             lblDesc = new Label();
             lblName = new Label();
             line = new Panel();
             pnlCard.SuspendLayout();
             flpAction.SuspendLayout();
-            pnlStatusBadge.SuspendLayout();
-            pnlCountBadge.SuspendLayout();
             SuspendLayout();
             // 
             // pnlCard
             // 
             pnlCard.BackColor = Color.White;
+            pnlCard.Controls.Add(lblStatus);
+            pnlCard.Controls.Add(lblCount);
             pnlCard.Controls.Add(flpAction);
-            pnlCard.Controls.Add(pnlStatusBadge);
-            pnlCard.Controls.Add(pnlCountBadge);
             pnlCard.Controls.Add(lblDesc);
             pnlCard.Controls.Add(lblName);
             pnlCard.Dock = DockStyle.Top;
             pnlCard.Location = new Point(0, 0);
             pnlCard.Name = "pnlCard";
-            pnlCard.Size = new Size(1794, 127);
+            pnlCard.Size = new Size(1794, 183);
             pnlCard.TabIndex = 0;
+            // 
+            // lblStatus
+            // 
+            lblStatus.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblStatus.Font = new Font("Segoe UI", 13F);
+            lblStatus.Location = new Point(1172, 64);
+            lblStatus.Name = "lblStatus";
+            lblStatus.Size = new Size(189, 59);
+            lblStatus.TabIndex = 0;
+            lblStatus.Text = "Hiển thị";
+            lblStatus.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lblCount
+            // 
+            lblCount.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblCount.AutoSize = true;
+            lblCount.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblCount.ForeColor = Color.FromArgb(37, 99, 235);
+            lblCount.Location = new Point(729, 68);
+            lblCount.Name = "lblCount";
+            lblCount.Size = new Size(165, 50);
+            lblCount.TabIndex = 0;
+            lblCount.Text = "85 bác sĩ";
+            lblCount.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // flpAction
             // 
@@ -56,7 +76,7 @@ namespace UI_Tier
             flpAction.Controls.Add(btnToggleHide);
             flpAction.Controls.Add(btnEdit);
             flpAction.FlowDirection = FlowDirection.RightToLeft;
-            flpAction.Location = new Point(1463, 18);
+            flpAction.Location = new Point(1403, 48);
             flpAction.Name = "flpAction";
             flpAction.Size = new Size(315, 90);
             flpAction.TabIndex = 17;
@@ -116,56 +136,12 @@ namespace UI_Tier
             btnEdit.UseVisualStyleBackColor = false;
             btnEdit.Click += btnEdit_Click;
             // 
-            // pnlStatusBadge
-            // 
-            pnlStatusBadge.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            pnlStatusBadge.Controls.Add(lblStatus);
-            pnlStatusBadge.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pnlStatusBadge.Location = new Point(1163, 30);
-            pnlStatusBadge.Name = "pnlStatusBadge";
-            pnlStatusBadge.Size = new Size(189, 59);
-            pnlStatusBadge.TabIndex = 3;
-            // 
-            // lblStatus
-            // 
-            lblStatus.Dock = DockStyle.Fill;
-            lblStatus.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblStatus.Location = new Point(0, 0);
-            lblStatus.Name = "lblStatus";
-            lblStatus.Size = new Size(189, 59);
-            lblStatus.TabIndex = 0;
-            lblStatus.Text = "Hiển thị";
-            lblStatus.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // pnlCountBadge
-            // 
-            pnlCountBadge.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            pnlCountBadge.BackColor = Color.FromArgb(239, 246, 255);
-            pnlCountBadge.Controls.Add(lblCount);
-            pnlCountBadge.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pnlCountBadge.Location = new Point(827, 30);
-            pnlCountBadge.Name = "pnlCountBadge";
-            pnlCountBadge.Size = new Size(213, 59);
-            pnlCountBadge.TabIndex = 2;
-            // 
-            // lblCount
-            // 
-            lblCount.Dock = DockStyle.Fill;
-            lblCount.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblCount.ForeColor = Color.FromArgb(37, 99, 235);
-            lblCount.Location = new Point(0, 0);
-            lblCount.Name = "lblCount";
-            lblCount.Size = new Size(213, 59);
-            lblCount.TabIndex = 0;
-            lblCount.Text = "85 bác sĩ";
-            lblCount.TextAlign = ContentAlignment.MiddleCenter;
-            // 
             // lblDesc
             // 
             lblDesc.AutoSize = true;
             lblDesc.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblDesc.ForeColor = Color.FromArgb(107, 114, 128);
-            lblDesc.Location = new Point(276, 30);
+            lblDesc.Location = new Point(348, 71);
             lblDesc.Name = "lblDesc";
             lblDesc.Size = new Size(346, 45);
             lblDesc.TabIndex = 1;
@@ -176,7 +152,7 @@ namespace UI_Tier
             lblName.AutoSize = true;
             lblName.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblName.ForeColor = Color.FromArgb(17, 24, 39);
-            lblName.Location = new Point(20, 30);
+            lblName.Location = new Point(67, 68);
             lblName.Name = "lblName";
             lblName.Size = new Size(193, 50);
             lblName.TabIndex = 0;
@@ -186,7 +162,7 @@ namespace UI_Tier
             // 
             line.BackColor = Color.FromArgb(243, 244, 246);
             line.Dock = DockStyle.Bottom;
-            line.Location = new Point(0, 129);
+            line.Location = new Point(0, 182);
             line.Name = "line";
             line.Size = new Size(1794, 1);
             line.TabIndex = 1;
@@ -197,22 +173,19 @@ namespace UI_Tier
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(line);
             Controls.Add(pnlCard);
+            Margin = new Padding(20);
             Name = "ucAdmin_DepartmentItem";
-            Size = new Size(1794, 130);
+            Size = new Size(1794, 183);
             pnlCard.ResumeLayout(false);
             pnlCard.PerformLayout();
             flpAction.ResumeLayout(false);
-            pnlStatusBadge.ResumeLayout(false);
-            pnlCountBadge.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         private Panel pnlCard;
         private Label lblName;
         private Label lblDesc;
-        private Panel pnlCountBadge;
         private Label lblCount;
-        private Panel pnlStatusBadge;
         private Label lblStatus;
         private Button btnEdit;
         private Button btnToggleHide;

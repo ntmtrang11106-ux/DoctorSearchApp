@@ -42,19 +42,23 @@ namespace UI_Tier
 
             LoadRealData(DateTime.Now);
             UpdateUI();
-            
-            flpRecentReviews.Resize += (s, ev) => {
-                foreach (Control ctrl in flpRecentReviews.Controls) {
-                    if (ctrl is ucReviewItem item) {
+
+            flpRecentReviews.Resize += (s, ev) =>
+            {
+                foreach (Control ctrl in flpRecentReviews.Controls)
+                {
+                    if (ctrl is ucReviewItem item)
+                    {
                         item.Width = flpRecentReviews.ClientSize.Width - 40;
                     }
                 }
             };
 
             lblReviewPrevBtn.Click += (s, ev) => { if (_currentPage > 1) { _currentPage--; DisplayRecentReviews(); } };
-            lblReviewNext.Click += (s, ev) => { 
+            lblReviewNext.Click += (s, ev) =>
+            {
                 int totalPages = (int)Math.Ceiling((double)_allReviews.Count / _pageSize);
-                if (_currentPage < totalPages) { _currentPage++; DisplayRecentReviews(); } 
+                if (_currentPage < totalPages) { _currentPage++; DisplayRecentReviews(); }
             };
 
             UIHelper.SetupHoverEffect(lblReviewPrevBtn, Color.FromArgb(0, 102, 180), Color.FromArgb(0, 120, 212));
@@ -70,7 +74,7 @@ namespace UI_Tier
         {
             var selected = (dynamic)cboFilter.SelectedItem;
             DateTime targetDate = selected.Value;
-            
+
             lblHeaderTitle.Text = $"Thống kê {targetDate.ToString("MM/yyyy")}";
             LoadRealData(targetDate);
         }
@@ -138,12 +142,12 @@ namespace UI_Tier
             try
             {
                 var summary = _dashboardBUS.GetDashboardSummary(targetDate);
-                
+
                 UpdateStatCard(lblValue1, lblTrend1, summary["Patients"]);
                 UpdateStatCard(lblValue2, lblTrend2, summary["Doctors"]);
                 UpdateStatCard(lblValue3, lblTrend3, summary["Reviews"]);
                 UpdateStatCard(lblValue4, lblTrend4, summary["Appointments"]);
-                
+
                 lblTitle4.Text = $"Lịch hẹn tháng {targetDate.ToString("MM")}";
 
                 var monthlyStats = _dashboardBUS.GetYearlyAppointmentStats(targetDate.Year);
@@ -157,7 +161,7 @@ namespace UI_Tier
                 }
 
                 chartApp.SetData(dataPoints, months);
-                
+
                 var userStats = _dashboardBUS.GetYearlyUserGrowthStats(targetDate.Year);
                 chartUserGrowth.SetMultiData(
                     new List<List<double>> { userStats.doctors, userStats.patients },
@@ -169,10 +173,10 @@ namespace UI_Tier
                 var deptData = _dashboardBUS.GetDepartmentStats();
                 var deptCounts = new List<double>();
                 var deptNames = new List<string>();
-                var colors = new List<Color> { 
-                    Color.FromArgb(40, 199, 111), Color.FromArgb(255, 159, 67), 
-                    Color.FromArgb(234, 84, 85), Color.FromArgb(24, 112, 255), 
-                    Color.FromArgb(127, 85, 240) 
+                var colors = new List<Color> {
+                    Color.FromArgb(40, 199, 111), Color.FromArgb(255, 159, 67),
+                    Color.FromArgb(234, 84, 85), Color.FromArgb(24, 112, 255),
+                    Color.FromArgb(127, 85, 240)
                 };
 
                 foreach (var kvp in deptData)
@@ -180,7 +184,7 @@ namespace UI_Tier
                     deptCounts.Add((double)kvp.Value);
                     deptNames.Add(kvp.Key);
                 }
-                
+
                 if (deptCounts.Count > 0)
                 {
                     chartDept.SetData(deptCounts, deptNames, colors.Take(deptCounts.Count).ToList());
@@ -197,10 +201,10 @@ namespace UI_Tier
         private void UpdateStatCard(Label lblValue, Label lblTrend, (int current, double growth) data)
         {
             lblValue.Text = data.current.ToString("N0");
-            
+
             string symbol = data.growth >= 0 ? "↑" : "↓";
             lblTrend.Text = $"{symbol} {Math.Abs(data.growth)}% so với tháng trước";
-            
+
             if (data.growth > 0) lblTrend.ForeColor = Color.FromArgb(40, 199, 111);
             else if (data.growth < 0) lblTrend.ForeColor = Color.FromArgb(234, 84, 85);
             else lblTrend.ForeColor = Color.Gray;
@@ -217,21 +221,21 @@ namespace UI_Tier
         {
             flpRecentReviews.SuspendLayout();
             flpRecentReviews.Controls.Clear();
-            
+
             int startIndex = (_currentPage - 1) * _pageSize;
             var pageItems = _allReviews.Skip(startIndex).Take(_pageSize).ToList();
 
             foreach (var rev in pageItems)
             {
                 ucReviewItem item = new ucReviewItem();
-                item.SetAdminReviewData(rev, true); 
+                item.SetAdminReviewData(rev, true);
                 item.Width = flpRecentReviews.ClientSize.Width - 40;
                 flpRecentReviews.Controls.Add(item);
             }
 
             int totalPages = (int)Math.Ceiling((double)_allReviews.Count / _pageSize);
             lblReviewPageStatus.Text = $"Trang {_currentPage} / {Math.Max(1, totalPages)}";
-            
+
             lblNoReviews.Visible = _allReviews.Count == 0;
             if (lblNoReviews.Visible)
             {
@@ -242,5 +246,6 @@ namespace UI_Tier
 
             flpRecentReviews.ResumeLayout();
         }
+
     }
 }

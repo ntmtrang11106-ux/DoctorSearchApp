@@ -38,8 +38,8 @@ namespace UI_Tier
             UIHelper.SetupHoverEffect(lblNext, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
 
             // Apply rounding to buttons and search
-            UIHelper.ApplyRoundedRegion(btnAdd, 12);
-            UIHelper.ApplyRoundedRegion(pnlSearch, 15);
+            UIHelper.ApplyRoundedRegion(btnAdd, 10);
+            UIHelper.ApplyRoundedRegion(pnlSearch, 10);
 
             ToolTip tt = new ToolTip();
             tt.SetToolTip(btnAdd, "Thêm một chuyên khoa/phòng khám mới");
@@ -59,7 +59,7 @@ namespace UI_Tier
 
         private void pnlSearch_Paint(object sender, PaintEventArgs e)
         {
-            UIHelper.DrawControlBorder(sender, e, 15, Color.FromArgb(203, 213, 225), 2);
+            UIHelper.DrawControlBorder(sender, e, 10, Color.FromArgb(203, 213, 225), 2);
         }
 
         public void InitData(bool keepPage = false)
@@ -112,7 +112,7 @@ namespace UI_Tier
                 ucAdmin_DepartmentItem item = new ucAdmin_DepartmentItem();
                 item.SetData(dept);
                 item.DataChanged += (s, ev) => InitData(true);
-                item.Width = flpList.ClientSize.Width - 20;
+                item.Width = flpList.ClientSize.Width - (item.Margin.Left + item.Margin.Right) - 20;
                 flpList.Controls.Add(item);
             }
 
@@ -131,7 +131,7 @@ namespace UI_Tier
         {
             foreach (Control ctrl in flpList.Controls)
             {
-                ctrl.Width = flpList.ClientSize.Width - 20;
+                ctrl.Width = flpList.ClientSize.Width - (ctrl.Margin.Left + ctrl.Margin.Right) - 20;
             }
         }
 

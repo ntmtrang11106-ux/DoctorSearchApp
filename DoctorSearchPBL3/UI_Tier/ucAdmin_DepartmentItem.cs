@@ -22,15 +22,18 @@ namespace UI_Tier
 
             _toolTip.SetToolTip(btnEdit, "Chỉnh sửa thông tin chuyên khoa");
             _toolTip.SetToolTip(btnRemove, "Xóa chuyên khoa khỏi hệ thống");
-            _toolTip.SetToolTip(pnlCountBadge, "Số lượng bác sĩ và phòng hiện có của chuyên khoa");
 
             pnlCard.Paint += pnlCard_Paint;
             pnlCard.Resize += (s, e) => UIHelper.ApplyRoundedRegion(pnlCard, 15);
+
+            UIHelper.ApplyRoundedRegion(btnEdit, 40);
+            UIHelper.ApplyRoundedRegion(btnRemove, 40);
+            UIHelper.ApplyRoundedRegion(btnToggleHide, 40);
         }
 
         private void pnlCard_Paint(object sender, PaintEventArgs e)
         {
-            UIHelper.DrawControlBorder(sender, e, 15, Color.FromArgb(200, 200, 200), 3);
+            UIHelper.DrawControlBorder(sender, e, 15, Color.DimGray, 3);
         }
 
         public void SetData(DepartmentDTO dept)
@@ -49,28 +52,30 @@ namespace UI_Tier
             lblName.Text = _dept.DepartmentName;
             lblDesc.Text = string.IsNullOrWhiteSpace(_dept.Description) ? "Không có mô tả" : _dept.Description;
 
-            int doctorCount = new DoctorBUS().GetDoctorCountByDepartmentId(_dept.Id);
-            int roomCount = _deptBUS.GetRoomCountByDepartmentId(_dept.Id);
-            lblCount.Text = $"{doctorCount} bác sĩ | {roomCount} phòng";
+            // 1. Khởi tạo cục bộ các đối tượng BUS để đảm bảo không bị lỗi NullReference giữa các tầng
+            DoctorBUS docBus = new DoctorBUS();
+            DepartmentBUS deptBus = new DepartmentBUS();
+
+            int doctorCount = docBus.GetDoctorCountByDepartmentId(_dept.Id);
+            int roomCount = deptBus.GetRoomCountByDepartmentId(_dept.Id);
+
+            // 2. Gán chuỗi nội suy chuẩn chỉnh
+            lblCount.Text = $"{doctorCount} Bác sĩ | {roomCount} Phòng";
 
             lblStatus.Text = _dept.IsActive ? "Hiển thị" : "Ẩn";
             if (_dept.IsActive)
             {
                 lblStatus.ForeColor = Color.FromArgb(22, 163, 74);
-                pnlStatusBadge.BackColor = Color.FromArgb(220, 252, 231);
                 btnToggleHide.Text = "\uE890";
                 _toolTip.SetToolTip(btnToggleHide, "Ẩn chuyên khoa này khỏi danh sách tìm kiếm");
             }
             else
             {
                 lblStatus.ForeColor = Color.FromArgb(220, 38, 38);
-                pnlStatusBadge.BackColor = Color.FromArgb(254, 226, 226);
                 btnToggleHide.Text = "\uE7B3";
                 _toolTip.SetToolTip(btnToggleHide, "Hiển thị lại chuyên khoa này trong danh sách tìm kiếm");
             }
 
-            UIHelper.ApplyRoundedRegion(pnlStatusBadge, 10);
-            UIHelper.ApplyRoundedRegion(pnlCountBadge, 10);
         }
 
         private void btnEdit_Click(object sender, EventArgs e)

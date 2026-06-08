@@ -34,10 +34,10 @@ namespace UI_Tier
             UIHelper.SetDoubleBuffered(this);
             UIHelper.SetDoubleBuffered(pnlMain);
             UIHelper.SetupSmoothScrolling(pnlMain);
-            
-            // Apply rounded corners to avatar
+
+            // Bo tròn avatar
             UIHelper.ApplyRoundedRegion(picAvatar, picAvatar.Width / 2);
-            
+
             // Set initial state
             SetEditMode(false);
             ShowChangePassword(false);
@@ -56,8 +56,8 @@ namespace UI_Tier
             dtpBirthday.ValueChanged += dtpBirthday_ValueChanged;
 
             SetupFocusEffects();
-            
-            // Gán sự kiện Paint để vẽ viền
+
+            // Đăng ký sự kiện Paint để vẽ viền sắc nét (Không dùng blur đổ bóng cũ nữa)
             pnlBasicInfo.Paint += SectionPanel_Paint;
             pnlSecurity.Paint += SectionPanel_Paint;
             pnlChangePassword.Paint += SectionPanel_Paint;
@@ -132,10 +132,11 @@ namespace UI_Tier
             Color focus = Color.FromArgb(242, 248, 255);
             Color unfocus = Color.White;
             Color highlight = Color.FromArgb(37, 99, 235);
-            
+
+            // Toàn bộ panel nhập liệu chuyển thành nền trắng chuẩn chỉnh
             UIHelper.SetupInputFocusEffect(txtFullName, pnlFullNameBorder, focus, unfocus, highlight);
             UIHelper.SetupInputFocusEffect(txtPhone, pnlPhoneBorder, focus, unfocus, highlight);
-            UIHelper.SetupInputFocusEffect(txtRole, pnlRoleBorder, Color.FromArgb(241, 243, 245), Color.FromArgb(241, 243, 245), highlight);
+            UIHelper.SetupInputFocusEffect(txtRole, pnlRoleBorder, Color.White, Color.White, highlight);
             UIHelper.SetupInputFocusEffect(txtGender, pnlGenderBorder, focus, unfocus, highlight);
             UIHelper.SetupInputFocusEffect(dtpBirthday, pnlBirthdayBorder, focus, unfocus, highlight);
             UIHelper.SetupInputFocusEffect(txtCCCD, pnlCCCDBorder, focus, unfocus, highlight);
@@ -152,20 +153,17 @@ namespace UI_Tier
             {
                 txtCCCD.Text = "Chưa đủ tuổi";
                 txtCCCD.Enabled = false;
-                txtCCCD.BackColor = Color.FromArgb(241, 243, 245);
-                pnlCCCDBorder.BackColor = Color.FromArgb(241, 243, 245);
+                txtCCCD.BackColor = Color.White; // Giữ nền trắng
+                pnlCCCDBorder.BackColor = Color.White;
             }
             else
             {
                 if (txtCCCD.Text == "Chưa đủ tuổi") txtCCCD.Text = "";
                 txtCCCD.Enabled = true;
-                bool isEditing = _isEditing;
-                Color bg = isEditing ? Color.White : Color.FromArgb(241, 243, 245);
-                txtCCCD.BackColor = bg;
-                pnlCCCDBorder.BackColor = bg;
+                txtCCCD.BackColor = Color.White;
+                pnlCCCDBorder.BackColor = Color.White;
             }
         }
-
 
         public void InitData()
         {
@@ -184,7 +182,7 @@ namespace UI_Tier
             lblAdminName.Text = _currentUser.FullName;
             txtPhone.Text = _currentUser.PhoneNumber;
             txtRole.Text = "Quản trị viên";
-            
+
             dtpBirthday.Value = _currentUser.Dob ?? new DateTime(1990, 1, 1);
             txtGender.Text = _currentUser.Gender;
             txtCCCD.Text = _currentUser.CCCD;
@@ -204,6 +202,7 @@ namespace UI_Tier
             else LoadDefaultAvatar();
         }
 
+        // --- CẬP NHẬT: ÉP TOÀN BỘ NỀN PANEL/TEXTBOX LUÔN TRẮNG TINH ---
         private void SetEditMode(bool isEditing)
         {
             _isEditing = isEditing;
@@ -212,9 +211,8 @@ namespace UI_Tier
             txtAddress.ReadOnly = !isEditing;
             dtpBirthday.Enabled = isEditing;
             txtGender.ReadOnly = !isEditing;
-            txtRole.ReadOnly = true; // Luôn luôn Read-Only không cho sửa
-            
-            // Age-based CCCD logic
+            txtRole.ReadOnly = true;
+
             int age = _userBUS.CalculateAge(dtpBirthday.Value);
             if (isEditing && age < 18)
             {
@@ -227,32 +225,33 @@ namespace UI_Tier
                 txtCCCD.Enabled = true;
             }
 
-            Color bg = isEditing ? Color.White : Color.FromArgb(241, 243, 245);
-            txtFullName.BackColor = bg;
-            pnlFullNameBorder.BackColor = bg;
+            // Đã xóa sạch mớ mã màu xám FormArgb(241, 243, 245). Tất cả gán cứng Color.White.
+            Color whiteBg = Color.White;
 
-            txtPhone.BackColor = bg;
-            pnlPhoneBorder.BackColor = bg;
+            txtFullName.BackColor = whiteBg;
+            pnlFullNameBorder.BackColor = whiteBg;
 
-            txtGender.BackColor = bg;
-            pnlGenderBorder.BackColor = bg;
+            txtPhone.BackColor = whiteBg;
+            pnlPhoneBorder.BackColor = whiteBg;
 
-            Color cccdBg = (isEditing && age < 18) ? Color.FromArgb(241, 243, 245) : bg;
-            txtCCCD.BackColor = cccdBg;
-            pnlCCCDBorder.BackColor = cccdBg;
+            txtGender.BackColor = whiteBg;
+            pnlGenderBorder.BackColor = whiteBg;
 
-            txtAddress.BackColor = bg;
-            pnlAddressBorder.BackColor = bg;
+            txtCCCD.BackColor = whiteBg;
+            pnlCCCDBorder.BackColor = whiteBg;
 
-            txtRole.BackColor = Color.FromArgb(241, 243, 245); // Luôn xám
-            pnlRoleBorder.BackColor = Color.FromArgb(241, 243, 245); // Luôn xám
+            txtAddress.BackColor = whiteBg;
+            pnlAddressBorder.BackColor = whiteBg;
 
-            pnlBirthdayBorder.BackColor = bg;
+            txtRole.BackColor = whiteBg;
+            pnlRoleBorder.BackColor = whiteBg;
+
+            pnlBirthdayBorder.BackColor = whiteBg;
 
             pnlBasicInfoActions.Visible = isEditing;
             btnEditBasicInfo.Visible = !isEditing;
             if (lblUpload != null) lblUpload.Visible = isEditing;
-            
+
             if (isEditing) txtFullName.Focus();
         }
 
@@ -261,10 +260,11 @@ namespace UI_Tier
             pnlChangePassword.Visible = show;
             lblSecurityHint.Visible = !show;
             btnChangePassword.Visible = !show;
-            
+
             pnlSecurity.Height = show ? 700 : 180;
-            
-            if (show) {
+
+            if (show)
+            {
                 txtCurrentPass.Clear();
                 txtNewPass.Clear();
                 txtConfirmPass.Clear();
@@ -280,7 +280,6 @@ namespace UI_Tier
         {
             if (_currentUser == null) return;
 
-            // Gather info
             _currentUser.FullName = txtFullName.Text;
             _currentUser.PhoneNumber = txtPhone.Text;
             _currentUser.Dob = dtpBirthday.Value;
@@ -288,7 +287,6 @@ namespace UI_Tier
             _currentUser.CCCD = txtCCCD.Text;
             _currentUser.Residential_Address = txtAddress.Text;
 
-            // Validate and Update via BUS
             string result = _userBUS.UpdateAdminProfile(_currentUser);
 
             if (result == "Success")
@@ -305,13 +303,14 @@ namespace UI_Tier
 
         private void btnSavePass_Click(object sender, EventArgs e)
         {
-            if (txtNewPass.Text != txtConfirmPass.Text) {
+            if (txtNewPass.Text != txtConfirmPass.Text)
+            {
                 MessageBox.Show("Xác nhận mật khẩu không khớp!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             string result = _userBUS.ChangePassword(GlobalAccount.GetUserId(), txtCurrentPass.Text, txtNewPass.Text);
-            
+
             if (result == "Success")
             {
                 ShowChangePassword(false);
@@ -323,64 +322,32 @@ namespace UI_Tier
             }
         }
 
-        //private void ChangeAvatar()
-        //{
-        //    using (OpenFileDialog ofd = new OpenFileDialog())
-        //    {
-        //        ofd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
-        //        if (ofd.ShowDialog() == DialogResult.OK)
-        //        {
-        //            try
-        //            {
-        //                string uploadDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "uploads", "avatars");
-        //                if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
-
-        //                string fileName = $"admin_{GlobalAccount.GetUserId()}_{DateTime.Now.Ticks}{Path.GetExtension(ofd.FileName)}";
-        //                string destPath = Path.Combine(uploadDir, fileName);
-        //                string relativePath = Path.Combine("uploads", "avatars", fileName);
-
-        //                File.Copy(ofd.FileName, destPath, true);
-                        
-        //                string result = _userBUS.UpdateAvatar(GlobalAccount.GetUserId(), relativePath);
-        //                if (result == "Success")
-        //                {
-        //                    picAvatar.ImageLocation = destPath;
-        //                    picAvatar.SizeMode = PictureBoxSizeMode.Zoom;
-        //                    _currentUser.Picture = relativePath;
-        //                    MessageBox.Show("Cập nhật ảnh đại diện thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //                }
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show("Lỗi tải ảnh: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //            }
-        //        }
-        //    }
-        //}
-
         private void btnCancelBasicInfo_Click(object sender, EventArgs e) => SetEditMode(false);
 
         private void btnCancelPass_Click(object sender, EventArgs e) => ShowChangePassword(false);
 
         private void LoadDefaultAvatar()
         {
-            try {
+            try
+            {
                 string defaultPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources_Images", "default.jpg");
                 if (File.Exists(defaultPath)) picAvatar.ImageLocation = defaultPath;
                 picAvatar.SizeMode = PictureBoxSizeMode.Zoom;
-            } catch { }
+            }
+            catch { }
         }
 
+        // --- CẬP NHẬT: THAY THẾ HOÀN TOÀN VIỀN BLUR THÀNH VIỀN ĐƠN SẮC NÉT ---
         private void SectionPanel_Paint(object sender, PaintEventArgs e)
         {
             Control pnl = sender as Control;
-            
-            // Chỉ vẽ shadow cho các panel chính (không vẽ cho pnlChangePassword để tránh khung đè)
-            if (pnl == pnlBasicInfo || pnl == pnlSecurity)
-            {
-                Color accentColor = (pnl == pnlSecurity) ? Color.FromArgb(244, 63, 94) : Color.FromArgb(37, 99, 235);
-                UIHelper.DrawSectionShadow(sender, e, 20, accentColor);
-            }
+            if (pnl == null) return;
+
+            // Bo tròn vùng hiển thị của Panel chính với bán kính 16px cho hiện đại
+            UIHelper.ApplyRoundedRegion(pnl, 16);
+
+            // Bỏ hoàn toàn hàm DrawSectionShadow cũ. Gọi hàm DrawControlBorder để kẻ 1 đường viền xám nhẹ (LightGray) dày 2px cực kỳ sạch sẽ, rõ ràng.
+            UIHelper.DrawControlBorder(pnl, e, 16, Color.Gainsboro, 2);
         }
 
         private void Button_Paint(object sender, PaintEventArgs e) => UIHelper.btn_Paint(sender, e);

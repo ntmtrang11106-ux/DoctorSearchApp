@@ -20,6 +20,8 @@
             pnlSecurity = new Panel();
             pnlChangePassword = new Panel();
             pnlPassActions = new Panel();
+            btnCancelPass = new Button();
+            btnSavePass = new Button();
             pnlCurrentPassBorder = new Panel();
             txtCurrentPass = new TextBox();
             pnlNewPassBorder = new Panel();
@@ -61,8 +63,6 @@
             picAvatar = new PictureBox();
             btnEditBasicInfo = new Button();
             lblBasicInfoTitle = new Label();
-            btnCancelPass = new Button();
-            btnSavePass = new Button();
             pnlMain.SuspendLayout();
             pnlSecurity.SuspendLayout();
             pnlChangePassword.SuspendLayout();
@@ -118,10 +118,10 @@
             pnlSecurity.Controls.Add(btnChangePassword);
             pnlSecurity.Controls.Add(lblSecurityTitle);
             pnlSecurity.Dock = DockStyle.Top;
-            pnlSecurity.Location = new Point(20, 782);
+            pnlSecurity.Location = new Point(20, 795);
             pnlSecurity.Margin = new Padding(0, 0, 0, 38);
             pnlSecurity.Name = "pnlSecurity";
-            pnlSecurity.Size = new Size(2060, 607);
+            pnlSecurity.Size = new Size(2060, 713);
             pnlSecurity.TabIndex = 2;
             pnlSecurity.Paint += SectionPanel_Paint;
             // 
@@ -137,7 +137,7 @@
             pnlChangePassword.Location = new Point(38, 90);
             pnlChangePassword.Margin = new Padding(4);
             pnlChangePassword.Name = "pnlChangePassword";
-            pnlChangePassword.Size = new Size(2018, 498);
+            pnlChangePassword.Size = new Size(2018, 590);
             pnlChangePassword.TabIndex = 3;
             pnlChangePassword.Visible = false;
             // 
@@ -145,11 +145,45 @@
             // 
             pnlPassActions.Controls.Add(btnCancelPass);
             pnlPassActions.Controls.Add(btnSavePass);
-            pnlPassActions.Location = new Point(52, 405);
+            pnlPassActions.Location = new Point(38, 479);
             pnlPassActions.Margin = new Padding(4);
             pnlPassActions.Name = "pnlPassActions";
-            pnlPassActions.Size = new Size(594, 89);
+            pnlPassActions.Size = new Size(670, 89);
             pnlPassActions.TabIndex = 35;
+            // 
+            // btnCancelPass
+            // 
+            btnCancelPass.BackColor = Color.FromArgb(241, 245, 249);
+            btnCancelPass.FlatAppearance.BorderSize = 0;
+            btnCancelPass.FlatStyle = FlatStyle.Flat;
+            btnCancelPass.Font = new Font("Segoe UI", 14F);
+            btnCancelPass.ForeColor = Color.FromArgb(100, 116, 139);
+            btnCancelPass.Location = new Point(435, 6);
+            btnCancelPass.Margin = new Padding(4);
+            btnCancelPass.Name = "btnCancelPass";
+            btnCancelPass.Size = new Size(195, 62);
+            btnCancelPass.TabIndex = 1;
+            btnCancelPass.Text = "✕  Hủy";
+            btnCancelPass.UseVisualStyleBackColor = false;
+            btnCancelPass.Click += btnCancelPass_Click;
+            btnCancelPass.Paint += Button_Paint;
+            // 
+            // btnSavePass
+            // 
+            btnSavePass.BackColor = Color.FromArgb(37, 99, 235);
+            btnSavePass.FlatAppearance.BorderSize = 0;
+            btnSavePass.FlatStyle = FlatStyle.Flat;
+            btnSavePass.Font = new Font("Segoe UI Semibold", 15F, FontStyle.Bold);
+            btnSavePass.ForeColor = Color.White;
+            btnSavePass.Location = new Point(6, 6);
+            btnSavePass.Margin = new Padding(4);
+            btnSavePass.Name = "btnSavePass";
+            btnSavePass.Size = new Size(365, 62);
+            btnSavePass.TabIndex = 0;
+            btnSavePass.Text = "Lưu thay đổi";
+            btnSavePass.UseVisualStyleBackColor = false;
+            btnSavePass.Click += btnSavePass_Click;
+            btnSavePass.Paint += Button_Paint;
             // 
             // pnlCurrentPassBorder
             // 
@@ -157,19 +191,18 @@
             pnlCurrentPassBorder.BackColor = Color.White;
             pnlCurrentPassBorder.Controls.Add(txtCurrentPass);
             pnlCurrentPassBorder.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pnlCurrentPassBorder.Location = new Point(38, 61);
-            pnlCurrentPassBorder.MaximumSize = new Size(1340, 63);
+            pnlCurrentPassBorder.Location = new Point(38, 71);
+            pnlCurrentPassBorder.MaximumSize = new Size(1340, 70);
             pnlCurrentPassBorder.Name = "pnlCurrentPassBorder";
             pnlCurrentPassBorder.Padding = new Padding(10);
-            pnlCurrentPassBorder.Size = new Size(1324, 63);
+            pnlCurrentPassBorder.Size = new Size(1340, 70);
             pnlCurrentPassBorder.TabIndex = 36;
             // 
             // txtCurrentPass
             // 
             txtCurrentPass.BorderStyle = BorderStyle.None;
-            txtCurrentPass.Dock = DockStyle.Fill;
             txtCurrentPass.Font = new Font("Segoe UI", 12F);
-            txtCurrentPass.Location = new Point(10, 10);
+            txtCurrentPass.Location = new Point(10, 13);
             txtCurrentPass.Margin = new Padding(4);
             txtCurrentPass.MaximumSize = new Size(1320, 45);
             txtCurrentPass.Name = "txtCurrentPass";
@@ -184,19 +217,18 @@
             pnlNewPassBorder.BackColor = Color.White;
             pnlNewPassBorder.Controls.Add(txtNewPass);
             pnlNewPassBorder.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pnlNewPassBorder.Location = new Point(38, 190);
-            pnlNewPassBorder.MaximumSize = new Size(1340, 63);
+            pnlNewPassBorder.Location = new Point(38, 220);
+            pnlNewPassBorder.MaximumSize = new Size(1340, 70);
             pnlNewPassBorder.Name = "pnlNewPassBorder";
             pnlNewPassBorder.Padding = new Padding(10);
-            pnlNewPassBorder.Size = new Size(1324, 63);
+            pnlNewPassBorder.Size = new Size(1340, 70);
             pnlNewPassBorder.TabIndex = 37;
             // 
             // txtNewPass
             // 
             txtNewPass.BorderStyle = BorderStyle.None;
-            txtNewPass.Dock = DockStyle.Fill;
             txtNewPass.Font = new Font("Segoe UI", 12F);
-            txtNewPass.Location = new Point(10, 10);
+            txtNewPass.Location = new Point(10, 13);
             txtNewPass.Margin = new Padding(4);
             txtNewPass.MaximumSize = new Size(1320, 45);
             txtNewPass.Name = "txtNewPass";
@@ -211,19 +243,18 @@
             pnlConfirmPassBorder.BackColor = Color.White;
             pnlConfirmPassBorder.Controls.Add(txtConfirmPass);
             pnlConfirmPassBorder.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pnlConfirmPassBorder.Location = new Point(38, 319);
-            pnlConfirmPassBorder.MaximumSize = new Size(1340, 63);
+            pnlConfirmPassBorder.Location = new Point(38, 379);
+            pnlConfirmPassBorder.MaximumSize = new Size(1340, 70);
             pnlConfirmPassBorder.Name = "pnlConfirmPassBorder";
             pnlConfirmPassBorder.Padding = new Padding(10);
-            pnlConfirmPassBorder.Size = new Size(1324, 63);
+            pnlConfirmPassBorder.Size = new Size(1340, 70);
             pnlConfirmPassBorder.TabIndex = 38;
             // 
             // txtConfirmPass
             // 
             txtConfirmPass.BorderStyle = BorderStyle.None;
-            txtConfirmPass.Dock = DockStyle.Fill;
             txtConfirmPass.Font = new Font("Segoe UI", 12F);
-            txtConfirmPass.Location = new Point(10, 10);
+            txtConfirmPass.Location = new Point(10, 13);
             txtConfirmPass.Margin = new Padding(4);
             txtConfirmPass.MaximumSize = new Size(1320, 45);
             txtConfirmPass.Name = "txtConfirmPass";
@@ -236,37 +267,37 @@
             // 
             lblConfirmPass.AutoSize = true;
             lblConfirmPass.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            lblConfirmPass.ForeColor = Color.FromArgb(73, 80, 87);
-            lblConfirmPass.Location = new Point(48, 271);
+            lblConfirmPass.ForeColor = Color.FromArgb(64, 64, 64);
+            lblConfirmPass.Location = new Point(48, 331);
             lblConfirmPass.Margin = new Padding(4, 0, 4, 0);
             lblConfirmPass.Name = "lblConfirmPass";
-            lblConfirmPass.Size = new Size(444, 45);
+            lblConfirmPass.Size = new Size(390, 45);
             lblConfirmPass.TabIndex = 32;
-            lblConfirmPass.Text = "✅ Xác nhận mật khẩu mới *";
+            lblConfirmPass.Text = "Xác nhận mật khẩu mới *";
             // 
             // lblNewPass
             // 
             lblNewPass.AutoSize = true;
             lblNewPass.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            lblNewPass.ForeColor = Color.FromArgb(73, 80, 87);
-            lblNewPass.Location = new Point(52, 142);
+            lblNewPass.ForeColor = Color.FromArgb(64, 64, 64);
+            lblNewPass.Location = new Point(52, 172);
             lblNewPass.Margin = new Padding(4, 0, 4, 0);
             lblNewPass.Name = "lblNewPass";
-            lblNewPass.Size = new Size(302, 45);
+            lblNewPass.Size = new Size(248, 45);
             lblNewPass.TabIndex = 29;
-            lblNewPass.Text = "🆕 Mật khẩu mới *";
+            lblNewPass.Text = "Mật khẩu mới *";
             // 
             // lblCurrentPass
             // 
             lblCurrentPass.AutoSize = true;
             lblCurrentPass.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            lblCurrentPass.ForeColor = Color.FromArgb(73, 80, 87);
-            lblCurrentPass.Location = new Point(52, 13);
+            lblCurrentPass.ForeColor = Color.FromArgb(64, 64, 64);
+            lblCurrentPass.Location = new Point(52, 23);
             lblCurrentPass.Margin = new Padding(4, 0, 4, 0);
             lblCurrentPass.Name = "lblCurrentPass";
-            lblCurrentPass.Size = new Size(355, 45);
+            lblCurrentPass.Size = new Size(301, 45);
             lblCurrentPass.TabIndex = 26;
-            lblCurrentPass.Text = "🔑 Mật khẩu hiện tại *";
+            lblCurrentPass.Text = "Mật khẩu hiện tại *";
             // 
             // lblSecurityHint
             // 
@@ -286,15 +317,14 @@
             btnChangePassword.Cursor = Cursors.Hand;
             btnChangePassword.FlatAppearance.BorderSize = 0;
             btnChangePassword.FlatStyle = FlatStyle.Flat;
-            btnChangePassword.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
+            btnChangePassword.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
             btnChangePassword.ForeColor = Color.FromArgb(37, 99, 235);
-            btnChangePassword.Location = new Point(1700, 11);
+            btnChangePassword.Location = new Point(1720, 17);
             btnChangePassword.Margin = new Padding(4);
             btnChangePassword.Name = "btnChangePassword";
-            btnChangePassword.Size = new Size(310, 74);
+            btnChangePassword.Size = new Size(310, 56);
             btnChangePassword.TabIndex = 1;
             btnChangePassword.Text = "Đổi mật khẩu";
-            btnChangePassword.TextAlign = ContentAlignment.MiddleRight;
             btnChangePassword.UseVisualStyleBackColor = true;
             btnChangePassword.Click += btnChangePassword_Click;
             // 
@@ -306,9 +336,9 @@
             lblSecurityTitle.Location = new Point(26, 26);
             lblSecurityTitle.Margin = new Padding(4, 0, 4, 0);
             lblSecurityTitle.Name = "lblSecurityTitle";
-            lblSecurityTitle.Size = new Size(265, 59);
+            lblSecurityTitle.Size = new Size(193, 59);
             lblSecurityTitle.TabIndex = 0;
-            lblSecurityTitle.Text = "🔒 Bảo mật";
+            lblSecurityTitle.Text = "Bảo mật";
             // 
             // pnlBasicInfo
             // 
@@ -337,7 +367,7 @@
             pnlBasicInfo.Location = new Point(20, 20);
             pnlBasicInfo.Margin = new Padding(4);
             pnlBasicInfo.Name = "pnlBasicInfo";
-            pnlBasicInfo.Size = new Size(2060, 762);
+            pnlBasicInfo.Size = new Size(2060, 775);
             pnlBasicInfo.TabIndex = 0;
             pnlBasicInfo.Paint += SectionPanel_Paint;
             // 
@@ -345,7 +375,7 @@
             // 
             pnlBasicInfoActions.Controls.Add(btnCancelBasicInfo);
             pnlBasicInfoActions.Controls.Add(btnSaveBasicInfo);
-            pnlBasicInfoActions.Location = new Point(50, 650);
+            pnlBasicInfoActions.Location = new Point(50, 668);
             pnlBasicInfoActions.Margin = new Padding(4);
             pnlBasicInfoActions.Name = "pnlBasicInfoActions";
             pnlBasicInfoActions.Size = new Size(621, 90);
@@ -357,12 +387,12 @@
             btnCancelBasicInfo.BackColor = Color.FromArgb(241, 245, 249);
             btnCancelBasicInfo.FlatAppearance.BorderSize = 0;
             btnCancelBasicInfo.FlatStyle = FlatStyle.Flat;
-            btnCancelBasicInfo.Font = new Font("Segoe UI", 16F);
+            btnCancelBasicInfo.Font = new Font("Segoe UI", 14F);
             btnCancelBasicInfo.ForeColor = Color.FromArgb(100, 116, 139);
             btnCancelBasicInfo.Location = new Point(419, 9);
             btnCancelBasicInfo.Margin = new Padding(4);
             btnCancelBasicInfo.Name = "btnCancelBasicInfo";
-            btnCancelBasicInfo.Size = new Size(195, 77);
+            btnCancelBasicInfo.Size = new Size(195, 62);
             btnCancelBasicInfo.TabIndex = 1;
             btnCancelBasicInfo.Text = "✕  Hủy";
             btnCancelBasicInfo.UseVisualStyleBackColor = false;
@@ -371,17 +401,17 @@
             // 
             // btnSaveBasicInfo
             // 
-            btnSaveBasicInfo.BackColor = Color.FromArgb(37, 99, 235);
+            btnSaveBasicInfo.BackColor = Color.FromArgb(24, 112, 255);
             btnSaveBasicInfo.FlatAppearance.BorderSize = 0;
             btnSaveBasicInfo.FlatStyle = FlatStyle.Flat;
-            btnSaveBasicInfo.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
+            btnSaveBasicInfo.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
             btnSaveBasicInfo.ForeColor = Color.White;
             btnSaveBasicInfo.Location = new Point(7, 9);
             btnSaveBasicInfo.Margin = new Padding(4);
             btnSaveBasicInfo.Name = "btnSaveBasicInfo";
-            btnSaveBasicInfo.Size = new Size(404, 77);
+            btnSaveBasicInfo.Size = new Size(352, 62);
             btnSaveBasicInfo.TabIndex = 0;
-            btnSaveBasicInfo.Text = "💾  Lưu thay đổi";
+            btnSaveBasicInfo.Text = "Lưu thay đổi";
             btnSaveBasicInfo.UseVisualStyleBackColor = false;
             btnSaveBasicInfo.Click += btnSaveBasicInfo_Click;
             btnSaveBasicInfo.Paint += Button_Paint;
@@ -391,18 +421,17 @@
             pnlFullNameBorder.BackColor = Color.White;
             pnlFullNameBorder.Controls.Add(txtFullName);
             pnlFullNameBorder.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pnlFullNameBorder.Location = new Point(440, 150);
+            pnlFullNameBorder.Location = new Point(466, 150);
             pnlFullNameBorder.Name = "pnlFullNameBorder";
             pnlFullNameBorder.Padding = new Padding(10);
-            pnlFullNameBorder.Size = new Size(770, 63);
+            pnlFullNameBorder.Size = new Size(770, 70);
             pnlFullNameBorder.TabIndex = 27;
             // 
             // txtFullName
             // 
             txtFullName.BorderStyle = BorderStyle.None;
-            txtFullName.Dock = DockStyle.Fill;
             txtFullName.Font = new Font("Segoe UI", 12F);
-            txtFullName.Location = new Point(10, 10);
+            txtFullName.Location = new Point(10, 13);
             txtFullName.Name = "txtFullName";
             txtFullName.Size = new Size(750, 43);
             txtFullName.TabIndex = 5;
@@ -412,19 +441,18 @@
             pnlPhoneBorder.BackColor = Color.White;
             pnlPhoneBorder.Controls.Add(txtPhone);
             pnlPhoneBorder.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pnlPhoneBorder.Location = new Point(1240, 150);
+            pnlPhoneBorder.Location = new Point(1405, 150);
             pnlPhoneBorder.Name = "pnlPhoneBorder";
             pnlPhoneBorder.Padding = new Padding(10);
-            pnlPhoneBorder.Size = new Size(770, 63);
+            pnlPhoneBorder.Size = new Size(770, 70);
             pnlPhoneBorder.TabIndex = 28;
             // 
             // txtPhone
             // 
             txtPhone.BackColor = SystemColors.Window;
             txtPhone.BorderStyle = BorderStyle.None;
-            txtPhone.Dock = DockStyle.Fill;
             txtPhone.Font = new Font("Segoe UI", 12F);
-            txtPhone.Location = new Point(10, 10);
+            txtPhone.Location = new Point(10, 13);
             txtPhone.Margin = new Padding(4);
             txtPhone.Name = "txtPhone";
             txtPhone.ReadOnly = true;
@@ -436,18 +464,17 @@
             pnlRoleBorder.BackColor = Color.White;
             pnlRoleBorder.Controls.Add(txtRole);
             pnlRoleBorder.Font = new Font("Segoe UI", 12F);
-            pnlRoleBorder.Location = new Point(440, 290);
+            pnlRoleBorder.Location = new Point(466, 290);
             pnlRoleBorder.Name = "pnlRoleBorder";
             pnlRoleBorder.Padding = new Padding(10);
-            pnlRoleBorder.Size = new Size(770, 63);
+            pnlRoleBorder.Size = new Size(770, 70);
             pnlRoleBorder.TabIndex = 29;
             // 
             // txtRole
             // 
             txtRole.BorderStyle = BorderStyle.None;
-            txtRole.Dock = DockStyle.Fill;
             txtRole.Font = new Font("Segoe UI", 12F);
-            txtRole.Location = new Point(10, 10);
+            txtRole.Location = new Point(10, 13);
             txtRole.Name = "txtRole";
             txtRole.Size = new Size(750, 43);
             txtRole.TabIndex = 17;
@@ -457,18 +484,17 @@
             pnlGenderBorder.BackColor = Color.White;
             pnlGenderBorder.Controls.Add(txtGender);
             pnlGenderBorder.Font = new Font("Segoe UI", 12F);
-            pnlGenderBorder.Location = new Point(440, 430);
+            pnlGenderBorder.Location = new Point(466, 430);
             pnlGenderBorder.Name = "pnlGenderBorder";
             pnlGenderBorder.Padding = new Padding(10);
-            pnlGenderBorder.Size = new Size(770, 63);
+            pnlGenderBorder.Size = new Size(770, 70);
             pnlGenderBorder.TabIndex = 30;
             // 
             // txtGender
             // 
             txtGender.BorderStyle = BorderStyle.None;
-            txtGender.Dock = DockStyle.Fill;
             txtGender.Font = new Font("Segoe UI", 12F);
-            txtGender.Location = new Point(10, 10);
+            txtGender.Location = new Point(10, 13);
             txtGender.Name = "txtGender";
             txtGender.Size = new Size(750, 43);
             txtGender.TabIndex = 13;
@@ -478,19 +504,18 @@
             pnlBirthdayBorder.BackColor = Color.White;
             pnlBirthdayBorder.Controls.Add(dtpBirthday);
             pnlBirthdayBorder.Font = new Font("Segoe UI", 12F);
-            pnlBirthdayBorder.Location = new Point(1240, 290);
+            pnlBirthdayBorder.Location = new Point(1405, 290);
             pnlBirthdayBorder.Name = "pnlBirthdayBorder";
             pnlBirthdayBorder.Padding = new Padding(10, 5, 10, 5);
-            pnlBirthdayBorder.Size = new Size(770, 60);
+            pnlBirthdayBorder.Size = new Size(770, 70);
             pnlBirthdayBorder.TabIndex = 31;
             // 
             // dtpBirthday
             // 
             dtpBirthday.CustomFormat = "dd / MM / yyyy";
-            dtpBirthday.Dock = DockStyle.Fill;
             dtpBirthday.Font = new Font("Segoe UI", 12F);
             dtpBirthday.Format = DateTimePickerFormat.Custom;
-            dtpBirthday.Location = new Point(10, 5);
+            dtpBirthday.Location = new Point(10, 8);
             dtpBirthday.Margin = new Padding(4);
             dtpBirthday.Name = "dtpBirthday";
             dtpBirthday.Size = new Size(750, 50);
@@ -501,18 +526,17 @@
             pnlCCCDBorder.BackColor = Color.White;
             pnlCCCDBorder.Controls.Add(txtCCCD);
             pnlCCCDBorder.Font = new Font("Segoe UI", 12F);
-            pnlCCCDBorder.Location = new Point(1240, 430);
+            pnlCCCDBorder.Location = new Point(1405, 430);
             pnlCCCDBorder.Name = "pnlCCCDBorder";
             pnlCCCDBorder.Padding = new Padding(10);
-            pnlCCCDBorder.Size = new Size(770, 63);
+            pnlCCCDBorder.Size = new Size(770, 70);
             pnlCCCDBorder.TabIndex = 32;
             // 
             // txtCCCD
             // 
             txtCCCD.BorderStyle = BorderStyle.None;
-            txtCCCD.Dock = DockStyle.Fill;
             txtCCCD.Font = new Font("Segoe UI", 12F);
-            txtCCCD.Location = new Point(10, 10);
+            txtCCCD.Location = new Point(10, 13);
             txtCCCD.Name = "txtCCCD";
             txtCCCD.Size = new Size(750, 43);
             txtCCCD.TabIndex = 15;
@@ -522,18 +546,17 @@
             pnlAddressBorder.BackColor = Color.White;
             pnlAddressBorder.Controls.Add(txtAddress);
             pnlAddressBorder.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pnlAddressBorder.Location = new Point(440, 570);
+            pnlAddressBorder.Location = new Point(466, 570);
             pnlAddressBorder.Name = "pnlAddressBorder";
             pnlAddressBorder.Padding = new Padding(10);
-            pnlAddressBorder.Size = new Size(1570, 63);
+            pnlAddressBorder.Size = new Size(1709, 70);
             pnlAddressBorder.TabIndex = 33;
             // 
             // txtAddress
             // 
             txtAddress.BorderStyle = BorderStyle.None;
-            txtAddress.Dock = DockStyle.Fill;
             txtAddress.Font = new Font("Segoe UI", 12F);
-            txtAddress.Location = new Point(10, 10);
+            txtAddress.Location = new Point(10, 15);
             txtAddress.Name = "txtAddress";
             txtAddress.Size = new Size(1550, 43);
             txtAddress.TabIndex = 9;
@@ -542,8 +565,8 @@
             // 
             lblCCCD.AutoSize = true;
             lblCCCD.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            lblCCCD.ForeColor = Color.FromArgb(73, 80, 87);
-            lblCCCD.Location = new Point(1250, 380);
+            lblCCCD.ForeColor = Color.FromArgb(64, 64, 64);
+            lblCCCD.Location = new Point(1415, 380);
             lblCCCD.Margin = new Padding(4, 0, 4, 0);
             lblCCCD.Name = "lblCCCD";
             lblCCCD.Size = new Size(146, 45);
@@ -554,8 +577,8 @@
             // 
             lblGender.AutoSize = true;
             lblGender.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            lblGender.ForeColor = Color.FromArgb(73, 80, 87);
-            lblGender.Location = new Point(450, 380);
+            lblGender.ForeColor = Color.FromArgb(64, 64, 64);
+            lblGender.Location = new Point(476, 380);
             lblGender.Margin = new Padding(4, 0, 4, 0);
             lblGender.Name = "lblGender";
             lblGender.Size = new Size(145, 45);
@@ -566,8 +589,8 @@
             // 
             lblBirthday.AutoSize = true;
             lblBirthday.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            lblBirthday.ForeColor = Color.FromArgb(73, 80, 87);
-            lblBirthday.Location = new Point(1250, 240);
+            lblBirthday.ForeColor = Color.FromArgb(64, 64, 64);
+            lblBirthday.Location = new Point(1415, 240);
             lblBirthday.Margin = new Padding(4, 0, 4, 0);
             lblBirthday.Name = "lblBirthday";
             lblBirthday.Size = new Size(166, 45);
@@ -578,8 +601,8 @@
             // 
             lblAddress.AutoSize = true;
             lblAddress.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            lblAddress.ForeColor = Color.FromArgb(73, 80, 87);
-            lblAddress.Location = new Point(450, 520);
+            lblAddress.ForeColor = Color.FromArgb(64, 64, 64);
+            lblAddress.Location = new Point(476, 520);
             lblAddress.Margin = new Padding(4, 0, 4, 0);
             lblAddress.Name = "lblAddress";
             lblAddress.Size = new Size(119, 45);
@@ -590,8 +613,8 @@
             // 
             lblPhone.AutoSize = true;
             lblPhone.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            lblPhone.ForeColor = Color.FromArgb(73, 80, 87);
-            lblPhone.Location = new Point(1250, 100);
+            lblPhone.ForeColor = Color.FromArgb(64, 64, 64);
+            lblPhone.Location = new Point(1415, 100);
             lblPhone.Margin = new Padding(4, 0, 4, 0);
             lblPhone.Name = "lblPhone";
             lblPhone.Size = new Size(212, 45);
@@ -602,8 +625,8 @@
             // 
             lblFullName.AutoSize = true;
             lblFullName.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            lblFullName.ForeColor = Color.FromArgb(73, 80, 87);
-            lblFullName.Location = new Point(450, 100);
+            lblFullName.ForeColor = Color.FromArgb(64, 64, 64);
+            lblFullName.Location = new Point(476, 100);
             lblFullName.Margin = new Padding(4, 0, 4, 0);
             lblFullName.Name = "lblFullName";
             lblFullName.Size = new Size(161, 45);
@@ -614,8 +637,8 @@
             // 
             lblRole.AutoSize = true;
             lblRole.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            lblRole.ForeColor = Color.FromArgb(73, 80, 87);
-            lblRole.Location = new Point(450, 240);
+            lblRole.ForeColor = Color.FromArgb(64, 64, 64);
+            lblRole.Location = new Point(476, 240);
             lblRole.Margin = new Padding(4, 0, 4, 0);
             lblRole.Name = "lblRole";
             lblRole.Size = new Size(125, 45);
@@ -649,15 +672,14 @@
             btnEditBasicInfo.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnEditBasicInfo.FlatAppearance.BorderSize = 0;
             btnEditBasicInfo.FlatStyle = FlatStyle.Flat;
-            btnEditBasicInfo.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
+            btnEditBasicInfo.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
             btnEditBasicInfo.ForeColor = Color.FromArgb(37, 99, 235);
-            btnEditBasicInfo.Location = new Point(1760, 31);
+            btnEditBasicInfo.Location = new Point(1780, 31);
             btnEditBasicInfo.Margin = new Padding(4);
             btnEditBasicInfo.Name = "btnEditBasicInfo";
             btnEditBasicInfo.Size = new Size(250, 60);
             btnEditBasicInfo.TabIndex = 1;
             btnEditBasicInfo.Text = "Chỉnh sửa ";
-            btnEditBasicInfo.TextAlign = ContentAlignment.MiddleRight;
             btnEditBasicInfo.UseVisualStyleBackColor = true;
             btnEditBasicInfo.Click += btnEditBasicInfo_Click;
             // 
@@ -668,43 +690,9 @@
             lblBasicInfoTitle.Location = new Point(32, 32);
             lblBasicInfoTitle.Margin = new Padding(4, 0, 4, 0);
             lblBasicInfoTitle.Name = "lblBasicInfoTitle";
-            lblBasicInfoTitle.Size = new Size(442, 59);
+            lblBasicInfoTitle.Size = new Size(370, 59);
             lblBasicInfoTitle.TabIndex = 0;
-            lblBasicInfoTitle.Text = "👤 Thông tin cơ bản";
-            // 
-            // btnCancelPass
-            // 
-            btnCancelPass.BackColor = Color.FromArgb(241, 245, 249);
-            btnCancelPass.FlatAppearance.BorderSize = 0;
-            btnCancelPass.FlatStyle = FlatStyle.Flat;
-            btnCancelPass.Font = new Font("Segoe UI", 16F);
-            btnCancelPass.ForeColor = Color.FromArgb(100, 116, 139);
-            btnCancelPass.Location = new Point(379, 6);
-            btnCancelPass.Margin = new Padding(4);
-            btnCancelPass.Name = "btnCancelPass";
-            btnCancelPass.Size = new Size(195, 79);
-            btnCancelPass.TabIndex = 1;
-            btnCancelPass.Text = "✕  Hủy";
-            btnCancelPass.UseVisualStyleBackColor = false;
-            btnCancelPass.Click += btnCancelPass_Click;
-            btnCancelPass.Paint += Button_Paint;
-            // 
-            // btnSavePass
-            // 
-            btnSavePass.BackColor = Color.FromArgb(37, 99, 235);
-            btnSavePass.FlatAppearance.BorderSize = 0;
-            btnSavePass.FlatStyle = FlatStyle.Flat;
-            btnSavePass.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
-            btnSavePass.ForeColor = Color.White;
-            btnSavePass.Location = new Point(6, 6);
-            btnSavePass.Margin = new Padding(4);
-            btnSavePass.Name = "btnSavePass";
-            btnSavePass.Size = new Size(365, 79);
-            btnSavePass.TabIndex = 0;
-            btnSavePass.Text = "💾  Lưu thay đổi";
-            btnSavePass.UseVisualStyleBackColor = false;
-            btnSavePass.Click += btnSavePass_Click;
-            btnSavePass.Paint += Button_Paint;
+            lblBasicInfoTitle.Text = "Thông tin cơ bản";
             // 
             // ucAdmin_Profile
             // 
