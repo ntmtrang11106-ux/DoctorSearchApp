@@ -32,6 +32,7 @@
             comboBox3 = new ComboBox();
             label17 = new Label();
             panel22 = new Panel();
+            lblCertificateCodeHint = new Label();
             label18 = new Label();
             panel23 = new Panel();
             textBox6 = new TextBox();
@@ -52,10 +53,10 @@
             SuspendLayout();
             // 
             // panel14
-            // 
+            //
             panel14.Controls.Add(comboBox3);
             panel14.Controls.Add(label17);
-            panel14.Location = new Point(46, 69);
+            panel14.Location = new Point(46, 12);
             panel14.Name = "panel14";
             panel14.Size = new Size(788, 143);
             panel14.TabIndex = 34;
@@ -81,16 +82,29 @@
             label17.Text = "Chuyên khoa";
             // 
             // panel22
-            // 
+            //
+            panel22.Controls.Add(lblCertificateCodeHint);
             panel22.Controls.Add(label18);
             panel22.Controls.Add(panel23);
-            panel22.Location = new Point(46, 218);
+            panel22.Location = new Point(46, 161);
             panel22.Name = "panel22";
-            panel22.Size = new Size(788, 151);
+            panel22.Size = new Size(788, 190);
             panel22.TabIndex = 35;
-            // 
+            //
+            // lblCertificateCodeHint
+            //
+            lblCertificateCodeHint.AutoSize = false;
+            lblCertificateCodeHint.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
+            lblCertificateCodeHint.ForeColor = Color.FromArgb(108, 117, 125);
+            lblCertificateCodeHint.Location = new Point(12, 134);
+            lblCertificateCodeHint.Name = "lblCertificateCodeHint";
+            lblCertificateCodeHint.Size = new Size(732, 54);
+            lblCertificateCodeHint.TabIndex = 23;
+            lblCertificateCodeHint.Text = "Mã CCHN/GPHN gồm 6-7 chữ số, '/', mã cơ quan cấp, '-' và CCHN hoặc GPHN. Ví dụ: 000001/HCM-CCHN.";
+            lblCertificateCodeHint.TextAlign = ContentAlignment.MiddleLeft;
+            //
             // label18
-            // 
+            //
             label18.AutoSize = true;
             label18.Font = new Font("Segoe UI", 11F);
             label18.Location = new Point(3, 8);
@@ -114,9 +128,12 @@
             textBox6.BackColor = SystemColors.Window;
             textBox6.BorderStyle = BorderStyle.None;
             textBox6.CausesValidation = false;
+            textBox6.CharacterCasing = CharacterCasing.Upper;
             textBox6.Font = new Font("Segoe UI", 11F);
             textBox6.Location = new Point(15, 13);
+            textBox6.MaxLength = 30;
             textBox6.Name = "textBox6";
+            textBox6.PlaceholderText = "000001/HCM-CCHN";
             textBox6.Size = new Size(704, 40);
             textBox6.TabIndex = 2;
             // 
@@ -124,7 +141,7 @@
             // 
             panel25.Controls.Add(comboBox4);
             panel25.Controls.Add(label21);
-            panel25.Location = new Point(46, 375);
+            panel25.Location = new Point(46, 357);
             panel25.Name = "panel25";
             panel25.Size = new Size(788, 151);
             panel25.TabIndex = 36;
@@ -153,7 +170,7 @@
             // 
             panel26.Controls.Add(panel29);
             panel26.Controls.Add(label22);
-            panel26.Location = new Point(46, 532);
+            panel26.Location = new Point(46, 514);
             panel26.Name = "panel26";
             panel26.Size = new Size(788, 151);
             panel26.TabIndex = 37;
@@ -195,26 +212,27 @@
             // 
             lblCertIndex.AutoSize = true;
             lblCertIndex.BackColor = Color.Azure;
-            lblCertIndex.Font = new Font("Segoe UI", 12F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            lblCertIndex.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblCertIndex.ForeColor = Color.Black;
             lblCertIndex.Location = new Point(0, 0);
             lblCertIndex.Name = "lblCertIndex";
-            lblCertIndex.Size = new Size(170, 45);
+            lblCertIndex.Size = new Size(0, 41);
             lblCertIndex.TabIndex = 38;
-            lblCertIndex.Text = "Chứng chỉ ";
+            lblCertIndex.Text = "";
+            lblCertIndex.Visible = false;
             // 
             // ucDoctorCertificate
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            Controls.Add(lblCertIndex);
             Controls.Add(panel14);
             Controls.Add(panel22);
             Controls.Add(panel25);
             Controls.Add(panel26);
+            Controls.Add(lblCertIndex);
             Name = "ucDoctorCertificate";
-            Size = new Size(849, 706);
+            Size = new Size(849, 682);
             Load += ucDoctorCertificate_Load;
             panel14.ResumeLayout(false);
             panel14.PerformLayout();
@@ -248,6 +266,7 @@
         private Panel panel29;
         private Label label24;
         private Label label22;
+        private Label lblCertificateCodeHint;
         private Button btnCancel;
         public Label lblCertIndex;
     }
