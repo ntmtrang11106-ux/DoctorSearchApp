@@ -18,6 +18,8 @@ namespace DTO_Tier
         [Required]
         public int TimeSlotId { get; set; }
 
+        public int? CreatedByAdminId { get; set; }
+
         [StringLength(500)]
         public string? Reason { get; set; }
 
@@ -42,6 +44,10 @@ namespace DTO_Tier
 
         public DateTime? UpdatedAt { get; set; }
 
+        public DateTime? CancelledAt { get; set; }
+
+        public DateTime? CompletedAt { get; set; }
+
         [ForeignKey(nameof(PatientId))]
         public virtual PatientDTO? Patient { get; set; }
 
@@ -50,5 +56,10 @@ namespace DTO_Tier
 
         [ForeignKey(nameof(TimeSlotId))]
         public virtual TimeSlotsDTO? TimeSlot { get; set; }
+
+        [ForeignKey(nameof(CreatedByAdminId))]
+        public virtual AdminDTO? CreatedByAdmin { get; set; }
+
+        public virtual ICollection<ReviewsDTO> Reviews { get; set; } = new List<ReviewsDTO>();
     }
 }

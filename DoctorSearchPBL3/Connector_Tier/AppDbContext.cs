@@ -5,6 +5,9 @@ namespace DAL_Tier
 {
     public class AppDbContext : DbContext
     {
+        public const string DefaultConnectionString =
+            @"Data Source=.\SQLEXPRESS;Initial Catalog=DoctorSearchDB_CodeFirst;Integrated Security=True;TrustServerCertificate=True";
+
         public DbSet<UserDTO> Users { get; set; }
         public DbSet<PatientDTO> Patients { get; set; }
         public DbSet<DoctorDTO> Doctors { get; set; }
@@ -15,8 +18,6 @@ namespace DAL_Tier
         public DbSet<AppointmentsDTO> Appointments { get; set; }
         public DbSet<ConversationDTO> Conversations { get; set; }
         public DbSet<MessagesDTO> Messages { get; set; }
-        public DbSet<CallLogsDTO> CallLogs { get; set; }
-        public DbSet<MedicalRecordsDTO> MedicalRecords { get; set; }
         public DbSet<ContentDTO> Contents { get; set; }
         public DbSet<ReviewsDTO> Reviews { get; set; }
         public DbSet<DoctorCertificateDTO> DoctorCertificates { get; set; }
@@ -26,7 +27,7 @@ namespace DAL_Tier
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=.\SQLEXPRESS;Initial Catalog=DoctorSearchDB_CodeFirst;Integrated Security=True;TrustServerCertificate=True");
+                optionsBuilder.UseSqlServer(DefaultConnectionString);
             }
         }
 
@@ -37,6 +38,14 @@ namespace DAL_Tier
             modelBuilder.Entity<UserDTO>().HasIndex(u => u.PhoneNumber).IsUnique();
             modelBuilder.Entity<DepartmentDTO>().HasIndex(d => d.DepartmentName).IsUnique();
             modelBuilder.Entity<RoomDTO>().HasIndex(r => r.RoomCode).IsUnique();
+            modelBuilder.Entity<PatientDTO>()
+                .HasIndex(p => p.MedicalCode)
+                .IsUnique()
+                .HasFilter("[MedicalCode] IS NOT NULL");
+            modelBuilder.Entity<DoctorDTO>()
+                .HasIndex(d => d.LicenseNumber)
+                .IsUnique()
+                .HasFilter("[LicenseNumber] IS NOT NULL");
 
             modelBuilder.Entity<DoctorDTO>().HasOne(d => d.User).WithOne().HasForeignKey<DoctorDTO>(d => d.UserId);
             modelBuilder.Entity<PatientDTO>().HasOne(p => p.User).WithOne().HasForeignKey<PatientDTO>(p => p.UserId);
@@ -88,6 +97,14 @@ namespace DAL_Tier
                 .WithMany(t => t.Appointments)
                 .HasForeignKey(a => a.TimeSlotId)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<AppointmentsDTO>()
+                .HasOne(a => a.CreatedByAdmin)
+                .WithMany()
+                .HasForeignKey(a => a.CreatedByAdminId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<AppointmentsDTO>()
+                .HasIndex(a => new { a.PatientId, a.TimeSlotId })
+                .IsUnique();
 
             modelBuilder.Entity<ContentDTO>()
                 .HasOne(c => c.Department)
@@ -112,6 +129,15 @@ namespace DAL_Tier
                 .WithMany(d => d.Reviews)
                 .HasForeignKey(r => r.DoctorId)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ReviewsDTO>()
+                .HasOne(r => r.Appointment)
+                .WithMany(a => a.Reviews)
+                .HasForeignKey(r => r.AppointmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ReviewsDTO>()
+                .HasIndex(r => r.AppointmentId)
+                .IsUnique()
+                .HasFilter("[AppointmentId] IS NOT NULL");
 
             modelBuilder.Entity<ConversationDTO>()
                 .HasOne(c => c.Patient)
@@ -124,10 +150,13 @@ namespace DAL_Tier
                 .WithMany()
                 .HasForeignKey(c => c.DoctorID)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ConversationDTO>()
+                .HasIndex(c => new { c.PatientID, c.DoctorID })
+                .IsUnique();
 
             modelBuilder.Entity<MessagesDTO>()
                 .HasOne(m => m.Conversation)
-                .WithMany()
+                .WithMany(c => c.Messages)
                 .HasForeignKey(m => m.ConversationId)
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -135,36 +164,6 @@ namespace DAL_Tier
                 .HasOne(m => m.Sender)
                 .WithMany()
                 .HasForeignKey(m => m.SenderID)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<CallLogsDTO>()
-                .HasOne(c => c.Caller)
-                .WithMany()
-                .HasForeignKey(c => c.CallerID)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<CallLogsDTO>()
-                .HasOne(c => c.Receiver)
-                .WithMany()
-                .HasForeignKey(c => c.ReceiverID)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<MedicalRecordsDTO>()
-                .HasOne(m => m.Patient)
-                .WithMany()
-                .HasForeignKey(m => m.PatientId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<MedicalRecordsDTO>()
-                .HasOne(m => m.Doctor)
-                .WithMany()
-                .HasForeignKey(m => m.DoctorId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<MedicalRecordsDTO>()
-                .HasOne(m => m.Appointment)
-                .WithMany()
-                .HasForeignKey(m => m.AppointmentID)
                 .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<DoctorCertificateDTO>()
                 .HasOne(c => c.Doctor)
@@ -181,7 +180,15 @@ namespace DAL_Tier
 
             modelBuilder.Entity<DoctorDTO>().HasIndex(d => d.DepartmentId);
             modelBuilder.Entity<TimeSlotsDTO>().HasIndex(t => new { t.WorkDate, t.DoctorId, t.RoomId });
+            modelBuilder.Entity<TimeSlotsDTO>()
+                .HasIndex(t => new { t.DoctorId, t.WorkDate, t.StartTime, t.EndTime })
+                .IsUnique();
+            modelBuilder.Entity<TimeSlotsDTO>()
+                .HasIndex(t => new { t.RoomId, t.WorkDate, t.StartTime, t.EndTime })
+                .IsUnique();
             modelBuilder.Entity<ContentDTO>().HasIndex(c => new { c.ContentType, c.Status, c.DepartmentId });
+            modelBuilder.Entity<MessagesDTO>()
+                .HasIndex(m => new { m.ConversationId, m.SentAt });
         }
     }
 }

@@ -61,21 +61,37 @@ namespace DAL_Tier
         //        s.IsDeleted == false);
         //}
         // Hàm này tìm xem có lịch nào trùng ngày, trùng phòng và giao thoa giờ không
-        public TimeSlotsDTO GetConflictSlot(DateTime date, TimeSpan start, TimeSpan end, int roomId)
+        public TimeSlotsDTO GetConflictSlot(DateTime date, TimeSpan start, TimeSpan end, int roomId, int? excludeSlotId = null)
         {
             // Kiểm tra trùng: Cùng ngày, cùng phòng và (Giờ bắt đầu hoặc Giờ kết thúc nằm trong khoảng đã có)
             return _context.TimeSlots
                 .Include(s => s.Doctor)
+                .ThenInclude(d => d.User)
                 .FirstOrDefault(s =>
                 s.WorkDate.Date == date.Date &&
                 s.RoomId == roomId &&
                 s.IsDeleted == false &&
+                (!excludeSlotId.HasValue || s.Id != excludeSlotId.Value) &&
                 ((start >= s.StartTime && start < s.EndTime) ||
                  (end > s.StartTime && end <= s.EndTime) ||
                  (start <= s.StartTime && end >= s.EndTime)));
         }
 
         // 3. Lấy danh sách khung giờ trống của bác sĩ
+        public TimeSlotsDTO GetDoctorConflictSlot(DateTime date, TimeSpan start, TimeSpan end, int doctorId, int? excludeSlotId = null)
+        {
+            return _context.TimeSlots
+                .Include(s => s.Room)
+                .FirstOrDefault(s =>
+                    s.WorkDate.Date == date.Date &&
+                    s.DoctorId == doctorId &&
+                    s.IsDeleted == false &&
+                    (!excludeSlotId.HasValue || s.Id != excludeSlotId.Value) &&
+                    ((start >= s.StartTime && start < s.EndTime) ||
+                     (end > s.StartTime && end <= s.EndTime) ||
+                     (start <= s.StartTime && end >= s.EndTime)));
+        }
+
         public List<TimeSlotsDTO> GetAvailableSlots(int doctorId, DateTime date)
         {
             return _context.TimeSlots

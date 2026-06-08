@@ -18,12 +18,7 @@ namespace DTO_Tier
         public string RoomName { get; set; } = null!;
 
         [Required]
-        public int? DepartmentId { get; set; }
-
-        [StringLength(50)]
-        public string? Floor { get; set; }
-
-        public string? Description { get; set; }
+        public int DepartmentId { get; set; }
 
         public bool IsActive { get; set; } = true;
 

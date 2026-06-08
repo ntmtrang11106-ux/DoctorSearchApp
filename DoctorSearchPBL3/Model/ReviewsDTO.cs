@@ -15,6 +15,8 @@ namespace DTO_Tier
         [Required]
         public int DoctorId { get; set; }
 
+        public int? AppointmentId { get; set; }
+
         [Range(1, 5)]
         public int Rating { get; set; }
 
@@ -35,5 +37,8 @@ namespace DTO_Tier
 
         [ForeignKey(nameof(DoctorId))]
         public virtual DoctorDTO? Doctor { get; set; }
+
+        [ForeignKey(nameof(AppointmentId))]
+        public virtual AppointmentsDTO? Appointment { get; set; }
     }
 }
