@@ -296,6 +296,7 @@ namespace UI_Tier
             btnSave.TabIndex = 19;
             btnSave.Text = "Lưu bài viết";
             btnSave.UseVisualStyleBackColor = false;
+            btnSave.Click += btnSave_Click;
             // 
             // btnCancel
             // 
@@ -445,6 +446,23 @@ namespace UI_Tier
             Padding = new Padding(3);
             Size = new Size(1000, 1300);
             Load += ucAdmin_AddArticle_Load;
+            
+            // Đăng ký các sự kiện Click tĩnh (chọn ảnh và xóa focus) trong Designer
+            panel29.Click += label24_Click;
+            label24.Click += label24_Click;
+            pnlMainBackground.Click += Global_Click;
+            pnlHeader.Click += Global_Click;
+            lblHeaderTitle.Click += Global_Click;
+            label1.Click += Global_Click;
+            lblTitleLabel.Click += Global_Click;
+            lblSummaryLabel.Click += Global_Click;
+            lblBodyLabel.Click += Global_Click;
+            lblTypeLabel.Click += Global_Click;
+            lblDeptLabel.Click += Global_Click;
+            lblStatusLabel.Click += Global_Click;
+            lblPriorityLabel.Click += Global_Click;
+            lblThumbnailLabel.Click += Global_Click;
+
             pnlHeader.ResumeLayout(false);
             pnlHeader.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numPriority).EndInit();
