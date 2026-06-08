@@ -87,6 +87,16 @@ namespace UI_Tier
         {
             if (control == null) return;
             control.Region = new Region(GetRoundedPath(control.ClientRectangle, radius));
+            control.Resize += (s, e) => {
+                try
+                {
+                    if (control.ClientRectangle.Width > 0 && control.ClientRectangle.Height > 0)
+                    {
+                        control.Region = new Region(GetRoundedPath(control.ClientRectangle, radius));
+                    }
+                }
+                catch { }
+            };
         }
 
         // Hàm này dùng để vẽ lại Button với bo góc và viền tùy chỉnh

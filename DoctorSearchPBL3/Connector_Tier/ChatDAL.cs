@@ -1,0 +1,331 @@
+using DTO_Tier;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace DAL_Tier
+{
+    public class ChatDAL
+    {
+        private readonly AppDbContext _context;
+
+        public ChatDAL()
+        {
+            _context = new AppDbContext();
+        }
+
+        // Kiểm tra và khởi tạo dữ liệu mẫu nếu chưa có cuộc hội thoại nào
+        public void SeedMockDataIfNeeded(int currentProfileId, string role)
+        {
+            try
+            {
+                if (_context.Conversations.Any()) return;
+
+                // Lấy 4 bác sĩ đầu tiên và 4 bệnh nhân đầu tiên để làm liên hệ mẫu
+                var doctors = _context.Doctors.Include(d => d.User).Take(4).ToList();
+                var patients = _context.Patients.Include(p => p.User).Take(4).ToList();
+
+                if (!doctors.Any() || !patients.Any()) return;
+
+                // Chúng ta sẽ tạo ra một số cuộc hội thoại mẫu
+                // Dựa trên ảnh: Nguyễn Văn A (Patient 1), Trần Thị B (Patient 2), Lê Văn C (Patient 3), Phạm Thị D (Patient 4)
+                
+                if (role == "Doctor")
+                {
+                    int docId = currentProfileId;
+                    var currentDoc = _context.Doctors.Find(docId);
+                    if (currentDoc == null) return;
+                    int docUserId = currentDoc.UserId;
+
+                    for (int i = 0; i < Math.Min(4, patients.Count); i++)
+                    {
+                        var patient = patients[i];
+                        if (patient.User == null) continue;
+                        
+                        if (i == 0) patient.User.FullName = "Nguyễn Văn A";
+                        else if (i == 1) patient.User.FullName = "Trần Thị B";
+                        else if (i == 2) patient.User.FullName = "Lê Văn C";
+                        else if (i == 3) patient.User.FullName = "Phạm Thị D";
+                        
+                        _context.Entry(patient.User).State = EntityState.Modified;
+
+                        var conv = new ConversationDTO
+                        {
+                            PatientID = patient.Id,
+                            DoctorID = docId,
+                            LastMessage = i == 0 ? "Cảm ơn bác sĩ rất nhiều!" :
+                                          i == 1 ? "Bác sĩ cho em hỏi về đơn thuốc..." :
+                                          i == 2 ? "Em muốn đặt lịch tái khám" : "Triệu chứng đã giảm nhiều ạ",
+                            LastActive = DateTime.Now.AddMinutes(-10 * (i + 1) - (i == 3 ? 1440 : 0))
+                        };
+                        _context.Conversations.Add(conv);
+                        _context.SaveChanges();
+
+                        if (i == 0)
+                        {
+                            var msg1 = new MessagesDTO
+                            {
+                                ConversationId = conv.Id,
+                                SenderID = patient.UserId,
+                                Content = "Chào bác sĩ, em muốn hỏi về kết quả xét nghiệm",
+                                SentAt = DateTime.Now.AddMinutes(-72),
+                                IsRead = true
+                            };
+                            var msg2 = new MessagesDTO
+                            {
+                                ConversationId = conv.Id,
+                                SenderID = docUserId,
+                                Content = "Chào bạn, kết quả xét nghiệm của bạn đã về. Các chỉ số đều trong ngưỡng bình thường.",
+                                SentAt = DateTime.Now.AddMinutes(-67),
+                                IsRead = true
+                            };
+                            var msg3 = new MessagesDTO
+                            {
+                                ConversationId = conv.Id,
+                                SenderID = patient.UserId,
+                                Content = "Vậy em có cần tái khám không ạ?",
+                                SentAt = DateTime.Now.AddMinutes(-65),
+                                IsRead = true
+                            };
+                            var msg4 = new MessagesDTO
+                            {
+                                ConversationId = conv.Id,
+                                SenderID = docUserId,
+                                Content = "Bạn nên tái khám sau 2 tuần để theo dõi. Bạn có thể đặt lịch qua hệ thống.",
+                                SentAt = DateTime.Now.AddMinutes(-62),
+                                IsRead = true
+                            };
+                            var msg5 = new MessagesDTO
+                            {
+                                ConversationId = conv.Id,
+                                SenderID = patient.UserId,
+                                Content = "Cảm ơn bác sĩ rất nhiều!",
+                                SentAt = DateTime.Now.AddMinutes(-60),
+                                IsRead = true
+                            };
+
+                            _context.Messages.AddRange(msg1, msg2, msg3, msg4, msg5);
+                        }
+                        else
+                        {
+                            var msg = new MessagesDTO
+                            {
+                                ConversationId = conv.Id,
+                                SenderID = patient.UserId,
+                                Content = conv.LastMessage,
+                                SentAt = conv.LastActive,
+                                IsRead = false
+                            };
+                            _context.Messages.Add(msg);
+                        }
+                    }
+                }
+                else // Vai trò hiện tại là Patient:
+                {
+                    int patId = currentProfileId;
+                    var currentPat = _context.Patients.Find(patId);
+                    if (currentPat == null) return;
+                    int patUserId = currentPat.UserId;
+
+                    for (int i = 0; i < Math.Min(4, doctors.Count); i++)
+                    {
+                        var doctor = doctors[i];
+                        if (doctor.User == null) continue;
+
+                        if (i == 0) doctor.User.FullName = "Nguyễn Văn A";
+                        else if (i == 1) doctor.User.FullName = "Trần Thị B";
+                        else if (i == 2) doctor.User.FullName = "Lê Văn C";
+                        else if (i == 3) doctor.User.FullName = "Phạm Thị D";
+
+                        _context.Entry(doctor.User).State = EntityState.Modified;
+
+                        var conv = new ConversationDTO
+                        {
+                            PatientID = patId,
+                            DoctorID = doctor.Id,
+                            LastMessage = i == 0 ? "Cảm ơn bác sĩ rất nhiều!" :
+                                          i == 1 ? "Bác sĩ cho em hỏi về đơn thuốc..." :
+                                          i == 2 ? "Em muốn đặt lịch tái khám" : "Triệu chứng đã giảm nhiều ạ",
+                            LastActive = DateTime.Now.AddMinutes(-10 * (i + 1) - (i == 3 ? 1440 : 0))
+                        };
+                        _context.Conversations.Add(conv);
+                        _context.SaveChanges();
+
+                        if (i == 0)
+                        {
+                            var msg1 = new MessagesDTO
+                            {
+                                ConversationId = conv.Id,
+                                SenderID = patUserId,
+                                Content = "Chào bác sĩ, em muốn hỏi về kết quả xét nghiệm",
+                                SentAt = DateTime.Now.AddMinutes(-72),
+                                IsRead = true
+                            };
+                            var msg2 = new MessagesDTO
+                            {
+                                ConversationId = conv.Id,
+                                SenderID = doctor.UserId,
+                                Content = "Chào bạn, kết quả xét nghiệm của bạn đã về. Các chỉ số đều trong ngưỡng bình thường.",
+                                SentAt = DateTime.Now.AddMinutes(-67),
+                                IsRead = true
+                            };
+                            var msg3 = new MessagesDTO
+                            {
+                                ConversationId = conv.Id,
+                                SenderID = patUserId,
+                                Content = "Vậy em có cần tái khám không ạ?",
+                                SentAt = DateTime.Now.AddMinutes(-65),
+                                IsRead = true
+                            };
+                            var msg4 = new MessagesDTO
+                            {
+                                ConversationId = conv.Id,
+                                SenderID = doctor.UserId,
+                                Content = "Bạn nên tái khám sau 2 tuần để theo dõi. Bạn có thể đặt lịch qua hệ thống.",
+                                SentAt = DateTime.Now.AddMinutes(-62),
+                                IsRead = true
+                            };
+                            var msg5 = new MessagesDTO
+                            {
+                                ConversationId = conv.Id,
+                                SenderID = patUserId,
+                                Content = "Cảm ơn bác sĩ rất nhiều!",
+                                SentAt = DateTime.Now.AddMinutes(-60),
+                                IsRead = true
+                            };
+
+                            _context.Messages.AddRange(msg1, msg2, msg3, msg4, msg5);
+                        }
+                        else
+                        {
+                            var msg = new MessagesDTO
+                            {
+                                ConversationId = conv.Id,
+                                SenderID = doctor.UserId,
+                                Content = conv.LastMessage,
+                                SentAt = conv.LastActive,
+                                IsRead = false
+                            };
+                            _context.Messages.Add(msg);
+                        }
+                    }
+                }
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error seeding mock chat data: " + ex.Message);
+            }
+        }
+
+        // Lấy danh sách hội thoại
+        public List<ConversationDTO> GetConversations(int profileId, string role)
+        {
+            SeedMockDataIfNeeded(profileId, role);
+
+            if (role == "Patient")
+            {
+                return _context.Conversations
+                    .Include(c => c.Doctor).ThenInclude(d => d.User)
+                    .Where(c => c.PatientID == profileId)
+                    .OrderByDescending(c => c.LastActive)
+                    .ToList();
+            }
+            else
+            {
+                return _context.Conversations
+                    .Include(c => c.Patient).ThenInclude(p => p.User)
+                    .Where(c => c.DoctorID == profileId)
+                    .OrderByDescending(c => c.LastActive)
+                    .ToList();
+            }
+        }
+
+        // Lấy tin nhắn của cuộc hội thoại
+        public List<MessagesDTO> GetMessages(int conversationId)
+        {
+            return _context.Messages
+                .Include(m => m.Sender)
+                .Where(m => m.ConversationId == conversationId)
+                .OrderBy(m => m.SentAt)
+                .ToList();
+        }
+
+        // Đánh dấu tin nhắn đã đọc
+        public void MarkAsRead(int conversationId, int currentUserId)
+        {
+            var unreadMsgs = _context.Messages
+                .Where(m => m.ConversationId == conversationId && m.SenderID != currentUserId && !m.IsRead)
+                .ToList();
+
+            if (unreadMsgs.Any())
+            {
+                foreach (var msg in unreadMsgs)
+                {
+                    msg.IsRead = true;
+                }
+                _context.SaveChanges();
+            }
+        }
+
+        // Lấy số lượng tin nhắn chưa đọc
+        public int GetUnreadCount(int conversationId, int currentUserId)
+        {
+            return _context.Messages.Count(m => m.ConversationId == conversationId && m.SenderID != currentUserId && !m.IsRead);
+        }
+
+        // Gửi tin nhắn mới
+        public MessagesDTO SendMessage(int conversationId, int senderUserId, string content)
+        {
+            var msg = new MessagesDTO
+            {
+                ConversationId = conversationId,
+                SenderID = senderUserId,
+                Content = content,
+                SentAt = DateTime.Now,
+                IsRead = false
+            };
+
+            _context.Messages.Add(msg);
+
+            var conv = _context.Conversations.Find(conversationId);
+            if (conv != null)
+            {
+                conv.LastMessage = content;
+                conv.LastActive = DateTime.Now;
+            }
+
+            _context.SaveChanges();
+            return msg;
+        }
+
+        // Lấy hoặc tạo mới cuộc hội thoại giữa Patient và Doctor
+        public ConversationDTO GetOrCreateConversation(int patientId, int doctorId)
+        {
+            var conv = _context.Conversations
+                .Include(c => c.Patient).ThenInclude(p => p.User)
+                .Include(c => c.Doctor).ThenInclude(d => d.User)
+                .FirstOrDefault(c => c.PatientID == patientId && c.DoctorID == doctorId);
+
+            if (conv == null)
+            {
+                conv = new ConversationDTO
+                {
+                    PatientID = patientId,
+                    DoctorID = doctorId,
+                    LastMessage = "Bắt đầu cuộc trò chuyện",
+                    LastActive = DateTime.Now
+                };
+                _context.Conversations.Add(conv);
+                _context.SaveChanges();
+
+                // Nạp đầy đủ thông tin để tránh NullReference ở UI
+                _context.Entry(conv).Reference(c => c.Patient).Query().Include(p => p.User).Load();
+                _context.Entry(conv).Reference(c => c.Doctor).Query().Include(d => d.User).Load();
+            }
+
+            return conv;
+        }
+    }
+}
