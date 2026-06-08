@@ -23,6 +23,7 @@ namespace UI_Tier
                 return;
             }
 
+            //Application.Run(new frmGuest());
             Application.Run(new frmGuest());
         }
 
