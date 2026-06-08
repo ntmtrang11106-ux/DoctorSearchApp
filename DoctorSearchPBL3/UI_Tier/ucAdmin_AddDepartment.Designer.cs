@@ -28,13 +28,16 @@ namespace UI_Tier
             pnlRoomList = new Panel();
             flpRooms = new FlowLayoutPanel();
             lblRoomListTitle = new Label();
-            label4 = new Label();
-            rbShow = new RadioButton();
-            rbHide = new RadioButton();
             btnSave = new Button();
             btnCancel = new Button();
             btnClose = new Button();
+            pnlName = new Panel();
+            pnlDesc = new Panel();
+            pnlRoomInput = new Panel();
             pnlRoomList.SuspendLayout();
+            pnlName.SuspendLayout();
+            pnlDesc.SuspendLayout();
+            pnlRoomInput.SuspendLayout();
             SuspendLayout();
             // 
             // lblHeaderTitle
@@ -42,20 +45,22 @@ namespace UI_Tier
             lblHeaderTitle.AutoSize = true;
             lblHeaderTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             lblHeaderTitle.ForeColor = Color.FromArgb(30, 70, 125);
-            lblHeaderTitle.Location = new Point(40, 40);
+            lblHeaderTitle.Location = new Point(65, 64);
+            lblHeaderTitle.Margin = new Padding(5, 0, 5, 0);
             lblHeaderTitle.Name = "lblHeaderTitle";
-            lblHeaderTitle.Size = new Size(256, 37);
+            lblHeaderTitle.Size = new Size(496, 59);
             lblHeaderTitle.TabIndex = 0;
             lblHeaderTitle.Text = "Thêm chuyên khoa mới";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label1.Font = new Font("Segoe UI", 13.875F, FontStyle.Italic, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.FromArgb(107, 114, 128);
-            label1.Location = new Point(45, 95);
+            label1.Location = new Point(73, 147);
+            label1.Margin = new Padding(5, 0, 5, 0);
             label1.Name = "label1";
-            label1.Size = new Size(444, 31);
+            label1.Size = new Size(917, 50);
             label1.TabIndex = 1;
             label1.Text = "Nhập thông tin để thêm chuyên khoa mới vào hệ thống";
             // 
@@ -64,21 +69,22 @@ namespace UI_Tier
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label2.ForeColor = Color.FromArgb(17, 24, 39);
-            label2.Location = new Point(45, 150);
+            label2.Location = new Point(73, 240);
+            label2.Margin = new Padding(5, 0, 5, 0);
             label2.Name = "label2";
-            label2.Size = new Size(55, 28);
+            label2.Size = new Size(96, 45);
             label2.TabIndex = 2;
             label2.Text = "Tên *";
             // 
             // txtName
             // 
             txtName.BackColor = Color.White;
-            txtName.BorderStyle = BorderStyle.FixedSingle;
+            txtName.BorderStyle = BorderStyle.None;
             txtName.Font = new Font("Segoe UI", 12F);
-            txtName.Location = new Point(45, 195);
+            txtName.Location = new Point(19, 16);
             txtName.Name = "txtName";
             txtName.PlaceholderText = "Nhập tên chuyên khoa";
-            txtName.Size = new Size(910, 34);
+            txtName.Size = new Size(1399, 43);
             txtName.TabIndex = 3;
             // 
             // label3
@@ -86,22 +92,24 @@ namespace UI_Tier
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label3.ForeColor = Color.FromArgb(17, 24, 39);
-            label3.Location = new Point(45, 255);
+            label3.Location = new Point(73, 402);
+            label3.Margin = new Padding(5, 0, 5, 0);
             label3.Name = "label3";
-            label3.Size = new Size(61, 28);
+            label3.Size = new Size(109, 45);
             label3.TabIndex = 4;
             label3.Text = "Mô tả";
             // 
             // txtDesc
             // 
             txtDesc.BackColor = Color.White;
-            txtDesc.BorderStyle = BorderStyle.FixedSingle;
+            txtDesc.BorderStyle = BorderStyle.None;
             txtDesc.Font = new Font("Segoe UI", 12F);
-            txtDesc.Location = new Point(45, 300);
+            txtDesc.Location = new Point(19, 10);
+            txtDesc.Margin = new Padding(5);
             txtDesc.Multiline = true;
             txtDesc.Name = "txtDesc";
             txtDesc.PlaceholderText = "Nhập mô tả (tùy chọn)";
-            txtDesc.Size = new Size(910, 130);
+            txtDesc.Size = new Size(1399, 246);
             txtDesc.TabIndex = 5;
             // 
             // label5
@@ -109,21 +117,23 @@ namespace UI_Tier
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label5.ForeColor = Color.FromArgb(17, 24, 39);
-            label5.Location = new Point(45, 460);
+            label5.Location = new Point(73, 736);
+            label5.Margin = new Padding(5, 0, 5, 0);
             label5.Name = "label5";
-            label5.Size = new Size(114, 28);
+            label5.Size = new Size(210, 45);
             label5.TabIndex = 6;
             label5.Text = "Phòng khám";
             // 
             // txtRoomInput
             // 
             txtRoomInput.BackColor = Color.White;
-            txtRoomInput.BorderStyle = BorderStyle.FixedSingle;
+            txtRoomInput.BorderStyle = BorderStyle.None;
             txtRoomInput.Font = new Font("Segoe UI", 12F);
-            txtRoomInput.Location = new Point(45, 505);
+            txtRoomInput.Location = new Point(19, 12);
+            txtRoomInput.Margin = new Padding(5);
             txtRoomInput.Name = "txtRoomInput";
             txtRoomInput.PlaceholderText = "Nhập mã phòng (VD: C1.202)";
-            txtRoomInput.Size = new Size(790, 34);
+            txtRoomInput.Size = new Size(1260, 43);
             txtRoomInput.TabIndex = 7;
             txtRoomInput.TextChanged += txtRoomInput_TextChanged;
             txtRoomInput.KeyDown += txtRoomInput_KeyDown;
@@ -136,9 +146,10 @@ namespace UI_Tier
             btnAddRoom.FlatStyle = FlatStyle.Flat;
             btnAddRoom.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnAddRoom.ForeColor = Color.White;
-            btnAddRoom.Location = new Point(853, 492);
+            btnAddRoom.Location = new Point(1419, 795);
+            btnAddRoom.Margin = new Padding(5);
             btnAddRoom.Name = "btnAddRoom";
-            btnAddRoom.Size = new Size(102, 60);
+            btnAddRoom.Size = new Size(82, 75);
             btnAddRoom.TabIndex = 8;
             btnAddRoom.Text = "+";
             btnAddRoom.UseVisualStyleBackColor = false;
@@ -149,30 +160,32 @@ namespace UI_Tier
             lblRoomHint.AutoSize = true;
             lblRoomHint.Font = new Font("Segoe UI", 10.5F, FontStyle.Italic, GraphicsUnit.Point, 0);
             lblRoomHint.ForeColor = Color.FromArgb(107, 114, 128);
-            lblRoomHint.Location = new Point(45, 556);
+            lblRoomHint.Location = new Point(73, 890);
+            lblRoomHint.Margin = new Padding(5, 0, 5, 0);
             lblRoomHint.Name = "lblRoomHint";
-            lblRoomHint.Size = new Size(347, 25);
+            lblRoomHint.Size = new Size(672, 38);
             lblRoomHint.TabIndex = 9;
             lblRoomHint.Text = "Định dạng bắt buộc: <Tên khu>.<Tầng><Số phòng>.";
             // 
             // pnlRoomList
             // 
-            pnlRoomList.BackColor = Color.FromArgb(249, 250, 251);
-            pnlRoomList.BorderStyle = BorderStyle.FixedSingle;
+            pnlRoomList.BackColor = Color.Azure;
             pnlRoomList.Controls.Add(flpRooms);
             pnlRoomList.Controls.Add(lblRoomListTitle);
-            pnlRoomList.Location = new Point(45, 600);
+            pnlRoomList.Location = new Point(73, 960);
+            pnlRoomList.Margin = new Padding(5);
             pnlRoomList.Name = "pnlRoomList";
-            pnlRoomList.Size = new Size(910, 210);
+            pnlRoomList.Size = new Size(1449, 519);
             pnlRoomList.TabIndex = 10;
             // 
             // flpRooms
             // 
             flpRooms.AutoScroll = true;
             flpRooms.FlowDirection = FlowDirection.TopDown;
-            flpRooms.Location = new Point(20, 50);
+            flpRooms.Location = new Point(32, 80);
+            flpRooms.Margin = new Padding(5);
             flpRooms.Name = "flpRooms";
-            flpRooms.Size = new Size(868, 140);
+            flpRooms.Size = new Size(1383, 409);
             flpRooms.TabIndex = 1;
             flpRooms.WrapContents = false;
             // 
@@ -181,46 +194,12 @@ namespace UI_Tier
             lblRoomListTitle.AutoSize = true;
             lblRoomListTitle.Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblRoomListTitle.ForeColor = Color.FromArgb(31, 41, 55);
-            lblRoomListTitle.Location = new Point(18, 15);
+            lblRoomListTitle.Location = new Point(29, 24);
+            lblRoomListTitle.Margin = new Padding(5, 0, 5, 0);
             lblRoomListTitle.Name = "lblRoomListTitle";
-            lblRoomListTitle.Size = new Size(165, 25);
+            lblRoomListTitle.Size = new Size(308, 41);
             lblRoomListTitle.TabIndex = 0;
             lblRoomListTitle.Text = "Danh sách phòng (0)";
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label4.ForeColor = Color.FromArgb(17, 24, 39);
-            label4.Location = new Point(46, 835);
-            label4.Name = "label4";
-            label4.Size = new Size(101, 28);
-            label4.TabIndex = 11;
-            label4.Text = "Trạng thái";
-            // 
-            // rbShow
-            // 
-            rbShow.AutoSize = true;
-            rbShow.Checked = true;
-            rbShow.Font = new Font("Segoe UI", 12F);
-            rbShow.Location = new Point(46, 880);
-            rbShow.Name = "rbShow";
-            rbShow.Size = new Size(101, 32);
-            rbShow.TabIndex = 12;
-            rbShow.TabStop = true;
-            rbShow.Text = "Hiển thị";
-            rbShow.UseVisualStyleBackColor = true;
-            // 
-            // rbHide
-            // 
-            rbHide.AutoSize = true;
-            rbHide.Font = new Font("Segoe UI", 12F);
-            rbHide.Location = new Point(190, 880);
-            rbHide.Name = "rbHide";
-            rbHide.Size = new Size(53, 32);
-            rbHide.TabIndex = 13;
-            rbHide.Text = "Ẩn";
-            rbHide.UseVisualStyleBackColor = true;
             // 
             // btnSave
             // 
@@ -229,9 +208,10 @@ namespace UI_Tier
             btnSave.FlatStyle = FlatStyle.Flat;
             btnSave.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnSave.ForeColor = Color.White;
-            btnSave.Location = new Point(467, 945);
+            btnSave.Location = new Point(880, 1516);
+            btnSave.Margin = new Padding(5);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(300, 72);
+            btnSave.Size = new Size(366, 92);
             btnSave.TabIndex = 14;
             btnSave.Text = "Thêm mới";
             btnSave.UseVisualStyleBackColor = false;
@@ -244,9 +224,10 @@ namespace UI_Tier
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             btnCancel.ForeColor = Color.FromArgb(107, 114, 128);
-            btnCancel.Location = new Point(784, 945);
+            btnCancel.Location = new Point(1270, 1516);
+            btnCancel.Margin = new Padding(5);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(171, 72);
+            btnCancel.Size = new Size(278, 92);
             btnCancel.TabIndex = 15;
             btnCancel.Text = "Hủy";
             btnCancel.UseVisualStyleBackColor = false;
@@ -258,9 +239,10 @@ namespace UI_Tier
             btnClose.FlatStyle = FlatStyle.Flat;
             btnClose.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnClose.ForeColor = Color.FromArgb(107, 114, 128);
-            btnClose.Location = new Point(906, 20);
+            btnClose.Location = new Point(1472, 32);
+            btnClose.Margin = new Padding(5);
             btnClose.Name = "btnClose";
-            btnClose.Size = new Size(74, 79);
+            btnClose.Size = new Size(120, 126);
             btnClose.TabIndex = 16;
             btnClose.Text = "×";
             btnClose.UseVisualStyleBackColor = true;
@@ -269,46 +251,58 @@ namespace UI_Tier
             // pnlName
             // 
             pnlName.Controls.Add(txtName);
-            pnlName.Location = new Point(45, 227);
+            pnlName.Location = new Point(84, 301);
             pnlName.Name = "pnlName";
-            pnlName.Size = new Size(880, 76);
-            pnlName.TabIndex = 12;
+            pnlName.Size = new Size(1438, 75);
+            pnlName.TabIndex = 17;
             // 
             // pnlDesc
             // 
             pnlDesc.Controls.Add(txtDesc);
-            pnlDesc.Location = new Point(46, 367);
+            pnlDesc.Location = new Point(84, 452);
             pnlDesc.Name = "pnlDesc";
-            pnlDesc.Size = new Size(879, 249);
-            pnlDesc.TabIndex = 13;
+            pnlDesc.Size = new Size(1438, 271);
+            pnlDesc.TabIndex = 18;
+            // 
+            // pnlRoomInput
+            // 
+            pnlRoomInput.Controls.Add(txtRoomInput);
+            pnlRoomInput.Location = new Point(84, 795);
+            pnlRoomInput.Name = "pnlRoomInput";
+            pnlRoomInput.Size = new Size(1300, 75);
+            pnlRoomInput.TabIndex = 19;
             // 
             // ucAdmin_AddDepartment
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
+            Controls.Add(pnlRoomInput);
             Controls.Add(pnlDesc);
             Controls.Add(pnlName);
             Controls.Add(btnClose);
             Controls.Add(btnCancel);
             Controls.Add(btnSave);
-            Controls.Add(rbHide);
-            Controls.Add(rbShow);
-            Controls.Add(label4);
             Controls.Add(pnlRoomList);
             Controls.Add(lblRoomHint);
             Controls.Add(btnAddRoom);
-            Controls.Add(txtRoomInput);
             Controls.Add(label5);
-            Controls.Add(txtDesc);
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(lblHeaderTitle);
+            ForeColor = Color.White;
+            Margin = new Padding(5);
             Name = "ucAdmin_AddDepartment";
-            Size = new Size(986, 1040);
+            Size = new Size(1602, 1634);
             pnlRoomList.ResumeLayout(false);
             pnlRoomList.PerformLayout();
+            pnlName.ResumeLayout(false);
+            pnlName.PerformLayout();
+            pnlDesc.ResumeLayout(false);
+            pnlDesc.PerformLayout();
+            pnlRoomInput.ResumeLayout(false);
+            pnlRoomInput.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -326,13 +320,11 @@ namespace UI_Tier
         private Panel pnlRoomList;
         private FlowLayoutPanel flpRooms;
         private Label lblRoomListTitle;
-        private Label label4;
-        private RadioButton rbShow;
-        private RadioButton rbHide;
         private Button btnSave;
         private Button btnCancel;
         private Button btnClose;
         private Panel pnlName;
         private Panel pnlDesc;
+        private Panel pnlRoomInput;
     }
 }

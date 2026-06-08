@@ -254,7 +254,7 @@ namespace UI_Tier
             // Sử dụng Inset để nét vẽ 2px nằm hoàn toàn bên trong, không bị Region cắt
             using (var path = UIHelper.GetRoundedPath(new Rectangle(0, 0, rect.Width, rect.Height), 8))
             {
-                using (Pen blackPen = new Pen(Color.Black, 2))
+                using (Pen blackPen = new Pen(Color.DimGray, 2))
                 {
                     blackPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
                     g.DrawPath(blackPen, path);

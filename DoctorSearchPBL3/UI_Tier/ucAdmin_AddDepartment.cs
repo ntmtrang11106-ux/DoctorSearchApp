@@ -34,15 +34,11 @@ namespace UI_Tier
 
         private void ucAdmin_AddDepartment_Paint(object sender, PaintEventArgs e)
         {
-            UIHelper.DrawControlBorder(sender, e, 15, Color.Black, 3);
+            UIHelper.DrawControlBorder(sender, e, 15, Color.FromArgb(30, 70, 125), 3);
         }
 
         private void InitializeInputStyling()
         {
-            Panel pnlName = SetupInputWrapper(txtName);
-            Panel pnlDesc = SetupInputWrapper(txtDesc);
-            Panel pnlRoomInput = SetupInputWrapper(txtRoomInput);
-
             UIHelper.SetupInputFocusEffect(txtName, pnlName, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
             UIHelper.SetupInputFocusEffect(txtDesc, pnlDesc, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
             UIHelper.SetupInputFocusEffect(txtRoomInput, pnlRoomInput, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
@@ -52,39 +48,16 @@ namespace UI_Tier
             UIHelper.RegisterClickToUnfocus(this);
         }
 
-        private Panel SetupInputWrapper(Control ctrl)
-        {
-            Panel pnl = new Panel();
-            const int padding = 3;
-            pnl.Bounds = new Rectangle(ctrl.Left - padding, ctrl.Top - padding, ctrl.Width + (padding * 2), ctrl.Height + (padding * 2));
-            pnl.BackColor = Color.White;
-            pnl.Name = "pnlWrapper_" + ctrl.Name;
-
-            Controls.Add(pnl);
-            ctrl.Parent = pnl;
-            ctrl.Location = new Point(padding, padding);
-            ctrl.Width = pnl.Width - (padding * 2);
-            ctrl.Height = pnl.Height - (padding * 2);
-
-            return pnl;
-        }
-
         private void SetupUI()
         {
-            lblHeaderTitle.Font = new Font("Segoe UI", 16, FontStyle.Bold);
-            label1.Font = new Font("Segoe UI", 14, FontStyle.Regular);
-            txtName.Font = new Font("Segoe UI", 12, FontStyle.Regular);
-            txtDesc.Font = new Font("Segoe UI", 12, FontStyle.Regular);
-            txtRoomInput.Font = new Font("Segoe UI", 12, FontStyle.Regular);
-
-            txtName.BorderStyle = BorderStyle.None;
-            txtDesc.BorderStyle = BorderStyle.None;
-            txtRoomInput.BorderStyle = BorderStyle.None;
-
             UIHelper.ApplyRoundedRegion(btnSave, 12);
             UIHelper.ApplyRoundedRegion(btnCancel, 12);
             UIHelper.ApplyRoundedRegion(btnAddRoom, 12);
             UIHelper.ApplyRoundedRegion(pnlRoomList, 16);
+
+            UIHelper.ApplyBorderPanelStyle(pnlName);
+            UIHelper.ApplyBorderPanelStyle(pnlDesc);
+            UIHelper.ApplyBorderPanelStyle(pnlRoomInput);
 
             UIHelper.EnableNativeDrag(this, this);
             UIHelper.EnableNativeDrag(lblHeaderTitle, this);
@@ -108,8 +81,6 @@ namespace UI_Tier
                 btnAddRoom.Visible = false;
                 pnlRoomList.Visible = false;
                 lblRoomHint.Text = "Muốn thay đổi danh sách phòng, cần cập nhật quy trình quản trị phòng sau.";
-                rbShow.Checked = _dept.IsActive;
-                rbHide.Checked = !_dept.IsActive;
             }
             else
             {
@@ -120,8 +91,6 @@ namespace UI_Tier
                 btnAddRoom.Visible = true;
                 pnlRoomList.Visible = true;
                 lblRoomHint.Text = "Định dạng bắt buộc: <Tên khu>.<Tầng><Số phòng>. Ví dụ: C1.202";
-                rbShow.Checked = true;
-                rbHide.Checked = false;
             }
 
             RefreshRoomList();
@@ -205,32 +174,28 @@ namespace UI_Tier
             flpRooms.ResumeLayout();
         }
 
+        // --- TỐI ƯU: ĐOẠN KHỞI TẠO ITEM PHÒNG CỐ ĐỊNH SIZE, CÂN ĐỐI UI ---
         private Control CreateRoomItem(string roomCode)
         {
+            const int cardWidth = 260; // Cố định bề ngang vừa vặn với layout FlowLayoutPanel
+            const int cardHeight = 70; // Hạ độ cao xuống một chút nhìn thanh thoát hơn 60px cũ
+
             Panel row = new Panel
             {
-                Width = flpRooms.ClientSize.Width - 25,
-                Height = 52,
-                BackColor = Color.White,
-                Margin = new Padding(0, 0, 0, 10)
+                Width = cardWidth,
+                Height = cardHeight,
+                BackColor = Color.White, // Đổi sang nền xám nhạt (Gray 100) để nổi bật trên nền trắng của List
+                Margin = new Padding(6, 0, 6, 8),
+                Padding = new Padding(12, 0, 8, 0) // Tạo khoảng cách đệm an toàn xung quanh rìa
             };
-            UIHelper.ApplyRoundedRegion(row, 10);
-
-            Label lblIcon = new Label
-            {
-                Text = "🏥",
-                Font = new Font("Segoe UI Emoji", 14F),
-                ForeColor = Color.FromArgb(37, 99, 235),
-                Location = new Point(14, 9),
-                Size = new Size(36, 32)
-            };
+            UIHelper.ApplyRoundedRegion(row, 8);
 
             Label lblText = new Label
             {
                 Text = roomCode,
-                Font = new Font("Segoe UI", 12F, FontStyle.Regular),
+                Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold), // Đổi sang Semibold nhìn rõ nét, hiện đại hơn
                 ForeColor = Color.FromArgb(17, 24, 39),
-                Location = new Point(60, 12),
+                Location = new Point(16, 16), // Tự động căn giữa nhãn theo chiều dọc Card
                 AutoSize = true
             };
 
@@ -238,19 +203,27 @@ namespace UI_Tier
             {
                 Text = "×",
                 FlatStyle = FlatStyle.Flat,
-                ForeColor = Color.FromArgb(31, 41, 55),
+                ForeColor = Color.FromArgb(156, 163, 175), // Màu xám nhẹ mặc định
                 Font = new Font("Segoe UI", 16F, FontStyle.Regular),
-                Size = new Size(42, 36),
-                Location = new Point(row.Width - 54, 8),
-                BackColor = Color.White,
+                Size = new Size(36, 36),
+                Dock = DockStyle.Right, // Ép dính hẳn sát lề phải của Card
+                BackColor = Color.Transparent,
+                Cursor = Cursors.Hand,
                 Tag = roomCode
             };
             btnRemoveRoom.FlatAppearance.BorderSize = 0;
+            btnRemoveRoom.FlatAppearance.MouseDownBackColor = Color.Transparent;
+            btnRemoveRoom.FlatAppearance.MouseOverBackColor = Color.Transparent;
+
+            // Hiệu ứng Hover đổi màu nút xóa sang đỏ rực để tạo cảm giác phản hồi tốt
+            btnRemoveRoom.MouseEnter += (s, e) => btnRemoveRoom.ForeColor = Color.FromArgb(239, 68, 68);
+            btnRemoveRoom.MouseLeave += (s, e) => btnRemoveRoom.ForeColor = Color.FromArgb(156, 163, 175);
             btnRemoveRoom.Click += btnRemoveRoom_Click;
 
-            row.Controls.Add(lblIcon);
             row.Controls.Add(lblText);
             row.Controls.Add(btnRemoveRoom);
+            UIHelper.ApplyBorderPanelStyle(row);
+
             return row;
         }
 
@@ -275,7 +248,7 @@ namespace UI_Tier
             DepartmentDTO dept = _dept ?? new DepartmentDTO();
             dept.DepartmentName = name;
             dept.Description = txtDesc.Text.Trim();
-            dept.IsActive = rbShow.Checked;
+            dept.IsActive = true;
             dept.DisplayOrder = 0;
 
             bool success;
