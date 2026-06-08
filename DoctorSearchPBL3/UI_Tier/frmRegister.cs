@@ -69,8 +69,6 @@ namespace UI_Tier
                 txt.Leave += (s, e) => { pnl.BackColor = Color.White; txt.BackColor = Color.White; };
             }
 
-            AddRegisterHints();
-
             // Ô Ngày sinh (Theo chuẩn Cao 70)
             Panel pnlDOBContainer = panel19.Controls.Find("pnlDOBContainer", true).Length > 0 ? 
                 (Panel)panel19.Controls.Find("pnlDOBContainer", true)[0] : new Panel();
@@ -98,19 +96,6 @@ namespace UI_Tier
             UIHelper.RegisterClickToUnfocus(this, label1);
             UIHelper.ApplyRoundedRegion(btnLogin, 15);
         }
-
-        private void AddRegisterHints()
-        {
-            UIHelper.AddInputHint(panel17, "Bắt buộc 10 chữ số và bắt đầu bằng 0. Ví dụ: 0912345678.", 37, 130, 751);
-            UIHelper.AddInputHint(panel18, "Từ 16 tuổi trở lên bắt buộc nhập CCCD gồm đúng 12 chữ số.", 37, 130, 751);
-            UIHelper.AddInputHint(panel21, "Địa chỉ từ 5 đến 255 ký tự, không chứa ký tự điều khiển.", 37, 130, 751);
-            UIHelper.AddPasswordRuleHint(panel12, 37, 130, 751);
-            UIHelper.AddInputHint(panel13, "Nhập lại đúng mật khẩu ở ô trên.", 37, 138, 751);
-            UIHelper.AddInputHint(panel27, "Mã BHYT 6-50 ký tự, chỉ dùng chữ, số, dấu '-' hoặc '/'.", 37, 130, 751);
-            UIHelper.AddInputHint(panel15, "Tối đa 100 ký tự.", 37, 130, 751);
-        }
-
-
 
         private void label7_Click(object sender, EventArgs e)
         {

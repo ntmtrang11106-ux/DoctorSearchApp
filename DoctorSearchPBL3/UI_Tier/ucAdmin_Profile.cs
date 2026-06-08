@@ -34,10 +34,10 @@ namespace UI_Tier
             UIHelper.SetDoubleBuffered(this);
             UIHelper.SetDoubleBuffered(pnlMain);
             UIHelper.SetupSmoothScrolling(pnlMain);
-            
+
             // Apply rounded corners to avatar
             UIHelper.ApplyRoundedRegion(picAvatar, picAvatar.Width / 2);
-            
+
             // Set initial state
             SetEditMode(false);
             ShowChangePassword(false);
@@ -56,9 +56,7 @@ namespace UI_Tier
             dtpBirthday.ValueChanged += dtpBirthday_ValueChanged;
 
             SetupFocusEffects();
-            SetupSecurityRuleHints();
-            SetupProfileRuleHints();
-            
+
             // Gán sự kiện Paint để vẽ viền
             pnlBasicInfo.Paint += SectionPanel_Paint;
             pnlSecurity.Paint += SectionPanel_Paint;
@@ -134,7 +132,7 @@ namespace UI_Tier
             Color focus = Color.FromArgb(242, 248, 255);
             Color unfocus = Color.White;
             Color highlight = Color.FromArgb(37, 99, 235);
-            
+
             UIHelper.SetupInputFocusEffect(txtFullName, pnlFullNameBorder, focus, unfocus, highlight);
             UIHelper.SetupInputFocusEffect(txtPhone, pnlPhoneBorder, focus, unfocus, highlight);
             UIHelper.SetupInputFocusEffect(txtRole, pnlRoleBorder, Color.FromArgb(241, 243, 245), Color.FromArgb(241, 243, 245), highlight);
@@ -145,29 +143,6 @@ namespace UI_Tier
             UIHelper.SetupInputFocusEffect(txtCurrentPass, pnlCurrentPassBorder, focus, unfocus, highlight);
             UIHelper.SetupInputFocusEffect(txtNewPass, pnlNewPassBorder, focus, unfocus, highlight);
             UIHelper.SetupInputFocusEffect(txtConfirmPass, pnlConfirmPassBorder, focus, unfocus, highlight);
-        }
-
-        private void SetupSecurityRuleHints()
-        {
-            lblSecurityHint.Text = "Mật khẩu mới cần 8-64 ký tự, có chữ hoa/thường, số và ký tự đặc biệt.";
-            txtNewPass.PlaceholderText = "Mật khẩu mới theo đúng quy định bảo mật";
-            txtConfirmPass.PlaceholderText = "Nhập lại đúng mật khẩu mới";
-            UIHelper.AddPasswordRuleHint(pnlChangePassword, 52, 385, 1320);
-            pnlPassActions.Location = new Point(52, 430);
-            pnlChangePassword.Height = Math.Max(pnlChangePassword.Height, 530);
-        }
-
-        private void SetupProfileRuleHints()
-        {
-            UIHelper.AddInputHint(pnlBasicInfo, "Họ tên: 2-100 ký tự, chỉ dùng chữ cái và khoảng trắng.", 440, 222, 770);
-            UIHelper.AddInputHint(pnlBasicInfo, "SĐT: đúng 10 chữ số, bắt đầu bằng 0 và không trùng tài khoản khác.", 1240, 222, 770);
-            UIHelper.AddInputHint(pnlBasicInfo, "Ngày sinh: quản trị viên phải từ 18 tuổi trở lên.", 1240, 362, 770);
-            UIHelper.AddInputHint(pnlBasicInfo, "Giới tính: chỉ nhập Nam hoặc Nữ.", 440, 502, 770);
-            UIHelper.AddInputHint(pnlBasicInfo, "CCCD: bắt buộc đúng 12 chữ số.", 1240, 502, 770);
-            UIHelper.AddInputHint(pnlBasicInfo, "Địa chỉ: 5-255 ký tự, không chứa ký tự điều khiển.", 440, 642, 1570);
-
-            pnlBasicInfoActions.Location = new Point(50, 690);
-            pnlBasicInfo.Height = Math.Max(pnlBasicInfo.Height, 800);
         }
 
         private void dtpBirthday_ValueChanged(object sender, EventArgs e)
@@ -209,7 +184,7 @@ namespace UI_Tier
             lblAdminName.Text = _currentUser.FullName;
             txtPhone.Text = _currentUser.PhoneNumber;
             txtRole.Text = "Quản trị viên";
-            
+
             dtpBirthday.Value = _currentUser.Dob ?? new DateTime(1990, 1, 1);
             txtGender.Text = _currentUser.Gender;
             txtCCCD.Text = _currentUser.CCCD;
@@ -238,7 +213,7 @@ namespace UI_Tier
             dtpBirthday.Enabled = isEditing;
             txtGender.ReadOnly = !isEditing;
             txtRole.ReadOnly = true; // Luôn luôn Read-Only không cho sửa
-            
+
             // Age-based CCCD logic
             int age = _userBUS.CalculateAge(dtpBirthday.Value);
             if (isEditing && age < 18)
@@ -277,7 +252,7 @@ namespace UI_Tier
             pnlBasicInfoActions.Visible = isEditing;
             btnEditBasicInfo.Visible = !isEditing;
             if (lblUpload != null) lblUpload.Visible = isEditing;
-            
+
             if (isEditing) txtFullName.Focus();
         }
 
@@ -286,9 +261,9 @@ namespace UI_Tier
             pnlChangePassword.Visible = show;
             lblSecurityHint.Visible = !show;
             btnChangePassword.Visible = !show;
-            
+
             pnlSecurity.Height = show ? 700 : 180;
-            
+
             if (show) {
                 txtCurrentPass.Clear();
                 txtNewPass.Clear();
@@ -331,7 +306,7 @@ namespace UI_Tier
         private void btnSavePass_Click(object sender, EventArgs e)
         {
             string result = _userBUS.ChangePassword(GlobalAccount.GetUserId(), txtCurrentPass.Text, txtNewPass.Text, txtConfirmPass.Text);
-            
+
             if (result == "Success")
             {
                 ShowChangePassword(false);
@@ -360,7 +335,7 @@ namespace UI_Tier
         //                string relativePath = Path.Combine("uploads", "avatars", fileName);
 
         //                File.Copy(ofd.FileName, destPath, true);
-                        
+
         //                string result = _userBUS.UpdateAvatar(GlobalAccount.GetUserId(), relativePath);
         //                if (result == "Success")
         //                {
@@ -394,7 +369,7 @@ namespace UI_Tier
         private void SectionPanel_Paint(object sender, PaintEventArgs e)
         {
             Control pnl = sender as Control;
-            
+
             // Chỉ vẽ shadow cho các panel chính (không vẽ cho pnlChangePassword để tránh khung đè)
             if (pnl == pnlBasicInfo || pnl == pnlSecurity)
             {
