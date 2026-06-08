@@ -177,7 +177,7 @@ namespace UI_Tier
         // --- TỐI ƯU: ĐOẠN KHỞI TẠO ITEM PHÒNG CỐ ĐỊNH SIZE, CÂN ĐỐI UI ---
         private Control CreateRoomItem(string roomCode)
         {
-            const int cardWidth = 260; // Cố định bề ngang vừa vặn với layout FlowLayoutPanel
+            const int cardWidth = 300; // Cố định bề ngang vừa vặn với layout FlowLayoutPanel
             const int cardHeight = 70; // Hạ độ cao xuống một chút nhìn thanh thoát hơn 60px cũ
 
             Panel row = new Panel

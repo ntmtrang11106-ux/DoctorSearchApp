@@ -62,7 +62,7 @@ namespace UI_Tier
             // 
             // pnlHeader
             // 
-            pnlHeader.BackColor = Color.FromArgb(60, 140, 250);
+            pnlHeader.BackColor = Color.FromArgb(24, 112, 255);
             pnlHeader.Controls.Add(label1);
             pnlHeader.Controls.Add(lblHeaderTitle);
             pnlHeader.Controls.Add(btnCancelTop);
@@ -285,7 +285,7 @@ namespace UI_Tier
             // 
             // btnSave
             // 
-            btnSave.BackColor = Color.FromArgb(37, 99, 235);
+            btnSave.BackColor = Color.FromArgb(24, 112, 255);
             btnSave.FlatAppearance.BorderSize = 0;
             btnSave.FlatStyle = FlatStyle.Flat;
             btnSave.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
