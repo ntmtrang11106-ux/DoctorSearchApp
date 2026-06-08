@@ -27,22 +27,17 @@ namespace UI_Tier
             pnlCard1 = new Panel();
             lblStatTitle1 = new Label();
             lblStatValue1 = new Label();
-            pnlIcon1 = new Panel();
-            lblStatIcon1 = new Label();
             pnlCard2 = new Panel();
             lblStatTitle2 = new Label();
             lblStatValue2 = new Label();
-            pnlIcon2 = new Panel();
             lblStatIcon2 = new Label();
             pnlCard3 = new Panel();
             lblStatTitle3 = new Label();
             lblStatValue3 = new Label();
-            pnlIcon3 = new Panel();
             lblStatIcon3 = new Label();
             pnlCard4 = new Panel();
             lblStatTitle4 = new Label();
             lblStatValue4 = new Label();
-            pnlIcon4 = new Panel();
             lblStatIcon4 = new Label();
             pnlMainContainer = new Panel();
             flpList = new FlowLayoutPanel();
@@ -50,17 +45,14 @@ namespace UI_Tier
             lblPageInfo = new Label();
             lblNext = new Label();
             lblPrev = new Label();
+            lblStatIcon1 = new Label();
             pnlReviewHeader.SuspendLayout();
             pnlSearch.SuspendLayout();
             pnlStats.SuspendLayout();
             pnlCard1.SuspendLayout();
-            pnlIcon1.SuspendLayout();
             pnlCard2.SuspendLayout();
-            pnlIcon2.SuspendLayout();
             pnlCard3.SuspendLayout();
-            pnlIcon3.SuspendLayout();
             pnlCard4.SuspendLayout();
-            pnlIcon4.SuspendLayout();
             pnlMainContainer.SuspendLayout();
             pnlPagination.SuspendLayout();
             SuspendLayout();
@@ -96,9 +88,9 @@ namespace UI_Tier
             pnlSearch.Controls.Add(txtSearch);
             pnlSearch.Controls.Add(lblSearchIcon);
             pnlSearch.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pnlSearch.Location = new Point(30, 100);
+            pnlSearch.Location = new Point(76, 95);
             pnlSearch.Name = "pnlSearch";
-            pnlSearch.Size = new Size(1200, 65);
+            pnlSearch.Size = new Size(1562, 70);
             pnlSearch.TabIndex = 2;
             // 
             // txtSearch
@@ -107,10 +99,10 @@ namespace UI_Tier
             txtSearch.BorderStyle = BorderStyle.None;
             txtSearch.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtSearch.ForeColor = Color.Gray;
-            txtSearch.Location = new Point(73, 7);
+            txtSearch.Location = new Point(73, 14);
             txtSearch.Name = "txtSearch";
             txtSearch.PlaceholderText = "Tìm kiếm theo bệnh nhân, bác sĩ, nội dung...";
-            txtSearch.Size = new Size(1124, 43);
+            txtSearch.Size = new Size(1486, 43);
             txtSearch.TabIndex = 1;
             txtSearch.TextChanged += txtSearch_TextChanged;
             // 
@@ -119,7 +111,7 @@ namespace UI_Tier
             lblSearchIcon.AutoSize = true;
             lblSearchIcon.Font = new Font("Segoe MDL2 Assets", 15F);
             lblSearchIcon.ForeColor = Color.FromArgb(156, 163, 175);
-            lblSearchIcon.Location = new Point(15, 12);
+            lblSearchIcon.Location = new Point(15, 15);
             lblSearchIcon.Name = "lblSearchIcon";
             lblSearchIcon.Size = new Size(57, 40);
             lblSearchIcon.TabIndex = 0;
@@ -185,9 +177,9 @@ namespace UI_Tier
             // pnlCard1
             // 
             pnlCard1.BackColor = Color.White;
+            pnlCard1.Controls.Add(lblStatIcon1);
             pnlCard1.Controls.Add(lblStatTitle1);
             pnlCard1.Controls.Add(lblStatValue1);
-            pnlCard1.Controls.Add(pnlIcon1);
             pnlCard1.Dock = DockStyle.Fill;
             pnlCard1.Location = new Point(10, 10);
             pnlCard1.Margin = new Padding(10);
@@ -217,34 +209,12 @@ namespace UI_Tier
             lblStatValue1.TabIndex = 1;
             lblStatValue1.Text = "0";
             // 
-            // pnlIcon1
-            // 
-            pnlIcon1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            pnlIcon1.BackColor = Color.Transparent;
-            pnlIcon1.Controls.Add(lblStatIcon1);
-            pnlIcon1.Location = new Point(185, 45);
-            pnlIcon1.Name = "pnlIcon1";
-            pnlIcon1.Size = new Size(90, 90);
-            pnlIcon1.TabIndex = 2;
-            // 
-            // lblStatIcon1
-            // 
-            lblStatIcon1.Dock = DockStyle.Fill;
-            lblStatIcon1.Font = new Font("Segoe MDL2 Assets", 24F);
-            lblStatIcon1.ForeColor = Color.FromArgb(255, 193, 7);
-            lblStatIcon1.Location = new Point(0, 0);
-            lblStatIcon1.Name = "lblStatIcon1";
-            lblStatIcon1.Size = new Size(90, 90);
-            lblStatIcon1.TabIndex = 0;
-            lblStatIcon1.Text = "";
-            lblStatIcon1.TextAlign = ContentAlignment.MiddleCenter;
-            // 
             // pnlCard2
             // 
             pnlCard2.BackColor = Color.White;
+            pnlCard2.Controls.Add(lblStatIcon2);
             pnlCard2.Controls.Add(lblStatTitle2);
             pnlCard2.Controls.Add(lblStatValue2);
-            pnlCard2.Controls.Add(pnlIcon2);
             pnlCard2.Dock = DockStyle.Fill;
             pnlCard2.Location = new Point(325, 10);
             pnlCard2.Margin = new Padding(10);
@@ -274,22 +244,12 @@ namespace UI_Tier
             lblStatValue2.TabIndex = 1;
             lblStatValue2.Text = "0";
             // 
-            // pnlIcon2
-            // 
-            pnlIcon2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            pnlIcon2.BackColor = Color.Transparent;
-            pnlIcon2.Controls.Add(lblStatIcon2);
-            pnlIcon2.Location = new Point(185, 45);
-            pnlIcon2.Name = "pnlIcon2";
-            pnlIcon2.Size = new Size(90, 90);
-            pnlIcon2.TabIndex = 2;
-            // 
             // lblStatIcon2
             // 
-            lblStatIcon2.Dock = DockStyle.Fill;
+            lblStatIcon2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblStatIcon2.Font = new Font("Segoe MDL2 Assets", 24F);
             lblStatIcon2.ForeColor = Color.FromArgb(255, 193, 7);
-            lblStatIcon2.Location = new Point(0, 0);
+            lblStatIcon2.Location = new Point(169, 121);
             lblStatIcon2.Name = "lblStatIcon2";
             lblStatIcon2.Size = new Size(90, 90);
             lblStatIcon2.TabIndex = 0;
@@ -299,9 +259,9 @@ namespace UI_Tier
             // pnlCard3
             // 
             pnlCard3.BackColor = Color.White;
+            pnlCard3.Controls.Add(lblStatIcon3);
             pnlCard3.Controls.Add(lblStatTitle3);
             pnlCard3.Controls.Add(lblStatValue3);
-            pnlCard3.Controls.Add(pnlIcon3);
             pnlCard3.Dock = DockStyle.Fill;
             pnlCard3.Location = new Point(640, 10);
             pnlCard3.Margin = new Padding(10);
@@ -331,22 +291,12 @@ namespace UI_Tier
             lblStatValue3.TabIndex = 1;
             lblStatValue3.Text = "0";
             // 
-            // pnlIcon3
-            // 
-            pnlIcon3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            pnlIcon3.BackColor = Color.Transparent;
-            pnlIcon3.Controls.Add(lblStatIcon3);
-            pnlIcon3.Location = new Point(185, 45);
-            pnlIcon3.Name = "pnlIcon3";
-            pnlIcon3.Size = new Size(90, 90);
-            pnlIcon3.TabIndex = 2;
-            // 
             // lblStatIcon3
             // 
-            lblStatIcon3.Dock = DockStyle.Fill;
+            lblStatIcon3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblStatIcon3.Font = new Font("Segoe MDL2 Assets", 24F);
             lblStatIcon3.ForeColor = Color.FromArgb(40, 199, 111);
-            lblStatIcon3.Location = new Point(0, 0);
+            lblStatIcon3.Location = new Point(185, 128);
             lblStatIcon3.Name = "lblStatIcon3";
             lblStatIcon3.Size = new Size(90, 90);
             lblStatIcon3.TabIndex = 0;
@@ -356,9 +306,9 @@ namespace UI_Tier
             // pnlCard4
             // 
             pnlCard4.BackColor = Color.White;
+            pnlCard4.Controls.Add(lblStatIcon4);
             pnlCard4.Controls.Add(lblStatTitle4);
             pnlCard4.Controls.Add(lblStatValue4);
-            pnlCard4.Controls.Add(pnlIcon4);
             pnlCard4.Dock = DockStyle.Fill;
             pnlCard4.Location = new Point(955, 10);
             pnlCard4.Margin = new Padding(10);
@@ -388,22 +338,12 @@ namespace UI_Tier
             lblStatValue4.TabIndex = 1;
             lblStatValue4.Text = "0";
             // 
-            // pnlIcon4
-            // 
-            pnlIcon4.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            pnlIcon4.BackColor = Color.Transparent;
-            pnlIcon4.Controls.Add(lblStatIcon4);
-            pnlIcon4.Location = new Point(185, 45);
-            pnlIcon4.Name = "pnlIcon4";
-            pnlIcon4.Size = new Size(90, 90);
-            pnlIcon4.TabIndex = 2;
-            // 
             // lblStatIcon4
             // 
-            lblStatIcon4.Dock = DockStyle.Fill;
+            lblStatIcon4.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblStatIcon4.Font = new Font("Segoe MDL2 Assets", 24F);
             lblStatIcon4.ForeColor = Color.FromArgb(234, 84, 85);
-            lblStatIcon4.Location = new Point(0, 0);
+            lblStatIcon4.Location = new Point(182, 126);
             lblStatIcon4.Name = "lblStatIcon4";
             lblStatIcon4.Size = new Size(90, 90);
             lblStatIcon4.TabIndex = 0;
@@ -485,6 +425,18 @@ namespace UI_Tier
             lblPrev.TabIndex = 0;
             lblPrev.Text = "<< Trang trước";
             // 
+            // lblStatIcon1
+            // 
+            lblStatIcon1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblStatIcon1.Font = new Font("Segoe MDL2 Assets", 24F);
+            lblStatIcon1.ForeColor = Color.FromArgb(255, 193, 7);
+            lblStatIcon1.Location = new Point(170, 121);
+            lblStatIcon1.Name = "lblStatIcon1";
+            lblStatIcon1.Size = new Size(90, 90);
+            lblStatIcon1.TabIndex = 0;
+            lblStatIcon1.Text = "";
+            lblStatIcon1.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // ucAdmin_ReviewManagement
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
@@ -503,16 +455,12 @@ namespace UI_Tier
             pnlStats.ResumeLayout(false);
             pnlCard1.ResumeLayout(false);
             pnlCard1.PerformLayout();
-            pnlIcon1.ResumeLayout(false);
             pnlCard2.ResumeLayout(false);
             pnlCard2.PerformLayout();
-            pnlIcon2.ResumeLayout(false);
             pnlCard3.ResumeLayout(false);
             pnlCard3.PerformLayout();
-            pnlIcon3.ResumeLayout(false);
             pnlCard4.ResumeLayout(false);
             pnlCard4.PerformLayout();
-            pnlIcon4.ResumeLayout(false);
             pnlMainContainer.ResumeLayout(false);
             pnlMainContainer.PerformLayout();
             pnlPagination.ResumeLayout(false);
@@ -524,22 +472,17 @@ namespace UI_Tier
         private System.Windows.Forms.Panel pnlCard1;
         private System.Windows.Forms.Label lblStatTitle1;
         private System.Windows.Forms.Label lblStatValue1;
-        private System.Windows.Forms.Panel pnlIcon1;
-        private System.Windows.Forms.Label lblStatIcon1;
         private System.Windows.Forms.Panel pnlCard2;
         private System.Windows.Forms.Label lblStatTitle2;
         private System.Windows.Forms.Label lblStatValue2;
-        private System.Windows.Forms.Panel pnlIcon2;
         private System.Windows.Forms.Label lblStatIcon2;
         private System.Windows.Forms.Panel pnlCard3;
         private System.Windows.Forms.Label lblStatTitle3;
         private System.Windows.Forms.Label lblStatValue3;
-        private System.Windows.Forms.Panel pnlIcon3;
         private System.Windows.Forms.Label lblStatIcon3;
         private System.Windows.Forms.Panel pnlCard4;
         private System.Windows.Forms.Label lblStatTitle4;
         private System.Windows.Forms.Label lblStatValue4;
-        private System.Windows.Forms.Panel pnlIcon4;
         private System.Windows.Forms.Label lblStatIcon4;
         private System.Windows.Forms.Panel pnlMainContainer;
         private System.Windows.Forms.Label lblTitle;
@@ -555,5 +498,6 @@ namespace UI_Tier
         private System.Windows.Forms.Label lblPageInfo;
         private System.Windows.Forms.Label lblNext;
         private System.Windows.Forms.Label lblPrev;
+        private Label lblStatIcon1;
     }
 }
