@@ -31,6 +31,9 @@
             panel1 = new Panel();
             panel2 = new Panel();
             panel3 = new Panel();
+            picLogo = new PictureBox();
+            lblBrand = new Label();
+            lblSlogan = new Label();
             panel5 = new Panel();
             picShowPass = new PictureBox();
             txtPassword = new TextBox();
@@ -44,6 +47,7 @@
             label1 = new Label();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picLogo).BeginInit();
             panel3.SuspendLayout();
             panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picShowPass).BeginInit();
@@ -63,12 +67,48 @@
             // 
             panel2.Anchor = AnchorStyles.Top;
             panel2.BackColor = Color.FromArgb(24, 112, 255);
+            panel2.Controls.Add(lblSlogan);
+            panel2.Controls.Add(lblBrand);
+            panel2.Controls.Add(picLogo);
             panel2.Controls.Add(panel3);
             panel2.Controls.Add(label1);
             panel2.Location = new Point(92, 349);
             panel2.Name = "panel2";
             panel2.Size = new Size(1844, 1011);
             panel2.TabIndex = 3;
+            // 
+            // picLogo
+            // 
+            picLogo.BackColor = Color.White;
+            picLogo.Image = Properties.Resources.logo;
+            picLogo.Location = new Point(257, 105);
+            picLogo.Name = "picLogo";
+            picLogo.Size = new Size(360, 260);
+            picLogo.SizeMode = PictureBoxSizeMode.Zoom;
+            picLogo.TabIndex = 6;
+            picLogo.TabStop = false;
+            // 
+            // lblBrand
+            // 
+            lblBrand.Font = new Font("Segoe UI", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblBrand.ForeColor = Color.White;
+            lblBrand.Location = new Point(80, 470);
+            lblBrand.Name = "lblBrand";
+            lblBrand.Size = new Size(740, 110);
+            lblBrand.TabIndex = 5;
+            lblBrand.Text = "MediFar";
+            lblBrand.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lblSlogan
+            // 
+            lblSlogan.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblSlogan.ForeColor = Color.FromArgb(235, 245, 255);
+            lblSlogan.Location = new Point(90, 590);
+            lblSlogan.Name = "lblSlogan";
+            lblSlogan.Size = new Size(720, 150);
+            lblSlogan.TabIndex = 4;
+            lblSlogan.Text = "Đặt lịch từ xa, an tâm lựa chọn";
+            lblSlogan.TextAlign = ContentAlignment.TopCenter;
             // 
             // panel3
             // 
@@ -199,16 +239,16 @@
             // label1
             // 
             label1.Anchor = AnchorStyles.Top;
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 22F, FontStyle.Bold | FontStyle.Italic);
+            label1.AutoSize = false;
+            label1.Font = new Font("Segoe UI", 19F, FontStyle.Bold | FontStyle.Italic);
             label1.ForeColor = Color.White;
-            label1.Location = new Point(182, 147);
+            label1.Location = new Point(90, 385);
             label1.Name = "label1";
             label1.RightToLeft = RightToLeft.No;
-            label1.Size = new Size(351, 78);
+            label1.Size = new Size(720, 70);
             label1.TabIndex = 0;
-            label1.Text = "Chào mừng";
-            label1.TextAlign = ContentAlignment.TopCenter;
+            label1.Text = "Chào mừng bạn đến với";
+            label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // frmLogin
             // 
@@ -218,11 +258,12 @@
             ClientSize = new Size(2008, 1372);
             Controls.Add(panel1);
             Name = "frmLogin";
-            Text = "DoctorSearch";
+            Text = "MediFar";
             WindowState = FormWindowState.Maximized;
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)picLogo).EndInit();
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
             panel5.ResumeLayout(false);
@@ -249,5 +290,11 @@
         private Panel panel4;
         private Panel panel5;
         private PictureBox picShowPass;
+        private PictureBox picLogo;
+        private Label lblBrand;
+        private Label lblSlogan;
     }
 }
+
+
+

@@ -1,36 +1,27 @@
 using BUS_Tier;
 using DTO_Tier;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace UI_Tier
 {
     public partial class ucGuest_IntegratedSearch : UserControl
     {
-        private SearchBUS _searchBus = new SearchBUS();
-        private DepartmentBUS _deptBus = new DepartmentBUS();
-        
-        private List<DoctorDTO> _foundDoctors = new List<DoctorDTO>();
-        private List<ContentDTO> _foundArticles = new List<ContentDTO>();
-        
-        private int _pageSize = 6;
+        private readonly SearchBUS _searchBus = new SearchBUS();
+        private readonly DepartmentBUS _deptBus = new DepartmentBUS();
+
+        private List<DoctorDTO> _foundDoctors = new();
+        private List<ContentDTO> _foundArticles = new();
+
+        private readonly int _pageSize = 6;
         private int _currentDocPage = 1;
         private int _currentArtPage = 1;
         private bool _isAdmin = false;
         private bool _isUpdatingChips = false;
 
-        private Color _activeBack = Color.FromArgb(206, 225, 255);
-        private Color _normalBack = Color.Transparent;
-        private Color _activeText = Color.FromArgb(0, 98, 255);
-        private Color _normalText = SystemColors.ControlDarkDark;
-        private Panel _activeTab;
+        private readonly Color _activeBack = Color.FromArgb(206, 225, 255);
+        private readonly Color _normalBack = Color.Transparent;
+        private readonly Color _activeText = Color.FromArgb(0, 98, 255);
+        private readonly Color _normalText = SystemColors.ControlDarkDark;
+        private Panel? _activeTab;
 
         public ucGuest_IntegratedSearch()
         {
@@ -42,7 +33,6 @@ namespace UI_Tier
             SetupUI();
             InitTabs();
 
-            // Hiệu ứng hover cho các nút phân trang
             lblPrev.MouseEnter += PaginationLabel_MouseEnter;
             lblPrev.MouseLeave += PaginationLabel_MouseLeave;
             lblNext.MouseEnter += PaginationLabel_MouseEnter;
@@ -55,31 +45,28 @@ namespace UI_Tier
         {
             int totalPages = Math.Max(1, (int)Math.Ceiling((double)totalItems / _pageSize));
             lblPageStatus.Text = $"Trang {currentPage} / {totalPages}";
-            
-            // Luôn để Enabled = true để bắt hover
+
             lblPrev.Enabled = true;
             lblNext.Enabled = true;
-
             lblPrev.ForeColor = Color.FromArgb(0, 120, 212);
             lblNext.ForeColor = Color.FromArgb(0, 120, 212);
-
             pnlPagination.Visible = totalItems > 0;
         }
 
-        private void PaginationLabel_MouseEnter(object sender, EventArgs e)
+        private void PaginationLabel_MouseEnter(object? sender, EventArgs e)
         {
             if (sender is Label lbl)
             {
-                lbl.ForeColor = Color.FromArgb(0, 90, 158); // Xanh đậm hơn khi hover
-                lbl.Top -= 2; // Hiệu ứng "nhảy lên"
+                lbl.ForeColor = Color.FromArgb(0, 90, 158);
+                lbl.Top -= 2;
             }
         }
 
-        private void PaginationLabel_MouseLeave(object sender, EventArgs e)
+        private void PaginationLabel_MouseLeave(object? sender, EventArgs e)
         {
             if (sender is Label lbl)
             {
-                lbl.ForeColor = Color.FromArgb(0, 120, 212); // Trở lại màu chuẩn
+                lbl.ForeColor = Color.FromArgb(0, 120, 212);
                 lbl.Top += 2;
             }
         }
@@ -96,6 +83,7 @@ namespace UI_Tier
                 pnl.MouseEnter += PanelTab_MouseEnter;
                 pnl.MouseLeave += PanelTab_MouseLeave;
                 pnl.Cursor = Cursors.Hand;
+
                 foreach (Control child in pnl.Controls)
                 {
                     child.Click += PanelTab_Click;
@@ -108,22 +96,36 @@ namespace UI_Tier
             PanelTab_Click(tabDoc, EventArgs.Empty);
         }
 
-        private void PanelTab_MouseEnter(object sender, EventArgs e)
+        private void PanelTab_MouseEnter(object? sender, EventArgs e)
         {
-            Control ctrl = sender as Control;
-            Panel pnl = (ctrl is Panel) ? (Panel)ctrl : (Panel)ctrl.Parent;
-            if (pnl == _activeTab) return;
+            if (sender is not Control ctrl)
+            {
+                return;
+            }
 
-            pnl.BackColor = Color.FromArgb(240, 245, 255); // Highlight nhẹ khi hover
+            Panel pnl = ctrl as Panel ?? (Panel)ctrl.Parent!;
+            if (pnl == _activeTab)
+            {
+                return;
+            }
+
+            pnl.BackColor = Color.FromArgb(240, 245, 255);
         }
 
-        private void PanelTab_MouseLeave(object sender, EventArgs e)
+        private void PanelTab_MouseLeave(object? sender, EventArgs e)
         {
-            Control ctrl = sender as Control;
-            Panel pnl = (ctrl is Panel) ? (Panel)ctrl : (Panel)ctrl.Parent;
-            if (pnl == _activeTab) return;
+            if (sender is not Control ctrl)
+            {
+                return;
+            }
 
-            pnl.BackColor = _normalBack; // Trả về mặc định
+            Panel pnl = ctrl as Panel ?? (Panel)ctrl.Parent!;
+            if (pnl == _activeTab)
+            {
+                return;
+            }
+
+            pnl.BackColor = _normalBack;
         }
 
         public void HideTabs()
@@ -158,26 +160,29 @@ namespace UI_Tier
                 cboAdminStatus.Items.Add("Đã ẩn");
                 cboAdminStatus.SelectedIndex = 0;
                 cboAdminStatus.SelectedIndexChanged += Filter_SelectedIndexChanged;
-
-                // Force an immediate search now that we are in Admin mode
                 ExecuteSearch();
             }
         }
 
         public void SetActiveTab(bool isDoctor)
         {
-            Panel target = isDoctor ? tabDoc : tabArt;
-            PanelTab_Click(target, EventArgs.Empty);
+            PanelTab_Click(isDoctor ? tabDoc : tabArt, EventArgs.Empty);
         }
 
-        private void PanelTab_Click(object sender, EventArgs e)
+        private void PanelTab_Click(object? sender, EventArgs e)
         {
-            Control ctrl = sender as Control;
-            Panel clicked = (ctrl is Panel p) ? p : (Panel)ctrl.Parent;
+            if (sender is not Control ctrl)
+            {
+                return;
+            }
 
-            if (clicked == _activeTab) return;
+            Panel clicked = ctrl as Panel ?? (Panel)ctrl.Parent!;
+            if (clicked == _activeTab)
+            {
+                return;
+            }
+
             _activeTab = clicked;
-
             UpdateTabStyles();
             DisplayResults();
         }
@@ -190,7 +195,10 @@ namespace UI_Tier
                 tab.BackColor = isActive ? _activeBack : _normalBack;
                 foreach (Control child in tab.Controls)
                 {
-                    if (child is Label lbl) lbl.ForeColor = isActive ? _activeText : _normalText;
+                    if (child is Label lbl)
+                    {
+                        lbl.ForeColor = isActive ? _activeText : _normalText;
+                    }
                 }
             }
         }
@@ -200,32 +208,37 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(pnlSearchBox, 15);
             UIHelper.ApplyRoundedRegion(btnSearch, 15);
 
-            // Gender
+            label1.Text = "Tìm kiếm bác sĩ và bài viết";
+            txtSearchBar.PlaceholderText = "Nhập tên bác sĩ hoặc tiêu đề bài viết...";
+            btnSearch.Text = "Tìm kiếm";
+            labelGender.Text = "Giới tính:";
+            labelContentType.Text = "Loại bài viết:";
+            labelSort.Text = "Sắp xếp:";
+            lblDocText.Text = "Bác sĩ";
+            lblArtText.Text = "Bài viết";
+            lblPrev.Text = "<< Trang trước";
+            lblNext.Text = "Trang sau >>";
+            lblAdminStatus.Text = "Trạng thái:";
+
             cboGender.Items.Clear();
-            cboGender.Items.Add("Tất cả Giới tính");
+            cboGender.Items.Add("Tất cả giới tính");
             cboGender.Items.Add("Nam");
             cboGender.Items.Add("Nữ");
             cboGender.SelectedIndex = 0;
 
-            // Content Type
             cboContentType.Items.Clear();
-            cboContentType.Items.Add("Tất cả Loại bài");
+            cboContentType.Items.Add("Tất cả loại bài viết");
             cboContentType.Items.Add("Thông báo");
             cboContentType.Items.Add("Quy trình khám");
             cboContentType.Items.Add("Bài viết chuyên khoa");
             cboContentType.Items.Add("Thông tin y tế");
             cboContentType.SelectedIndex = 0;
-            
-            // Set Hand Cursor for interactive elements
+
             btnSearch.Cursor = Cursors.Hand;
             lblPrev.Cursor = Cursors.Hand;
             lblNext.Cursor = Cursors.Hand;
 
-            // Đảm bảo dàn trang và nạp dữ liệu đúng ngay khi vừa hiện lên
-            this.Load += (s, e) => {
-                ExecuteSearch();
-            };
-
+            Load += (_, _) => ExecuteSearch();
             LoadDepartments();
         }
 
@@ -233,35 +246,38 @@ namespace UI_Tier
         {
             var depts = _deptBus.GetDepartmentsForUI();
             flpDepts.Controls.Clear();
-            flpDepts.BackColor = Color.White; // Bỏ nền xanh, dùng nền trắng
+            flpDepts.BackColor = Color.White;
             flpDepts.Padding = new Padding(10);
-            
-            // Đảm bảo bộ lọc Admin luôn ẩn mặc định
+
             lblAdminStatus.Visible = false;
             cboAdminStatus.Visible = false;
 
-            // Tự động dàn trang lại khi co giãn cửa sổ
-            flpArticles.Resize += (s, e) => {
-                if (_activeTab == tabArt) DisplayResults();
+            flpArticles.Resize += (_, _) =>
+            {
+                if (_activeTab == tabArt)
+                {
+                    DisplayResults();
+                }
             };
-            flpDoctors.Resize += (s, e) => {
-                if (_activeTab == tabDoc) DisplayResults();
+            flpDoctors.Resize += (_, _) =>
+            {
+                if (_activeTab == tabDoc)
+                {
+                    DisplayResults();
+                }
             };
 
-            // "Tất cả" Chip
-            CheckBox chkAll = CreateChip("Tất cả Chuyên khoa", "Tất cả");
+            CheckBox chkAll = CreateChip("Tất cả chuyên khoa", "Tất cả");
             chkAll.Checked = true;
-            ApplyChipStyle(chkAll);
             flpDepts.Controls.Add(chkAll);
+            UIHelper.ApplyRoundedRegion(chkAll, 15);
 
             foreach (var dept in depts)
             {
                 CheckBox chk = CreateChip(dept.DepartmentName, dept.DepartmentName);
-                ApplyChipStyle(chk);
                 flpDepts.Controls.Add(chk);
                 UIHelper.ApplyRoundedRegion(chk, 15);
             }
-            UIHelper.ApplyRoundedRegion(chkAll, 15);
         }
 
         private CheckBox CreateChip(string text, string tag)
@@ -280,25 +296,26 @@ namespace UI_Tier
                 ForeColor = Color.FromArgb(64, 64, 64),
                 Cursor = Cursors.Hand
             };
+
             chk.FlatAppearance.BorderSize = 1;
             chk.FlatAppearance.BorderColor = Color.FromArgb(200, 200, 200);
             chk.FlatAppearance.CheckedBackColor = Color.FromArgb(0, 120, 212);
             chk.FlatAppearance.MouseDownBackColor = Color.FromArgb(0, 100, 180);
             chk.FlatAppearance.MouseOverBackColor = Color.FromArgb(230, 240, 255);
 
-            chk.CheckedChanged += (s, e) =>
+            chk.CheckedChanged += (_, _) =>
             {
-                if (_isUpdatingChips) return;
+                if (_isUpdatingChips)
+                {
+                    return;
+                }
 
-                CheckBox c = (CheckBox)s;
-                
-                if (c.Checked)
+                if (chk.Checked)
                 {
                     _isUpdatingChips = true;
-                    // Bỏ chọn tất cả các Chip khác
                     foreach (Control ctrl in flpDepts.Controls)
                     {
-                        if (ctrl is CheckBox other && other != c)
+                        if (ctrl is CheckBox other && other != chk)
                         {
                             other.Checked = false;
                             other.ForeColor = Color.FromArgb(64, 64, 64);
@@ -308,20 +325,13 @@ namespace UI_Tier
                 }
                 else
                 {
-                    // Nếu người dùng bỏ chọn một chip, kiểm tra xem còn cái nào đang chọn không
-                    bool anyChecked = false;
-                    foreach (Control ctrl in flpDepts.Controls)
-                    {
-                        if (ctrl is CheckBox other && other.Checked) { anyChecked = true; break; }
-                    }
-
-                    // Nếu không còn cái nào được chọn, tự động quay lại "Tất cả"
+                    bool anyChecked = flpDepts.Controls.OfType<CheckBox>().Any(other => other.Checked);
                     if (!anyChecked)
                     {
                         _isUpdatingChips = true;
                         foreach (Control ctrl in flpDepts.Controls)
                         {
-                            if (ctrl is CheckBox other && other.Tag?.ToString() == "Tất cả")
+                            if (ctrl is CheckBox other && string.Equals(other.Tag?.ToString(), "Tất cả", StringComparison.Ordinal))
                             {
                                 other.Checked = true;
                                 other.ForeColor = Color.White;
@@ -332,25 +342,19 @@ namespace UI_Tier
                     }
                 }
 
-                // Cập nhật màu sắc cho chip hiện tại
-                c.ForeColor = c.Checked ? Color.White : Color.FromArgb(64, 64, 64);
-                
+                chk.ForeColor = chk.Checked ? Color.White : Color.FromArgb(64, 64, 64);
                 ExecuteSearch();
             };
-            return chk;
-        }
 
-        private void ApplyChipStyle(CheckBox chk)
-        {
-            // Placeholder for any specific initialization if needed
+            return chk;
         }
 
         public void ExecuteSearch()
         {
             string keyword = txtSearchBar.Text.Trim();
-            string gender = cboGender.SelectedIndex <= 0 ? null : cboGender.SelectedItem?.ToString();
-            string contentTypeDisplay = cboContentType.SelectedIndex <= 0 ? null : cboContentType.SelectedItem?.ToString();
-            string contentType = contentTypeDisplay switch
+            string? gender = cboGender.SelectedIndex <= 0 ? null : cboGender.SelectedItem?.ToString();
+            string? contentTypeDisplay = cboContentType.SelectedIndex <= 0 ? null : cboContentType.SelectedItem?.ToString();
+            string? contentType = contentTypeDisplay switch
             {
                 "Thông báo" => "HospitalNotice",
                 "Quy trình khám" => "ProcedureGuide",
@@ -358,25 +362,22 @@ namespace UI_Tier
                 "Thông tin y tế" => "HealthArticle",
                 _ => null
             };
-            string sort = cboSort.SelectedItem?.ToString();
+            string? sort = cboSort.SelectedItem?.ToString();
 
-            List<string> selectedDepts = new List<string>();
-            foreach (Control ctrl in flpDepts.Controls)
-            {
-                if (ctrl is CheckBox chk && chk.Checked)
-                {
-                    selectedDepts.Add(chk.Tag.ToString());
-                }
-            }
+            List<string> selectedDepts = flpDepts.Controls
+                .OfType<CheckBox>()
+                .Where(chk => chk.Checked)
+                .Select(chk => chk.Tag?.ToString())
+                .Where(tag => !string.IsNullOrWhiteSpace(tag))
+                .Select(tag => tag!)
+                .ToList();
 
-            // Hide suggestions when searching
-            if (lstSuggestions != null) lstSuggestions.Visible = false;
+            lstSuggestions.Visible = false;
 
-            // Map status for Admin
-            string status = "Published"; // Default for guest/patient
+            string status = "Published";
             if (_isAdmin)
             {
-                string selectedStatus = cboAdminStatus.SelectedItem?.ToString();
+                string? selectedStatus = cboAdminStatus.SelectedItem?.ToString();
                 status = selectedStatus switch
                 {
                     "Đã xuất bản" => "Published",
@@ -389,7 +390,6 @@ namespace UI_Tier
             var results = _searchBus.ExecuteIntegratedSearch(keyword, selectedDepts, gender, contentType, sort, status);
             _foundDoctors = results.doctors;
             _foundArticles = results.contents;
-
             _currentDocPage = 1;
             _currentArtPage = 1;
 
@@ -405,16 +405,14 @@ namespace UI_Tier
 
         private void DisplayResults()
         {
-            // Update filter visibility based on selected tab
             bool isDoctorTab = _activeTab == tabDoc;
-            
+
             cboGender.Visible = isDoctorTab;
             labelGender.Visible = isDoctorTab;
-            
+
             cboContentType.Visible = !isDoctorTab;
             labelContentType.Visible = !isDoctorTab;
 
-            // Bộ lọc trạng thái CHỈ hiện khi là Admin và đang ở tab Bài viết
             lblAdminStatus.Visible = _isAdmin && !isDoctorTab;
             cboAdminStatus.Visible = _isAdmin && !isDoctorTab;
 
@@ -424,16 +422,20 @@ namespace UI_Tier
             flpArticles.Visible = !isDoctorTab;
 
             if (isDoctorTab)
+            {
                 DisplayDoctors(_currentDocPage);
+            }
             else
+            {
                 DisplayArticles(_currentArtPage);
+            }
         }
 
         private void UpdateSortOptions(bool isDoctor)
         {
             cboSort.SelectedIndexChanged -= Filter_SelectedIndexChanged;
-            string currentSort = cboSort.SelectedItem?.ToString();
-            
+            string? currentSort = cboSort.SelectedItem?.ToString();
+
             cboSort.Items.Clear();
             if (isDoctor)
             {
@@ -450,11 +452,14 @@ namespace UI_Tier
                 cboSort.Items.Add("Xem ít nhất");
             }
 
-            // Restore selection if still valid
-            if (cboSort.Items.Contains(currentSort))
+            if (!string.IsNullOrWhiteSpace(currentSort) && cboSort.Items.Contains(currentSort))
+            {
                 cboSort.SelectedItem = currentSort;
+            }
             else
+            {
                 cboSort.SelectedIndex = 0;
+            }
 
             cboSort.SelectedIndexChanged += Filter_SelectedIndexChanged;
         }
@@ -463,18 +468,19 @@ namespace UI_Tier
         {
             flpDoctors.SuspendLayout();
             flpDoctors.Controls.Clear();
-            
+
             int startIndex = (page - 1) * _pageSize;
             var items = _foundDoctors.Skip(startIndex).Take(_pageSize).ToList();
 
             foreach (var doc in items)
             {
-                UCCardDoctor card = new UCCardDoctor();
-                card.IsClickable = true; // Bật hiệu ứng nổi và click để giống bài viết
+                UCCardDoctor card = new UCCardDoctor
+                {
+                    IsClickable = true,
+                    Margin = new Padding(15)
+                };
                 card.SetDoctorData(doc);
-                card.Margin = new Padding(15);
 
-                // Bác sĩ hiện 4 cột như cũ
                 int containerWidth = flpDoctors.ClientSize.Width;
                 if (containerWidth > 100)
                 {
@@ -498,17 +504,18 @@ namespace UI_Tier
 
             foreach (var art in items)
             {
-                UCCardArticle card = new UCCardArticle();
+                UCCardArticle card = new UCCardArticle
+                {
+                    Margin = new Padding(15)
+                };
                 card.SetData(art);
-                card.Margin = new Padding(15);
-                
-                // // Đảm bảo luôn hiện 2 cột bài viết
+
                 int containerWidth = flpArticles.ClientSize.Width;
                 if (containerWidth > 50)
                 {
                     card.Width = (containerWidth / 2) - 65;
                 }
-                
+
                 flpArticles.Controls.Add(card);
             }
 
@@ -519,28 +526,33 @@ namespace UI_Tier
         private void txtSearchBar_TextChanged(object sender, EventArgs e)
         {
             string text = txtSearchBar.Text.Trim();
-            if (text.Length >= 2)
+            if (text.Length < 2)
             {
-                var suggestions = _foundDoctors.Where(d => d.User?.FullName != null && d.User.FullName.Contains(text, StringComparison.OrdinalIgnoreCase))
-                                              .Select(d => d.User.FullName)
-                                              .Concat(_foundArticles.Where(a => a.Title != null && a.Title.Contains(text, StringComparison.OrdinalIgnoreCase))
-                                                                    .Select(a => a.Title))
-                                              .Distinct()
-                                              .Take(5)
-                                              .ToList();
+                lstSuggestions.Visible = false;
+                return;
+            }
 
-                if (suggestions.Any())
+            var suggestions = _foundDoctors
+                .Where(d => d.User?.FullName != null && d.User.FullName.Contains(text, StringComparison.OrdinalIgnoreCase))
+                .Select(d => d.User!.FullName)
+                .Concat(_foundArticles
+                    .Where(a => a.Title != null && a.Title.Contains(text, StringComparison.OrdinalIgnoreCase))
+                    .Select(a => a.Title))
+                .Distinct()
+                .Take(5)
+                .ToList();
+
+            if (suggestions.Any())
+            {
+                lstSuggestions.Items.Clear();
+                foreach (var suggestion in suggestions)
                 {
-                    lstSuggestions.Items.Clear();
-                    foreach (var s in suggestions) lstSuggestions.Items.Add(s);
-                    lstSuggestions.Height = Math.Min(200, lstSuggestions.Items.Count * 25 + 5);
-                    lstSuggestions.Visible = true;
-                    lstSuggestions.BringToFront();
+                    lstSuggestions.Items.Add(suggestion);
                 }
-                else
-                {
-                    lstSuggestions.Visible = false;
-                }
+
+                lstSuggestions.Height = Math.Min(200, lstSuggestions.Items.Count * 25 + 5);
+                lstSuggestions.Visible = true;
+                lstSuggestions.BringToFront();
             }
             else
             {
@@ -550,12 +562,14 @@ namespace UI_Tier
 
         private void lstSuggestions_Click(object sender, EventArgs e)
         {
-            if (lstSuggestions.SelectedItem != null)
+            if (lstSuggestions.SelectedItem == null)
             {
-                txtSearchBar.Text = lstSuggestions.SelectedItem.ToString();
-                lstSuggestions.Visible = false;
-                ExecuteSearch();
+                return;
             }
+
+            txtSearchBar.Text = lstSuggestions.SelectedItem.ToString();
+            lstSuggestions.Visible = false;
+            ExecuteSearch();
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -567,11 +581,16 @@ namespace UI_Tier
         {
             if (_activeTab == tabDoc)
             {
-                if (_currentDocPage > 1) { _currentDocPage--; DisplayDoctors(_currentDocPage); }
+                if (_currentDocPage > 1)
+                {
+                    _currentDocPage--;
+                    DisplayDoctors(_currentDocPage);
+                }
             }
-            else
+            else if (_currentArtPage > 1)
             {
-                if (_currentArtPage > 1) { _currentArtPage--; DisplayArticles(_currentArtPage); }
+                _currentArtPage--;
+                DisplayArticles(_currentArtPage);
             }
         }
 
@@ -580,16 +599,24 @@ namespace UI_Tier
             if (_activeTab == tabDoc)
             {
                 int totalPages = (int)Math.Ceiling((double)_foundDoctors.Count / _pageSize);
-                if (_currentDocPage < totalPages) { _currentDocPage++; DisplayDoctors(_currentDocPage); }
+                if (_currentDocPage < totalPages)
+                {
+                    _currentDocPage++;
+                    DisplayDoctors(_currentDocPage);
+                }
             }
             else
             {
                 int totalPages = (int)Math.Ceiling((double)_foundArticles.Count / _pageSize);
-                if (_currentArtPage < totalPages) { _currentArtPage++; DisplayArticles(_currentArtPage); }
+                if (_currentArtPage < totalPages)
+                {
+                    _currentArtPage++;
+                    DisplayArticles(_currentArtPage);
+                }
             }
         }
 
-        private void Filter_SelectedIndexChanged(object sender, EventArgs e)
+        private void Filter_SelectedIndexChanged(object? sender, EventArgs e)
         {
             ExecuteSearch();
         }

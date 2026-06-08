@@ -48,6 +48,7 @@ namespace DAL_Tier
                 // Update Patient info
                 existingPatient.MedicalCode = updatedPatient.MedicalCode;
                 existingPatient.InsuranceCode = updatedPatient.InsuranceCode;
+                existingPatient.BloodType = updatedPatient.BloodType;
                 existingPatient.EmergencyContactName = updatedPatient.EmergencyContactName;
                 existingPatient.EmergencyContactPhone = updatedPatient.EmergencyContactPhone;
                 existingPatient.Note = updatedPatient.Note;

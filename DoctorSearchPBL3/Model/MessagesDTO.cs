@@ -4,31 +4,48 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DTO_Tier
 {
    
-    [Table("Messages")] // 
+    [Table("Messages")]
     public class MessagesDTO
     {
         [Key]
-        public int Id { get; set; } // Mã tin nhắn 
+        public int Id { get; set; }
 
         [Required]
-        public int ConversationId { get; set; } // Thuộc đoạn chat nào 
+        public int ConversationId { get; set; }
 
         [Required]
-        public int SenderID { get; set; } // ID của người gửi tin (FK từ Users) 
+        public int SenderID { get; set; }
+
+        public string? Content { get; set; }
 
         [Required]
-        public string Content { get; set; } // Nội dung tin nhắn 
+        [StringLength(30)]
+        public string MessageType { get; set; } = "Text";
 
-        // Mình giữ nguyên tên cột "SenAt" như trong Word (có vẻ là SentAt - Ngày gửi)
-        public DateTime SentAt { get; set; } = DateTime.Now; // 
+        [StringLength(255)]
+        public string? AttachmentPath { get; set; }
 
-        public bool IsRead { get; set; } = false; // 0: chưa đọc, 1: đã xem 
+        [StringLength(255)]
+        public string? AttachmentName { get; set; }
 
-        // --- Liên kết Navigation ---
+        public DateTime SentAt { get; set; } = DateTime.Now;
+
+        public bool IsRead { get; set; } = false;
+
+        public DateTime? ReadAt { get; set; }
+
+        public DateTime? EditedAt { get; set; }
+
+        public DateTime? UpdatedAt { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public DateTime? DeletedAt { get; set; }
+
         [ForeignKey("ConversationId")]
-        public virtual ConversationDTO Conversation { get; set; }
+        public virtual ConversationDTO? Conversation { get; set; }
 
         [ForeignKey("SenderID")]
-        public virtual UserDTO Sender { get; set; }
+        public virtual UserDTO? Sender { get; set; }
     }
 }

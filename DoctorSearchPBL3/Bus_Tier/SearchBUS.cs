@@ -21,5 +21,24 @@ namespace BUS_Tier
 
             return (doctors, contents);
         }
+
+        public List<DoctorDTO> ExecuteDoctorOnlySearch(
+            string? keyword,
+            List<string>? departments,
+            string? gender,
+            string? sortDoctor)
+        {
+            return _doctorDAL.SearchDoctors(keyword, departments, gender, sortDoctor);
+        }
+
+        public List<ContentDTO> ExecuteContentOnlySearch(
+            string? keyword,
+            List<string>? departments,
+            string? sortContent,
+            string? contentType = null,
+            string? status = null)
+        {
+            return _articleDAL.SearchContents(keyword, departments, contentType, sortContent, status);
+        }
     }
 }

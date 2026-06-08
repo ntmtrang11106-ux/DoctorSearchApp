@@ -18,6 +18,8 @@ namespace UI_Tier
             InitializeComponent();
 
             UIHelper.ApplyRoundedRegion(btnAddTimeSlot, 10);
+            btnAddTimeSlot.Visible = false;
+            btnAddTimeSlot.Enabled = false;
             UIHelper.SetupHoverEffect(lblReviewPrevBtn, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212), 3);
             UIHelper.SetupHoverEffect(lblReviewNext, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212), 3);
 
@@ -331,12 +333,7 @@ namespace UI_Tier
 
         private void btnAddTimeSlot_Click(object sender, EventArgs e)
         {
-            var myDialog = new ucTimeSlotDialog();
-            var mainForm = this.FindForm() as frmDoctor;
-            if (mainForm != null)
-            {
-                mainForm.ShowOverlay(myDialog);
-            }
+            MessageBox.Show("Bác sĩ không có quyền tự tạo lịch khám. Vui lòng liên hệ admin để được sắp lịch.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
         #endregion

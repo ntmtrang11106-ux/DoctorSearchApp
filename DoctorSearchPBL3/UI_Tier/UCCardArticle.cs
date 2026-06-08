@@ -1,4 +1,4 @@
-using DTO_Tier;
+﻿using DTO_Tier;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -118,8 +118,9 @@ namespace UI_Tier
                     }
                     else
                     {
-                        picThumbnail.Image = null;
-                        picThumbnail.BackColor = Color.LightGray;
+                        picThumbnail.Image?.Dispose();
+                        picThumbnail.Image = (Bitmap)Properties.Resources.logo.Clone();
+                        picThumbnail.BackColor = Color.White;
                     }
                     picThumbnail.SizeMode = PictureBoxSizeMode.Zoom;
                 }
@@ -202,3 +203,5 @@ namespace UI_Tier
         }
     }
 }
+
+
