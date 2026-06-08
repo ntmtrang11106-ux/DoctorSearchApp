@@ -207,10 +207,10 @@ namespace UI_Tier
             pnlCurrentPassBorder.Controls.Add(txtCurrentPass);
             pnlCurrentPassBorder.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             pnlCurrentPassBorder.Location = new Point(29, 48);
-            pnlCurrentPassBorder.Margin = new Padding(2, 2, 2, 2);
+            pnlCurrentPassBorder.Margin = new Padding(2);
             pnlCurrentPassBorder.MaximumSize = new Size(1031, 49);
             pnlCurrentPassBorder.Name = "pnlCurrentPassBorder";
-            pnlCurrentPassBorder.Padding = new Padding(8, 8, 8, 8);
+            pnlCurrentPassBorder.Padding = new Padding(8);
             pnlCurrentPassBorder.Size = new Size(1018, 49);
             pnlCurrentPassBorder.TabIndex = 36;
             // 
@@ -234,10 +234,10 @@ namespace UI_Tier
             pnlNewPassBorder.Controls.Add(txtNewPass);
             pnlNewPassBorder.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             pnlNewPassBorder.Location = new Point(29, 148);
-            pnlNewPassBorder.Margin = new Padding(2, 2, 2, 2);
+            pnlNewPassBorder.Margin = new Padding(2);
             pnlNewPassBorder.MaximumSize = new Size(1031, 49);
             pnlNewPassBorder.Name = "pnlNewPassBorder";
-            pnlNewPassBorder.Padding = new Padding(8, 8, 8, 8);
+            pnlNewPassBorder.Padding = new Padding(8);
             pnlNewPassBorder.Size = new Size(1018, 49);
             pnlNewPassBorder.TabIndex = 37;
             // 
@@ -261,10 +261,10 @@ namespace UI_Tier
             pnlConfirmPassBorder.Controls.Add(txtConfirmPass);
             pnlConfirmPassBorder.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             pnlConfirmPassBorder.Location = new Point(29, 249);
-            pnlConfirmPassBorder.Margin = new Padding(2, 2, 2, 2);
+            pnlConfirmPassBorder.Margin = new Padding(2);
             pnlConfirmPassBorder.MaximumSize = new Size(1031, 49);
             pnlConfirmPassBorder.Name = "pnlConfirmPassBorder";
-            pnlConfirmPassBorder.Padding = new Padding(8, 8, 8, 8);
+            pnlConfirmPassBorder.Padding = new Padding(8);
             pnlConfirmPassBorder.Size = new Size(1018, 49);
             pnlConfirmPassBorder.TabIndex = 38;
             // 
@@ -503,9 +503,9 @@ namespace UI_Tier
             pnlFullNameBorder.Controls.Add(txtFullName);
             pnlFullNameBorder.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             pnlFullNameBorder.Location = new Point(338, 117);
-            pnlFullNameBorder.Margin = new Padding(2, 2, 2, 2);
+            pnlFullNameBorder.Margin = new Padding(2);
             pnlFullNameBorder.Name = "pnlFullNameBorder";
-            pnlFullNameBorder.Padding = new Padding(8, 8, 8, 8);
+            pnlFullNameBorder.Padding = new Padding(8);
             pnlFullNameBorder.Size = new Size(592, 49);
             pnlFullNameBorder.TabIndex = 27;
             // 
@@ -515,7 +515,7 @@ namespace UI_Tier
             txtFullName.Dock = DockStyle.Fill;
             txtFullName.Font = new Font("Segoe UI", 12F);
             txtFullName.Location = new Point(8, 8);
-            txtFullName.Margin = new Padding(2, 2, 2, 2);
+            txtFullName.Margin = new Padding(2);
             txtFullName.Name = "txtFullName";
             txtFullName.Size = new Size(576, 32);
             txtFullName.TabIndex = 5;
@@ -526,9 +526,9 @@ namespace UI_Tier
             pnlPhoneBorder.Controls.Add(txtPhone);
             pnlPhoneBorder.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             pnlPhoneBorder.Location = new Point(954, 117);
-            pnlPhoneBorder.Margin = new Padding(2, 2, 2, 2);
+            pnlPhoneBorder.Margin = new Padding(2);
             pnlPhoneBorder.Name = "pnlPhoneBorder";
-            pnlPhoneBorder.Padding = new Padding(8, 8, 8, 8);
+            pnlPhoneBorder.Padding = new Padding(8);
             pnlPhoneBorder.Size = new Size(592, 49);
             pnlPhoneBorder.TabIndex = 28;
             // 
@@ -550,9 +550,9 @@ namespace UI_Tier
             pnlRoleBorder.Controls.Add(txtRole);
             pnlRoleBorder.Font = new Font("Segoe UI", 12F);
             pnlRoleBorder.Location = new Point(338, 227);
-            pnlRoleBorder.Margin = new Padding(2, 2, 2, 2);
+            pnlRoleBorder.Margin = new Padding(2);
             pnlRoleBorder.Name = "pnlRoleBorder";
-            pnlRoleBorder.Padding = new Padding(8, 8, 8, 8);
+            pnlRoleBorder.Padding = new Padding(8);
             pnlRoleBorder.Size = new Size(592, 49);
             pnlRoleBorder.TabIndex = 29;
             // 
@@ -562,7 +562,7 @@ namespace UI_Tier
             txtRole.Dock = DockStyle.Fill;
             txtRole.Font = new Font("Segoe UI", 12F);
             txtRole.Location = new Point(8, 8);
-            txtRole.Margin = new Padding(2, 2, 2, 2);
+            txtRole.Margin = new Padding(2);
             txtRole.Name = "txtRole";
             txtRole.Size = new Size(576, 32);
             txtRole.TabIndex = 17;
@@ -573,9 +573,9 @@ namespace UI_Tier
             pnlGenderBorder.Controls.Add(txtGender);
             pnlGenderBorder.Font = new Font("Segoe UI", 12F);
             pnlGenderBorder.Location = new Point(338, 336);
-            pnlGenderBorder.Margin = new Padding(2, 2, 2, 2);
+            pnlGenderBorder.Margin = new Padding(2);
             pnlGenderBorder.Name = "pnlGenderBorder";
-            pnlGenderBorder.Padding = new Padding(8, 8, 8, 8);
+            pnlGenderBorder.Padding = new Padding(8);
             pnlGenderBorder.Size = new Size(592, 49);
             pnlGenderBorder.TabIndex = 30;
             // 
@@ -585,7 +585,7 @@ namespace UI_Tier
             txtGender.Dock = DockStyle.Fill;
             txtGender.Font = new Font("Segoe UI", 12F);
             txtGender.Location = new Point(8, 8);
-            txtGender.Margin = new Padding(2, 2, 2, 2);
+            txtGender.Margin = new Padding(2);
             txtGender.Name = "txtGender";
             txtGender.Size = new Size(576, 32);
             txtGender.TabIndex = 13;
@@ -596,7 +596,7 @@ namespace UI_Tier
             pnlBirthdayBorder.Controls.Add(dtpBirthday);
             pnlBirthdayBorder.Font = new Font("Segoe UI", 12F);
             pnlBirthdayBorder.Location = new Point(954, 227);
-            pnlBirthdayBorder.Margin = new Padding(2, 2, 2, 2);
+            pnlBirthdayBorder.Margin = new Padding(2);
             pnlBirthdayBorder.Name = "pnlBirthdayBorder";
             pnlBirthdayBorder.Padding = new Padding(8, 4, 8, 4);
             pnlBirthdayBorder.Size = new Size(592, 47);
@@ -619,9 +619,9 @@ namespace UI_Tier
             pnlCCCDBorder.Controls.Add(txtCCCD);
             pnlCCCDBorder.Font = new Font("Segoe UI", 12F);
             pnlCCCDBorder.Location = new Point(954, 336);
-            pnlCCCDBorder.Margin = new Padding(2, 2, 2, 2);
+            pnlCCCDBorder.Margin = new Padding(2);
             pnlCCCDBorder.Name = "pnlCCCDBorder";
-            pnlCCCDBorder.Padding = new Padding(8, 8, 8, 8);
+            pnlCCCDBorder.Padding = new Padding(8);
             pnlCCCDBorder.Size = new Size(592, 49);
             pnlCCCDBorder.TabIndex = 32;
             // 
@@ -631,7 +631,7 @@ namespace UI_Tier
             txtCCCD.Dock = DockStyle.Fill;
             txtCCCD.Font = new Font("Segoe UI", 12F);
             txtCCCD.Location = new Point(8, 8);
-            txtCCCD.Margin = new Padding(2, 2, 2, 2);
+            txtCCCD.Margin = new Padding(2);
             txtCCCD.Name = "txtCCCD";
             txtCCCD.Size = new Size(576, 32);
             txtCCCD.TabIndex = 15;
@@ -642,9 +642,9 @@ namespace UI_Tier
             pnlAddressBorder.Controls.Add(txtAddress);
             pnlAddressBorder.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             pnlAddressBorder.Location = new Point(338, 445);
-            pnlAddressBorder.Margin = new Padding(2, 2, 2, 2);
+            pnlAddressBorder.Margin = new Padding(2);
             pnlAddressBorder.Name = "pnlAddressBorder";
-            pnlAddressBorder.Padding = new Padding(8, 8, 8, 8);
+            pnlAddressBorder.Padding = new Padding(8);
             pnlAddressBorder.Size = new Size(1208, 49);
             pnlAddressBorder.TabIndex = 33;
             // 
@@ -654,7 +654,7 @@ namespace UI_Tier
             txtAddress.Dock = DockStyle.Fill;
             txtAddress.Font = new Font("Segoe UI", 12F);
             txtAddress.Location = new Point(8, 8);
-            txtAddress.Margin = new Padding(2, 2, 2, 2);
+            txtAddress.Margin = new Padding(2);
             txtAddress.Name = "txtAddress";
             txtAddress.Size = new Size(1192, 32);
             txtAddress.TabIndex = 9;
