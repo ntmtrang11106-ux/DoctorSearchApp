@@ -136,7 +136,7 @@
             panel2.Controls.Add(label1);
             panel2.Location = new Point(22, 102);
             panel2.Name = "panel2";
-            panel2.Size = new Size(2165, 1719);
+            panel2.Size = new Size(2165, 1860);
             panel2.TabIndex = 4;
             // 
             // panel3
@@ -147,7 +147,7 @@
             panel3.Controls.Add(panel7);
             panel3.Location = new Point(16, 23);
             panel3.Name = "panel3";
-            panel3.Size = new Size(2129, 1673);
+            panel3.Size = new Size(2129, 1814);
             panel3.TabIndex = 3;
             // 
             // panel4
@@ -160,7 +160,7 @@
             panel4.Location = new Point(0, 131);
             panel4.Margin = new Padding(0);
             panel4.Name = "panel4";
-            panel4.Size = new Size(2129, 1544);
+            panel4.Size = new Size(2129, 1685);
             panel4.TabIndex = 2;
             // 
             // flowLayoutPanel2
@@ -336,7 +336,7 @@
             flowLayoutPanel3.Controls.Add(panel13);
             flowLayoutPanel3.Location = new Point(93, 36);
             flowLayoutPanel3.Name = "flowLayoutPanel3";
-            flowLayoutPanel3.Size = new Size(924, 1345);
+            flowLayoutPanel3.Size = new Size(924, 1605);
             flowLayoutPanel3.TabIndex = 38;
             // 
             // panel16
