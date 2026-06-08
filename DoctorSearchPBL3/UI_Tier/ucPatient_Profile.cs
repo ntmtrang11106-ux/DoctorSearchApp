@@ -56,8 +56,6 @@ namespace UI_Tier
             lblUpload.Click += (s, e) => ChangeAvatar();
             dtpBirthday.ValueChanged += dtpBirthday_ValueChanged;
             SetupFocusEffects();
-            SetupSecurityRuleHints();
-            SetupProfileRuleHints();
 
             // Gán sự kiện Paint để vẽ viền và bóng đổ
             pnlBasicInfo.Paint += SectionPanel_Paint;
@@ -143,38 +141,6 @@ namespace UI_Tier
             // Birthday DateTimePicker focus styling
             UIHelper.SetupInputFocusEffect(dtpBirthday, pnlBirthdayBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
         }
-
-        private void SetupSecurityRuleHints()
-        {
-            lblSecurityHint.Text = "Mật khẩu mới cần 8-64 ký tự, có chữ hoa/thường, số và ký tự đặc biệt.";
-            txtNewPass.PlaceholderText = "Mật khẩu mới theo đúng quy định bảo mật";
-            txtConfirmPass.PlaceholderText = "Nhập lại đúng mật khẩu mới";
-            UIHelper.AddPasswordRuleHint(pnlChangePassword, 52, 354, 1320);
-            pnlPassActions.Location = new Point(52, 405);
-            pnlChangePassword.Height = Math.Max(pnlChangePassword.Height, 500);
-        }
-
-        private void SetupProfileRuleHints()
-        {
-            UIHelper.AddInputHint(pnlBasicInfo, "Họ tên: 2-100 ký tự, chỉ dùng chữ cái và khoảng trắng.", 455, 240, 735);
-            UIHelper.AddInputHint(pnlBasicInfo, "SĐT: đúng 10 chữ số, bắt đầu bằng 0 và không trùng tài khoản khác.", 1290, 240, 735);
-            UIHelper.AddInputHint(pnlBasicInfo, "SĐT khẩn cấp: nếu nhập thì phải đúng 10 chữ số, bắt đầu bằng 0.", 455, 363, 735);
-            UIHelper.AddInputHint(pnlBasicInfo, "Ngày sinh: không được ở tương lai; từ 16 tuổi trở lên bắt buộc có CCCD.", 1290, 363, 735);
-            UIHelper.AddInputHint(pnlBasicInfo, "Giới tính: chỉ nhập Nam hoặc Nữ.", 455, 485, 735);
-            UIHelper.AddInputHint(pnlBasicInfo, "CCCD: đúng 12 chữ số nếu bệnh nhân từ 16 tuổi trở lên.", 1290, 485, 735);
-            UIHelper.AddInputHint(pnlBasicInfo, "Tên liên hệ khẩn cấp: tối đa 100 ký tự.", 455, 605, 735);
-            UIHelper.AddInputHint(pnlBasicInfo, "Địa chỉ: 5-255 ký tự, không chứa ký tự điều khiển.", 455, 728, 1551);
-
-            pnlBasicInfoActions.Location = new Point(44, 780);
-            pnlBasicInfo.Height = Math.Max(pnlBasicInfo.Height, 900);
-
-            UIHelper.AddInputHint(pnlMedicalProfile, "Nhóm máu: A, B, AB hoặc O; có thể kèm dấu + hoặc -.", 455, 168, 735);
-            UIHelper.AddInputHint(pnlMedicalProfile, "Tiền sử bệnh: tối đa 2000 ký tự.", 455, 546, 1000);
-
-            pnlMedicalActions.Location = new Point(44, 610);
-            pnlMedicalProfile.Height = Math.Max(pnlMedicalProfile.Height, 700);
-        }
-
 
         public void InitData()
         {

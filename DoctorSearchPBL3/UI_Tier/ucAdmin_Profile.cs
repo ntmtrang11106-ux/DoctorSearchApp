@@ -56,8 +56,6 @@ namespace UI_Tier
             dtpBirthday.ValueChanged += dtpBirthday_ValueChanged;
 
             SetupFocusEffects();
-            SetupSecurityRuleHints();
-            SetupProfileRuleHints();
             
             // Gán sự kiện Paint để vẽ viền
             pnlBasicInfo.Paint += SectionPanel_Paint;
@@ -145,29 +143,6 @@ namespace UI_Tier
             UIHelper.SetupInputFocusEffect(txtCurrentPass, pnlCurrentPassBorder, focus, unfocus, highlight);
             UIHelper.SetupInputFocusEffect(txtNewPass, pnlNewPassBorder, focus, unfocus, highlight);
             UIHelper.SetupInputFocusEffect(txtConfirmPass, pnlConfirmPassBorder, focus, unfocus, highlight);
-        }
-
-        private void SetupSecurityRuleHints()
-        {
-            lblSecurityHint.Text = "Mật khẩu mới cần 8-64 ký tự, có chữ hoa/thường, số và ký tự đặc biệt.";
-            txtNewPass.PlaceholderText = "Mật khẩu mới theo đúng quy định bảo mật";
-            txtConfirmPass.PlaceholderText = "Nhập lại đúng mật khẩu mới";
-            UIHelper.AddPasswordRuleHint(pnlChangePassword, 52, 385, 1320);
-            pnlPassActions.Location = new Point(52, 430);
-            pnlChangePassword.Height = Math.Max(pnlChangePassword.Height, 530);
-        }
-
-        private void SetupProfileRuleHints()
-        {
-            UIHelper.AddInputHint(pnlBasicInfo, "Họ tên: 2-100 ký tự, chỉ dùng chữ cái và khoảng trắng.", 440, 222, 770);
-            UIHelper.AddInputHint(pnlBasicInfo, "SĐT: đúng 10 chữ số, bắt đầu bằng 0 và không trùng tài khoản khác.", 1240, 222, 770);
-            UIHelper.AddInputHint(pnlBasicInfo, "Ngày sinh: quản trị viên phải từ 18 tuổi trở lên.", 1240, 362, 770);
-            UIHelper.AddInputHint(pnlBasicInfo, "Giới tính: chỉ nhập Nam hoặc Nữ.", 440, 502, 770);
-            UIHelper.AddInputHint(pnlBasicInfo, "CCCD: bắt buộc đúng 12 chữ số.", 1240, 502, 770);
-            UIHelper.AddInputHint(pnlBasicInfo, "Địa chỉ: 5-255 ký tự, không chứa ký tự điều khiển.", 440, 642, 1570);
-
-            pnlBasicInfoActions.Location = new Point(50, 690);
-            pnlBasicInfo.Height = Math.Max(pnlBasicInfo.Height, 800);
         }
 
         private void dtpBirthday_ValueChanged(object sender, EventArgs e)
