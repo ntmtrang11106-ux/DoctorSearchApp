@@ -26,14 +26,9 @@ namespace UI_Tier
             Panel[] cards = { pnlCard1, pnlCard2, pnlCard3, pnlCard4 };
             foreach (var card in cards)
             {
-                card.Paint += (s, e) => UIHelper.DrawControlBorder(card, e, 10, Color.FromArgb(230, 230, 230), 3);
+                card.Paint += (s, e) => UIHelper.DrawControlBorder(card, e, 10, Color.DimGray, 3);
             }
 
-            // Bo góc cho các panel icon bên trong cho đồng bộ
-            UIHelper.ApplyRoundedRegion(pnlIcon1, 20);
-            UIHelper.ApplyRoundedRegion(pnlIcon2, 20);
-            UIHelper.ApplyRoundedRegion(pnlIcon3, 20);
-            UIHelper.ApplyRoundedRegion(pnlIcon4, 20);
 
             // Cấu hình bộ tìm kiếm tích hợp cho Admin
             ucSearchArticle.SetAdminMode(true);   // Bật chế độ Admin (hiện lọc trạng thái)

@@ -47,13 +47,8 @@ namespace UI_Tier
             lblPriorityLabel.Click += Global_Click;
             lblThumbnailLabel.Click += Global_Click;
 
-            this.Paint += ucAdmin_AddArticle_Paint;
+            //this.Paint += ucAdmin_AddArticle_Paint;
             this.Padding = new Padding(3);
-        }
-
-        private void ucAdmin_AddArticle_Paint(object sender, PaintEventArgs e)
-        {
-            UIHelper.DrawControlBorder(sender, e, 30, Color.Black, 3);
         }
 
         private void SetupUI()
@@ -91,7 +86,7 @@ namespace UI_Tier
             // Bo góc cho khung Đen ngoài cùng
             UIHelper.ApplyRoundedRegion(this, 30);
             // Bo góc cho khung Trắng bên trong (khớp với viền 3px)
-            UIHelper.ApplyRoundedRegion(pnlMainBackground, 27);
+            UIHelper.ApplyRoundedRegion(pnlMainBackground, 30);
 
             UIHelper.ApplyRoundedRegion(label1, 15);
             
@@ -100,14 +95,14 @@ namespace UI_Tier
             label1.MouseDown += panelHeader_MouseDown;
 
             // Áp dụng bo góc và viền đen 2px cho các khung bao quanh
-            ApplyBorderPanelStyle(pnlTitleBorder);
-            ApplyBorderPanelStyle(pnlSummaryBorder);
-            ApplyBorderPanelStyle(pnlBodyBorder);
-            ApplyBorderPanelStyle(pnlTypeBorder);
-            ApplyBorderPanelStyle(pnlDeptBorder);
-            ApplyBorderPanelStyle(pnlStatusBorder);
-            ApplyBorderPanelStyle(pnlPriorityBorder);
-            ApplyBorderPanelStyle(panel29); // Khung hình ảnh
+            UIHelper.ApplyBorderPanelStyle(pnlTitleBorder);
+            UIHelper.ApplyBorderPanelStyle(pnlSummaryBorder);
+            UIHelper.ApplyBorderPanelStyle(pnlBodyBorder);
+            UIHelper.ApplyBorderPanelStyle(pnlTypeBorder);
+            UIHelper.ApplyBorderPanelStyle(pnlDeptBorder);
+            UIHelper.ApplyBorderPanelStyle(pnlStatusBorder);
+            UIHelper.ApplyBorderPanelStyle(pnlPriorityBorder);
+            UIHelper.ApplyBorderPanelStyle(panel29); // Khung hình ảnh
 
             // Áp dụng hiệu ứng Focus cho các control bên trong
             ApplyInternalControlStyle(txtTitle);
@@ -122,22 +117,7 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(btnSave, 12);
             UIHelper.ApplyRoundedRegion(btnCancel, 12);
 
-            // Font sizes
-            lblHeaderTitle.Font = new Font("Segoe UI", 16, FontStyle.Bold);
-            txtTitle.Font = new Font("Segoe UI", 12, FontStyle.Regular);
-            txtSummary.Font = new Font("Segoe UI", 12, FontStyle.Regular);
-            rtbBody.Font = new Font("Segoe UI", 12, FontStyle.Regular);
-
             _thumbnailPath = ""; 
-        }
-
-        private void ApplyBorderPanelStyle(Panel pnl)
-        {
-            UIHelper.ApplyRoundedRegion(pnl, 10);
-            pnl.Paint += (s, e) => {
-                // Vẽ viền đen độ dày 2px
-                UIHelper.DrawControlBorder(s, e, 10, Color.Black, 2);
-            };
         }
 
         private void ApplyInternalControlStyle(Control ctrl)

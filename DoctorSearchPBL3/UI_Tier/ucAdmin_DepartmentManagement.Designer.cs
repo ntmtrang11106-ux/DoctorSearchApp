@@ -53,11 +53,11 @@ namespace UI_Tier
             btnAdd.BackColor = Color.FromArgb(37, 99, 235);
             btnAdd.FlatAppearance.BorderSize = 0;
             btnAdd.FlatStyle = FlatStyle.Flat;
-            btnAdd.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnAdd.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             btnAdd.ForeColor = Color.White;
-            btnAdd.Location = new Point(774, 23);
+            btnAdd.Location = new Point(785, 23);
             btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(486, 81);
+            btnAdd.Size = new Size(469, 66);
             btnAdd.TabIndex = 2;
             btnAdd.Text = "+  Thêm chuyên khoa mới";
             btnAdd.UseVisualStyleBackColor = false;
@@ -66,11 +66,11 @@ namespace UI_Tier
             // lblDesc
             // 
             lblDesc.AutoSize = true;
-            lblDesc.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblDesc.Font = new Font("Segoe UI", 13.875F, FontStyle.Italic, GraphicsUnit.Point, 0);
             lblDesc.ForeColor = Color.FromArgb(107, 114, 128);
             lblDesc.Location = new Point(5, 65);
             lblDesc.Name = "lblDesc";
-            lblDesc.Size = new Size(744, 50);
+            lblDesc.Size = new Size(741, 50);
             lblDesc.TabIndex = 1;
             lblDesc.Text = "Thêm, sửa, xóa và quản lý trạng thái hiển thị";
             // 
@@ -102,7 +102,7 @@ namespace UI_Tier
             cboStatusFilter.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cboStatusFilter.FormattingEnabled = true;
             cboStatusFilter.Items.AddRange(new object[] { "Tất cả trạng thái", "Hiển thị", "Ẩn" });
-            cboStatusFilter.Location = new Point(928, 10);
+            cboStatusFilter.Location = new Point(910, 21);
             cboStatusFilter.Name = "cboStatusFilter";
             cboStatusFilter.Size = new Size(320, 58);
             cboStatusFilter.TabIndex = 2;
@@ -110,23 +110,23 @@ namespace UI_Tier
             // 
             // pnlSearch
             // 
-            pnlSearch.BackColor = Color.FromArgb(243, 244, 246);
+            pnlSearch.BackColor = Color.Transparent;
             pnlSearch.Controls.Add(txtSearch);
             pnlSearch.Controls.Add(lblSearchIcon);
-            pnlSearch.Location = new Point(0, 10);
+            pnlSearch.Location = new Point(76, 12);
             pnlSearch.Name = "pnlSearch";
             pnlSearch.Padding = new Padding(15, 12, 15, 12);
-            pnlSearch.Size = new Size(880, 70);
+            pnlSearch.Size = new Size(1184, 70);
             pnlSearch.TabIndex = 1;
             // 
             // txtSearch
             // 
-            txtSearch.BackColor = Color.FromArgb(243, 244, 246);
+            txtSearch.BackColor = Color.White;
             txtSearch.BorderStyle = BorderStyle.None;
             txtSearch.Font = new Font("Segoe UI", 14F);
             txtSearch.Location = new Point(70, 12);
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new Size(800, 50);
+            txtSearch.Size = new Size(1096, 50);
             txtSearch.TabIndex = 1;
             txtSearch.TextChanged += txtSearch_TextChanged;
             // 
@@ -135,7 +135,7 @@ namespace UI_Tier
             lblSearchIcon.AutoSize = true;
             lblSearchIcon.Font = new Font("Segoe MDL2 Assets", 16F);
             lblSearchIcon.ForeColor = Color.FromArgb(156, 163, 175);
-            lblSearchIcon.Location = new Point(15, 13);
+            lblSearchIcon.Location = new Point(10, 13);
             lblSearchIcon.Name = "lblSearchIcon";
             lblSearchIcon.Size = new Size(62, 43);
             lblSearchIcon.TabIndex = 0;

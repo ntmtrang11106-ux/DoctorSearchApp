@@ -55,7 +55,6 @@ namespace UI_Tier
             lblReviewPrevBtn = new Label();
             lblReviewNext = new Label();
             pnlHeader = new Panel();
-            flpHeaderInternal = new FlowLayoutPanel();
             lblHeaderTitle = new Label();
             cboFilter = new ComboBox();
             lblReviewPrev = new Label();
@@ -74,7 +73,6 @@ namespace UI_Tier
             pnlReviewHeader.SuspendLayout();
             pnlReviewPagination.SuspendLayout();
             pnlHeader.SuspendLayout();
-            flpHeaderInternal.SuspendLayout();
             SuspendLayout();
             // 
             // pnlStats
@@ -543,46 +541,36 @@ namespace UI_Tier
             // pnlHeader
             // 
             pnlHeader.BackColor = Color.FromArgb(252, 253, 255);
-            pnlHeader.Controls.Add(flpHeaderInternal);
+            pnlHeader.Controls.Add(lblHeaderTitle);
+            pnlHeader.Controls.Add(cboFilter);
             pnlHeader.Dock = DockStyle.Top;
             pnlHeader.Location = new Point(40, 0);
             pnlHeader.Name = "pnlHeader";
             pnlHeader.Size = new Size(1800, 90);
             pnlHeader.TabIndex = 3;
             // 
-            // flpHeaderInternal
-            // 
-            flpHeaderInternal.BackColor = Color.White;
-            flpHeaderInternal.Controls.Add(lblHeaderTitle);
-            flpHeaderInternal.Controls.Add(cboFilter);
-            flpHeaderInternal.Location = new Point(0, 0);
-            flpHeaderInternal.Name = "flpHeaderInternal";
-            flpHeaderInternal.Padding = new Padding(30, 20, 0, 0);
-            flpHeaderInternal.Size = new Size(1800, 90);
-            flpHeaderInternal.TabIndex = 0;
-            // 
             // lblHeaderTitle
             // 
             lblHeaderTitle.AutoSize = true;
-            lblHeaderTitle.Dock = DockStyle.Top;
             lblHeaderTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             lblHeaderTitle.ForeColor = Color.FromArgb(17, 34, 71);
-            lblHeaderTitle.Location = new Point(30, 20);
+            lblHeaderTitle.Location = new Point(21, 16);
             lblHeaderTitle.Margin = new Padding(0, 0, 20, 0);
             lblHeaderTitle.Name = "lblHeaderTitle";
             lblHeaderTitle.Size = new Size(435, 59);
-            lblHeaderTitle.TabIndex = 0;
+            lblHeaderTitle.TabIndex = 101;
             lblHeaderTitle.Text = "Thống kê tổng quan";
             // 
             // cboFilter
             // 
+            cboFilter.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cboFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cboFilter.Font = new Font("Segoe UI", 14F);
-            cboFilter.Location = new Point(485, 20);
+            cboFilter.Location = new Point(1383, 20);
             cboFilter.Margin = new Padding(0);
             cboFilter.Name = "cboFilter";
             cboFilter.Size = new Size(350, 58);
-            cboFilter.TabIndex = 100;
+            cboFilter.TabIndex = 102;
             // 
             // lblReviewPrev
             // 
@@ -631,8 +619,7 @@ namespace UI_Tier
             pnlReviewPagination.ResumeLayout(false);
             pnlReviewPagination.PerformLayout();
             pnlHeader.ResumeLayout(false);
-            flpHeaderInternal.ResumeLayout(false);
-            flpHeaderInternal.PerformLayout();
+            pnlHeader.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -670,9 +657,6 @@ namespace UI_Tier
         private System.Windows.Forms.FlowLayoutPanel flpRecentReviews;
         private System.Windows.Forms.Label lblRecentReviewsTitle;
         private System.Windows.Forms.Panel pnlHeader;
-        private System.Windows.Forms.Label lblHeaderTitle;
-        private System.Windows.Forms.ComboBox cboFilter;
-        private System.Windows.Forms.FlowLayoutPanel flpHeaderInternal;
         private Label lblReviewPrev;
         private System.Windows.Forms.Panel pnlReviewHeader;
         private System.Windows.Forms.Label lblNoReviews;
@@ -681,5 +665,7 @@ namespace UI_Tier
         private System.Windows.Forms.Label lblReviewPrevBtn;
         private System.Windows.Forms.Label lblReviewNext;
         private Label label4;
+        private Label lblHeaderTitle;
+        private ComboBox cboFilter;
     }
 }

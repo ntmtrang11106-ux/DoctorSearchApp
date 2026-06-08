@@ -23,7 +23,8 @@ namespace UI_Tier
                 return;
             }
 
-            Application.Run(new frmGuest());
+            //Application.Run(new frmGuest());
+            Application.Run(new frmAdmin());
         }
 
         private static bool TryInitializeDatabase(AppDbContext context, out string errorMessage)
