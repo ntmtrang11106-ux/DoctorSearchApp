@@ -336,8 +336,6 @@ namespace UI_Tier
                 return;
             }
 
-            string result = _userBUS.ChangePassword(GlobalAccount.GetUserId(), txtCurrentPass.Text, txtNewPass.Text);
-
             string result = _userBUS.ChangePassword(GlobalAccount.GetUserId(), txtCurrentPass.Text, txtNewPass.Text, txtConfirmPass.Text);
             
             if (result == "Success")
