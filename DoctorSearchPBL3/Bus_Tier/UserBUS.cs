@@ -1,7 +1,10 @@
 using DAL_Tier;
 using DTO_Tier;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 namespace BUS_Tier
 {
@@ -43,7 +46,7 @@ namespace BUS_Tier
                         return 0;
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 // Log lỗi nếu cần thiết
                 return 0;
@@ -107,13 +110,26 @@ namespace BUS_Tier
             fullName = "";
             msg = "";
 
-            var user = _userDAL.GetUserForLogin(phone);
+            string rawPhone = NormalizeRequired(phone);
+            string normalizedPhone = NormalizePhone(rawPhone);
+            pass ??= "";
+
+            string loginValidation = ValidateLoginInput(rawPhone, pass);
+            if (loginValidation != "OK")
+            {
+                msg = loginValidation;
+                return "";
+            }
+
+            var user = GetUserForLoginByCandidates(rawPhone, normalizedPhone);
 
             if (user != null && SecurityHelper.VerifyPassword(pass, user.Password))
             {
-                if (user.Status == "Blocked")
+                if (!string.Equals(user.Status, "Active", StringComparison.OrdinalIgnoreCase))
                 {
-                    msg = "Tài khoản của bạn đã bị khóa (Blocked). Vui lòng liên hệ quản trị viên để được hỗ trợ.";
+                    msg = user.Status == "Blocked"
+                        ? "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để được hỗ trợ."
+                        : "Tài khoản chưa ở trạng thái hoạt động.";
                     return "";
                 }
                 if (user.Status == "Deleted" || user.IsDeleted)
@@ -169,17 +185,25 @@ namespace BUS_Tier
         /// </summary>
         public string RegisterPatient(UserDTO user, string confirmPass, string insuranceCode)
         {
-            // 1. Kiểm tra dữ liệu chung (Họ tên, SĐT, Pass...)
-            string validation = ValidateCommonUser(user, confirmPass);
-            if (validation != "OK") return validation;
+            List<string> errors = CollectCommonUserErrors(user, confirmPass, minAge: 0);
 
-            if (string.IsNullOrWhiteSpace(insuranceCode)) return "Vui lòng nhập mã số Bảo hiểm y tế!";
+            string? normalizedInsuranceCode = NormalizeNullable(insuranceCode);
+            if (string.IsNullOrWhiteSpace(normalizedInsuranceCode))
+            {
+                errors.Add("Vui lòng nhập mã số Bảo hiểm y tế.");
+            }
+            else if (!IsSafeCode(normalizedInsuranceCode, 6, 50))
+            {
+                errors.Add("Mã số Bảo hiểm y tế chỉ được chứa chữ, số, dấu gạch ngang hoặc dấu gạch chéo và tối đa 50 ký tự.");
+            }
+
+            if (errors.Count > 0) return FormatValidationErrors(errors);
 
             // Sử dụng SecurityHelper để băm trước khi lưu
             user.Password = SecurityHelper.HashPassword(user.Password);
 
             // 2. Gọi DAL lưu thông tin
-            bool isSuccess = _userDAL.RegisterPatient(user, insuranceCode);
+            bool isSuccess = _userDAL.RegisterPatient(user, normalizedInsuranceCode);
             return isSuccess ? "Success" : "Lỗi hệ thống khi đăng ký Bệnh nhân.";
         }
 
@@ -189,13 +213,30 @@ namespace BUS_Tier
         public string RegisterDoctor(UserDTO user, string confirmPass, int deptId, int exp, string position, string licenseNumber, out int doctorId)
         {
             doctorId = 0;
-            string validation = ValidateCommonUser(user, confirmPass);
-            if (validation != "OK") return validation;
+            List<string> errors = CollectCommonUserErrors(user, confirmPass, minAge: 18);
 
-            if (string.IsNullOrWhiteSpace(position)) return "Vui lòng nhập chức danh nghề nghiệp";
-            if (deptId <= 0) return "Vui lòng chọn chuyên khoa cho bác sĩ.";
-            if (exp < 0) return "Năm kinh nghiệm không hợp lệ.";
-            if (string.IsNullOrWhiteSpace(licenseNumber)) return "Vui lòng nhập mã giấy phép hành nghề.";
+            position = NormalizeRequired(position);
+            licenseNumber = NormalizeRequired(licenseNumber);
+
+            if (string.IsNullOrWhiteSpace(position)) errors.Add("Vui lòng nhập chức danh nghề nghiệp.");
+            else if (position.Length > 100) errors.Add("Chức danh nghề nghiệp không được vượt quá 100 ký tự.");
+
+            if (deptId <= 0) errors.Add("Vui lòng chọn chuyên khoa cho bác sĩ.");
+            if (exp < 0 || exp > 60) errors.Add("Năm kinh nghiệm không hợp lệ.");
+
+            if (string.IsNullOrWhiteSpace(licenseNumber))
+            {
+                errors.Add("Vui lòng nhập mã giấy phép hành nghề.");
+            }
+            else
+            {
+                if (!IsSafeCode(licenseNumber, 5, 100))
+                    errors.Add("Mã giấy phép hành nghề chỉ được chứa chữ, số, dấu gạch ngang hoặc dấu gạch chéo.");
+                else if (_context.Doctors.Any(d => d.LicenseNumber == licenseNumber && !d.IsDeleted))
+                    errors.Add("Mã giấy phép hành nghề này đã tồn tại trên hệ thống.");
+            }
+
+            if (errors.Count > 0) return FormatValidationErrors(errors);
 
             user.Password = SecurityHelper.HashPassword(user.Password);
 
@@ -206,56 +247,92 @@ namespace BUS_Tier
         /// <summary>
         /// Kiểm tra tính hợp lệ của các trường chung
         /// </summary>
-        private string ValidateCommonUser(UserDTO user, string confirmPass)
-        {
-            if (string.IsNullOrWhiteSpace(user.FullName)) return "Họ và tên không được để trống.";
-            if (string.IsNullOrWhiteSpace(user.PhoneNumber)) return "Số điện thoại không được để trống.";
-            if (user.PhoneNumber.Length < 10) return "Số điện thoại phải có ít nhất 10 số.";
+        private string ValidateCommonUser(UserDTO user, string confirmPass, int minAge, int? excludeUserId = null)
+            => FormatValidationErrors(CollectCommonUserErrors(user, confirmPass, minAge, excludeUserId));
 
-            if (user.Dob > DateTime.Now) return "Ngày sinh không hợp lệ.";
+        private List<string> CollectCommonUserErrors(UserDTO user, string confirmPass, int minAge, int? excludeUserId = null)
+        {
+            var errors = new List<string>();
+
+            if (user == null)
+            {
+                errors.Add("Dữ liệu người dùng không hợp lệ.");
+                return errors;
+            }
+
+            NormalizeUser(user);
+            confirmPass ??= "";
+
+            if (string.IsNullOrWhiteSpace(user.FullName)) errors.Add("Họ và tên không được để trống.");
+            else
+            {
+                if (user.FullName.Length < 2 || user.FullName.Length > 100)
+                    errors.Add("Họ và tên phải từ 2 đến 100 ký tự.");
+                if (!Regex.IsMatch(user.FullName, @"^[\p{L}\s'.-]+$"))
+                    errors.Add("Họ và tên chỉ được chứa chữ cái và khoảng trắng.");
+            }
+
+            bool hasValidPhone = false;
+            if (string.IsNullOrWhiteSpace(user.PhoneNumber)) errors.Add("Số điện thoại không được để trống.");
+            else if (!IsValidPhone(user.PhoneNumber)) errors.Add("Số điện thoại phải gồm đúng 10 chữ số và bắt đầu bằng 0.");
+            else hasValidPhone = true;
+
             if (user.Dob == null)
             {
-                return "Ngày sinh không được để trống.";
+                errors.Add("Ngày sinh không được để trống.");
             }
-
-            int age = CalculateAge(user.Dob.Value);
-
-            if (age >= 16)
+            else if (user.Dob.Value.Date > DateTime.Now.Date)
             {
-                if (string.IsNullOrWhiteSpace(user.CCCD))
-                    return "Người dùng từ 16 tuổi trở lên bắt buộc phải nhập CCCD.";
+                errors.Add("Ngày sinh không hợp lệ.");
+            }
+            else
+            {
+                int age = CalculateAge(user.Dob.Value);
+                if (age < minAge)
+                    errors.Add(minAge == 18 ? "Người dùng phải từ 18 tuổi trở lên." : "Ngày sinh không hợp lệ.");
 
-                if (user.CCCD.Length != 12)
-                    return "Số CCCD phải bao gồm đúng 12 chữ số.";
+                if (age >= 16)
+                {
+                    if (string.IsNullOrWhiteSpace(user.CCCD))
+                        errors.Add("Người dùng từ 16 tuổi trở lên bắt buộc phải nhập CCCD.");
+                    else if (!IsValidCccd(user.CCCD))
+                        errors.Add("Số CCCD phải gồm đúng 12 chữ số.");
+                }
             }
 
-            if (string.IsNullOrWhiteSpace(user.Gender))
-                return "Vui lòng chọn giới tính.";
+            if (string.IsNullOrWhiteSpace(user.Gender)) errors.Add("Vui lòng chọn giới tính.");
+            else if (!IsValidGender(user.Gender)) errors.Add("Giới tính không hợp lệ.");
 
-            if (string.IsNullOrWhiteSpace(user.Residential_Address))
-                return "Địa chỉ không được để trống.";
+            if (string.IsNullOrWhiteSpace(user.Residential_Address)) errors.Add("Địa chỉ không được để trống.");
+            else
+            {
+                if (user.Residential_Address.Length < 5 || user.Residential_Address.Length > 255)
+                    errors.Add("Địa chỉ phải từ 5 đến 255 ký tự.");
+                if (ContainsControlCharacter(user.Residential_Address))
+                    errors.Add("Địa chỉ chứa ký tự không hợp lệ.");
+            }
 
-            //if (string.IsNullOrWhiteSpace(user.Password)) return "Mật khẩu không được để trống.";
-            //if (string.IsNullOrWhiteSpace(confirmPass)) return "Vui lòng xác nhận mật khẩu.";
-            //if (user.Password != confirmPass) return "Mật khẩu nhập lại không khớp.";
+            if (string.IsNullOrWhiteSpace(user.Password)) errors.Add("Mật khẩu không được để trống.");
+            if (string.IsNullOrWhiteSpace(confirmPass)) errors.Add("Vui lòng xác nhận mật khẩu.");
+            if (!string.IsNullOrWhiteSpace(user.Password) && !string.IsNullOrWhiteSpace(confirmPass) && user.Password != confirmPass)
+                errors.Add("Mật khẩu nhập lại không khớp.");
 
-            // Kiểm tra mật khẩu
-            if (string.IsNullOrWhiteSpace(user.Password))
-                return "Mật khẩu không được để trống.";
+            if (!string.IsNullOrWhiteSpace(user.Password))
+            {
+                AddPasswordStrengthErrors(errors, user.Password, user.PhoneNumber, user.FullName);
+            }
 
-            if (string.IsNullOrWhiteSpace(confirmPass))
-                return "Vui lòng xác nhận mật khẩu.";
+            if (hasValidPhone)
+            {
+                bool phoneExists = excludeUserId.HasValue
+                ? _userDAL.IsPhoneExists(user.PhoneNumber, excludeUserId.Value)
+                : _userDAL.IsPhoneExists(user.PhoneNumber);
 
-            // So sánh 2 chuỗi chưa băm
-            if (user.Password != confirmPass)
-                return "Mật khẩu nhập lại không khớp.";
+                if (phoneExists)
+                    errors.Add("Số điện thoại này đã tồn tại trên hệ thống.");
+            }
 
-            // Kiểm tra xem số điện thoại đã tồn tại chưa
-            if (_userDAL.IsPhoneExists(user.PhoneNumber))
-                return "Số điện thoại này đã tồn tại trên hệ thống.";
-
-            return "OK";
-
+            return errors;
         }
 
         public int CalculateAge(DateTime dob)
@@ -265,17 +342,35 @@ namespace BUS_Tier
             return age;
         }
 
-        public string ChangePassword(int userId, string currentPass, string newPass)
+        public string ChangePassword(int userId, string currentPass, string newPass, string confirmPass)
         {
-            if (userId <= 0) return "ID người dùng không hợp lệ.";
-            if (string.IsNullOrWhiteSpace(currentPass)) return "Vui lòng nhập mật khẩu hiện tại.";
-            if (string.IsNullOrWhiteSpace(newPass) || newPass.Length < 6) return "Mật khẩu mới phải có ít nhất 6 ký tự.";
+            var errors = new List<string>();
+
+            if (userId <= 0) errors.Add("ID người dùng không hợp lệ.");
+            if (string.IsNullOrWhiteSpace(currentPass)) errors.Add("Vui lòng nhập mật khẩu hiện tại.");
+            if (string.IsNullOrWhiteSpace(newPass)) errors.Add("Mật khẩu mới không được để trống.");
+            if (string.IsNullOrWhiteSpace(confirmPass)) errors.Add("Vui lòng xác nhận mật khẩu mới.");
+            if (!string.IsNullOrWhiteSpace(newPass) && !string.IsNullOrWhiteSpace(confirmPass) && newPass != confirmPass)
+                errors.Add("Mật khẩu xác nhận không khớp.");
+            if (!string.IsNullOrWhiteSpace(newPass))
+                AddPasswordStrengthErrors(errors, newPass, "", "");
+
+            if (errors.Count > 0) return FormatValidationErrors(errors);
 
             var user = _context.Users.Find(userId);
             if (user == null) return "Người dùng không tồn tại.";
+            if (!string.Equals(user.Status, "Active", StringComparison.OrdinalIgnoreCase) || user.IsDeleted)
+                return "Tài khoản không ở trạng thái được phép đổi mật khẩu.";
 
             if (!SecurityHelper.VerifyPassword(currentPass, user.Password))
                 return "Mật khẩu hiện tại không chính xác.";
+
+            if (SecurityHelper.VerifyPassword(newPass, user.Password))
+                return "Mật khẩu mới không được trùng mật khẩu hiện tại.";
+
+            errors.Clear();
+            AddPasswordStrengthErrors(errors, newPass, user.PhoneNumber, user.FullName);
+            if (errors.Count > 0) return FormatValidationErrors(errors);
 
             string newHashedPass = SecurityHelper.HashPassword(newPass);
             bool success = _userDAL.ChangePassword(userId, newHashedPass);
@@ -296,31 +391,9 @@ namespace BUS_Tier
         {
             if (user == null || user.Id <= 0) return "Dữ liệu người dùng không hợp lệ.";
 
-            // 1. Kiểm tra các trường chung
-            if (string.IsNullOrWhiteSpace(user.FullName)) return "Họ và tên không được để trống.";
-            if (string.IsNullOrWhiteSpace(user.PhoneNumber)) return "Số điện thoại không được để trống.";
-            if (user.PhoneNumber.Length < 10) return "Số điện thoại phải có ít nhất 10 số.";
+            string validation = ValidateCommonUserForUpdate(user, minAge: 18);
+            if (validation != "OK") return validation;
 
-            if (user.Dob == null || user.Dob > DateTime.Now) return "Ngày sinh không hợp lệ.";
-
-            // 2. Kiểm tra tuổi Admin (Bắt buộc >= 18 theo yêu cầu)
-            int age = CalculateAge(user.Dob.Value);
-            if (age < 18) return "Quản trị viên phải từ 18 tuổi trở lên.";
-
-            // 3. Kiểm tra CCCD (Nếu đủ 16 tuổi trở lên)
-            if (age >= 16)
-            {
-                if (string.IsNullOrWhiteSpace(user.CCCD)) return "Bắt buộc phải nhập CCCD cho người dùng trên 16 tuổi.";
-                if (user.CCCD.Length != 12) return "Số CCCD phải bao gồm đúng 12 chữ số.";
-            }
-
-            if (string.IsNullOrWhiteSpace(user.Residential_Address)) return "Địa chỉ không được để trống.";
-
-            // 4. Kiểm tra trùng số điện thoại (Trừ chính người này)
-            if (_userDAL.IsPhoneExists(user.PhoneNumber, user.Id))
-                return "Số điện thoại này đã được sử dụng bởi một tài khoản khác.";
-
-            // 5. Gọi DAL cập nhật
             bool success = _userDAL.UpdateUser(user);
             return success ? "Success" : "Lỗi hệ thống khi cập nhật hồ sơ.";
         }
@@ -328,13 +401,169 @@ namespace BUS_Tier
         public bool UpdateUser(UserDTO user)
         {
             if (user == null || user.Id <= 0) return false;
+
+            string validation = ValidateCommonUserForUpdate(user, minAge: 0);
+            if (validation != "OK") return false;
+
             return _userDAL.UpdateUser(user);
         }
 
-        public UserDTO GetUserById(int userId)
+        public UserDTO? GetUserById(int userId)
         {
             if (userId <= 0) return null;
             return _userDAL.GetUserById(userId);
+        }
+
+        private string ValidateCommonUserForUpdate(UserDTO user, int minAge)
+        {
+            string originalPassword = user.Password;
+            user.Password = "Aa@123456";
+
+            string validation = ValidateCommonUser(user, user.Password, minAge, user.Id);
+            user.Password = originalPassword;
+
+            return validation;
+        }
+
+        private static string ValidateLoginInput(string phone, string password)
+        {
+            if (string.IsNullOrWhiteSpace(phone)) return "Số điện thoại không được để trống.";
+            if (phone.Length > 30 || ContainsControlCharacter(phone)) return "Số điện thoại không hợp lệ.";
+            if (string.IsNullOrWhiteSpace(password)) return "Mật khẩu không được để trống.";
+            if (password.Length > 255) return "Mật khẩu không hợp lệ.";
+            return "OK";
+        }
+
+        private UserDTO? GetUserForLoginByCandidates(params string[] phoneValues)
+        {
+            foreach (string candidate in BuildLoginPhoneCandidates(phoneValues))
+            {
+                UserDTO? user = _userDAL.GetUserForLogin(candidate);
+                if (user != null) return user;
+            }
+
+            return null;
+        }
+
+        private static List<string> BuildLoginPhoneCandidates(params string[] phoneValues)
+        {
+            var candidates = new List<string>();
+
+            void AddCandidate(string? value)
+            {
+                value = NormalizeRequired(value);
+                if (string.IsNullOrWhiteSpace(value) || value.Length > 30) return;
+
+                if (!candidates.Contains(value, StringComparer.OrdinalIgnoreCase))
+                {
+                    candidates.Add(value);
+                }
+            }
+
+            foreach (string value in phoneValues)
+            {
+                AddCandidate(value);
+
+                string normalized = NormalizePhone(value);
+                AddCandidate(normalized);
+
+                if (normalized.StartsWith("0") && normalized.Length > 1)
+                {
+                    AddCandidate("+84" + normalized.Substring(1));
+                    AddCandidate("84" + normalized.Substring(1));
+                }
+            }
+
+            return candidates;
+        }
+
+        private static string ValidatePasswordStrength(string password, string phone, string fullName)
+        {
+            var errors = new List<string>();
+            AddPasswordStrengthErrors(errors, password, phone, fullName);
+            return FormatValidationErrors(errors);
+        }
+
+        private static void AddPasswordStrengthErrors(List<string> errors, string password, string phone, string fullName)
+        {
+            if (password.Length < 8 || password.Length > 64)
+                errors.Add("Mật khẩu phải từ 8 đến 64 ký tự.");
+            if (password.Any(char.IsWhiteSpace))
+                errors.Add("Mật khẩu không được chứa khoảng trắng.");
+            if (!password.Any(char.IsUpper))
+                errors.Add("Mật khẩu phải có ít nhất 1 chữ hoa.");
+            if (!password.Any(char.IsLower))
+                errors.Add("Mật khẩu phải có ít nhất 1 chữ thường.");
+            if (!password.Any(char.IsDigit))
+                errors.Add("Mật khẩu phải có ít nhất 1 chữ số.");
+            if (!password.Any(ch => !char.IsLetterOrDigit(ch)))
+                errors.Add("Mật khẩu phải có ít nhất 1 ký tự đặc biệt.");
+
+            if (!string.IsNullOrWhiteSpace(phone) && password.Contains(phone, StringComparison.OrdinalIgnoreCase))
+                errors.Add("Mật khẩu không được chứa số điện thoại.");
+
+            string compactName = Regex.Replace(fullName ?? "", @"\s+", "");
+            if (compactName.Length >= 4 && password.Contains(compactName, StringComparison.OrdinalIgnoreCase))
+                errors.Add("Mật khẩu không được chứa họ tên.");
+        }
+
+        private static void NormalizeUser(UserDTO user)
+        {
+            user.FullName = NormalizeRequired(user.FullName);
+            user.PhoneNumber = NormalizePhone(user.PhoneNumber);
+            user.Gender = NormalizeNullable(user.Gender);
+            user.CCCD = NormalizeNullable(user.CCCD);
+            user.Residential_Address = NormalizeRequired(user.Residential_Address);
+        }
+
+        private static string NormalizePhone(string? value)
+        {
+            value = (value ?? "").Trim();
+            value = value.Replace(" ", "").Replace("-", "").Replace(".", "").Replace("(", "").Replace(")", "");
+
+            if (value.StartsWith("+84"))
+            {
+                value = "0" + value.Substring(3);
+            }
+            else if (value.StartsWith("84") && value.Length == 11)
+            {
+                value = "0" + value.Substring(2);
+            }
+
+            return value;
+        }
+
+        private static string NormalizeRequired(string? value)
+            => Regex.Replace((value ?? "").Trim(), @"\s+", " ");
+
+        private static string? NormalizeNullable(string? value)
+        {
+            string normalized = NormalizeRequired(value);
+            return string.IsNullOrWhiteSpace(normalized) ? null : normalized;
+        }
+
+        private static bool IsValidPhone(string phone)
+            => Regex.IsMatch(phone, @"^0\d{9}$");
+
+        private static bool IsValidCccd(string cccd)
+            => Regex.IsMatch(cccd, @"^\d{12}$");
+
+        private static bool IsValidGender(string gender)
+            => gender == "Nam" || gender == "Nữ";
+
+        private static bool IsSafeCode(string value, int minLength, int maxLength)
+            => value.Length >= minLength
+            && value.Length <= maxLength
+            && Regex.IsMatch(value, @"^[A-Za-z0-9/-]+$");
+
+        private static bool ContainsControlCharacter(string value)
+            => value.Any(ch => char.IsControl(ch) && ch != '\r' && ch != '\n' && ch != '\t');
+
+        private static string FormatValidationErrors(List<string> errors)
+        {
+            if (errors.Count == 0) return "OK";
+
+            return "Vui lòng kiểm tra lại:\n- " + string.Join("\n- ", errors.Distinct());
         }
 
         public static class SecurityHelper

@@ -593,6 +593,28 @@ namespace UI_Tier
             }
         }
 
+        public static Label AddInputHint(Control parent, string text, int x, int y, int width)
+        {
+            Label hint = new Label
+            {
+                AutoSize = false,
+                BackColor = Color.Transparent,
+                ForeColor = Color.FromArgb(108, 117, 125),
+                Font = new Font("Segoe UI", 8.5F, FontStyle.Italic),
+                Location = new Point(x, y),
+                Size = new Size(width, 28),
+                Text = text,
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+
+            parent.Controls.Add(hint);
+            hint.BringToFront();
+            return hint;
+        }
+
+        public static Label AddPasswordRuleHint(Control parent, int x, int y, int width)
+            => AddInputHint(parent, "Mật khẩu: 8-64 ký tự, có chữ hoa/thường, số, ký tự đặc biệt; không chứa khoảng trắng, SĐT hoặc họ tên.", x, y, width);
+
         public static void LogoutAndCleanup(Form dashboard, Dictionary<Panel, UserControl> tabMapping)
         {
             // 1. Hiện lại Guest (Owner) ngay lập tức để không bị lộ màn hình máy tính (Desktop)

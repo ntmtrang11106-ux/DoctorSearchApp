@@ -45,6 +45,8 @@ namespace UI_Tier
             UIHelper.SetDoubleBuffered(pnlPassActions);
 
             SetupFocusEffects();
+            SetupSecurityRuleHints();
+            SetupProfileRuleHints();
 
             // Gán sự kiện Paint để vẽ viền và bóng đổ
             pnlBasicInfo.Paint += SectionPanel_Paint;
@@ -86,6 +88,29 @@ namespace UI_Tier
             UIHelper.SetupInputFocusEffect(txtNewPass, pnlNewPassBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
             UIHelper.SetupInputFocusEffect(txtConfirmPass, pnlConfirmPassBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
             UIHelper.SetupInputFocusEffect(dtpBirthday, pnlBirthdayBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
+        }
+
+        private void SetupSecurityRuleHints()
+        {
+            lblSecurityHint.Text = "Mật khẩu mới cần 8-64 ký tự, có chữ hoa/thường, số và ký tự đặc biệt.";
+            txtNewPass.PlaceholderText = "Mật khẩu mới theo đúng quy định bảo mật";
+            txtConfirmPass.PlaceholderText = "Nhập lại đúng mật khẩu mới";
+            UIHelper.AddPasswordRuleHint(pnlChangePassword, 52, 385, 1320);
+            pnlPassActions.Location = new Point(52, 430);
+            pnlChangePassword.Height = Math.Max(pnlChangePassword.Height, 530);
+            pnlSecurity.Height = Math.Max(pnlSecurity.Height, 640);
+        }
+
+        private void SetupProfileRuleHints()
+        {
+            UIHelper.AddInputHint(pnlBasicInfo, "SĐT: đúng 10 chữ số, bắt đầu bằng 0 và không trùng tài khoản khác.", 1290, 240, 735);
+            UIHelper.AddInputHint(pnlBasicInfo, "Ngày sinh: bác sĩ phải từ 22 đến 100 tuổi.", 1290, 365, 735);
+            UIHelper.AddInputHint(pnlBasicInfo, "Giới tính: chỉ nhập Nam hoặc Nữ.", 455, 487, 735);
+            UIHelper.AddInputHint(pnlBasicInfo, "CCCD: bắt buộc đúng 12 chữ số.", 1290, 487, 735);
+            UIHelper.AddInputHint(pnlBasicInfo, "Họ tên: 2-100 ký tự, chỉ dùng chữ cái và khoảng trắng.", 455, 609, 735);
+            UIHelper.AddInputHint(pnlBasicInfo, "Địa chỉ: 5-255 ký tự, không chứa ký tự điều khiển.", 455, 730, 1551);
+            UIHelper.AddInputHint(pnlBasicInfo, "Giá khám: nhập số không âm; có thể dùng dấu . hoặc , để phân tách.", 1290, 851, 735);
+            UIHelper.AddInputHint(pnlBasicInfo, "Tiểu sử: tối đa 2000 ký tự.", 455, 1140, 1000);
         }
 
         private void ChangeAvatar()
@@ -320,6 +345,8 @@ namespace UI_Tier
             _currentDoctor.Biography = txtBiography.Text.Trim();
             if (decimal.TryParse(txtConsultationFee.Text.Replace(".", "").Replace(",", ""), out decimal fee))
                 _currentDoctor.ConsultationFee = fee;
+            else
+                _currentDoctor.ConsultationFee = -1;
 
             // 2. Gọi BUS để xử lý (có Validation bên trong)
             string result = _doctorBUS.UpdateDoctorInfo(_currentDoctor);
@@ -342,20 +369,8 @@ namespace UI_Tier
             string newP = txtNewPass.Text;
             string conf = txtConfirmPass.Text;
 
-            if (string.IsNullOrEmpty(curr) || string.IsNullOrEmpty(newP))
-            {
-                MessageBox.Show("Vui lòng nhập đầy đủ mật khẩu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (newP != conf)
-            {
-                MessageBox.Show("Mật khẩu xác nhận không khớp!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             int userId = GlobalAccount.GetUserId();
-            string result = _userBUS.ChangePassword(userId, curr, newP);
+            string result = _userBUS.ChangePassword(userId, curr, newP, conf);
             if (result == "Success")
             {
                 MessageBox.Show("Đổi mật khẩu thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
