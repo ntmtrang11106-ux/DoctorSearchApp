@@ -18,9 +18,9 @@ namespace UI_Tier
             pnlHeader = new Panel();
             label1 = new Label();
             pnlSearchBox = new Panel();
-            lstSuggestions = new ListBox();
             txtSearchBar = new TextBox();
             btnSearch = new Button();
+            lstSuggestions = new ListBox();
             pnlFilters = new Panel();
             labelGender = new Label();
             lblAdminStatus = new Label();
@@ -90,19 +90,6 @@ namespace UI_Tier
             pnlSearchBox.Size = new Size(1820, 96);
             pnlSearchBox.TabIndex = 1;
             // 
-            // lstSuggestions
-            // 
-            lstSuggestions.BorderStyle = BorderStyle.FixedSingle;
-            lstSuggestions.Font = new Font("Segoe UI", 11F);
-            lstSuggestions.FormattingEnabled = true;
-            lstSuggestions.Location = new Point(97, 172);
-            lstSuggestions.Margin = new Padding(5);
-            lstSuggestions.Name = "lstSuggestions";
-            lstSuggestions.Size = new Size(1544, 200);
-            lstSuggestions.TabIndex = 2;
-            lstSuggestions.Visible = false;
-            lstSuggestions.Click += lstSuggestions_Click;
-            // 
             // txtSearchBar
             // 
             txtSearchBar.BorderStyle = BorderStyle.None;
@@ -130,6 +117,19 @@ namespace UI_Tier
             btnSearch.Text = "Tìm kiếm";
             btnSearch.UseVisualStyleBackColor = false;
             btnSearch.Click += btnSearch_Click;
+            // 
+            // lstSuggestions
+            // 
+            lstSuggestions.BorderStyle = BorderStyle.FixedSingle;
+            lstSuggestions.Font = new Font("Segoe UI", 11F);
+            lstSuggestions.FormattingEnabled = true;
+            lstSuggestions.Location = new Point(97, 172);
+            lstSuggestions.Margin = new Padding(5);
+            lstSuggestions.Name = "lstSuggestions";
+            lstSuggestions.Size = new Size(1544, 162);
+            lstSuggestions.TabIndex = 2;
+            lstSuggestions.Visible = false;
+            lstSuggestions.Click += lstSuggestions_Click;
             // 
             // pnlFilters
             // 
@@ -316,12 +316,12 @@ namespace UI_Tier
             // lblArtIcon
             // 
             lblArtIcon.Font = new Font("Segoe MDL2 Assets", 18F);
-            lblArtIcon.Location = new Point(32, 19);
+            lblArtIcon.Location = new Point(32, 12);
             lblArtIcon.Margin = new Padding(5, 0, 5, 0);
             lblArtIcon.Name = "lblArtIcon";
             lblArtIcon.Size = new Size(65, 64);
             lblArtIcon.TabIndex = 0;
-            lblArtIcon.Text = "";
+            lblArtIcon.Text = "📝";
             // 
             // pnlResultContainer
             // 
@@ -387,7 +387,6 @@ namespace UI_Tier
             // lblPrev
             // 
             lblPrev.AutoSize = true;
-            lblPrev.Cursor = Cursors.Hand;
             lblPrev.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblPrev.ForeColor = Color.FromArgb(0, 120, 212);
             lblPrev.Location = new Point(65, 24);
@@ -402,7 +401,6 @@ namespace UI_Tier
             // 
             lblNext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblNext.AutoSize = true;
-            lblNext.Cursor = Cursors.Hand;
             lblNext.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblNext.ForeColor = Color.FromArgb(0, 120, 212);
             lblNext.Location = new Point(1674, 24);
