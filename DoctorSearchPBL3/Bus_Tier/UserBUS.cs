@@ -216,7 +216,7 @@ namespace BUS_Tier
             List<string> errors = CollectCommonUserErrors(user, confirmPass, minAge: 18);
 
             position = NormalizeRequired(position);
-            licenseNumber = NormalizeRequired(licenseNumber);
+            licenseNumber = NormalizeRequired(licenseNumber).ToUpperInvariant();
 
             if (string.IsNullOrWhiteSpace(position)) errors.Add("Vui lòng nhập chức danh nghề nghiệp.");
             else if (position.Length > 100) errors.Add("Chức danh nghề nghiệp không được vượt quá 100 ký tự.");
@@ -230,10 +230,10 @@ namespace BUS_Tier
             }
             else
             {
-                if (!IsSafeCode(licenseNumber, 5, 100))
-                    errors.Add("Mã giấy phép hành nghề chỉ được chứa chữ, số, dấu gạch ngang hoặc dấu gạch chéo.");
-                else if (_context.Doctors.Any(d => d.LicenseNumber == licenseNumber && !d.IsDeleted))
-                    errors.Add("Mã giấy phép hành nghề này đã tồn tại trên hệ thống.");
+                if (!IsValidMedicalLicenseNumber(licenseNumber))
+                    errors.Add("Mã CCHN/GPHN phải theo dạng 000001/HCM-CCHN hoặc 000001/BYT-GPHN: 6-7 chữ số, '/', mã cơ quan cấp, '-', CCHN/GPHN.");
+                else if (_context.Doctors.Any(d => d.LicenseNumber != null && d.LicenseNumber.ToUpper() == licenseNumber && !d.IsDeleted))
+                    errors.Add("Mã CCHN/GPHN này đã tồn tại trên hệ thống.");
             }
 
             if (errors.Count > 0) return FormatValidationErrors(errors);
@@ -555,6 +555,9 @@ namespace BUS_Tier
             => value.Length >= minLength
             && value.Length <= maxLength
             && Regex.IsMatch(value, @"^[A-Za-z0-9/-]+$");
+
+        private static bool IsValidMedicalLicenseNumber(string value)
+            => Regex.IsMatch(value, @"^\d{6,7}/[\p{L}0-9]{2,10}-(CCHN|GPHN)$", RegexOptions.IgnoreCase);
 
         private static bool ContainsControlCharacter(string value)
             => value.Any(ch => char.IsControl(ch) && ch != '\r' && ch != '\n' && ch != '\t');

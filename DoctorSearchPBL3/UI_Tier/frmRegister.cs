@@ -274,24 +274,27 @@ namespace UI_Tier
             #region Quản lý User Control chứng chỉ
             int certCount = 0; // Biến đếm số chứng chỉ đã thêm
 
-        // Hàm cập nhật lại số thứ tự hiển thị (1, 2, 3...)
         private void UpdateCertIndexes()
         {
-            // Lấy danh sách các UC hiện có và ép kiểu
             var certList = flpCertificate.Controls.OfType<ucDoctorCertificate>().ToList();
 
-            // Dùng vòng lặp for để gán lại số thứ tự dựa trên vị trí trong danh sách
-            for (int i = 0; i < certList.Count; i++)
+            foreach (var cert in certList)
             {
-                certList[i].lblCertIndex.Text = $"Chứng chỉ #{i + 1}";
+                cert.lblCertIndex.Text = "";
+                cert.lblCertIndex.Visible = false;
             }
 
-            // Cập nhật lại biến đếm để lần sau thêm mới sẽ là (tổng số + 1)
             certCount = certList.Count;
         }
 
         private void btnNew_Click(object sender, EventArgs e)
         {
+            if (flpCertificate.Controls.OfType<ucDoctorCertificate>().Any())
+            {
+                UpdateCertIndexes();
+                return;
+            }
+
             ucDoctorCertificate newUC = new ucDoctorCertificate();
             newUC.OnRemoveRequested += Uc_OnRemoveRequested;
 
