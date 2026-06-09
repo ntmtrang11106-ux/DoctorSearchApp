@@ -38,6 +38,8 @@ namespace UI_Tier
             btnChangePassword = new Button();
             lblSecurityTitle = new Label();
             pnlMedicalProfile = new Panel();
+            pnlBloodTypeBorder = new Panel();
+            txtBloodType = new TextBox();
             pnlMedicalActions = new Panel();
             btnCancelMedical = new Button();
             btnSaveMedical = new Button();
@@ -46,8 +48,6 @@ namespace UI_Tier
             txtMedicalHistory = new TextBox();
             lblMedicalHistory = new Label();
             lblBloodTypeRuleHint = new Label();
-            pnlBloodTypeBorder = new Panel();
-            txtBloodType = new TextBox();
             lblBloodType = new Label();
             btnEditMedical = new Button();
             lblBHYT = new Label();
@@ -107,9 +107,9 @@ namespace UI_Tier
             pnlNewPassBorder.SuspendLayout();
             pnlCurrentPassBorder.SuspendLayout();
             pnlMedicalProfile.SuspendLayout();
+            pnlBloodTypeBorder.SuspendLayout();
             pnlMedicalActions.SuspendLayout();
             pnlMedicalHistoryBorder.SuspendLayout();
-            pnlBloodTypeBorder.SuspendLayout();
             pnlBHYTBorder.SuspendLayout();
             pnlBasicInfo.SuspendLayout();
             pnlBasicInfoActions.SuspendLayout();
@@ -414,6 +414,29 @@ namespace UI_Tier
             pnlMedicalProfile.TabIndex = 1;
             pnlMedicalProfile.Paint += SectionPanel_Paint;
             // 
+            // pnlBloodTypeBorder
+            // 
+            pnlBloodTypeBorder.BackColor = Color.White;
+            pnlBloodTypeBorder.Controls.Add(txtBloodType);
+            pnlBloodTypeBorder.Location = new Point(455, 124);
+            pnlBloodTypeBorder.Name = "pnlBloodTypeBorder";
+            pnlBloodTypeBorder.Padding = new Padding(10);
+            pnlBloodTypeBorder.Size = new Size(734, 63);
+            pnlBloodTypeBorder.TabIndex = 17;
+            // 
+            // txtBloodType
+            // 
+            txtBloodType.BackColor = Color.White;
+            txtBloodType.BorderStyle = BorderStyle.None;
+            txtBloodType.Dock = DockStyle.Fill;
+            txtBloodType.Font = new Font("Segoe UI", 12F);
+            txtBloodType.Location = new Point(10, 10);
+            txtBloodType.Margin = new Padding(4);
+            txtBloodType.Name = "txtBloodType";
+            txtBloodType.ReadOnly = true;
+            txtBloodType.Size = new Size(714, 43);
+            txtBloodType.TabIndex = 17;
+            // 
             // pnlMedicalActions
             // 
             pnlMedicalActions.Controls.Add(btnCancelMedical);
@@ -521,29 +544,6 @@ namespace UI_Tier
             lblBloodTypeRuleHint.TabIndex = 28;
             lblBloodTypeRuleHint.Text = "Nhóm máu: A, B, AB hoặc O; có thể kèm dấu + hoặc -.";
             lblBloodTypeRuleHint.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // pnlBloodTypeBorder
-            // 
-            pnlBloodTypeBorder.BackColor = Color.White;
-            pnlBloodTypeBorder.Controls.Add(txtBloodType);
-            pnlBloodTypeBorder.Location = new Point(455, 124);
-            pnlBloodTypeBorder.Name = "pnlBloodTypeBorder";
-            pnlBloodTypeBorder.Padding = new Padding(10);
-            pnlBloodTypeBorder.Size = new Size(734, 63);
-            pnlBloodTypeBorder.TabIndex = 17;
-            // 
-            // txtBloodType
-            // 
-            txtBloodType.BackColor = Color.White;
-            txtBloodType.BorderStyle = BorderStyle.None;
-            txtBloodType.Dock = DockStyle.Fill;
-            txtBloodType.Font = new Font("Segoe UI", 12F);
-            txtBloodType.Location = new Point(10, 10);
-            txtBloodType.Margin = new Padding(4);
-            txtBloodType.Name = "txtBloodType";
-            txtBloodType.ReadOnly = true;
-            txtBloodType.Size = new Size(714, 43);
-            txtBloodType.TabIndex = 17;
             // 
             // lblBloodType
             // 
@@ -729,7 +729,7 @@ namespace UI_Tier
             lblEmergencyPhoneRuleHint.BackColor = Color.Transparent;
             lblEmergencyPhoneRuleHint.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
             lblEmergencyPhoneRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblEmergencyPhoneRuleHint.Location = new Point(455, 395);
+            lblEmergencyPhoneRuleHint.Location = new Point(455, 401);
             lblEmergencyPhoneRuleHint.Margin = new Padding(4, 0, 4, 0);
             lblEmergencyPhoneRuleHint.Name = "lblEmergencyPhoneRuleHint";
             lblEmergencyPhoneRuleHint.Size = new Size(734, 46);
@@ -777,10 +777,10 @@ namespace UI_Tier
             lblEmergencyContactRuleHint.BackColor = Color.Transparent;
             lblEmergencyContactRuleHint.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
             lblEmergencyContactRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblEmergencyContactRuleHint.Location = new Point(455, 726);
+            lblEmergencyContactRuleHint.Location = new Point(455, 740);
             lblEmergencyContactRuleHint.Margin = new Padding(4, 0, 4, 0);
             lblEmergencyContactRuleHint.Name = "lblEmergencyContactRuleHint";
-            lblEmergencyContactRuleHint.Size = new Size(734, 46);
+            lblEmergencyContactRuleHint.Size = new Size(734, 32);
             lblEmergencyContactRuleHint.TabIndex = 41;
             lblEmergencyContactRuleHint.Text = "Tên liên hệ khẩn cấp: tối đa 100 ký tự.";
             lblEmergencyContactRuleHint.TextAlign = ContentAlignment.MiddleLeft;
@@ -844,23 +844,23 @@ namespace UI_Tier
             txtPatientID.TabIndex = 19;
             // 
             // lblPatientID
-            //
+            // 
             lblPatientID.AutoSize = true;
             lblPatientID.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             lblPatientID.ForeColor = Color.FromArgb(73, 80, 87);
             lblPatientID.Location = new Point(1290, 620);
             lblPatientID.Margin = new Padding(4, 0, 4, 0);
             lblPatientID.Name = "lblPatientID";
-            lblPatientID.Size = new Size(233, 45);
+            lblPatientID.Size = new Size(120, 45);
             lblPatientID.TabIndex = 18;
             lblPatientID.Text = "Mã BN";
-            //
+            // 
             // lblPatientIDRuleHint
-            //
+            // 
             lblPatientIDRuleHint.BackColor = Color.Transparent;
             lblPatientIDRuleHint.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
             lblPatientIDRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblPatientIDRuleHint.Location = new Point(992, 578);
+            lblPatientIDRuleHint.Location = new Point(1290, 740);
             lblPatientIDRuleHint.Name = "lblPatientIDRuleHint";
             lblPatientIDRuleHint.Size = new Size(565, 32);
             lblPatientIDRuleHint.TabIndex = 48;
@@ -872,7 +872,7 @@ namespace UI_Tier
             lblCccdRuleHint.BackColor = Color.Transparent;
             lblCccdRuleHint.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
             lblCccdRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblCccdRuleHint.Location = new Point(1290, 561);
+            lblCccdRuleHint.Location = new Point(1290, 559);
             lblCccdRuleHint.Margin = new Padding(4, 0, 4, 0);
             lblCccdRuleHint.Name = "lblCccdRuleHint";
             lblCccdRuleHint.Size = new Size(734, 46);
@@ -920,10 +920,10 @@ namespace UI_Tier
             lblGenderRuleHint.BackColor = Color.Transparent;
             lblGenderRuleHint.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
             lblGenderRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblGenderRuleHint.Location = new Point(455, 564);
+            lblGenderRuleHint.Location = new Point(455, 574);
             lblGenderRuleHint.Margin = new Padding(4, 0, 4, 0);
             lblGenderRuleHint.Name = "lblGenderRuleHint";
-            lblGenderRuleHint.Size = new Size(734, 46);
+            lblGenderRuleHint.Size = new Size(734, 33);
             lblGenderRuleHint.TabIndex = 43;
             lblGenderRuleHint.Text = "Giới tính: chỉ nhập Nam hoặc Nữ.";
             lblGenderRuleHint.TextAlign = ContentAlignment.MiddleLeft;
@@ -968,7 +968,7 @@ namespace UI_Tier
             lblBirthdayRuleHint.BackColor = Color.Transparent;
             lblBirthdayRuleHint.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
             lblBirthdayRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblBirthdayRuleHint.Location = new Point(1290, 393);
+            lblBirthdayRuleHint.Location = new Point(1290, 390);
             lblBirthdayRuleHint.Margin = new Padding(4, 0, 4, 0);
             lblBirthdayRuleHint.Name = "lblBirthdayRuleHint";
             lblBirthdayRuleHint.Size = new Size(734, 46);
@@ -977,7 +977,7 @@ namespace UI_Tier
             lblBirthdayRuleHint.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // pnlBirthdayBorder
-            //
+            // 
             pnlBirthdayBorder.BackColor = Color.White;
             pnlBirthdayBorder.Controls.Add(lblBirthdayValue);
             pnlBirthdayBorder.Controls.Add(dtpBirthday);
@@ -986,22 +986,22 @@ namespace UI_Tier
             pnlBirthdayBorder.Padding = new Padding(10, 5, 10, 5);
             pnlBirthdayBorder.Size = new Size(734, 60);
             pnlBirthdayBorder.TabIndex = 11;
-            //
+            // 
             // lblBirthdayValue
-            //
+            // 
             lblBirthdayValue.BackColor = Color.Transparent;
             lblBirthdayValue.Dock = DockStyle.Fill;
             lblBirthdayValue.Font = new Font("Segoe UI", 12F);
             lblBirthdayValue.ForeColor = Color.FromArgb(33, 37, 41);
-            lblBirthdayValue.Location = new Point(12, 6);
+            lblBirthdayValue.Location = new Point(10, 5);
             lblBirthdayValue.Name = "lblBirthdayValue";
-            lblBirthdayValue.Size = new Size(541, 42);
+            lblBirthdayValue.Size = new Size(714, 50);
             lblBirthdayValue.TabIndex = 12;
             lblBirthdayValue.Text = "01 / 01 / 1990";
             lblBirthdayValue.TextAlign = ContentAlignment.MiddleLeft;
-            //
+            // 
             // dtpBirthday
-            //
+            // 
             dtpBirthday.CalendarFont = new Font("Segoe UI", 12F);
             dtpBirthday.CustomFormat = "dd / MM / yyyy";
             dtpBirthday.Dock = DockStyle.Fill;
@@ -1066,7 +1066,7 @@ namespace UI_Tier
             lblPhoneRuleHint.BackColor = Color.Transparent;
             lblPhoneRuleHint.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
             lblPhoneRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblPhoneRuleHint.Location = new Point(1290, 242);
+            lblPhoneRuleHint.Location = new Point(1290, 236);
             lblPhoneRuleHint.Margin = new Padding(4, 0, 4, 0);
             lblPhoneRuleHint.Name = "lblPhoneRuleHint";
             lblPhoneRuleHint.Size = new Size(734, 40);
@@ -1230,11 +1230,11 @@ namespace UI_Tier
             pnlCurrentPassBorder.PerformLayout();
             pnlMedicalProfile.ResumeLayout(false);
             pnlMedicalProfile.PerformLayout();
+            pnlBloodTypeBorder.ResumeLayout(false);
+            pnlBloodTypeBorder.PerformLayout();
             pnlMedicalActions.ResumeLayout(false);
             pnlMedicalHistoryBorder.ResumeLayout(false);
             pnlMedicalHistoryBorder.PerformLayout();
-            pnlBloodTypeBorder.ResumeLayout(false);
-            pnlBloodTypeBorder.PerformLayout();
             pnlBHYTBorder.ResumeLayout(false);
             pnlBHYTBorder.PerformLayout();
             pnlBasicInfo.ResumeLayout(false);

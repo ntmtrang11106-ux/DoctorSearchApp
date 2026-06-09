@@ -402,7 +402,7 @@ namespace UI_Tier
             // 
             lblAddressRuleHint.Font = new Font("Segoe UI", 10F, FontStyle.Italic);
             lblAddressRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblAddressRuleHint.Location = new Point(439, 701);
+            lblAddressRuleHint.Location = new Point(439, 697);
             lblAddressRuleHint.Name = "lblAddressRuleHint";
             lblAddressRuleHint.Size = new Size(1570, 36);
             lblAddressRuleHint.TabIndex = 40;
@@ -412,7 +412,7 @@ namespace UI_Tier
             // 
             lblCccdRuleHint.Font = new Font("Segoe UI", 10F, FontStyle.Italic);
             lblCccdRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblCccdRuleHint.Location = new Point(1240, 540);
+            lblCccdRuleHint.Location = new Point(1240, 537);
             lblCccdRuleHint.Name = "lblCccdRuleHint";
             lblCccdRuleHint.Size = new Size(770, 36);
             lblCccdRuleHint.TabIndex = 41;
@@ -422,7 +422,7 @@ namespace UI_Tier
             // 
             lblGenderRuleHint.Font = new Font("Segoe UI", 10F, FontStyle.Italic);
             lblGenderRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblGenderRuleHint.Location = new Point(439, 540);
+            lblGenderRuleHint.Location = new Point(439, 536);
             lblGenderRuleHint.Name = "lblGenderRuleHint";
             lblGenderRuleHint.Size = new Size(770, 36);
             lblGenderRuleHint.TabIndex = 42;
@@ -432,7 +432,7 @@ namespace UI_Tier
             // 
             lblBirthdayRuleHint.Font = new Font("Segoe UI", 10F, FontStyle.Italic);
             lblBirthdayRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblBirthdayRuleHint.Location = new Point(1240, 381);
+            lblBirthdayRuleHint.Location = new Point(1240, 374);
             lblBirthdayRuleHint.Name = "lblBirthdayRuleHint";
             lblBirthdayRuleHint.Size = new Size(770, 36);
             lblBirthdayRuleHint.TabIndex = 43;
