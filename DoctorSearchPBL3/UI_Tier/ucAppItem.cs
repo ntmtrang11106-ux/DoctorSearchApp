@@ -21,10 +21,28 @@ namespace UI_Tier
         public event EventHandler AppointmentDeleted;
         public event EventHandler<AppointmentsDTO> AppointmentEdited;
         public event EventHandler<int> AdminTimeSlotEdited;
+        public event EventHandler<int> OnViewPatientsClicked;
 
         private AppCardMode _currentMode;
         private AppointmentsDTO? _currentAppData;
         private TimeSlotsDTO? _currentTimeSlot;
+
+        private string _searchKeyword = "";
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string SearchKeyword
+        {
+            get => _searchKeyword;
+            set
+            {
+                if (_searchKeyword != value)
+                {
+                    _searchKeyword = value;
+                    lblAdminDoctor.Invalidate();
+                }
+            }
+        }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -43,11 +61,10 @@ namespace UI_Tier
         {
             InitializeComponent();
             UIHelper.SetDoubleBuffered(this);
-        }
 
-        private void ucAppItem_Load(object sender, EventArgs e)
-        {
-            // Thiết lập bo góc mặc định cho các nút bấm
+            btnViewPatients.Click += (s, e) => OnViewPatientsClicked?.Invoke(this, _timeslotId);
+            
+            // Thiết lập bo góc mặc định cho các nút bấm (moved from Load to prevent flicker)
             UIHelper.ApplyRoundedRegion(btnStatus, 10);
             UIHelper.ApplyRoundedRegion(btnAccept, 40);
             UIHelper.ApplyRoundedRegion(btnCancel, 40);
@@ -56,11 +73,28 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(btnBook, 40);
             UIHelper.ApplyRoundedRegion(btnRate, 40);
             UIHelper.ApplyRoundedRegion(btnHide, 40);
+        }
+
+        private void ucAppItem_Load(object sender, EventArgs e)
+        {
 
             this.Paint += (s, ev) =>
             {
                 UIHelper.uc_Paint(this, ev, 40, Color.LightGray, 3);
             };
+
+            lblName.Paint += lblHighlight_Paint;
+            lblAdminRoom.Paint += lblHighlight_Paint;
+            lblAdminDoctor.Paint += lblHighlight_Paint;
+        }
+
+        private void lblHighlight_Paint(object sender, PaintEventArgs e)
+        {
+            if (sender is Label lbl && !string.IsNullOrWhiteSpace(_searchKeyword))
+            {
+                UIHelper.DrawHighlightText(e.Graphics, lbl, lbl.Text, _searchKeyword, 
+                    lbl.ForeColor, Color.FromArgb(206, 225, 255), Color.FromArgb(0, 98, 255));
+            }
         }
 
         // --- CẬP NHẬT STYLE TRẠNG THÁI CUỘC HẸN ---
@@ -113,12 +147,9 @@ namespace UI_Tier
             if (mode == AppCardMode.AdminView)
             {
                 btnEdit.Visible = true;
-                btnRemove.Visible = true;
-                btnHide.Visible = true;
-
-                // Đồng bộ hóa trạng thái nút Ẩn/Hiện bằng mã Unicode icon
-                btnHide.Text = (status == "Hidden") ? "\uED1A" : "\uE890";
-                ttAction.SetToolTip(btnHide, (status == "Hidden") ? "Hiện lịch hẹn" : "Ẩn lịch hẹn");
+                // btnRemove và btnHide đã bị yêu cầu ẩn khỏi Admin View
+                btnRemove.Visible = false;
+                btnHide.Visible = false;
 
                 // Admin View phân hệ quản lý cao độ không dùng các nút tương tác trực tiếp của User lẻ
                 return;
@@ -177,7 +208,6 @@ namespace UI_Tier
             bool isAdmin = (mode == AppCardMode.AdminView);
             flpAdminNames.Visible = isAdmin;
             flpAdminPhones.Visible = isAdmin;
-            lblAdminArrowPhone.Visible = isAdmin;
             lblAdminInfo.Visible = isAdmin;
             lblDep.Visible = isAdmin;
 
@@ -195,16 +225,13 @@ namespace UI_Tier
             // 2. Phân chia đổ dữ liệu chi tiết
             if (isAdmin)
             {
-                lblAdminPatient.Text = data.Patient?.User?.FullName ?? "N/A";
                 lblAdminDoctor.Text = data.Doctor?.User?.FullName ?? "N/A";
-                lblAdminPatientPhone.Text = data.Patient?.User?.PhoneNumber ?? "N/A";
-                lblAdminDoctorPhone.Text = data.Doctor?.User?.PhoneNumber ?? "N/A";
                 lblDep.Text = data.Doctor?.Department?.DepartmentName ?? "Chưa cập nhật";
 
                 if (data.TimeSlot != null)
                 {
                     lblAdminInfo.Text = $"Phòng: {data.TimeSlot.Room?.RoomCode ?? "N/A"}\n" +
-                        $"Trạng thái: {(data.TimeSlot.Status == "Hidden" ? "Đã ẩn" : data.TimeSlot.BookedCount >= data.TimeSlot.MaxAppointments ? "Đầy" : "Còn trống")}\n" +
+                        $"Trạng thái: {(data.TimeSlot.BookedCount >= data.TimeSlot.MaxAppointments ? "Đầy" : "Còn trống")}\n" +
                         $"Số lượng: {data.TimeSlot.BookedCount}/{data.TimeSlot.MaxAppointments}";
                 }
 
@@ -292,57 +319,64 @@ namespace UI_Tier
         private void SetupAdminRow(TimeSlotsDTO data)
         {
             // Ẩn tất cả các control bệnh nhân/bác sĩ thông thường
-            lblName.Visible = lblPhoneNumber.Visible = label2.Visible = lblSymptoms.Visible = false;
+            label2.Visible = lblSymptoms.Visible = false;
             lblAdminPhone.Visible = false;
+
+            // Ẩn flpAdminNames và flpAdminPhones vì ta sẽ dùng lblName gốc
+            flpAdminNames.Visible = false;
+            flpAdminPhones.Visible = false;
 
             // Hiện đồng loạt các cấu trúc lưới thông tin Admin
             lblDate.Visible = true;
             lblTime.Visible = true;
-            flpAdminNames.Visible = true;
-            flpAdminPhones.Visible = true;
-            lblAdminInfo.Visible = true;
+            lblName.Visible = true;
+            lblPhoneNumber.Visible = true;
+            pnlAdminInfo.Visible = true;
             lblDep.Visible = true;
+            btnViewPatients.Visible = true;
 
             lblDate.Text = data.WorkDate.ToString("dd/MM/yyyy");
             lblTime.Text = $"{data.StartTime:hh\\:mm} - {data.EndTime:hh\\:mm}";
 
-            // Bên trái: Bác sĩ | Bên phải: Bệnh nhân đầu tiên trong danh sách đợi
-            lblAdminPatient.Text = data.Doctor?.User?.FullName ?? "N/A";
-            lblAdminPatientPhone.Text = data.Doctor?.User?.PhoneNumber ?? "N/A";
+            // Bên phải là Bác sĩ - Dùng lblName và lblPhoneNumber để hiển thị
+            string position = UIHelper.NormalizeDoctorTitle(data.Doctor?.Position);
+            string fullName = UIHelper.NormalizeDoctorName(data.Doctor?.User?.FullName);
+            
+            lblName.Text = string.IsNullOrWhiteSpace(position) ? $"BS. {fullName}" : $"{position} {fullName}";
+            lblPhoneNumber.Text = data.Doctor?.User?.PhoneNumber ?? "N/A";
 
-            var firstApp = data.Appointments?
-                .OrderBy(a => a.Status == "Pending" ? 0 : a.Status == "Confirmed" ? 1 : a.Status == "Completed" ? 2 : 3)
-                .FirstOrDefault();
+            int pendingCount = data.Appointments?.Count(a => a.Status == "Pending") ?? 0;
 
-            if (firstApp != null)
+            btnViewPatients.Text = $"Xem chi tiết {data.BookedCount} bệnh nhân";
+            UIHelper.ApplyRoundedRegion(btnViewPatients, 8);
+
+            // Vị trí đã được căn chuẩn từ Designer
+
+            lblPendingCount.Text = $"{pendingCount} chờ duyệt";
+            UIHelper.ApplyRoundedRegion(lblPendingCount, 10);
+            
+            // Nếu có chờ duyệt thì làm nổi bật màu cam, nếu không thì hiện màu xám nhạt
+            if (pendingCount > 0)
             {
-                lblAdminDoctor.Text = firstApp.Patient?.User?.FullName ?? "Bệnh nhân";
-                if (data.BookedCount > 1) lblAdminDoctor.Text += $" (+{data.BookedCount - 1})";
-                lblAdminDoctorPhone.Text = firstApp.Patient?.User?.PhoneNumber ?? "N/A";
-
-                lblAdminArrowPhone.Visible = true;
-                lblAdminDoctorPhone.Visible = true;
-                lblArrow.Visible = true;
-
-                btnStatus.Visible = true;
-                UpdateStatusStyle(firstApp.Status); // Hiện trạng thái xử lý của cuộc hẹn đầu tiên
+                lblPendingCount.BackColor = Color.OldLace;
+                lblPendingCount.ForeColor = Color.DarkOrange;
             }
             else
             {
-                lblAdminDoctor.Text = "Chưa có BN";
-                lblAdminDoctorPhone.Text = "";
-                lblAdminArrowPhone.Visible = false;
-                lblAdminDoctorPhone.Visible = false;
-                lblArrow.Visible = false;
-                btnStatus.Visible = false;
+                lblPendingCount.BackColor = Color.FromArgb(245, 245, 245);
+                lblPendingCount.ForeColor = Color.Gray;
             }
 
-            lblAdminPatientPhone.Margin = new Padding(-5, 0, 0, 0);
+            lblArrow.Visible = false;
+            btnStatus.Visible = false;
+            lblPendingCount.Visible = true;
+
             lblDep.Text = data.Doctor?.Department?.DepartmentName ?? "Chưa cập nhật";
             UIHelper.ApplyRoundedRegion(lblDep, 8);
 
-            string statusText = data.IsDeleted ? "Đã xóa" : data.Status == "Hidden" ? "Đã ẩn" : data.BookedCount >= data.MaxAppointments ? "Đầy" : "Còn trống";
-            lblAdminInfo.Text = $"Phòng: {data.Room?.RoomCode ?? "N/A"}\nTrạng thái: {statusText}\nSố lượng: {data.BookedCount}/{data.MaxAppointments}";
+            string statusText = data.BookedCount >= data.MaxAppointments ? "Đầy" : "Còn trống";
+            lblAdminRoom.Text = $"Phòng: {data.Room?.RoomCode ?? "N/A"}";
+            lblAdminInfo.Text = $"Trạng thái: {statusText}\nSố lượng: {data.BookedCount}/{data.MaxAppointments}";
 
             SetupButtons(AppCardMode.AdminView, data.Status);
             AlignStatusButtons();
@@ -385,33 +419,7 @@ namespace UI_Tier
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
-            // Trường hợp 1: Admin xóa toàn bộ TimeSlot của bác sĩ
-            if (_currentMode == AppCardMode.AdminView && _timeslotId > 0)
-            {
-                if (_currentTimeSlot?.Appointments != null && _currentTimeSlot.Appointments.Any(a => a.Status == "Confirmed"))
-                {
-                    MessageBox.Show("Không thể xóa lịch đã có bệnh nhân được duyệt khám!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                bool hasPending = _currentTimeSlot?.Appointments != null && _currentTimeSlot.Appointments.Any(a => a.Status == "Pending");
-                string confirmMsg = hasPending
-                    ? "Lịch này đang có bệnh nhân CHỜ DUYỆT. Nếu xóa, lịch của họ sẽ bị hủy tự động. Bạn có chắc chắn muốn xóa không?"
-                    : "Bạn có chắc chắn muốn xóa lịch làm việc này không?";
-
-                if (MessageBox.Show(confirmMsg, "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                {
-                    TimeSlotBUS bus = new TimeSlotBUS();
-                    if (bus.DeleteTimeSlot(_timeslotId))
-                    {
-                        MessageBox.Show("Đã xóa khung giờ làm việc thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        RefreshData?.Invoke();
-                    }
-                }
-                return;
-            }
-
-            // Trường hợp 2: User lẻ tự hủy lịch cuộc hẹn của mình
+            // User lẻ tự hủy lịch cuộc hẹn của mình
             if (MessageBox.Show("Bạn có chắc chắn muốn hủy lịch hẹn này không?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 AppointmentBUS bus = new AppointmentBUS();
@@ -438,34 +446,7 @@ namespace UI_Tier
 
         private void btnHide_Click(object sender, EventArgs e)
         {
-            if (_timeslotId <= 0) return;
-
-            TimeSlotBUS bus = new TimeSlotBUS();
-            string result = bus.HideTimeSlot(_timeslotId);
-
-            if (result == "Success")
-            {
-                RefreshData?.Invoke();
-            }
-            else if (result == "ConfirmedExists")
-            {
-                MessageBox.Show("Không thể ẩn lịch đã có bệnh nhân được duyệt khám!", "Lưu ý", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            else if (result == "PendingExists")
-            {
-                if (MessageBox.Show("Lịch này đang có bệnh nhân CHỜ DUYỆT. Nếu ẩn, lịch của họ sẽ bị hủy. Bạn có chắc chắn muốn ẩn không?",
-                    "Xác nhận ẩn lịch", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    if (bus.ForceHideTimeSlot(_timeslotId))
-                    {
-                        RefreshData?.Invoke();
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show(result, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            // Chức năng Ẩn đã bị loại bỏ khỏi hệ thống
         }
     }
 }

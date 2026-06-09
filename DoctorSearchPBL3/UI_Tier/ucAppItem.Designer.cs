@@ -34,7 +34,9 @@ namespace UI_Tier
             lblDate = new Label();
             lblTime = new Label();
             lblSymptoms = new Label();
+            pnlSymptoms = new Panel();
             btnStatus = new Button();
+            lblPendingCount = new Label();
             label2 = new Label();
             label1 = new Label();
             btnAccept = new Button();
@@ -46,21 +48,20 @@ namespace UI_Tier
             btnRemove = new Button();
             btnEdit = new Button();
             btnCancel = new Button();
+            pnlAdminInfo = new Panel();
+            lblAdminRoom = new Label();
             lblAdminInfo = new Label();
             ttAction = new ToolTip(components);
             lblDep = new Label();
-            lblAdminPatient = new Label();
             lblAdminDoctor = new Label();
-            lblAdminArrow = new Label();
             flpAdminNames = new FlowLayoutPanel();
-            lblAdminPatientPhone = new Label();
-            lblAdminArrowPhone = new Label();
-            lblAdminDoctorPhone = new Label();
+            btnViewPatients = new Button();
             lblAdminPhone = new Label();
             lblArrow = new Label();
             flpAdminPhones = new FlowLayoutPanel();
             flpAction.SuspendLayout();
-            flpAdminNames.SuspendLayout();
+            pnlAdminInfo.SuspendLayout();
+            pnlSymptoms.SuspendLayout();
             SuspendLayout();
             // 
             // lblName
@@ -103,13 +104,24 @@ namespace UI_Tier
             lblTime.TabIndex = 6;
             lblTime.Text = "8h30' - 9h45'";
             // 
+            // pnlSymptoms
+            // 
+            pnlSymptoms.Location = new Point(1110, 91);
+            pnlSymptoms.Name = "pnlSymptoms";
+            pnlSymptoms.Size = new Size(553, 131);
+            pnlSymptoms.TabIndex = 13;
+            pnlSymptoms.AutoScroll = true;
+            pnlSymptoms.Controls.Add(lblSymptoms);
+            // 
             // lblSymptoms
             // 
+            lblSymptoms.AutoSize = true;
             lblSymptoms.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblSymptoms.ImageAlign = ContentAlignment.MiddleLeft;
-            lblSymptoms.Location = new Point(1110, 91);
+            lblSymptoms.Location = new Point(0, 0);
+            lblSymptoms.MaximumSize = new Size(520, 0);
             lblSymptoms.Name = "lblSymptoms";
-            lblSymptoms.Size = new Size(553, 131);
+            lblSymptoms.Size = new Size(520, 45);
             lblSymptoms.TabIndex = 7;
             lblSymptoms.Text = "Đau ngực, khó thở";
             // 
@@ -126,6 +138,19 @@ namespace UI_Tier
             btnStatus.TabIndex = 9;
             btnStatus.Text = "Thành công";
             btnStatus.UseVisualStyleBackColor = false;
+            // 
+            // lblPendingCount
+            // 
+            lblPendingCount.BackColor = Color.OldLace;
+            lblPendingCount.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblPendingCount.ForeColor = Color.DarkOrange;
+            lblPendingCount.Location = new Point(1944, 80);
+            lblPendingCount.Name = "lblPendingCount";
+            lblPendingCount.Size = new Size(229, 60);
+            lblPendingCount.TabIndex = 10;
+            lblPendingCount.Text = "0 chờ duyệt";
+            lblPendingCount.TextAlign = ContentAlignment.MiddleCenter;
+            lblPendingCount.Visible = false;
             // 
             // label2
             // 
@@ -157,7 +182,7 @@ namespace UI_Tier
             btnAccept.FlatStyle = FlatStyle.Flat;
             btnAccept.Font = new Font("Segoe MDL2 Assets", 20F);
             btnAccept.ForeColor = Color.Green;
-            btnAccept.Location = new Point(395, 30);
+            btnAccept.Location = new Point(351, 33);
             btnAccept.Margin = new Padding(25, 5, 0, 0);
             btnAccept.Name = "btnAccept";
             btnAccept.Size = new Size(80, 80);
@@ -181,11 +206,11 @@ namespace UI_Tier
             flpAction.Controls.Add(btnEdit);
             flpAction.Controls.Add(btnCancel);
             flpAction.Controls.Add(btnAccept);
-            flpAction.Controls.Add(lblAdminInfo);
+            flpAction.Controls.Add(pnlAdminInfo);
             flpAction.FlowDirection = FlowDirection.RightToLeft;
-            flpAction.Location = new Point(940, 59);
+            flpAction.Location = new Point(984, 59);
             flpAction.Name = "flpAction";
-            flpAction.Size = new Size(1225, 135);
+            flpAction.Size = new Size(1181, 141);
             flpAction.TabIndex = 15;
             flpAction.WrapContents = false;
             // 
@@ -197,7 +222,7 @@ namespace UI_Tier
             btnViewRecord.FlatStyle = FlatStyle.Flat;
             btnViewRecord.Font = new Font("Segoe MDL2 Assets", 18F);
             btnViewRecord.ForeColor = Color.DodgerBlue;
-            btnViewRecord.Location = new Point(1145, 30);
+            btnViewRecord.Location = new Point(1101, 33);
             btnViewRecord.Margin = new Padding(25, 5, 0, 0);
             btnViewRecord.Name = "btnViewRecord";
             btnViewRecord.Size = new Size(80, 80);
@@ -215,7 +240,7 @@ namespace UI_Tier
             btnRate.FlatStyle = FlatStyle.Flat;
             btnRate.Font = new Font("Segoe MDL2 Assets", 18F);
             btnRate.ForeColor = Color.Goldenrod;
-            btnRate.Location = new Point(1040, 30);
+            btnRate.Location = new Point(996, 33);
             btnRate.Margin = new Padding(25, 5, 0, 0);
             btnRate.Name = "btnRate";
             btnRate.Size = new Size(80, 80);
@@ -233,7 +258,7 @@ namespace UI_Tier
             btnBook.FlatStyle = FlatStyle.Flat;
             btnBook.Font = new Font("Segoe MDL2 Assets", 18F);
             btnBook.ForeColor = Color.DodgerBlue;
-            btnBook.Location = new Point(935, 30);
+            btnBook.Location = new Point(891, 33);
             btnBook.Margin = new Padding(25, 5, 0, 0);
             btnBook.Name = "btnBook";
             btnBook.Size = new Size(80, 80);
@@ -252,7 +277,7 @@ namespace UI_Tier
             btnHide.FlatStyle = FlatStyle.Flat;
             btnHide.Font = new Font("Segoe MDL2 Assets", 20F);
             btnHide.ForeColor = Color.FromArgb(107, 114, 128);
-            btnHide.Location = new Point(825, 27);
+            btnHide.Location = new Point(781, 30);
             btnHide.Margin = new Padding(25, 5, 0, 0);
             btnHide.Name = "btnHide";
             btnHide.Size = new Size(85, 85);
@@ -270,7 +295,7 @@ namespace UI_Tier
             btnRemove.FlatStyle = FlatStyle.Flat;
             btnRemove.Font = new Font("Segoe MDL2 Assets", 20F);
             btnRemove.ForeColor = Color.FromArgb(217, 119, 6);
-            btnRemove.Location = new Point(715, 27);
+            btnRemove.Location = new Point(671, 30);
             btnRemove.Margin = new Padding(25, 5, 0, 0);
             btnRemove.Name = "btnRemove";
             btnRemove.Size = new Size(85, 85);
@@ -289,7 +314,7 @@ namespace UI_Tier
             btnEdit.FlatStyle = FlatStyle.Flat;
             btnEdit.Font = new Font("Segoe MDL2 Assets", 20F);
             btnEdit.ForeColor = Color.FromArgb(37, 99, 235);
-            btnEdit.Location = new Point(605, 27);
+            btnEdit.Location = new Point(561, 30);
             btnEdit.Margin = new Padding(25, 5, 0, 0);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(85, 85);
@@ -307,7 +332,7 @@ namespace UI_Tier
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe MDL2 Assets", 20F);
             btnCancel.ForeColor = Color.DarkRed;
-            btnCancel.Location = new Point(500, 30);
+            btnCancel.Location = new Point(456, 33);
             btnCancel.Margin = new Padding(25, 5, 0, 0);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(80, 80);
@@ -318,17 +343,37 @@ namespace UI_Tier
             btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
             // 
+            // pnlAdminInfo
+            // 
+            pnlAdminInfo.AutoSize = true;
+            pnlAdminInfo.Controls.Add(lblAdminRoom);
+            pnlAdminInfo.Controls.Add(lblAdminInfo);
+            pnlAdminInfo.Location = new Point(3, 3);
+            pnlAdminInfo.Name = "pnlAdminInfo";
+            pnlAdminInfo.Size = new Size(320, 135);
+            pnlAdminInfo.TabIndex = 29;
+            pnlAdminInfo.Visible = false;
+            // 
+            // lblAdminRoom
+            // 
+            lblAdminRoom.AutoSize = true;
+            lblAdminRoom.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblAdminRoom.Location = new Point(0, 0);
+            lblAdminRoom.Name = "lblAdminRoom";
+            lblAdminRoom.Size = new Size(185, 45);
+            lblAdminRoom.TabIndex = 0;
+            lblAdminRoom.Text = "Phòng: N/A";
+            // 
             // lblAdminInfo
             // 
             lblAdminInfo.AutoSize = true;
             lblAdminInfo.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblAdminInfo.Location = new Point(0, 0);
-            lblAdminInfo.Margin = new Padding(0, 0, 50, 0);
+            lblAdminInfo.Location = new Point(0, 45);
+            lblAdminInfo.Margin = new Padding(0);
             lblAdminInfo.Name = "lblAdminInfo";
-            lblAdminInfo.Size = new Size(320, 135);
-            lblAdminInfo.TabIndex = 28;
-            lblAdminInfo.Text = "Phòng: N/A\r\nTrạng thái: Còn trống\r\nSố lượng: 0/0";
-            lblAdminInfo.Visible = false;
+            lblAdminInfo.Size = new Size(320, 90);
+            lblAdminInfo.TabIndex = 1;
+            lblAdminInfo.Text = "Trạng thái: Còn trống\r\nSố lượng: 0/0";
             // 
             // ttAction
             // 
@@ -351,87 +396,40 @@ namespace UI_Tier
             lblDep.Text = "Chuyên khoa";
             lblDep.Visible = false;
             // 
-            // lblAdminPatient
-            // 
-            lblAdminPatient.AutoSize = true;
-            lblAdminPatient.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-            lblAdminPatient.Location = new Point(197, 0);
-            lblAdminPatient.Margin = new Padding(0);
-            lblAdminPatient.Name = "lblAdminPatient";
-            lblAdminPatient.Size = new Size(212, 51);
-            lblAdminPatient.TabIndex = 0;
-            lblAdminPatient.Text = "Bệnh nhân";
-            // 
             // lblAdminDoctor
             // 
-            lblAdminDoctor.AutoSize = true;
-            lblAdminDoctor.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             lblAdminDoctor.Location = new Point(0, 0);
-            lblAdminDoctor.Margin = new Padding(0);
             lblAdminDoctor.Name = "lblAdminDoctor";
-            lblAdminDoctor.Size = new Size(122, 51);
-            lblAdminDoctor.TabIndex = 1;
-            lblAdminDoctor.Text = "Bác sĩ";
-            // 
-            // lblAdminArrow
-            // 
-            lblAdminArrow.AutoSize = true;
-            lblAdminArrow.Font = new Font("Segoe UI", 14F);
-            lblAdminArrow.ForeColor = Color.Gray;
-            lblAdminArrow.Location = new Point(132, 0);
-            lblAdminArrow.Margin = new Padding(10, 0, 10, 0);
-            lblAdminArrow.Name = "lblAdminArrow";
-            lblAdminArrow.Size = new Size(55, 51);
-            lblAdminArrow.TabIndex = 20;
-            lblAdminArrow.Text = "→";
+            lblAdminDoctor.Size = new Size(100, 23);
+            lblAdminDoctor.TabIndex = 0;
             // 
             // flpAdminNames
             // 
             flpAdminNames.AutoSize = true;
             flpAdminNames.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            flpAdminNames.Controls.Add(lblAdminDoctor);
-            flpAdminNames.Controls.Add(lblAdminArrow);
-            flpAdminNames.Controls.Add(lblAdminPatient);
             flpAdminNames.Location = new Point(410, 85);
             flpAdminNames.Name = "flpAdminNames";
-            flpAdminNames.Size = new Size(409, 51);
+            flpAdminNames.Size = new Size(0, 0);
             flpAdminNames.TabIndex = 27;
             flpAdminNames.Visible = false;
             flpAdminNames.WrapContents = false;
             // 
-            // lblAdminPatientPhone
+            // btnViewPatients
             // 
-            lblAdminPatientPhone.AutoSize = true;
-            lblAdminPatientPhone.Font = new Font("Segoe UI", 12F);
-            lblAdminPatientPhone.Location = new Point(697, 145);
-            lblAdminPatientPhone.Margin = new Padding(0);
-            lblAdminPatientPhone.Name = "lblAdminPatientPhone";
-            lblAdminPatientPhone.Size = new Size(190, 45);
-            lblAdminPatientPhone.TabIndex = 30;
-            lblAdminPatientPhone.Text = "0000000000";
-            // 
-            // lblAdminArrowPhone
-            // 
-            lblAdminArrowPhone.AutoSize = true;
-            lblAdminArrowPhone.Font = new Font("Segoe UI", 12F);
-            lblAdminArrowPhone.ForeColor = Color.Silver;
-            lblAdminArrowPhone.Location = new Point(639, 145);
-            lblAdminArrowPhone.Margin = new Padding(10, 0, 10, 0);
-            lblAdminArrowPhone.Name = "lblAdminArrowPhone";
-            lblAdminArrowPhone.Size = new Size(48, 45);
-            lblAdminArrowPhone.TabIndex = 31;
-            lblAdminArrowPhone.Text = "→";
-            // 
-            // lblAdminDoctorPhone
-            // 
-            lblAdminDoctorPhone.AutoSize = true;
-            lblAdminDoctorPhone.Font = new Font("Segoe UI", 12F);
-            lblAdminDoctorPhone.Location = new Point(410, 145);
-            lblAdminDoctorPhone.Margin = new Padding(0);
-            lblAdminDoctorPhone.Name = "lblAdminDoctorPhone";
-            lblAdminDoctorPhone.Size = new Size(190, 45);
-            lblAdminDoctorPhone.TabIndex = 32;
-            lblAdminDoctorPhone.Text = "0000000000";
+            btnViewPatients.AutoSize = true;
+            btnViewPatients.BackColor = Color.FromArgb(239, 246, 255);
+            btnViewPatients.FlatAppearance.BorderSize = 0;
+            btnViewPatients.FlatStyle = FlatStyle.Flat;
+            btnViewPatients.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnViewPatients.ForeColor = Color.FromArgb(37, 99, 235);
+            btnViewPatients.Location = new Point(905, 85);
+            btnViewPatients.Margin = new Padding(0);
+            btnViewPatients.Name = "btnViewPatients";
+            btnViewPatients.Size = new Size(402, 55);
+            btnViewPatients.TabIndex = 36;
+            btnViewPatients.Text = "Xem chi tiết 0 bệnh nhân";
+            btnViewPatients.UseVisualStyleBackColor = false;
+            btnViewPatients.Visible = false;
             // 
             // lblAdminPhone
             // 
@@ -467,15 +465,14 @@ namespace UI_Tier
             Controls.Add(flpAdminNames);
             Controls.Add(lblArrow);
             Controls.Add(lblAdminPhone);
-            Controls.Add(lblAdminPatientPhone);
-            Controls.Add(lblAdminArrowPhone);
-            Controls.Add(lblAdminDoctorPhone);
             Controls.Add(lblDep);
             Controls.Add(flpAction);
+            Controls.Add(btnViewPatients);
             Controls.Add(label1);
             Controls.Add(label2);
+            Controls.Add(lblPendingCount);
             Controls.Add(btnStatus);
-            Controls.Add(lblSymptoms);
+            Controls.Add(pnlSymptoms);
             Controls.Add(lblTime);
             Controls.Add(lblDate);
             Controls.Add(lblPhoneNumber);
@@ -486,8 +483,10 @@ namespace UI_Tier
             Load += ucAppItem_Load;
             flpAction.ResumeLayout(false);
             flpAction.PerformLayout();
-            flpAdminNames.ResumeLayout(false);
-            flpAdminNames.PerformLayout();
+            pnlAdminInfo.ResumeLayout(false);
+            pnlAdminInfo.PerformLayout();
+            pnlSymptoms.PerformLayout();
+            pnlSymptoms.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -499,7 +498,9 @@ namespace UI_Tier
         private Label lblDate;
         private Label lblTime;
         private Label lblSymptoms;
+        private Panel pnlSymptoms;
         private Button btnStatus;
+        private Label lblPendingCount;
         private Label label2;
         private Label label1;
         private Button btnAccept;
@@ -512,13 +513,10 @@ namespace UI_Tier
         private Button btnRate;
         private Button btnViewRecord;
         private Label lblDep;
+        private Panel pnlAdminInfo;
+        private Label lblAdminRoom;
         private Label lblAdminInfo;
-        private Label lblAdminPatient;
         private Label lblAdminDoctor;
-        private Label lblAdminArrow;
-        private Label lblAdminPatientPhone;
-        private Label lblAdminArrowPhone;
-        private Label lblAdminDoctorPhone;
         private Label lblAdminDate;
         private Label lblAdminTime;
         private Label lblAdminClockIcon;
@@ -529,5 +527,12 @@ namespace UI_Tier
         private FlowLayoutPanel flpAdminNames;
         private FlowLayoutPanel flpAdminPhones;
         private Button button1;
+        private Button btnViewPatients;
+        private Label lblAdminPatient;
+        //private Label lblAdminDoctor;
+        private Label lblAdminArrow;
+        private Label lblAdminPatientPhone;
+        private Label lblAdminArrowPhone;
+        private Label lblAdminDoctorPhone;
     }
 }

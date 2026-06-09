@@ -22,6 +22,7 @@ namespace UI_Tier
             string end = app.TimeSlot?.EndTime.ToString(@"hh\:mm") ?? "00:00";
             lblTime.Text = $"{start} - {end}";
             lblPatientName.Text = app.Patient?.User?.FullName ?? "N/A";
+            lblPatientPhone.Text = app.Patient?.User?.PhoneNumber ?? "Chưa có SDT";
             lblReason.Text = app.Reason ?? "Khám tổng quát";
 
             if (app.Status == "Confirmed")
@@ -55,8 +56,8 @@ namespace UI_Tier
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            // Vẽ viền nhẹ cho từng ô lịch hẹn
-            UIHelper.DrawControlBorder(this, e, 15, Color.FromArgb(235, 238, 242), 2);
+            // Vẽ viền cho từng ô lịch hẹn rõ hơn
+            UIHelper.uc_Paint(this, e, 15, Color.FromArgb(203, 213, 225), 2);
         }
     }
 }

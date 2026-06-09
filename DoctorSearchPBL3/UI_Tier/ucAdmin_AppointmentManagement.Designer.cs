@@ -17,10 +17,16 @@ namespace UI_Tier
 
         private void InitializeComponent()
         {
+            cbCapacity = new ComboBox();
             pnlHeader = new Panel();
-            cbStatusFilter = new ComboBox();
+            flpFilter = new FlowLayoutPanel();
+            //btnAll = new Button();
+            //btnEmpty = new Button();
+            //btnWaitting = new Button();
+            //btnAccepted = new Button();
+            //btnCanceled = new Button();
+            //btnDone = new Button();
             lblTitle = new Label();
-            cbDept = new ComboBox();
             pnlSearchArea = new Panel();
             label2 = new Label();
             txtSearch = new TextBox();
@@ -34,6 +40,7 @@ namespace UI_Tier
             pnlBottomBuffer = new Panel();
             pnlResultContainer = new Panel();
             pnlHeader.SuspendLayout();
+            flpFilter.SuspendLayout();
             pnlSearchArea.SuspendLayout();
             flpAppItem.SuspendLayout();
             pnlReviewPagination.SuspendLayout();
@@ -43,29 +50,25 @@ namespace UI_Tier
             // pnlHeader
             // 
             pnlHeader.BackColor = Color.White;
-            pnlHeader.Controls.Add(cbStatusFilter);
+            pnlHeader.Controls.Add(flpFilter);
             pnlHeader.Controls.Add(lblTitle);
-            pnlHeader.Controls.Add(cbDept);
+            pnlHeader.Controls.Add(cbCapacity);
             pnlHeader.Controls.Add(pnlSearchArea);
             pnlHeader.Controls.Add(btnCreateSchedule);
             pnlHeader.Dock = DockStyle.Top;
             pnlHeader.Location = new Point(0, 0);
             pnlHeader.Name = "pnlHeader";
-            pnlHeader.Size = new Size(1845, 212);
+            pnlHeader.Size = new Size(1845, 290);
             pnlHeader.TabIndex = 0;
             // 
-            // cbStatusFilter
+            // flpFilter
             // 
-            cbStatusFilter.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            cbStatusFilter.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbStatusFilter.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            cbStatusFilter.FormattingEnabled = true;
-            cbStatusFilter.Location = new Point(1110, 116);
-            cbStatusFilter.Name = "cbStatusFilter";
-            cbStatusFilter.Size = new Size(330, 58);
-            cbStatusFilter.TabIndex = 5;
-            cbStatusFilter.SelectedIndexChanged += cbStatusFilter_SelectedIndexChanged;
-            // 
+            flpFilter.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            flpFilter.FlowDirection = FlowDirection.LeftToRight;
+            flpFilter.Location = new Point(27, 200);
+            flpFilter.Name = "flpFilter";
+            flpFilter.Size = new Size(1500, 70);
+            flpFilter.TabIndex = 5;
             // lblTitle
             // 
             lblTitle.AutoSize = true;
@@ -77,17 +80,17 @@ namespace UI_Tier
             lblTitle.TabIndex = 4;
             lblTitle.Text = "Quản lý lịch hẹn";
             // 
-            // cbDept
-            // 
-            cbDept.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            cbDept.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbDept.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            cbDept.FormattingEnabled = true;
-            cbDept.Location = new Point(1475, 116);
-            cbDept.Name = "cbDept";
-            cbDept.Size = new Size(353, 58);
-            cbDept.TabIndex = 2;
-            cbDept.SelectedIndexChanged += cbDept_SelectedIndexChanged;
+        // cbCapacity
+        // 
+        cbCapacity.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        cbCapacity.DropDownStyle = ComboBoxStyle.DropDownList;
+        cbCapacity.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
+        cbCapacity.FormattingEnabled = true;
+        cbCapacity.Location = new Point(1475, 116);
+        cbCapacity.Name = "cbCapacity";
+        cbCapacity.Size = new Size(353, 58);
+        cbCapacity.TabIndex = 6;
+        cbCapacity.SelectedIndexChanged += cbCapacity_SelectedIndexChanged;
             // 
             // pnlSearchArea
             // 
@@ -107,7 +110,7 @@ namespace UI_Tier
             label2.BackColor = Color.Transparent;
             label2.Font = new Font("Segoe MDL2 Assets", 17F);
             label2.ForeColor = SystemColors.ControlDarkDark;
-            label2.Location = new Point(8, 20);
+            label2.Location = new Point(8, 11);
             label2.Name = "label2";
             label2.Size = new Size(75, 75);
             label2.TabIndex = 2;
@@ -118,9 +121,9 @@ namespace UI_Tier
             txtSearch.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             txtSearch.BorderStyle = BorderStyle.None;
             txtSearch.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtSearch.Location = new Point(80, 12);
+            txtSearch.Location = new Point(102, 16);
             txtSearch.Name = "txtSearch";
-            txtSearch.PlaceholderText = "Tìm kiếm theo bác sĩ, khoa, phòng...";
+            txtSearch.PlaceholderText = "Tìm kiếm bác sĩ theo khoa, tên phòng...";
             txtSearch.Size = new Size(780, 50);
             txtSearch.TabIndex = 1;
             txtSearch.TextChanged += txtSearch_TextChanged;
@@ -150,7 +153,7 @@ namespace UI_Tier
             flpAppItem.FlowDirection = FlowDirection.TopDown;
             flpAppItem.Location = new Point(5, 5);
             flpAppItem.Name = "flpAppItem";
-            flpAppItem.Size = new Size(1835, 535);
+            flpAppItem.Size = new Size(1835, 457);
             flpAppItem.TabIndex = 2;
             flpAppItem.WrapContents = false;
             // 
@@ -173,7 +176,7 @@ namespace UI_Tier
             pnlReviewPagination.Controls.Add(lblReviewPrevBtn);
             pnlReviewPagination.Controls.Add(lblReviewNext);
             pnlReviewPagination.Dock = DockStyle.Bottom;
-            pnlReviewPagination.Location = new Point(5, 560);
+            pnlReviewPagination.Location = new Point(5, 482);
             pnlReviewPagination.Margin = new Padding(5);
             pnlReviewPagination.Name = "pnlReviewPagination";
             pnlReviewPagination.Size = new Size(1835, 80);
@@ -220,7 +223,7 @@ namespace UI_Tier
             // 
             pnlBottomBuffer.BackColor = Color.White;
             pnlBottomBuffer.Dock = DockStyle.Bottom;
-            pnlBottomBuffer.Location = new Point(5, 540);
+            pnlBottomBuffer.Location = new Point(5, 462);
             pnlBottomBuffer.Name = "pnlBottomBuffer";
             pnlBottomBuffer.Size = new Size(1835, 20);
             pnlBottomBuffer.TabIndex = 6;
@@ -232,10 +235,10 @@ namespace UI_Tier
             pnlResultContainer.Controls.Add(pnlBottomBuffer);
             pnlResultContainer.Controls.Add(pnlReviewPagination);
             pnlResultContainer.Dock = DockStyle.Fill;
-            pnlResultContainer.Location = new Point(0, 212);
+            pnlResultContainer.Location = new Point(0, 290);
             pnlResultContainer.Name = "pnlResultContainer";
             pnlResultContainer.Padding = new Padding(5, 5, 5, 10);
-            pnlResultContainer.Size = new Size(1845, 650);
+            pnlResultContainer.Size = new Size(1845, 572);
             pnlResultContainer.TabIndex = 2;
             // 
             // ucAdmin_AppointmentManagement
@@ -250,6 +253,7 @@ namespace UI_Tier
             Load += ucAdmin_AppointmentManagement_Load;
             pnlHeader.ResumeLayout(false);
             pnlHeader.PerformLayout();
+            flpFilter.ResumeLayout(false);
             pnlSearchArea.ResumeLayout(false);
             pnlSearchArea.PerformLayout();
             flpAppItem.ResumeLayout(false);
@@ -267,7 +271,6 @@ namespace UI_Tier
         private FlowLayoutPanel flpAppItem;
         private Panel pnlSearchArea;
         private TextBox txtSearch;
-        private ComboBox cbDept;
         private Panel pnlTableHead;
         private Label lblHeadDoctor;
         private Label lblHeadDept;
@@ -283,9 +286,10 @@ namespace UI_Tier
         private Label lblReviewPrevBtn;
         private Label lblReviewNext;
         private Label lblNoData;
-        private ComboBox cbStatusFilter;
+        private FlowLayoutPanel flpFilter;
         private Panel pnlBottomBuffer;
         private Panel pnlResultContainer;
         private Label label2;
+        private ComboBox cbCapacity;
     }
 }
