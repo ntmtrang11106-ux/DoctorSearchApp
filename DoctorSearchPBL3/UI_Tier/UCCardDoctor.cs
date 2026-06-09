@@ -149,18 +149,24 @@ namespace UI_Tier
         }
 
         /// <summary>
-        /// Chuẩn hóa chức danh hiển thị của bác sĩ (ví dụ: PGS, TS, ThS, BS).
+        /// Chuẩn hóa chức danh hiển thị của bác sĩ (ví dụ: PGS, GS, TS, ThS, BS, BSCK).
         /// </summary>
         private static string NormalizeDoctorTitle(string? position)
         {
             if (string.IsNullOrWhiteSpace(position)) return "BS.";
 
             string title = position.Trim();
-            if (title.Contains("Bác sĩ", StringComparison.OrdinalIgnoreCase) ||
-                title.Contains("Bác Sĩ", StringComparison.OrdinalIgnoreCase))
-            {
-                return "BS.";
-            }
+
+            // Thay thế các học hàm, học vị, chức danh phổ biến theo thứ tự ưu tiên
+            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)phó giáo sư", "PGS.");
+            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)giáo sư", "GS.");
+            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)tiến sĩ", "TS.");
+            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)thạc sĩ", "ThS.");
+            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)bác sĩ chuyên khoa", "BSCK.");
+            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)bác sĩ", "BS.");
+
+            // Chuẩn hóa khoảng trắng dư thừa
+            title = System.Text.RegularExpressions.Regex.Replace(title, @"\s+", " ").Trim();
 
             return title;
         }
