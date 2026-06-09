@@ -57,7 +57,6 @@ namespace UI_Tier
             panelHeader.Name = "panelHeader";
             panelHeader.Size = new Size(794, 72);
             panelHeader.TabIndex = 0;
-
             panelHeader.MouseDown += panelHeader_MouseDown;
             // 
             // btnClose
@@ -254,7 +253,7 @@ namespace UI_Tier
             btnSubmit.BackColor = Color.FromArgb(37, 99, 235);
             btnSubmit.FlatAppearance.BorderSize = 0;
             btnSubmit.FlatStyle = FlatStyle.Flat;
-            btnSubmit.Font = new Font("Microsoft Sans Serif", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnSubmit.Font = new Font("Segoe UI Semibold", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnSubmit.ForeColor = Color.White;
             btnSubmit.Location = new Point(40, 995);
             btnSubmit.Name = "btnSubmit";
@@ -268,8 +267,8 @@ namespace UI_Tier
             btnCancel.BackColor = Color.FromArgb(241, 245, 249);
             btnCancel.FlatAppearance.BorderSize = 0;
             btnCancel.FlatStyle = FlatStyle.Flat;
-            btnCancel.Font = new Font("Microsoft Sans Serif", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnCancel.Location = new Point(560, 995);
+            btnCancel.Font = new Font("Segoe UI Semibold", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCancel.Location = new Point(556, 995);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(200, 60);
             btnCancel.TabIndex = 10;
@@ -287,7 +286,6 @@ namespace UI_Tier
             pnlDoctorInfo.Name = "pnlDoctorInfo";
             pnlDoctorInfo.Size = new Size(778, 183);
             pnlDoctorInfo.TabIndex = 16;
-
             // 
             // pictureBox1
             // 
@@ -312,11 +310,11 @@ namespace UI_Tier
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Microsoft Sans Serif", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label3.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label3.ForeColor = Color.FromArgb(31, 41, 55);
             label3.Location = new Point(212, 25);
             label3.Name = "label3";
-            label3.Size = new Size(368, 42);
+            label3.Size = new Size(356, 50);
             label3.TabIndex = 1;
             label3.Text = "BS. Nguyễn Văn An";
             // 
@@ -339,7 +337,6 @@ namespace UI_Tier
             pnlMainBackground.Name = "pnlMainBackground";
             pnlMainBackground.Size = new Size(794, 1094);
             pnlMainBackground.TabIndex = 17;
-
             // 
             // pnlCommentBorder
             // 

@@ -57,7 +57,7 @@ namespace UI_Tier
             // 
             // pnlHeader
             // 
-            pnlHeader.BackColor = Color.FromArgb(0, 120, 212);
+            pnlHeader.BackColor = Color.FromArgb(24, 112, 255);
             pnlHeader.Controls.Add(label1);
             pnlHeader.Controls.Add(pnlSearchBox);
             pnlHeader.Dock = DockStyle.Top;
@@ -69,15 +69,16 @@ namespace UI_Tier
             // 
             // label1
             // 
-            label1.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
+            label1.BackColor = Color.FromArgb(24, 112, 255);
+            label1.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.White;
-            label1.Location = new Point(65, 0);
+            label1.Location = new Point(70, 0);
             label1.Margin = new Padding(5, 0, 5, 0);
             label1.Name = "label1";
-            label1.Size = new Size(1820, 80);
+            label1.Size = new Size(1820, 71);
             label1.TabIndex = 0;
             label1.Text = "Tìm kiếm ";
-            label1.TextAlign = ContentAlignment.MiddleCenter;
+            label1.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // pnlSearchBox
             // 
@@ -104,15 +105,15 @@ namespace UI_Tier
             // 
             // btnSearch
             // 
-            btnSearch.BackColor = Color.FromArgb(0, 120, 212);
+            btnSearch.BackColor = Color.FromArgb(24, 112, 255);
             btnSearch.FlatAppearance.BorderSize = 0;
             btnSearch.FlatStyle = FlatStyle.Flat;
             btnSearch.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             btnSearch.ForeColor = Color.White;
-            btnSearch.Location = new Point(1592, 8);
+            btnSearch.Location = new Point(1592, 15);
             btnSearch.Margin = new Padding(5);
             btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(211, 80);
+            btnSearch.Size = new Size(211, 70);
             btnSearch.TabIndex = 1;
             btnSearch.Text = "Tìm kiếm";
             btnSearch.UseVisualStyleBackColor = false;
@@ -153,21 +154,21 @@ namespace UI_Tier
             // labelGender
             // 
             labelGender.AutoSize = true;
-            labelGender.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            labelGender.Font = new Font("Segoe UI Semibold", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             labelGender.Location = new Point(65, 147);
             labelGender.Margin = new Padding(5, 0, 5, 0);
             labelGender.Name = "labelGender";
-            labelGender.Size = new Size(187, 51);
+            labelGender.Size = new Size(177, 50);
             labelGender.TabIndex = 4;
             labelGender.Text = "Giới tính:";
             // 
             // lblAdminStatus
             // 
             lblAdminStatus.AutoSize = true;
-            lblAdminStatus.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblAdminStatus.Font = new Font("Segoe UI Semibold", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblAdminStatus.Location = new Point(1489, 158);
             lblAdminStatus.Name = "lblAdminStatus";
-            lblAdminStatus.Size = new Size(212, 51);
+            lblAdminStatus.Size = new Size(199, 50);
             lblAdminStatus.TabIndex = 7;
             lblAdminStatus.Text = "Trạng thái:";
             lblAdminStatus.Visible = false;
@@ -176,7 +177,7 @@ namespace UI_Tier
             // 
             cboAdminStatus.DropDownStyle = ComboBoxStyle.DropDownList;
             cboAdminStatus.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            cboAdminStatus.Location = new Point(1709, 158);
+            cboAdminStatus.Location = new Point(1709, 154);
             cboAdminStatus.Name = "cboAdminStatus";
             cboAdminStatus.Size = new Size(334, 58);
             cboAdminStatus.TabIndex = 6;
@@ -184,11 +185,11 @@ namespace UI_Tier
             // labelSort
             // 
             labelSort.AutoSize = true;
-            labelSort.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            labelSort.Font = new Font("Segoe UI Semibold", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             labelSort.Location = new Point(771, 155);
             labelSort.Margin = new Padding(5, 0, 5, 0);
             labelSort.Name = "labelSort";
-            labelSort.Size = new Size(173, 51);
+            labelSort.Size = new Size(163, 50);
             labelSort.TabIndex = 6;
             labelSort.Text = "Sắp xếp:";
             // 
@@ -197,7 +198,7 @@ namespace UI_Tier
             cboSort.DropDownStyle = ComboBoxStyle.DropDownList;
             cboSort.Font = new Font("Segoe UI", 14F);
             cboSort.FormattingEnabled = true;
-            cboSort.Location = new Point(954, 155);
+            cboSort.Location = new Point(954, 153);
             cboSort.Margin = new Padding(5);
             cboSort.Name = "cboSort";
             cboSort.Size = new Size(485, 58);
@@ -209,7 +210,7 @@ namespace UI_Tier
             cboContentType.DropDownStyle = ComboBoxStyle.DropDownList;
             cboContentType.Font = new Font("Segoe UI", 14F);
             cboContentType.FormattingEnabled = true;
-            cboContentType.Location = new Point(351, 155);
+            cboContentType.Location = new Point(351, 152);
             cboContentType.Margin = new Padding(5);
             cboContentType.Name = "cboContentType";
             cboContentType.Size = new Size(388, 58);
@@ -219,11 +220,11 @@ namespace UI_Tier
             // labelContentType
             // 
             labelContentType.AutoSize = true;
-            labelContentType.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            labelContentType.Font = new Font("Segoe UI Semibold", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             labelContentType.Location = new Point(65, 152);
             labelContentType.Margin = new Padding(5, 0, 5, 0);
             labelContentType.Name = "labelContentType";
-            labelContentType.Size = new Size(276, 51);
+            labelContentType.Size = new Size(262, 50);
             labelContentType.TabIndex = 5;
             labelContentType.Text = "Loại nội dung:";
             // 
@@ -265,27 +266,27 @@ namespace UI_Tier
             // 
             tabDoc.Controls.Add(lblDocText);
             tabDoc.Controls.Add(lblDocIcon);
-            tabDoc.Location = new Point(65, 8);
+            tabDoc.Location = new Point(70, 11);
             tabDoc.Margin = new Padding(5);
             tabDoc.Name = "tabDoc";
-            tabDoc.Size = new Size(358, 96);
+            tabDoc.Size = new Size(346, 86);
             tabDoc.TabIndex = 0;
             // 
             // lblDocText
             // 
             lblDocText.AutoSize = true;
-            lblDocText.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            lblDocText.Location = new Point(130, 24);
+            lblDocText.Font = new Font("Segoe UI Semibold", 13F, FontStyle.Bold);
+            lblDocText.Location = new Point(106, 19);
             lblDocText.Margin = new Padding(5, 0, 5, 0);
             lblDocText.Name = "lblDocText";
-            lblDocText.Size = new Size(105, 45);
+            lblDocText.Size = new Size(109, 47);
             lblDocText.TabIndex = 1;
             lblDocText.Text = "Bác sĩ";
             // 
             // lblDocIcon
             // 
             lblDocIcon.Font = new Font("Segoe MDL2 Assets", 18F);
-            lblDocIcon.Location = new Point(32, 19);
+            lblDocIcon.Location = new Point(36, 19);
             lblDocIcon.Margin = new Padding(5, 0, 5, 0);
             lblDocIcon.Name = "lblDocIcon";
             lblDocIcon.Size = new Size(65, 64);
@@ -296,20 +297,20 @@ namespace UI_Tier
             // 
             tabArt.Controls.Add(lblArtText);
             tabArt.Controls.Add(lblArtIcon);
-            tabArt.Location = new Point(455, 8);
+            tabArt.Location = new Point(457, 9);
             tabArt.Margin = new Padding(5);
             tabArt.Name = "tabArt";
-            tabArt.Size = new Size(358, 96);
+            tabArt.Size = new Size(364, 89);
             tabArt.TabIndex = 1;
             // 
             // lblArtText
             // 
             lblArtText.AutoSize = true;
-            lblArtText.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            lblArtText.Location = new Point(130, 24);
+            lblArtText.Font = new Font("Segoe UI Semibold", 13F, FontStyle.Bold);
+            lblArtText.Location = new Point(108, 23);
             lblArtText.Margin = new Padding(5, 0, 5, 0);
             lblArtText.Name = "lblArtText";
-            lblArtText.Size = new Size(131, 45);
+            lblArtText.Size = new Size(137, 47);
             lblArtText.TabIndex = 1;
             lblArtText.Text = "Bài viết";
             // 

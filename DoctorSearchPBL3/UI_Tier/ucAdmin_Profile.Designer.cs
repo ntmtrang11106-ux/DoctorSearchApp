@@ -745,7 +745,7 @@ namespace UI_Tier
             lblAdminName.Location = new Point(49, 480);
             lblAdminName.Margin = new Padding(4, 0, 4, 0);
             lblAdminName.Name = "lblAdminName";
-            lblAdminName.Size = new Size(350, 40);
+            lblAdminName.Size = new Size(350, 73);
             lblAdminName.TabIndex = 3;
             lblAdminName.Text = "Admin";
             lblAdminName.TextAlign = ContentAlignment.MiddleCenter;

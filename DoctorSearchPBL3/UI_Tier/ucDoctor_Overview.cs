@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -30,7 +31,7 @@ namespace UI_Tier
             UIHelper.SetDoubleBuffered(this);
             UIHelper.SetupScrollableContainer(flpRecentReviews);
             UIHelper.SetupScrollableContainer(flpTodayApp);
-            
+
             UIHelper.SetupHoverEffect(lblReviewPrev, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
             UIHelper.SetupHoverEffect(lblReviewNext, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
             UIHelper.SetupHoverEffect(lblAppPrev, Color.FromArgb(0, 90, 158), Color.FromArgb(0, 120, 212));
@@ -52,19 +53,25 @@ namespace UI_Tier
         private void ucDoctor_Overview_Load(object sender, EventArgs e)
         {
             UpdateUI();
-            
+
             flpRecentReviews.Resize += (s, ev) => {
-                foreach (Control ctrl in flpRecentReviews.Controls) {
-                    if (ctrl is ucReviewItem item) {
-                        item.Width = flpRecentReviews.ClientSize.Width - 15;
+                foreach (Control ctrl in flpRecentReviews.Controls)
+                {
+                    if (ctrl is ucReviewItem item)
+                    {
+                        // Trừ đi 25 thay vì 15 để dự phòng khoảng trống cho thanh cuộn (scrollbar) dọc
+                        item.Width = flpRecentReviews.ClientSize.Width - 25;
                     }
                 }
             };
-            
+
             flpTodayApp.Resize += (s, ev) => {
-                foreach (Control ctrl in flpTodayApp.Controls) {
-                    if (ctrl is ucAppItem item) {
-                        item.Width = flpTodayApp.ClientSize.Width - 15;
+                foreach (Control ctrl in flpTodayApp.Controls)
+                {
+                    // SỬA LỖI 2: Đổi từ ucAppItem thành ucAppointmentRow cho đúng kiểu dữ liệu
+                    if (ctrl is ucAppointmentRow item)
+                    {
+                        item.Width = flpTodayApp.ClientSize.Width - 25;
                     }
                 }
             };
@@ -84,6 +91,8 @@ namespace UI_Tier
                 if (card != null)
                 {
                     UIHelper.ApplyRoundedRegion(card, 25);
+                    // Bỏ đăng ký sự kiện cũ để tránh lặp bộ nhớ (Memory Leak) khi UpdateUI gọi nhiều lần
+                    card.Paint -= StatPanel_Paint;
                     card.Paint += StatPanel_Paint;
                 }
             }
@@ -94,12 +103,47 @@ namespace UI_Tier
             }
         }
 
+        // SỬA LỖI 1: Tự vẽ lại đường viền ôm khít và lùi 1 pixel vào trong góc để không bị khuất góc Region
         private void StatPanel_Paint(object sender, PaintEventArgs e)
         {
             if (sender is Panel pnl)
             {
-                UIHelper.DrawControlBorder(pnl, e, 20, Color.Black, 2);
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                int radius = 25; // Khớp chuẩn xác bán kính bo tròn góc 25 của Region
+                int borderThickness = 2;
+
+                using (Pen pen = new Pen(Color.Black, borderThickness))
+                {
+                    // Thu nhỏ nhẹ hình chữ nhật vẽ viền (inset) vào trong để viền không chạm mép cắt Region
+                    Rectangle rect = new Rectangle(
+                        borderThickness / 2,
+                        borderThickness / 2,
+                        pnl.Width - borderThickness,
+                        pnl.Height - borderThickness
+                    );
+
+                    using (GraphicsPath path = GetRoundedRectPath(rect, radius - borderThickness))
+                    {
+                        e.Graphics.DrawPath(pen, path);
+                    }
+                }
             }
+        }
+
+        // Hàm helper vẽ hình chữ nhật bo góc mượt mà
+        private GraphicsPath GetRoundedRectPath(Rectangle rect, int radius)
+        {
+            GraphicsPath path = new GraphicsPath();
+            int diameter = radius * 2;
+
+            if (diameter <= 0) { path.AddRectangle(rect); return path; }
+
+            path.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);
+            path.AddArc(rect.Right - diameter, rect.Y, diameter, diameter, 270, 90);
+            path.AddArc(rect.Right - diameter, rect.Bottom - diameter, diameter, diameter, 0, 90);
+            path.AddArc(rect.X, rect.Bottom - diameter, diameter, diameter, 90, 90);
+            path.CloseFigure();
+            return path;
         }
 
         public void SetDoctorData(DoctorDTO doctor)
@@ -116,14 +160,14 @@ namespace UI_Tier
         private void LoadDashboardData()
         {
             DoctorBUS bus = new DoctorBUS();
-            
+
             lblValue1.Text = bus.GetTodayAppointments(_doctorId).Count.ToString();
             lblValue2.Text = bus.GetTotalPatientsCount(_doctorId).ToString();
             lblValue3.Text = bus.GetPendingAppointmentsCount(_doctorId).ToString();
-            
+
             bus.CalculateDoctorStats(_currentDoctor);
             lblValue4.Text = _currentDoctor.AverageRating.ToString("F1");
-            
+
             if (_currentDoctor.Reviews != null && _currentDoctor.Reviews.Any())
             {
                 double avg = _currentDoctor.Reviews.Average(r => r.Rating);
@@ -182,7 +226,7 @@ namespace UI_Tier
 
                 int totalPages = Math.Max(1, (int)Math.Ceiling((double)_allTodayApps.Count / _appPageSize));
                 lblAppPageStatus.Text = $@"Trang {page} / {totalPages}";
-                
+
                 lblAppPrev.Enabled = true;
                 lblAppNext.Enabled = true;
                 lblAppPrev.ForeColor = Color.FromArgb(0, 120, 212);
@@ -218,7 +262,10 @@ namespace UI_Tier
         {
             ucAppointmentRow row = new ucAppointmentRow();
             row.SetData(app);
-            row.Margin = new Padding(10, 5, 10, 5);
+            // SỬA LỖI 3: Tăng margin top/bottom từ 5 lên 10 để các hàng lịch hẹn thoáng hơn
+            row.Margin = new Padding(12, 10, 12, 10);
+            // Cập nhật kích thước ngay khi khởi tạo giúp giao diện mượt, không đợi resize
+            row.Width = flpTodayApp.ClientSize.Width - 25;
             flpTodayApp.Controls.Add(row);
         }
 
@@ -258,13 +305,16 @@ namespace UI_Tier
                 {
                     ucReviewItem item = new ucReviewItem();
                     item.SetReviewData(rev, _currentDoctor, -1);
-                    item.Margin = new Padding(10, 5, 10, 5);
+                    // SỬA LỖI 3: Tăng margin top/bottom lên 12 giúp các item đánh giá giãn rộng vừa mắt
+                    item.Margin = new Padding(12, 12, 12, 12);
+                    // Cập nhật kích thước ngay lập tức tránh lệch khung khi load lần đầu
+                    item.Width = flpRecentReviews.ClientSize.Width - 25;
                     flpRecentReviews.Controls.Add(item);
                 }
 
                 int totalPages = Math.Max(1, (int)Math.Ceiling((double)_allReviews.Count / _reviewPageSize));
                 lblReviewPageStatus.Text = $@"Trang {page} / {totalPages}";
-                
+
                 lblReviewPrev.Enabled = true;
                 lblReviewNext.Enabled = true;
                 lblReviewPrev.ForeColor = Color.FromArgb(0, 120, 212);
@@ -302,7 +352,7 @@ namespace UI_Tier
             int totalItemsHeight = flp.Padding.Top + flp.Padding.Bottom;
             foreach (Control ctrl in flp.Controls)
             {
-                if (ctrl.Visible && ctrl != pnlPagination && ctrl.Name != "pnlBuffer") 
+                if (ctrl.Visible && ctrl != pnlPagination && ctrl.Name != "pnlBuffer")
                     totalItemsHeight += ctrl.Height + ctrl.Margin.Top + ctrl.Margin.Bottom;
             }
 
@@ -318,8 +368,9 @@ namespace UI_Tier
                 flp.Dock = DockStyle.Top;
                 flp.Height = totalItemsHeight;
                 flp.AutoScroll = false;
-                
-                if (flp.Controls.Count == 1 && flp.Controls[0] is Label lbl) {
+
+                if (flp.Controls.Count == 1 && flp.Controls[0] is Label lbl)
+                {
                     lbl.Width = flp.Width - 10;
                     lbl.Height = Math.Max(150, availableHeight - 20);
                     flp.Height = lbl.Height + 10;
@@ -331,12 +382,12 @@ namespace UI_Tier
                 pnlPagination.Margin = new Padding(0);
                 flp.Dock = DockStyle.Fill;
                 flp.AutoScroll = true;
-                
+
                 Panel pnlBuffer = new Panel { Height = 15, Width = flp.Width, Name = "pnlBuffer" };
                 flp.Controls.Add(pnlBuffer);
             }
-            
-            container.Controls.SetChildIndex(pnlPagination, 0); 
+
+            container.Controls.SetChildIndex(pnlPagination, 0);
         }
     }
 }

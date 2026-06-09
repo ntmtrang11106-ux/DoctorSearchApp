@@ -257,7 +257,7 @@ namespace UI_Tier
                 {
                     if (btn.Text == _selectedStatus)
                     {
-                        btn.BackColor = Color.FromArgb(0, 120, 212);
+                        btn.BackColor = Color.FromArgb(24, 112, 255);
                         btn.ForeColor = Color.White;
                         btn.Font = new Font("Segoe UI", 12f, FontStyle.Bold);
                     }
