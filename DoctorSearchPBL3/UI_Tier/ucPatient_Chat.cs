@@ -53,8 +53,6 @@ namespace UI_Tier
             _userId = GlobalAccount.GetUserId();
 
             // Sử dụng UIHelper để bo tròn các khung giao diện theo thiết kế hiện đại (Layout scaled 3x)
-            UIHelper.ApplyRoundedRegion(pnlSearchBox, 15); // Hộp tìm kiếm
-            UIHelper.ApplyRoundedRegion(pnlInputBox, 20);  // Khung nhập tin nhắn
             UIHelper.ApplyRoundedRegion(lblHeaderAvatar, 45); // Ảnh đại diện dạng tròn (bán kính 45 cho kích thước 90x90)
             UIHelper.ApplyRoundedRegion(btnSend, 25); // Nút gửi tin nhắn dạng tròn (bán kính 25 cho kích thước 50x50)
 
@@ -87,6 +85,8 @@ namespace UI_Tier
 
             // Khởi động Timer thăm dò tin nhắn mới và cập nhật danh sách hội thoại tự động (Thiết lập 4000ms trong Designer)
             pollTimer.Start();
+
+
 
             // Tải danh sách hội thoại lần đầu tiên
             LoadConversations();
@@ -250,18 +250,22 @@ namespace UI_Tier
             // Thiết lập thông tin Header bên phải (Tên, Ảnh đại diện đối phương)
             string partnerName = "Người dùng";
             string partnerPic = "";
+            string partnerSpecialty = "";
             if (_role == "Patient")
             {
                 partnerName = conv.Doctor?.User?.FullName ?? "Bác sĩ";
                 partnerPic = conv.Doctor?.User?.Picture ?? "";
+                partnerSpecialty = conv.Doctor?.Department?.DepartmentName ?? "Tim mạch";
             }
             else
             {
                 partnerName = conv.Patient?.User?.FullName ?? "Bệnh nhân";
                 partnerPic = conv.Patient?.User?.Picture ?? "";
+                partnerSpecialty = "Bệnh nhân";
             }
 
-            lblHeaderName.Text = partnerName;
+            lblHeaderName.Text = (_role == "Patient" ? "BS. " : "") + partnerName;
+            lblHeaderSpecialty.Text = partnerSpecialty;
 
             // Giải phóng vùng nhớ ảnh cũ của Header
             if (lblHeaderAvatar.Image != null)
@@ -325,7 +329,11 @@ namespace UI_Tier
                     bool isSender = (msg.SenderID == _userId);
                     
                     // Chiều rộng bong bóng = chiều rộng khung chứa trừ đi khoảng cách đệm 40px an toàn
-                    bubble.SetMessage(msg.Content, msg.SentAt, isSender, flowMessages.ClientSize.Width - 40);
+                    bubble.SetMessage(msg, isSender, flowMessages.ClientSize.Width - 40);
+                    // Đăng ký sự kiện thu hồi tin nhắn
+                    bubble.MessageRecalled += (s, msgId) => {
+                        RecallMessage(msgId);
+                    };
                     flowMessages.Controls.Add(bubble);
                 }
 
@@ -363,7 +371,11 @@ namespace UI_Tier
                         var msg = messages[i];
                         var bubble = new ucMessageBubble();
                         bool isSender = (msg.SenderID == _userId);
-                        bubble.SetMessage(msg.Content, msg.SentAt, isSender, flowMessages.ClientSize.Width - 40);
+                        bubble.SetMessage(msg, isSender, flowMessages.ClientSize.Width - 40);
+                        // Đăng ký sự kiện thu hồi tin nhắn
+                        bubble.MessageRecalled += (s, msgId) => {
+                            RecallMessage(msgId);
+                        };
                         flowMessages.Controls.Add(bubble);
                     }
 
@@ -459,9 +471,329 @@ namespace UI_Tier
             }
         }
 
+
+        // Sự kiện click nút Emoji để hiển thị ContextMenu nhanh các icon
+        private void btnEmoji_Click(object sender, EventArgs e)
+        {
+            ContextMenuStrip emojiMenu = new ContextMenuStrip();
+            string[] emojis = { "😊", "👍", "❤️", "😆", "😮", "😢", "🙏", "👏", "😷", "💉" };
+            foreach (var emoji in emojis)
+            {
+                ToolStripMenuItem item = new ToolStripMenuItem(emoji);
+                item.Click += (s, ev) =>
+                {
+                    if (txtInput.Text == "Nhập tin nhắn...")
+                    {
+                        txtInput.Text = emoji;
+                        txtInput.ForeColor = Color.Black;
+                    }
+                    else
+                    {
+                        txtInput.Text += emoji;
+                    }
+                    txtInput.Focus();
+                };
+                emojiMenu.Items.Add(item);
+            }
+            emojiMenu.Show(btnEmoji, new Point(0, -emojiMenu.Height));
+        }
+
+        private void pnlSearchBox_Paint(object sender, PaintEventArgs e)
+        {
+            Panel pnl = (Panel)sender;
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            if (pnl.Parent != null)
+            {
+                using (SolidBrush parentBrush = new SolidBrush(pnl.Parent.BackColor))
+                {
+                    e.Graphics.FillRectangle(parentBrush, pnl.ClientRectangle);
+                }
+            }
+            Rectangle rect = new Rectangle(0, 0, pnl.Width - 1, pnl.Height - 1);
+            using (System.Drawing.Drawing2D.GraphicsPath path = UIHelper.GetRoundedPath(rect, 15))
+            {
+                using (SolidBrush brush = new SolidBrush(Color.FromArgb(249, 250, 251)))
+                {
+                    e.Graphics.FillPath(brush, path);
+                }
+                using (Pen pen = new Pen(Color.FromArgb(209, 213, 219), 1))
+                {
+                    pen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+                    e.Graphics.DrawPath(pen, path);
+                }
+            }
+        }
+
+        private void pnlInputBox_Paint(object sender, PaintEventArgs e)
+        {
+            Panel pnl = (Panel)sender;
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            if (pnl.Parent != null)
+            {
+                using (SolidBrush parentBrush = new SolidBrush(pnl.Parent.BackColor))
+                {
+                    e.Graphics.FillRectangle(parentBrush, pnl.ClientRectangle);
+                }
+            }
+            Rectangle rect = new Rectangle(0, 0, pnl.Width - 1, pnl.Height - 1);
+            using (System.Drawing.Drawing2D.GraphicsPath path = UIHelper.GetRoundedPath(rect, 20))
+            {
+                using (SolidBrush brush = new SolidBrush(Color.FromArgb(249, 250, 251)))
+                {
+                    e.Graphics.FillPath(brush, path);
+                }
+                using (Pen pen = new Pen(Color.FromArgb(209, 213, 219), 1))
+                {
+                    pen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+                    e.Graphics.DrawPath(pen, path);
+                }
+            }
+        }
+
+        // Sự kiện click nút đính kèm để mở tệp tin
+        private void btnAttach_Click(object sender, EventArgs e)
+        {
+            if (_activeConversation == null) return;
+
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "Tất cả tập tin|*.*|Ảnh|*.jpg;*.jpeg;*.png;*.gif;*.bmp|Tài liệu|*.pdf;*.doc;*.docx;*.xls;*.xlsx;*.txt";
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        string fileName = System.IO.Path.GetFileName(ofd.FileName);
+                        string ext = System.IO.Path.GetExtension(ofd.FileName).ToLower();
+                        
+                        string messageType = "File";
+                        if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif" || ext == ".bmp")
+                        {
+                            messageType = "Image";
+                        }
+
+                        string uploadDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "uploads", "attachments");
+                        if (!System.IO.Directory.Exists(uploadDir)) System.IO.Directory.CreateDirectory(uploadDir);
+
+                        string uniqueFileName = $"chat_{_activeConversation.Id}_{DateTime.Now.Ticks}{ext}";
+                        string destPath = System.IO.Path.Combine(uploadDir, uniqueFileName);
+                        string relativePath = System.IO.Path.Combine("uploads", "attachments", uniqueFileName);
+
+                        System.IO.File.Copy(ofd.FileName, destPath, true);
+
+                        // Gửi tin nhắn chứa tệp đính kèm thông qua BUS
+                        var sentMsg = _chatBUS.SendMessage(_activeConversation.Id, _userId, fileName, messageType, fileName, relativePath);
+
+                        if (sentMsg != null)
+                        {
+                            RefreshActiveMessages();
+                            RefreshConversationsOnly();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Lỗi tải tệp lên: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        // Sự kiện click nút tùy chọn góc trên bên phải
+        private void btnOptions_Click(object sender, EventArgs e)
+        {
+            if (_activeConversation == null) return;
+
+            ContextMenuStrip optionsMenu = new ContextMenuStrip();
+            
+            ToolStripMenuItem viewProfileItem = new ToolStripMenuItem("Xem thông tin đối phương");
+            viewProfileItem.Click += (s, ev) => ViewPartnerProfile();
+            optionsMenu.Items.Add(viewProfileItem);
+
+            ToolStripMenuItem deleteConvItem = new ToolStripMenuItem("Xóa cuộc trò chuyện");
+            deleteConvItem.ForeColor = Color.Red;
+            deleteConvItem.Click += (s, ev) => DeleteActiveConversation();
+            optionsMenu.Items.Add(deleteConvItem);
+
+            optionsMenu.Show(btnOptions, new Point(0, btnOptions.Height));
+        }
+
+        // Xem thông tin chi tiết của đối phương trò chuyện
+        private void ViewPartnerProfile()
+        {
+            if (_activeConversation == null) return;
+
+            string partnerName = "";
+            string details = "";
+            
+            if (_role == "Patient")
+            {
+                var doc = _activeConversation.Doctor;
+                if (doc != null)
+                {
+                    partnerName = doc.User?.FullName ?? "Bác sĩ";
+                    details = $"Họ tên bác sĩ: {partnerName}\n" +
+                              $"Chuyên khoa: {doc.Department?.DepartmentName}\n" +
+                              $"Học vị/Chức vụ: {doc.Position}\n" +
+                              $"Kinh nghiệm: {doc.ExperienceYears} năm\n" +
+                              $"Phí khám: {doc.ConsultationFee:N0} VNĐ\n" +
+                              $"Số điện thoại: {doc.User?.PhoneNumber}";
+                }
+            }
+            else
+            {
+                var pat = _activeConversation.Patient;
+                if (pat != null)
+                {
+                    partnerName = pat.User?.FullName ?? "Bệnh nhân";
+                    details = $"Họ tên bệnh nhân: {partnerName}\n" +
+                              $"Mã y tế: {pat.MedicalCode}\n" +
+                              $"Nhóm máu: {pat.BloodType}\n" +
+                              $"Số điện thoại: {pat.User?.PhoneNumber}\n" +
+                              $"Ghi chú y khoa: {pat.Note}";
+                }
+            }
+
+            MessageBox.Show(details, $"Thông tin: {partnerName}", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        // Xóa cuộc trò chuyện hoạt động (Soft Delete)
+        private void DeleteActiveConversation()
+        {
+            if (_activeConversation == null) return;
+
+            var confirmResult = MessageBox.Show(
+                "Bạn có chắc chắn muốn xóa cuộc trò chuyện này? Toàn bộ lịch sử sẽ bị ẩn.", 
+                "Xác nhận xóa cuộc trò chuyện", 
+                MessageBoxButtons.YesNo, 
+                MessageBoxIcon.Question);
+
+            if (confirmResult == DialogResult.Yes)
+            {
+                bool success = _chatBUS.DeleteConversation(_activeConversation.Id);
+                if (success)
+                {
+                    _activeConversation = null;
+                    _selectedItem = null;
+                    pnlChatActive.Visible = false;
+                    pnlNoChatSelected.Visible = true;
+                    LoadConversations();
+                    MessageBox.Show("Đã xóa cuộc trò chuyện thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Không thể xóa cuộc trò chuyện.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        // Thu hồi tin nhắn và nạp lại lịch sử
+        private void RecallMessage(int msgId)
+        {
+            var confirmResult = MessageBox.Show(
+                "Bạn có chắc chắn muốn thu hồi tin nhắn này?", 
+                "Thu hồi tin nhắn", 
+                MessageBoxButtons.YesNo, 
+                MessageBoxIcon.Question);
+
+            if (confirmResult == DialogResult.Yes)
+            {
+                bool success = _chatBUS.RecallMessage(msgId);
+                if (success)
+                {
+                    if (_activeConversation != null)
+                    {
+                        LoadMessages(_activeConversation.Id);
+                        RefreshConversationsOnly();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Không thể thu hồi tin nhắn.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void lblHeaderName_Click(object sender, EventArgs e)
+        {
+            ShowOptionsAtControl(lblHeaderName);
+        }
+
         private void lblHeaderAvatar_Click(object sender, EventArgs e)
         {
-            // Dự phòng sự kiện click vào Avatar nếu muốn mở rộng xem Profile đối phương sau này
+            ShowOptionsAtControl(lblHeaderAvatar);
+        }
+
+        private void ShowOptionsAtControl(Control ctrl)
+        {
+            ContextMenuStrip optionsMenu = new ContextMenuStrip();
+            
+            ToolStripMenuItem viewProfileItem = new ToolStripMenuItem("Xem thông tin đối phương");
+            viewProfileItem.Click += (s, ev) => ViewPartnerProfile();
+            optionsMenu.Items.Add(viewProfileItem);
+
+            ToolStripMenuItem deleteConvItem = new ToolStripMenuItem("Xóa cuộc trò chuyện");
+            deleteConvItem.ForeColor = Color.Red;
+            deleteConvItem.Click += (s, ev) => DeleteActiveConversation();
+            optionsMenu.Items.Add(deleteConvItem);
+
+            optionsMenu.Show(ctrl, new Point(0, ctrl.Height));
+        }
+
+        private void btnPhone_Click(object sender, EventArgs e)
+        {
+            if (_activeConversation == null) return;
+            string partnerName = _role == "Patient" 
+                ? (_activeConversation.Doctor?.User?.FullName ?? "Bác sĩ")
+                : (_activeConversation.Patient?.User?.FullName ?? "Bệnh nhân");
+            MessageBox.Show($"Đang kết nối cuộc gọi thoại đến {partnerName}...", "Cuộc gọi thoại", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnVideo_Click(object sender, EventArgs e)
+        {
+            if (_activeConversation == null) return;
+            string partnerName = _role == "Patient" 
+                ? (_activeConversation.Doctor?.User?.FullName ?? "Bác sĩ")
+                : (_activeConversation.Patient?.User?.FullName ?? "Bệnh nhân");
+            MessageBox.Show($"Đang kết nối cuộc gọi video đến {partnerName}...", "Cuộc gọi video", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnImage_Click(object sender, EventArgs e)
+        {
+            if (_activeConversation == null) return;
+
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
+                ofd.Title = "Chọn ảnh gửi đi";
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        string fileName = System.IO.Path.GetFileName(ofd.FileName);
+                        string ext = System.IO.Path.GetExtension(ofd.FileName).ToLower();
+
+                        string uploadDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "uploads", "attachments");
+                        if (!System.IO.Directory.Exists(uploadDir)) System.IO.Directory.CreateDirectory(uploadDir);
+
+                        string uniqueFileName = $"chat_{_activeConversation.Id}_{DateTime.Now.Ticks}{ext}";
+                        string destPath = System.IO.Path.Combine(uploadDir, uniqueFileName);
+                        string relativePath = System.IO.Path.Combine("uploads", "attachments", uniqueFileName);
+
+                        System.IO.File.Copy(ofd.FileName, destPath, true);
+
+                        var sentMsg = _chatBUS.SendMessage(_activeConversation.Id, _userId, fileName, "Image", fileName, relativePath);
+
+                        if (sentMsg != null)
+                        {
+                            RefreshActiveMessages();
+                            RefreshConversationsOnly();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Lỗi gửi ảnh: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
         }
     }
 }

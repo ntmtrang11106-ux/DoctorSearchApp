@@ -1,6 +1,8 @@
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using DTO_Tier;
 
 namespace UI_Tier
 {
@@ -17,6 +19,9 @@ namespace UI_Tier
         private readonly int _paddingRight;
         private readonly int _paddingTop;
         private readonly int _paddingBottom;
+
+        private MessagesDTO _message;
+        public event EventHandler<int> MessageRecalled;
 
         public string MessageContent { get; private set; }
         public DateTime SentAt { get; private set; }
@@ -41,75 +46,230 @@ namespace UI_Tier
             _paddingTop = lblText.Location.Y;
             _paddingBottom = lblText.Location.Y; // Padding dưới đối xứng với padding trên
         }
-        public void SetMessage(string content, DateTime sentAt, bool isSender, int containerWidth)
+
+        public void SetMessage(MessagesDTO msg, bool isSender, int containerWidth)
         {
-            // Lưu lại thông tin tin nhắn phục vụ cho cơ chế cuộn và resize
-            MessageContent = content;
-            SentAt = sentAt;
+            _message = msg;
+            MessageContent = msg.Content;
+            SentAt = msg.SentAt;
             IsSender = isSender;
 
-            Font textFont = lblText.Font;
-            
-            // Khống chế chiều rộng tối đa của bong bóng không vượt quá 70% chiều rộng khung chứa
-            int maxBubbleWidth = (int)(containerWidth * 0.70);
+            pnlBubble.Controls.Clear();
 
-            // Đo kích thước thực tế của văn bản khi bị giới hạn chiều rộng (WordBreak tự động xuống dòng)
-            Size maxConstraint = new Size(maxBubbleWidth - _paddingLeft - _paddingRight, 0);
-            Size textSize = TextRenderer.MeasureText(content, textFont, maxConstraint, 
-                TextFormatFlags.WordBreak | TextFormatFlags.TextBoxControl);
+            // Gỡ bỏ sự kiện click chuột phải cũ để tránh lặp lại sự kiện khi resize
+            pnlBubble.MouseClick -= Bubble_MouseClick;
+            lblText.MouseClick -= Bubble_MouseClick;
 
-            // Tính toán kích thước bong bóng (bubble), đảm bảo chiều rộng tối thiểu là 90px để không bị méo góc
-            int bubbleWidth = Math.Max(textSize.Width + _paddingLeft + _paddingRight, 90);
-            int bubbleHeight = textSize.Height + _paddingTop + _paddingBottom;
+            // Đăng ký sự kiện click chuột phải mới để hiển thị tùy chọn thu hồi tin nhắn
+            pnlBubble.MouseClick += Bubble_MouseClick;
+            lblText.MouseClick += Bubble_MouseClick;
 
-            // Gán kích thước cho Panel nền của bong bóng
-            pnlBubble.Size = new Size(bubbleWidth, bubbleHeight);
-            
-            // Định vị và gán nội dung cho Label hiển thị tin nhắn bên trong bong bóng
-            lblText.Location = new Point(_paddingLeft, _paddingTop);
-            lblText.Size = new Size(textSize.Width, textSize.Height);
-            lblText.Text = content;
-
-            // Định dạng thời gian theo chuẩn Giờ:Phút
-            lblTime.Text = sentAt.ToString("HH:mm");
-
-            // 1. Nếu là TIN NHẮN GỬI ĐI (Người dùng hiện tại gửi - Căn lề PHẢI)
-            if (isSender)
+            // Gỡ bỏ và đăng ký lại sự kiện Paint vẽ viền cho bong bóng nhận (nền trắng)
+            pnlBubble.Paint -= LeftBubblePanel_Paint;
+            if (!isSender)
             {
-                // Nền xanh dương đậm, chữ màu trắng nổi bật
-                pnlBubble.BackColor = Color.FromArgb(0, 98, 255);
-                lblText.ForeColor = Color.White;
-
-                // Đẩy vị trí Panel bong bóng về góc bên phải màn hình
-                pnlBubble.Location = new Point(containerWidth - bubbleWidth - _marginRight, _marginTop);
-                
-                // Đẩy vị trí nhãn thời gian xuống dưới bong bóng và căn lề phải
-                lblTime.Location = new Point(containerWidth - lblTime.Width - _marginRight - 8, pnlBubble.Bottom + 4);
-                lblTime.TextAlign = ContentAlignment.TopRight;
-            }
-            // 2. Nếu là TIN NHẮN NHẬN VỀ (Đối phương gửi - Căn lề TRÁI)
-            else
-            {
-                // Nền xám nhạt dịu mát, chữ màu xám tối/đen
-                pnlBubble.BackColor = Color.FromArgb(243, 244, 246);
-                lblText.ForeColor = Color.FromArgb(17, 24, 39);
-
-                // Đẩy vị trí Panel bong bóng về góc bên trái màn hình
-                pnlBubble.Location = new Point(_marginLeft, _marginTop);
-                
-                // Đẩy vị trí nhãn thời gian xuống dưới bong bóng và căn lề trái
-                lblTime.Location = new Point(_marginLeft + 8, pnlBubble.Bottom + 4);
-                lblTime.TextAlign = ContentAlignment.TopLeft;
+                pnlBubble.Paint += LeftBubblePanel_Paint;
             }
 
-            // Gán kích thước cho toàn bộ UserControl này
-            this.Width = containerWidth;
-            
-            // Tính toán động chiều cao dựa trên điểm đáy thực tế của nhãn thời gian (lblTime.Bottom) cộng thêm 12px đệm an toàn
-            this.Height = lblTime.Bottom + 12;
+            if (msg.MessageType == "Image")
+            {
+                PictureBox pic = new PictureBox();
+                string fullPath = System.IO.Path.IsPathRooted(msg.AttachmentPath) 
+                    ? msg.AttachmentPath 
+                    : System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, msg.AttachmentPath);
 
-            // Bo tròn mượt mà các góc của bong bóng chat (Bán kính bo góc 18px)
-            UIHelper.ApplyRoundedRegion(pnlBubble, 18);
+                if (System.IO.File.Exists(fullPath))
+                {
+                    try
+                    {
+                        using (var fs = new System.IO.FileStream(fullPath, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+                        {
+                            pic.Image = new Bitmap(fs);
+                        }
+                    }
+                    catch
+                    {
+                        pic.Image = null;
+                    }
+                }
+                pic.SizeMode = PictureBoxSizeMode.Zoom;
+                pic.Cursor = Cursors.Hand;
+                pic.Click += (s, e) => {
+                    try
+                    {
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(fullPath) { UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Không thể mở ảnh: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                };
+
+                int bubbleWidth = Math.Min(350, (int)(containerWidth * 0.6));
+                int bubbleHeight = 250;
+
+                pic.Location = new Point(10, 10);
+                pic.Size = new Size(bubbleWidth - 20, bubbleHeight - 20);
+                pnlBubble.Controls.Add(pic);
+                pnlBubble.Size = new Size(bubbleWidth, bubbleHeight);
+
+                lblTime.Text = GetFormattedTime(msg.SentAt);
+
+                if (isSender)
+                {
+                    pnlBubble.BackColor = Color.FromArgb(0, 98, 255);
+                    pnlBubble.Location = new Point(containerWidth - bubbleWidth - _marginRight, _marginTop);
+                    lblTime.Location = new Point(containerWidth - lblTime.PreferredWidth - _marginRight - 8, pnlBubble.Bottom + 4);
+                    lblTime.TextAlign = ContentAlignment.TopRight;
+                }
+                else
+                {
+                    pnlBubble.BackColor = Color.White;
+                    pnlBubble.Location = new Point(_marginLeft, _marginTop);
+                    lblTime.Location = new Point(_marginLeft + 8, pnlBubble.Bottom + 4);
+                    lblTime.TextAlign = ContentAlignment.TopLeft;
+                }
+
+                this.Width = containerWidth;
+                this.Height = lblTime.Bottom + 12;
+                UIHelper.ApplyRoundedRegion(pnlBubble, 18);
+            }
+            else if (msg.MessageType == "File")
+            {
+                pnlBubble.Controls.Add(lblText);
+                lblText.Cursor = Cursors.Hand;
+                lblText.Font = new Font(lblText.Font, FontStyle.Underline);
+                lblText.Click -= FileLabel_Click;
+                lblText.Click += FileLabel_Click;
+
+                string displayName = "📎 " + (msg.AttachmentName ?? "Tập tin đính kèm");
+                lblText.Text = displayName;
+
+                Font textFont = lblText.Font;
+                int maxBubbleWidth = (int)(containerWidth * 0.70);
+                Size maxConstraint = new Size(maxBubbleWidth - _paddingLeft - _paddingRight, 0);
+                Size textSize = TextRenderer.MeasureText(displayName, textFont, maxConstraint, 
+                    TextFormatFlags.WordBreak | TextFormatFlags.TextBoxControl);
+
+                int bubbleWidth = Math.Max(textSize.Width + _paddingLeft + _paddingRight, 120);
+                int bubbleHeight = textSize.Height + _paddingTop + _paddingBottom;
+
+                pnlBubble.Size = new Size(bubbleWidth, bubbleHeight);
+                lblText.Location = new Point(_paddingLeft, _paddingTop);
+                lblText.Size = new Size(textSize.Width, textSize.Height);
+
+                lblTime.Text = GetFormattedTime(msg.SentAt);
+
+                if (isSender)
+                {
+                    pnlBubble.BackColor = Color.FromArgb(0, 98, 255);
+                    lblText.ForeColor = Color.White;
+                    pnlBubble.Location = new Point(containerWidth - bubbleWidth - _marginRight, _marginTop);
+                    lblTime.Location = new Point(containerWidth - lblTime.PreferredWidth - _marginRight - 8, pnlBubble.Bottom + 4);
+                    lblTime.TextAlign = ContentAlignment.TopRight;
+                }
+                else
+                {
+                    pnlBubble.BackColor = Color.White;
+                    lblText.ForeColor = Color.FromArgb(37, 99, 235);
+                    pnlBubble.Location = new Point(_marginLeft, _marginTop);
+                    lblTime.Location = new Point(_marginLeft + 8, pnlBubble.Bottom + 4);
+                    lblTime.TextAlign = ContentAlignment.TopLeft;
+                }
+
+                this.Width = containerWidth;
+                this.Height = lblTime.Bottom + 12;
+                UIHelper.ApplyRoundedRegion(pnlBubble, 18);
+            }
+            else // "Text"
+            {
+                pnlBubble.Controls.Add(lblText);
+                lblText.Cursor = Cursors.Default;
+                lblText.Font = new Font(lblText.Font, FontStyle.Regular);
+                lblText.Click -= FileLabel_Click;
+
+                Font textFont = lblText.Font;
+                int maxBubbleWidth = (int)(containerWidth * 0.70);
+                Size maxConstraint = new Size(maxBubbleWidth - _paddingLeft - _paddingRight, 0);
+                Size textSize = TextRenderer.MeasureText(msg.Content, textFont, maxConstraint, 
+                    TextFormatFlags.WordBreak | TextFormatFlags.TextBoxControl);
+
+                int bubbleWidth = Math.Max(textSize.Width + _paddingLeft + _paddingRight, 90);
+                int bubbleHeight = textSize.Height + _paddingTop + _paddingBottom;
+
+                pnlBubble.Size = new Size(bubbleWidth, bubbleHeight);
+                lblText.Location = new Point(_paddingLeft, _paddingTop);
+                lblText.Size = new Size(textSize.Width, textSize.Height);
+                lblText.Text = msg.Content;
+
+                lblTime.Text = GetFormattedTime(msg.SentAt);
+
+                if (isSender)
+                {
+                    pnlBubble.BackColor = Color.FromArgb(0, 98, 255);
+                    lblText.ForeColor = Color.White;
+                    pnlBubble.Location = new Point(containerWidth - bubbleWidth - _marginRight, _marginTop);
+                    lblTime.Location = new Point(containerWidth - lblTime.PreferredWidth - _marginRight - 8, pnlBubble.Bottom + 4);
+                    lblTime.TextAlign = ContentAlignment.TopRight;
+                }
+                else
+                {
+                    pnlBubble.BackColor = Color.White;
+                    lblText.ForeColor = Color.FromArgb(17, 24, 39);
+                    pnlBubble.Location = new Point(_marginLeft, _marginTop);
+                    lblTime.Location = new Point(_marginLeft + 8, pnlBubble.Bottom + 4);
+                    lblTime.TextAlign = ContentAlignment.TopLeft;
+                }
+
+                this.Width = containerWidth;
+                this.Height = lblTime.Bottom + 12;
+                UIHelper.ApplyRoundedRegion(pnlBubble, 18);
+            }
+            pnlBubble.Invalidate();
+        }
+
+        private void LeftBubblePanel_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            Rectangle rect = new Rectangle(0, 0, pnlBubble.Width - 1, pnlBubble.Height - 1);
+            using (var path = UIHelper.GetRoundedPath(rect, 18))
+            {
+                using (Pen pen = new Pen(Color.FromArgb(229, 231, 235), 1))
+                {
+                    pen.Alignment = PenAlignment.Inset;
+                    e.Graphics.DrawPath(pen, path);
+                }
+            }
+        }
+
+        private void FileLabel_Click(object sender, EventArgs e)
+        {
+            if (_message == null || string.IsNullOrEmpty(_message.AttachmentPath)) return;
+            try
+            {
+                string fullPath = System.IO.Path.IsPathRooted(_message.AttachmentPath) 
+                    ? _message.AttachmentPath 
+                    : System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _message.AttachmentPath);
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(fullPath) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Không thể mở tài liệu: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void Bubble_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && IsSender && _message != null)
+            {
+                ContextMenuStrip menu = new ContextMenuStrip();
+                ToolStripMenuItem recallItem = new ToolStripMenuItem("Thu hồi tin nhắn");
+                recallItem.Click += (s, ev) => {
+                    MessageRecalled?.Invoke(this, _message.Id);
+                };
+                menu.Items.Add(recallItem);
+                menu.Show(Cursor.Position);
+            }
         }
 
         /// <summary>
@@ -118,7 +278,24 @@ namespace UI_Tier
         /// <param name="containerWidth">Chiều rộng khả dụng mới của khung chứa</param>
         public void UpdateWidth(int containerWidth)
         {
-            SetMessage(MessageContent, SentAt, IsSender, containerWidth);
+            if (_message != null)
+            {
+                SetMessage(_message, IsSender, containerWidth);
+            }
+        }
+
+        private string GetFormattedTime(DateTime sentAt)
+        {
+            DateTime now = DateTime.Now;
+            if (sentAt.Year != now.Year)
+            {
+                return sentAt.ToString("dd/MM/yyyy HH:mm");
+            }
+            if (sentAt.Date != now.Date)
+            {
+                return sentAt.ToString("dd/MM HH:mm");
+            }
+            return sentAt.ToString("HH:mm");
         }
     }
 }

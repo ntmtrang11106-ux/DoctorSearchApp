@@ -33,18 +33,33 @@ namespace BUS_Tier
             return _chatDAL.GetUnreadCount(conversationId, currentUserId);
         }
 
-        public MessagesDTO SendMessage(int conversationId, int senderUserId, string content)
+        public MessagesDTO SendMessage(int conversationId, int senderUserId, string content, string messageType = "Text", string attachmentName = null, string attachmentPath = null)
         {
-            if (conversationId <= 0 || senderUserId <= 0 || string.IsNullOrWhiteSpace(content))
+            if (conversationId <= 0 || senderUserId <= 0)
                 return null;
 
-            return _chatDAL.SendMessage(conversationId, senderUserId, content.Trim());
+            if (string.IsNullOrWhiteSpace(content) && string.IsNullOrEmpty(attachmentPath))
+                return null;
+
+            return _chatDAL.SendMessage(conversationId, senderUserId, content?.Trim(), messageType, attachmentName, attachmentPath);
         }
 
         public ConversationDTO GetOrCreateConversation(int patientId, int doctorId)
         {
             if (patientId <= 0 || doctorId <= 0) return null;
             return _chatDAL.GetOrCreateConversation(patientId, doctorId);
+        }
+
+        public bool DeleteConversation(int conversationId)
+        {
+            if (conversationId <= 0) return false;
+            return _chatDAL.DeleteConversation(conversationId);
+        }
+
+        public bool RecallMessage(int messageId)
+        {
+            if (messageId <= 0) return false;
+            return _chatDAL.RecallMessage(messageId);
         }
 
         // Định dạng thời gian tương đối
