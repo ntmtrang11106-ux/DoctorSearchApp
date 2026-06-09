@@ -33,6 +33,39 @@ namespace UI_Tier
         private ucConversationItem _selectedItem = null;
 
         /// <summary>
+        /// Mở cuộc hội thoại với một bác sĩ cụ thể
+        /// </summary>
+        public void OpenConversationWithDoctor(DoctorDTO doctor)
+        {
+            if (doctor == null || doctor.User == null) return;
+            
+            // Lấy ID patient từ context
+            int patientId = GlobalAccount.GetProfileId();
+            if (patientId <= 0) return;
+
+            // Tạo hoặc lấy conversation (với ProfileId của patient và UserId của doctor => theo cấu trúc hiện tại)
+            var newConv = _chatBUS.GetOrCreateConversation(patientId, doctor.Id);
+            if (newConv != null)
+            {
+                // Tải lại danh sách
+                LoadConversations();
+                
+                // Tìm conversation tương ứng
+                foreach (Control ctrl in flowConversations.Controls)
+                {
+                    if (ctrl is ucConversationItem item && item.Tag is ConversationDTO conv)
+                    {
+                        if (conv.Id == newConv.Id)
+                        {
+                            SelectConversation(conv, item);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Hàm khởi tạo của ucPatient_Chat
         /// </summary>
         public ucPatient_Chat()

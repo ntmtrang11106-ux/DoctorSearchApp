@@ -70,7 +70,12 @@ namespace UI_Tier
             // Đổ dữ liệu bác sĩ
             if (_doctor != null)
             {
-                label3.Text = (_doctor.Position + " " + _doctor.User?.FullName).Trim();
+                string position = UIHelper.NormalizeDoctorTitle(_doctor.Position);
+                string fullName = UIHelper.NormalizeDoctorName(_doctor.User?.FullName);
+                label3.Text = string.IsNullOrWhiteSpace(position) 
+                    ? $"BS. {fullName}" 
+                    : $"{position} {fullName}";
+
                 lblDocDept.Text = _doctor.Department?.DepartmentName ?? "Chuyên khoa";
 
                 string fileName = string.IsNullOrWhiteSpace(_doctor.User?.Picture) ? "default.jpg" : _doctor.User.Picture.Trim();
