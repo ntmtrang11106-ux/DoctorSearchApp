@@ -242,6 +242,7 @@ namespace UI_Tier
             // 
             // flpDepts
             // 
+            flpDepts.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             flpDepts.AutoScroll = true;
             flpDepts.BackColor = Color.White;
             flpDepts.Location = new Point(65, 24);

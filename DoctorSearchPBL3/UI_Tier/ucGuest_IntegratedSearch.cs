@@ -23,7 +23,7 @@ namespace UI_Tier
         private List<ContentDTO> _foundArticles = new();
 
         // Cấu hình phân trang (Pagination)
-        private readonly int _pageSize = 6; // Số lượng phần tử tối đa hiển thị trên mỗi trang
+        private readonly int _pageSize = 8; // Số lượng phần tử tối đa hiển thị trên mỗi trang
         private int _currentDocPage = 1;     // Trang bác sĩ hiện tại
         private int _currentArtPage = 1;     // Trang bài viết hiện tại
         private bool _isAdmin = false;       // Cờ xác định có đang ở quyền quản trị Admin không
