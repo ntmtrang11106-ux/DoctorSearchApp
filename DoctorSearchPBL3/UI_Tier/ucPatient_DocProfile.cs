@@ -129,18 +129,26 @@ namespace UI_Tier
             string fileName = string.IsNullOrWhiteSpace(doctor.User.Picture) ? "default.jpg" : doctor.User.Picture.Trim();
 
             // Đường dẫn trỏ vào folder Resources_Images trong thư mục chạy app
-            string imageFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources_Images");
-            string imagePath = Path.Combine(imageFolder, fileName);
-
-            if (File.Exists(imagePath))
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string[] candidatePaths =
             {
+                Path.IsPathRooted(fileName) ? fileName : Path.Combine(baseDir, fileName),
+                Path.Combine(baseDir, "Resources_Images", fileName),
+                Path.Combine(baseDir, "Resources", fileName)
+            };
+
+            foreach (string imagePath in candidatePaths)
+            {
+                if (!File.Exists(imagePath)) continue;
+
                 try
                 {
                     if (picDoctor.Image != null) picDoctor.Image.Dispose();
                     using (FileStream fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
                     {
-                        picDoctor.Image = new Bitmap(fs); // Dùng Bitmap để không bị khóa file
+                        picDoctor.Image = new Bitmap(fs);
                     }
+                    break;
                 }
                 catch (Exception ex) { }
             }

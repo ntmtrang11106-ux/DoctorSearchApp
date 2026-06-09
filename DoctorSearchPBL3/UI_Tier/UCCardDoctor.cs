@@ -194,6 +194,7 @@ namespace UI_Tier
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
             string[] candidatePaths =
             {
+                Path.IsPathRooted(fileName) ? fileName : Path.Combine(baseDir, fileName),
                 Path.Combine(baseDir, "Resources_Images", fileName),
                 Path.Combine(baseDir, "Resources", fileName)
             };
