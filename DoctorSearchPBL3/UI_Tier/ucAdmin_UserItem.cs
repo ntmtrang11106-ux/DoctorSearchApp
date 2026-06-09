@@ -157,12 +157,6 @@ namespace UI_Tier
             }
 
             // Action Buttons styling with Icons (MDL2 Assets)
-            btnApprove.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            btnReject.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            btnToggleStatus.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-
-            btnApprove.Text = "✔ Phê duyệt";
-            btnReject.Text = "✖ Từ chối";
             
             btnApprove.Visible = (_user.Role == "Doctor" && _doctor != null && !_doctor.IsApproved);
             btnReject.Visible = (_user.Role == "Doctor" && _doctor != null && !_doctor.IsApproved);
@@ -208,11 +202,6 @@ namespace UI_Tier
                     if (btn != null)
                     {
                         btn.Anchor = AnchorStyles.None;
-
-                        if (btn == btnToggleStatus || btn == btnApprove || btn == btnReject)
-                            btn.Size = new Size(195, 75);
-                        else
-                            btn.Size = new Size(75, 75);
                     }
                 }
 
