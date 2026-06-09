@@ -15,15 +15,18 @@ namespace UI_Tier
 
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmGuest));
             panel1 = new Panel();
             btnLogin = new Button();
             pnlMainContainer = new Panel();
+            pictureBox1 = new PictureBox();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // panel1
             // 
-            panel1.BackColor = Color.FromArgb(242, 246, 250);
+            panel1.BackColor = Color.White;
             panel1.Controls.Add(btnLogin);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
@@ -58,25 +61,40 @@ namespace UI_Tier
             pnlMainContainer.Size = new Size(1950, 1322);
             pnlMainContainer.TabIndex = 1;
             // 
+            // pictureBox1
+            // 
+            pictureBox1.BackColor = Color.Transparent;
+            pictureBox1.Image = Properties.Resources.badge;
+            pictureBox1.Location = new Point(25, 3);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(314, 112);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 2;
+            pictureBox1.TabStop = false;
+            // 
             // frmGuest
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(1950, 1450);
+            Controls.Add(pictureBox1);
             Controls.Add(pnlMainContainer);
             Controls.Add(panel1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(5);
             Name = "frmGuest";
-            Text = "DoctorSearch - Guest";
+            Text = "MediFar - Guest";
             WindowState = FormWindowState.Maximized;
             Load += frmGuest_Load;
             panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
         }
 
         private Panel panel1;
         private Button btnLogin;
         private Panel pnlMainContainer;
+        private PictureBox pictureBox1;
     }
 }

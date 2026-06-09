@@ -28,7 +28,9 @@ namespace UI_Tier
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDoctor));
             panel1 = new Panel();
+            pictureBox1 = new PictureBox();
             panel7 = new Panel();
             pnlOverview = new Panel();
             lblOverviewText = new Label();
@@ -48,6 +50,7 @@ namespace UI_Tier
             btnLogout = new Button();
             pnMain = new Panel();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panel7.SuspendLayout();
             pnlOverview.SuspendLayout();
             pnlArticle.SuspendLayout();
@@ -59,12 +62,24 @@ namespace UI_Tier
             // panel1
             // 
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            panel1.Controls.Add(pictureBox1);
             panel1.Controls.Add(panel7);
             panel1.Controls.Add(btnLogout);
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
             panel1.Size = new Size(2188, 115);
             panel1.TabIndex = 2;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.BackColor = Color.Transparent;
+            pictureBox1.Image = Properties.Resources.badge;
+            pictureBox1.Location = new Point(25, 3);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(314, 112);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 0;
+            pictureBox1.TabStop = false;
             // 
             // panel7
             // 
@@ -276,11 +291,13 @@ namespace UI_Tier
             ClientSize = new Size(2188, 977);
             Controls.Add(pnMain);
             Controls.Add(panel1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "frmDoctor";
-            Text = "DoctorSearch";
+            Text = "MediFar";
             WindowState = FormWindowState.Maximized;
             Load += frmDoctor_Load;
             panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             panel7.ResumeLayout(false);
             pnlOverview.ResumeLayout(false);
             pnlOverview.PerformLayout();
@@ -316,5 +333,6 @@ namespace UI_Tier
         private Panel pnlProfile;
         private Label lblProfileText;
         private Label lblProfileIcon;
+        private PictureBox pictureBox1;
     }
 }
