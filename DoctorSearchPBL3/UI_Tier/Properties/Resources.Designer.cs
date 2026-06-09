@@ -63,6 +63,16 @@ namespace UI_Tier.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap badge {
+            get {
+                object obj = ResourceManager.GetObject("badge", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap bs_nguyen_van_an {
             get {
                 object obj = ResourceManager.GetObject("bs_nguyen_van_an", resourceCulture);
@@ -156,6 +166,16 @@ namespace UI_Tier.Properties {
         public static System.Drawing.Bitmap logo {
             get {
                 object obj = ResourceManager.GetObject("logo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap logo__2_ {
+            get {
+                object obj = ResourceManager.GetObject("logo (2)", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

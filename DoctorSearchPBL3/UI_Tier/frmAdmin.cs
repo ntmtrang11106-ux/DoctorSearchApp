@@ -109,7 +109,7 @@ namespace UI_Tier
 
         private async void frmAdmin_Load(object sender, EventArgs e)
         {
-            lblWelcome.Text = $"Chào mừng, {GlobalAccount.GetFullName()}!";
+            lblWelcome.Text = $"";
             UIHelper.ApplyRoundedRegion(btnLogout, 20);
 
             // 1. CHỈ nạp Tab Tổng quan (Priority) để mở Form nhanh nhất

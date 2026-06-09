@@ -28,6 +28,7 @@ namespace UI_Tier
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmLogin));
             btnBack = new Button();
             panel1 = new Panel();
             panel2 = new Panel();
@@ -285,6 +286,7 @@ namespace UI_Tier
             BackColor = Color.White;
             ClientSize = new Size(2008, 1372);
             Controls.Add(panel1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "frmLogin";
             Text = "MediFar";
             WindowState = FormWindowState.Maximized;

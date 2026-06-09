@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmRegister));
             panel1 = new Panel();
             panel2 = new Panel();
             panel3 = new Panel();
@@ -141,7 +142,7 @@
             panel2.BackColor = Color.FromArgb(24, 112, 255);
             panel2.Controls.Add(panel3);
             panel2.Controls.Add(label1);
-            panel2.Location = new Point(142, 114);
+            panel2.Location = new Point(125, 114);
             panel2.Name = "panel2";
             panel2.Size = new Size(2165, 1860);
             panel2.TabIndex = 4;
@@ -850,8 +851,9 @@
             BackColor = Color.White;
             ClientSize = new Size(2482, 1759);
             Controls.Add(panel1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "frmRegister";
-            Text = "DoctorSearch";
+            Text = "MediFar";
             WindowState = FormWindowState.Maximized;
             Load += frmRegister_Load;
             panel1.ResumeLayout(false);
