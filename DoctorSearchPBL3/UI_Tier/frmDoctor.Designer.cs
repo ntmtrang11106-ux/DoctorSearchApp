@@ -63,7 +63,7 @@ namespace UI_Tier
             panel1.Controls.Add(btnLogout);
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(2188, 115);
+            panel1.Size = new Size(3046, 115);
             panel1.TabIndex = 2;
             // 
             // panel7
@@ -74,7 +74,7 @@ namespace UI_Tier
             panel7.Controls.Add(pnlAppointment);
             panel7.Controls.Add(pnlChat);
             panel7.Controls.Add(pnlProfile);
-            panel7.Location = new Point(320, 5);
+            panel7.Location = new Point(749, 5);
             panel7.Name = "panel7";
             panel7.Size = new Size(1530, 110);
             panel7.TabIndex = 3;
@@ -192,7 +192,7 @@ namespace UI_Tier
             lblChatIcon.BackColor = Color.Transparent;
             lblChatIcon.Font = new Font("Segoe MDL2 Assets", 17F);
             lblChatIcon.ForeColor = SystemColors.ControlDarkDark;
-            lblChatIcon.Location = new Point(22, 11);
+            lblChatIcon.Location = new Point(17, 11);
             lblChatIcon.Name = "lblChatIcon";
             lblChatIcon.Size = new Size(75, 75);
             lblChatIcon.TabIndex = 4;
@@ -252,7 +252,7 @@ namespace UI_Tier
             btnLogout.FlatStyle = FlatStyle.Flat;
             btnLogout.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             btnLogout.ForeColor = Color.White;
-            btnLogout.Location = new Point(1894, 12);
+            btnLogout.Location = new Point(2752, 12);
             btnLogout.Name = "btnLogout";
             btnLogout.Size = new Size(260, 80);
             btnLogout.TabIndex = 2;
@@ -265,7 +265,7 @@ namespace UI_Tier
             pnMain.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             pnMain.Location = new Point(0, 115);
             pnMain.Name = "pnMain";
-            pnMain.Size = new Size(2188, 862);
+            pnMain.Size = new Size(3046, 1734);
             pnMain.TabIndex = 3;
             // 
             // frmDoctor
@@ -273,12 +273,12 @@ namespace UI_Tier
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(2188, 977);
+            ClientSize = new Size(3046, 1849);
             Controls.Add(pnMain);
             Controls.Add(panel1);
             Name = "frmDoctor";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "DoctorSearch";
-            WindowState = FormWindowState.Maximized;
             Load += frmDoctor_Load;
             panel1.ResumeLayout(false);
             panel7.ResumeLayout(false);

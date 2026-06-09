@@ -173,6 +173,27 @@ namespace UI_Tier
 
         private async void frmDoctor_Load(object sender, EventArgs e)
         {
+            // 1. Đổi AutoScaleMode bằng code cho chắc cú
+            this.AutoScaleMode = AutoScaleMode.None;
+
+            int usableWidth = Screen.PrimaryScreen.WorkingArea.Width;
+            int usableHeight = Screen.PrimaryScreen.WorkingArea.Height;
+
+            if (this.Width > usableWidth || this.Height > usableHeight)
+            {
+                float ratioX = (float)usableWidth / this.Width;
+                float ratioY = (float)usableHeight / this.Height;
+                float minRatio = Math.Min(ratioX, ratioY);
+
+                // 2. ÉP SCALE TRƯỚC
+                this.Scale(new SizeF(minRatio, minRatio));
+            }
+
+            // 3. CĂN GIỮA SAU CÙNG (Sau khi Form đã có kích thước mới)
+            this.StartPosition = FormStartPosition.Manual; // Chuyển sang tự set tọa độ
+            this.Left = (usableWidth - this.Width) / 2;
+            this.Top = (usableHeight - this.Height) / 2;
+
             UIHelper.ApplyRoundedRegion(btnLogout, 20);
 
             // 1. CHỈ nạp Tab Tổng quan (Priority) để mở Form nhanh nhất

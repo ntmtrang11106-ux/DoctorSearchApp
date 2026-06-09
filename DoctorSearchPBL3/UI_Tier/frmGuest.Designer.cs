@@ -29,7 +29,7 @@ namespace UI_Tier
             panel1.Location = new Point(0, 0);
             panel1.Margin = new Padding(5);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1950, 128);
+            panel1.Size = new Size(3046, 128);
             panel1.TabIndex = 0;
             // 
             // btnLogin
@@ -40,7 +40,7 @@ namespace UI_Tier
             btnLogin.FlatStyle = FlatStyle.Flat;
             btnLogin.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             btnLogin.ForeColor = Color.White;
-            btnLogin.Location = new Point(1658, 24);
+            btnLogin.Location = new Point(2754, 24);
             btnLogin.Margin = new Padding(5);
             btnLogin.Name = "btnLogin";
             btnLogin.Size = new Size(260, 80);
@@ -55,7 +55,7 @@ namespace UI_Tier
             pnlMainContainer.Location = new Point(0, 128);
             pnlMainContainer.Margin = new Padding(5);
             pnlMainContainer.Name = "pnlMainContainer";
-            pnlMainContainer.Size = new Size(1950, 1322);
+            pnlMainContainer.Size = new Size(3046, 1721);
             pnlMainContainer.TabIndex = 1;
             // 
             // frmGuest
@@ -63,13 +63,13 @@ namespace UI_Tier
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(1950, 1450);
+            ClientSize = new Size(3046, 1849);
             Controls.Add(pnlMainContainer);
             Controls.Add(panel1);
             Margin = new Padding(5);
             Name = "frmGuest";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "DoctorSearch - Guest";
-            WindowState = FormWindowState.Maximized;
             Load += frmGuest_Load;
             panel1.ResumeLayout(false);
             ResumeLayout(false);

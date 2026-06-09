@@ -77,7 +77,7 @@ namespace UI_Tier
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(2008, 1372);
+            panel1.Size = new Size(3046, 1849);
             panel1.TabIndex = 0;
             // 
             // panel2
@@ -90,7 +90,7 @@ namespace UI_Tier
             panel2.Controls.Add(picLogo);
             panel2.Controls.Add(panel3);
             panel2.Controls.Add(label1);
-            panel2.Location = new Point(92, 349);
+            panel2.Location = new Point(611, 349);
             panel2.Name = "panel2";
             panel2.Size = new Size(1844, 1011);
             panel2.TabIndex = 3;
@@ -283,11 +283,11 @@ namespace UI_Tier
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(2008, 1372);
+            ClientSize = new Size(3046, 1849);
             Controls.Add(panel1);
             Name = "frmLogin";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "MediFar";
-            WindowState = FormWindowState.Maximized;
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)picLogo).EndInit();

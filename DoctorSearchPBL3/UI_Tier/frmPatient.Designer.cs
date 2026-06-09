@@ -63,7 +63,7 @@ namespace UI_Tier
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(2118, 115);
+            panel1.Size = new Size(3046, 115);
             panel1.TabIndex = 1;
             // 
             // panel7
@@ -74,7 +74,7 @@ namespace UI_Tier
             panel7.Controls.Add(pnlAppointment);
             panel7.Controls.Add(pnlHome);
             panel7.Controls.Add(pnlSearchDoc);
-            panel7.Location = new Point(223, 5);
+            panel7.Location = new Point(687, 5);
             panel7.Name = "panel7";
             panel7.Size = new Size(1579, 110);
             panel7.TabIndex = 3;
@@ -252,7 +252,7 @@ namespace UI_Tier
             btnLogout.FlatStyle = FlatStyle.Flat;
             btnLogout.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             btnLogout.ForeColor = Color.White;
-            btnLogout.Location = new Point(1820, 13);
+            btnLogout.Location = new Point(2748, 13);
             btnLogout.Name = "btnLogout";
             btnLogout.Size = new Size(260, 80);
             btnLogout.TabIndex = 2;
@@ -265,7 +265,7 @@ namespace UI_Tier
             pnMain.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             pnMain.Location = new Point(0, 115);
             pnMain.Name = "pnMain";
-            pnMain.Size = new Size(2118, 862);
+            pnMain.Size = new Size(3046, 1734);
             pnMain.TabIndex = 2;
             // 
             // frmPatient
@@ -273,7 +273,7 @@ namespace UI_Tier
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(2118, 977);
+            ClientSize = new Size(3046, 1849);
             Controls.Add(pnMain);
             Controls.Add(panel1);
             Name = "frmPatient";
