@@ -214,6 +214,7 @@ namespace DAL_Tier
                 UserId = patient.UserId,
                 MedicalCode = patient.MedicalCode,
                 InsuranceCode = patient.InsuranceCode,
+                BloodType = patient.BloodType,
                 EmergencyContactName = patient.EmergencyContactName,
                 EmergencyContactPhone = patient.EmergencyContactPhone,
                 Note = patient.Note,

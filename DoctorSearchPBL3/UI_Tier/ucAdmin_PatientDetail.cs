@@ -63,6 +63,7 @@ namespace UI_Tier
             SetupEditControl(cboEditGender, lblVGender);
             SetupEditControl(txtEditCCCD, lblVCCCD);
             SetupEditControl(txtEditAddress, lblVAddress);
+            SetupEditControl(cboEditBloodType, lblVBloodType);
             SetupEditControl(txtEditInsCode, lblVInsCode);
             SetupEditControl(txtEditEmerName, lblVEmerName);
             SetupEditControl(txtEditEmerPhone, lblVEmerPhone);
@@ -72,6 +73,13 @@ namespace UI_Tier
             txtEditNotes.Height = 80;
 
             cboEditGender.Items.AddRange(new object[] { "Nam", "Nữ", "Khác" });
+            cboEditBloodType.Items.AddRange(new object[] { "", "A", "A+", "A-", "B", "B+", "B-", "AB", "AB+", "AB-", "O", "O+", "O-" });
+        }
+
+        private void SelectBloodType(string? bloodType)
+        {
+            string normalized = (bloodType ?? "").Trim().ToUpperInvariant();
+            cboEditBloodType.SelectedItem = cboEditBloodType.Items.Contains(normalized) ? normalized : "";
         }
 
         private void SetupEditControl(Control edit, Control label)
@@ -146,6 +154,7 @@ namespace UI_Tier
             lblVGender.Visible = !editMode; SetEditVisible(cboEditGender, editMode);
             lblVCCCD.Visible = !editMode; SetEditVisible(txtEditCCCD, editMode);
             lblVAddress.Visible = !editMode; SetEditVisible(txtEditAddress, editMode);
+            lblVBloodType.Visible = !editMode; SetEditVisible(cboEditBloodType, editMode);
             lblVInsCode.Visible = !editMode; SetEditVisible(txtEditInsCode, editMode);
             lblVEmerName.Visible = !editMode; SetEditVisible(txtEditEmerName, editMode);
             lblVEmerPhone.Visible = !editMode; SetEditVisible(txtEditEmerPhone, editMode);
@@ -166,6 +175,7 @@ namespace UI_Tier
 
                 if (_currentPatient != null)
                 {
+                    SelectBloodType(_currentPatient.BloodType);
                     txtEditInsCode.Text = _currentPatient.InsuranceCode;
                     txtEditEmerName.Text = _currentPatient.EmergencyContactName;
                     txtEditEmerPhone.Text = _currentPatient.EmergencyContactPhone;
@@ -192,6 +202,7 @@ namespace UI_Tier
 
                 if (_currentPatient != null)
                 {
+                    _currentPatient.BloodType = cboEditBloodType.SelectedItem?.ToString();
                     _currentPatient.InsuranceCode = txtEditInsCode.Text.Trim();
                     _currentPatient.EmergencyContactName = txtEditEmerName.Text.Trim();
                     _currentPatient.EmergencyContactPhone = txtEditEmerPhone.Text.Trim();
@@ -247,7 +258,7 @@ namespace UI_Tier
             lblVGender.Text = user.Gender ?? "Chưa cập nhật";
             lblVCCCD.Text = user.CCCD ?? "Chưa cập nhật";
             lblVAddress.Text = user.Residential_Address ?? "Chưa cập nhật";
-            lblVCreatedAt.Text = user.CreatedAt.ToString("HH:mm:ss dd/MM/yyyy");
+            lblVCreatedAt.Text = (patient?.CreatedAt ?? user.CreatedAt).ToString("HH:mm:ss dd/MM/yyyy");
 
             // Role Badge (Always Patient)
             lblVRole.Text = "Bệnh nhân";
@@ -263,6 +274,7 @@ namespace UI_Tier
             if (patient != null)
             {
                 lblVMedCode.Text = patient.MedicalCode ?? ("BN" + user.Id.ToString("D4"));
+                lblVBloodType.Text = string.IsNullOrWhiteSpace(patient.BloodType) ? "Chưa cập nhật" : patient.BloodType;
                 lblVInsCode.Text = patient.InsuranceCode ?? "Chưa cập nhật";
                 lblVEmerName.Text = patient.EmergencyContactName ?? "Chưa cập nhật";
                 lblVEmerPhone.Text = patient.EmergencyContactPhone ?? "Chưa cập nhật";
