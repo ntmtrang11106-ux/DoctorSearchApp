@@ -211,15 +211,15 @@ namespace UI_Tier
                 {
                     if (btn.Text == _selectedStatus)
                     {
-                        btn.BackColor = Color.FromArgb(0, 120, 212); // Màu xanh Hình 1
+                        btn.BackColor = Color.FromArgb(24, 112, 255); // Màu xanh Hình 1
                         btn.ForeColor = Color.White;
-                        btn.Font = new Font("Segoe UI", 14f, FontStyle.Bold);
+                        btn.Font = new Font("Segoe UI", 12f, FontStyle.Bold);
                     }
                     else
                     {
                         btn.BackColor = Color.FromArgb(243, 244, 246); // Màu xám nhạt thanh thoát
                         btn.ForeColor = Color.FromArgb(107, 114, 128);
-                        btn.Font = new Font("Segoe UI", 14f, FontStyle.Regular);
+                        btn.Font = new Font("Segoe UI", 12f, FontStyle.Regular);
                     }
                 }
             }

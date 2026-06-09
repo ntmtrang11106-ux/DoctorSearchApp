@@ -93,7 +93,7 @@ namespace UI_Tier
             // 
             lblTitle.AutoSize = true;
             lblTitle.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
-            lblTitle.ForeColor = Color.Black;
+            lblTitle.ForeColor = Color.FromArgb(30, 70, 125);
             lblTitle.Location = new Point(45, 25);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(348, 59);
@@ -341,13 +341,13 @@ namespace UI_Tier
             btnCancel.BackColor = Color.White;
             btnCancel.FlatAppearance.BorderColor = Color.FromArgb(226, 232, 240);
             btnCancel.FlatStyle = FlatStyle.Flat;
-            btnCancel.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
+            btnCancel.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
             btnCancel.ForeColor = Color.FromArgb(37, 99, 235);
-            btnCancel.Location = new Point(625, 1183);
+            btnCancel.Location = new Point(611, 1183);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(185, 60);
             btnCancel.TabIndex = 18;
-            btnCancel.Text = "HỦY";
+            btnCancel.Text = "Hủy";
             btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
             // 
@@ -356,13 +356,13 @@ namespace UI_Tier
             btnCreate.BackColor = Color.FromArgb(37, 99, 235);
             btnCreate.FlatAppearance.BorderSize = 0;
             btnCreate.FlatStyle = FlatStyle.Flat;
-            btnCreate.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
+            btnCreate.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
             btnCreate.ForeColor = Color.White;
             btnCreate.Location = new Point(816, 1183);
             btnCreate.Name = "btnCreate";
             btnCreate.Size = new Size(224, 60);
             btnCreate.TabIndex = 19;
-            btnCreate.Text = "TẠO MỚI";
+            btnCreate.Text = "Tạo mới";
             btnCreate.UseVisualStyleBackColor = false;
             btnCreate.Click += btnConfirm_Click;
             // 

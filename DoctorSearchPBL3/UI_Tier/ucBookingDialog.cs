@@ -3,6 +3,7 @@ using DTO_Tier;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Linq;
 
@@ -25,68 +26,76 @@ namespace UI_Tier
         {
             InitializeComponent();
             _doctor = doctor;
+
+            // Tận dụng hàm bật DoubleBuffered đệ quy từ UIHelper chống xé hình
             UIHelper.SetDoubleBuffered(this);
         }
 
         private void ucBookingDialog_Load(object sender, EventArgs e)
         {
-            // Styling
-            this.Padding = new Padding(3); // Giúp viền dày 3 không bị các panel con che khuất
+            // Kích hoạt tính năng nắm kéo di chuyển Control bằng hàm MakeDraggable của UIHelper
+
+            // Styling Form chính
+            this.Padding = new Padding(4);
             UIHelper.ApplyRoundedRegion(this, 20);
             this.BackColor = Color.White;
-            // Viền form màu đen dày 3 - Phải vẽ sau cùng hoặc chừa lề bằng Padding
-            this.Paint += (s, ev) => UIHelper.uc_Paint(s, ev, 20, Color.Black, 3);
 
-            UIHelper.ApplyRoundedRegion(pnlDoctorInfo, 20); // Bo góc cho card bác sĩ
-            UIHelper.ApplyRoundedRegion(picDocAvatar, picDocAvatar.Width / 2); // Bo tròn ảnh đại diện
+            // Sử dụng hàm uc_Paint có sẵn của UIHelper vẽ viền DimGray dày 3px cho Form chính
+            this.Paint += (s, ev) => UIHelper.uc_Paint(s, ev, 20, Color.DimGray, 3);
+
+            UIHelper.ApplyRoundedRegion(pnlDoctorInfo, 20);
+            UIHelper.ApplyRoundedRegion(picDocAvatar, picDocAvatar.Width / 2);
 
             // Bo viền cho Lý do khám (Dùng panel bọc ngoài)
             Panel pnlReasonBorder = new Panel();
             pnlReasonBorder.Size = txtReason.Size;
             pnlReasonBorder.Location = txtReason.Location;
-            pnlReasonBorder.BackColor = Color.White; // Nền trắng mặc định
+            pnlReasonBorder.BackColor = Color.White;
             this.Controls.Add(pnlReasonBorder);
 
             txtReason.Parent = pnlReasonBorder;
             txtReason.Dock = DockStyle.Fill;
             txtReason.BorderStyle = BorderStyle.None;
-            txtReason.BackColor = Color.White; // Nền trắng mặc định đồng bộ
+            txtReason.BackColor = Color.White;
             pnlReasonBorder.Padding = new Padding(12, 10, 12, 10);
 
-            // Bo góc và vẽ viền đen độ dày 2 cho khung lý do
             UIHelper.ApplyRoundedRegion(pnlReasonBorder, 15);
-            pnlReasonBorder.Paint += (s, ev) => UIHelper.DrawControlBorder(s, ev, 15, Color.Black, 2);
+            pnlReasonBorder.Paint += (s, ev) => UIHelper.DrawControlBorder(s, ev, 15, Color.DimGray, 2);
 
-            // Bo viền cho ô chọn ngày (Dùng panel bọc ngoài)
+            // Xử lý bao viền và Focus Effect chuẩn cho DateTimePicker bằng UIHelper
+            Control dateOriginalParent = dtpDate.Parent;
             Panel pnlDateBorder = new Panel();
-            pnlDateBorder.Size = dtpDate.Size;
-            pnlDateBorder.Location = dtpDate.Location;
+            pnlDateBorder.Size = new Size(dtpDate.Width + 16, dtpDate.Height + 12);
+            pnlDateBorder.Location = new Point(dtpDate.Left - 8, dtpDate.Top - 6);
             pnlDateBorder.BackColor = Color.White;
-            dtpDate.Parent.Controls.Add(pnlDateBorder);
+
+            dateOriginalParent.Controls.Add(pnlDateBorder);
             dtpDate.Parent = pnlDateBorder;
             dtpDate.Dock = DockStyle.Fill;
-            pnlDateBorder.Padding = new Padding(10, 5, 10, 5);
+            pnlDateBorder.Padding = new Padding(10, 6, 10, 6);
+
+            UIHelper.ApplyRoundedRegion(pnlDateBorder, 12);
             UIHelper.SetupInputFocusEffect(dtpDate, pnlDateBorder, Color.FromArgb(243, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
 
+            // Viền ngoài cho FlowLayout Panel khung giờ
             UIHelper.ApplyRoundedRegion(flpTimeSlots, 8);
-            flpTimeSlots.Paint += (s, ev) => UIHelper.DrawControlBorder(flpTimeSlots, ev, 8, Color.Black, 2);
+            flpTimeSlots.Paint += (s, ev) => UIHelper.DrawControlBorder(flpTimeSlots, ev, 8, Color.DimGray, 2);
 
             UIHelper.ApplyRoundedRegion(pnlNotice, 15);
             UIHelper.ApplyRoundedRegion(btnConfirm, 15);
             UIHelper.ApplyRoundedRegion(btnCancel, 15);
 
-            // Placeholder cho txtReason
+            // Cấu hình placeholder lý do khám
             txtReason.Text = "Vui lòng mô tả lý do bạn cần khám bệnh...";
             txtReason.ForeColor = Color.Gray;
             txtReason.Enter += txtReason_Enter;
             txtReason.Leave += txtReason_Leave;
 
-            // Đổ dữ liệu bác sĩ
+            // Đổ thông tin tên bác sĩ (Chỉ hiển thị FullName)
             if (_doctor != null)
             {
-                lblDocName.Text = (_doctor.Position + " " + _doctor.User?.FullName).Trim();
+                lblDocName.Text = _doctor.User?.FullName?.Trim() ?? "Bác sĩ";
                 lblDocDept.Text = _doctor.Department?.DepartmentName ?? "Chuyên khoa";
-
 
                 string fileName = string.IsNullOrWhiteSpace(_doctor.User?.Picture) ? "default.jpg" : _doctor.User.Picture.Trim();
                 string imagePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources_Images", fileName);
@@ -101,15 +110,7 @@ namespace UI_Tier
                 }
             }
 
-            // Bo tròn Legend (8px cho đồng bộ)
-            UIHelper.ApplyRoundedRegion(picLegendSelected, 8);
-            UIHelper.ApplyRoundedRegion(picLegendAvailable, 8);
-            UIHelper.ApplyRoundedRegion(picLegendBooked, 8);
-
-            // Vẽ viền đen đậm cho ô "Còn trống"
-            picLegendAvailable.Paint += (s, ev) => UIHelper.DrawControlBorder(picLegendAvailable, ev, 8, Color.Black, 2);
-
-            // Set default date hoặc dữ liệu Edit
+            // Thiết lập giá trị ngày khám ban đầu hoặc dữ liệu chỉnh sửa (Edit)
             if (_editAppointmentId != -1)
             {
                 dtpDate.Value = _currentDate;
@@ -142,13 +143,14 @@ namespace UI_Tier
         {
             flpTimeSlots.SuspendLayout();
             flpTimeSlots.Controls.Clear();
-            _selectedTimeSlotId = -1;
+            _selectedTimeSlotId = (_editAppointmentId != -1) ? _preselectedSlotId : -1;
 
             var slots = _timeSlotBUS.GetSlotsByDoctorAndDate(_doctor.Id, dtpDate.Value);
 
             if (slots == null || slots.Count == 0)
             {
                 Label lblEmpty = new Label();
+                // Dùng hàm định vị thông báo trống đồng bộ từ UIHelper
                 UIHelper.SetupEmptyStateLabel(lblEmpty, flpTimeSlots, "Không có lịch khám nào trong ngày này.");
                 flpTimeSlots.Controls.Add(lblEmpty);
             }
@@ -157,42 +159,77 @@ namespace UI_Tier
                 foreach (var slot in slots)
                 {
                     Button btnSlot = new Button();
-                    btnSlot.Text = $"  {slot.StartTime:hh\\:mm} - {slot.EndTime:hh\\:mm}";
+                    btnSlot.Text = $"{slot.StartTime:hh\\:mm} - {slot.EndTime:hh\\:mm}";
                     btnSlot.Tag = slot.Id;
-                    btnSlot.Size = new Size(270, 80);
+                    btnSlot.Size = new Size(235, 75);
                     btnSlot.FlatStyle = FlatStyle.Flat;
-                    btnSlot.Cursor = Cursors.Hand;
-                    btnSlot.Font = new Font("Segoe UI", 10);
-                    btnSlot.Margin = new Padding(5, 5, 5, 5);
+                    btnSlot.FlatAppearance.BorderSize = 0; // Tắt viền gốc WinForms để tự vẽ
+                    btnSlot.Margin = new Padding(10);
+                    btnSlot.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
 
-                    // Status based styling - Nếu là slot đang sửa thì LUÔN cho phép chọn lại
+                    // Xử lý đóng băng trạng thái nếu ô lịch đã Full hoặc hết chỗ
                     if (slot.Id != _preselectedSlotId && (slot.Status == "Full" || slot.BookedCount >= slot.MaxAppointments))
                     {
-                        btnSlot.BackColor = Color.FromArgb(249, 250, 251);
-                        btnSlot.ForeColor = Color.FromArgb(156, 163, 175);
-                        btnSlot.FlatAppearance.BorderColor = Color.FromArgb(249, 250, 251);
                         btnSlot.Enabled = false;
+                        btnSlot.Cursor = Cursors.No;
                     }
                     else
                     {
-                        btnSlot.BackColor = Color.White;
-                        btnSlot.ForeColor = Color.FromArgb(31, 41, 55);
-                        btnSlot.FlatAppearance.BorderColor = Color.Black; // Viền đen chuẩn
-                        btnSlot.FlatAppearance.BorderSize = 2; // Dày 2px
+                        btnSlot.Enabled = true;
+                        btnSlot.Cursor = Cursors.Hand;
                         btnSlot.Click += Slot_Click;
                     }
 
-                    UIHelper.ApplyRoundedRegion(btnSlot, 8);
-                    flpTimeSlots.Controls.Add(btnSlot);
-
-                    // Nếu là slot đang edit thì auto chọn
-                    if (slot.Id == _preselectedSlotId)
+                    // Tận dụng GraphicsPath từ hàm UIHelper.GetRoundedPath để vẽ bo góc mượt mà (AntiAlias)
+                    btnSlot.Paint += (s, ev) =>
                     {
-                        _selectedTimeSlotId = slot.Id;
-                        btnSlot.BackColor = Color.FromArgb(37, 99, 235);
-                        btnSlot.ForeColor = Color.White;
-                        btnSlot.FlatAppearance.BorderColor = Color.FromArgb(37, 99, 235);
-                    }
+                        Button currentBtn = (Button)s;
+                        ev.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+                        Color backColor;
+                        Color borderColor;
+                        Color textColor;
+                        int borderThickness = 2;
+
+                        if (!currentBtn.Enabled)
+                        {
+                            backColor = Color.FromArgb(243, 244, 246);
+                            borderColor = Color.FromArgb(219, 222, 227);
+                            textColor = Color.FromArgb(160, 168, 180);
+                            borderThickness = 1;
+                        }
+                        else if ((int)currentBtn.Tag == _selectedTimeSlotId)
+                        {
+                            backColor = Color.FromArgb(37, 99, 235);
+                            borderColor = Color.FromArgb(37, 99, 235);
+                            textColor = Color.White;
+                        }
+                        else
+                        {
+                            backColor = Color.White;
+                            borderColor = Color.DimGray;
+                            textColor = Color.FromArgb(31, 41, 55);
+                        }
+
+                        Rectangle rect = new Rectangle(0, 0, currentBtn.Width - 1, currentBtn.Height - 1);
+                        using (var path = UIHelper.GetRoundedPath(rect, 10))
+                        {
+                            using (var brush = new SolidBrush(backColor))
+                                ev.Graphics.FillPath(brush, path);
+
+                            using (var pen = new Pen(borderColor, borderThickness))
+                            {
+                                pen.Alignment = PenAlignment.Inset;
+                                ev.Graphics.DrawPath(pen, path);
+                            }
+                        }
+
+                        TextRenderer.DrawText(ev.Graphics, currentBtn.Text, currentBtn.Font,
+                            currentBtn.ClientRectangle, textColor,
+                            TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+                    };
+
+                    flpTimeSlots.Controls.Add(btnSlot);
                 }
             }
 
@@ -202,35 +239,10 @@ namespace UI_Tier
         private void Slot_Click(object sender, EventArgs e)
         {
             Button clickedBtn = (Button)sender;
-            int slotId = (int)clickedBtn.Tag;
+            _selectedTimeSlotId = (int)clickedBtn.Tag;
 
-            // 1. Giải màu cho tất cả các nút
-            foreach (Control ctrl in flpTimeSlots.Controls)
-            {
-                if (ctrl is Button btn)
-                {
-                    if (btn.Enabled)
-                    {
-                        // Khôi phục màu trắng cho các ô có thể chọn
-                        btn.BackColor = Color.White;
-                        btn.ForeColor = Color.FromArgb(31, 41, 55);
-                        btn.FlatAppearance.BorderColor = Color.FromArgb(209, 213, 219);
-                    }
-                    else
-                    {
-                        // Khôi phục màu xám nhạt cho các ô đã đầy (Full)
-                        btn.BackColor = Color.FromArgb(249, 250, 251);
-                        btn.ForeColor = Color.FromArgb(156, 163, 175);
-                        btn.FlatAppearance.BorderColor = Color.FromArgb(249, 250, 251);
-                    }
-                }
-            }
-
-            // 2. Kích hoạt màu xanh cho ô vừa chọn
-            _selectedTimeSlotId = slotId;
-            clickedBtn.BackColor = Color.FromArgb(37, 99, 235);
-            clickedBtn.ForeColor = Color.White;
-            clickedBtn.FlatAppearance.BorderColor = Color.FromArgb(37, 99, 235);
+            // Làm mới toàn bộ FlowLayout để vẽ lại trạng thái các nút theo ID vừa chọn (Duy nhất 1 ô hoạt động)
+            flpTimeSlots.Refresh();
         }
 
         private void dtpDate_ValueChanged(object sender, EventArgs e) => LoadTimeSlots();
@@ -259,7 +271,6 @@ namespace UI_Tier
                 return;
             }
 
-            // 1. Kiểm tra trùng lịch (Loại trừ lịch đang sửa nếu có)
             var conflict = _appointmentBUS.CheckPatientOverlap(patientId, _selectedTimeSlotId, _editAppointmentId);
             if (conflict != null)
             {
@@ -268,16 +279,14 @@ namespace UI_Tier
 
                 if (diagResult == DialogResult.Yes)
                 {
-                    // Xóa lịch cũ trước khi đặt/cập nhật lịch mới
                     _appointmentBUS.DeleteAppointment(conflict.Id);
                 }
                 else
                 {
-                    return; // Dừng lại để user chọn khung giờ khác
+                    return;
                 }
             }
 
-            // 2. Thực hiện Đặt hoặc Cập nhật
             if (_editAppointmentId != -1)
             {
                 if (_appointmentBUS.UpdateAppointment(_editAppointmentId, _selectedTimeSlotId, reason))
@@ -335,19 +344,5 @@ namespace UI_Tier
                 txtReason.ForeColor = Color.Gray;
             }
         }
-
-        #region Draggable Header
-        private Point _mouseLoc;
-        private void panelHeader_MouseDown(object sender, MouseEventArgs e) => _mouseLoc = e.Location;
-        private void panelHeader_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                this.Left += e.X - _mouseLoc.X;
-                this.Top += e.Y - _mouseLoc.Y;
-            }
-        }
-        #endregion
-
     }
 }

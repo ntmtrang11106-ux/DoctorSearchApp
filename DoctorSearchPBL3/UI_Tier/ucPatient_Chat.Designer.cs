@@ -47,7 +47,6 @@ namespace UI_Tier
             btnAttach = new Button();
             btnImage = new Button();
             pnlChatHeader = new Panel();
-            btnOptions = new Button();
             btnVideo = new Button();
             btnPhone = new Button();
             lblHeaderName = new Label();
@@ -55,6 +54,7 @@ namespace UI_Tier
             lblHeaderSpecialty = new Label();
             pnlNoChatSelected = new Panel();
             lblSelectPrompt = new Label();
+            btnOptions = new Button();
             pnlSeparator = new Panel();
             pnlLeft.SuspendLayout();
             pnlSearch.SuspendLayout();
@@ -67,6 +67,11 @@ namespace UI_Tier
             pnlNoChatSelected.SuspendLayout();
             SuspendLayout();
             // 
+            // pollTimer
+            // 
+            pollTimer.Interval = 4000;
+            pollTimer.Tick += PollTimer_Tick;
+            // 
             // pnlLeft
             // 
             pnlLeft.BackColor = Color.White;
@@ -74,7 +79,7 @@ namespace UI_Tier
             pnlLeft.Controls.Add(pnlSearch);
             pnlLeft.Dock = DockStyle.Left;
             pnlLeft.Location = new Point(0, 0);
-            pnlLeft.Margin = new Padding(4, 4, 4, 4);
+            pnlLeft.Margin = new Padding(4);
             pnlLeft.Name = "pnlLeft";
             pnlLeft.Size = new Size(910, 768);
             pnlLeft.TabIndex = 0;
@@ -86,7 +91,7 @@ namespace UI_Tier
             flowConversations.Dock = DockStyle.Fill;
             flowConversations.FlowDirection = FlowDirection.TopDown;
             flowConversations.Location = new Point(0, 102);
-            flowConversations.Margin = new Padding(4, 4, 4, 4);
+            flowConversations.Margin = new Padding(4);
             flowConversations.Name = "flowConversations";
             flowConversations.Padding = new Padding(13, 0, 13, 0);
             flowConversations.Size = new Size(910, 666);
@@ -99,7 +104,7 @@ namespace UI_Tier
             pnlSearch.Controls.Add(pnlSearchBox);
             pnlSearch.Dock = DockStyle.Top;
             pnlSearch.Location = new Point(0, 0);
-            pnlSearch.Margin = new Padding(4, 4, 4, 4);
+            pnlSearch.Margin = new Padding(4);
             pnlSearch.Name = "pnlSearch";
             pnlSearch.Size = new Size(910, 102);
             pnlSearch.TabIndex = 0;
@@ -107,11 +112,10 @@ namespace UI_Tier
             // pnlSearchBox
             // 
             pnlSearchBox.BackColor = Color.FromArgb(249, 250, 251);
-            pnlSearchBox.BorderStyle = BorderStyle.None;
             pnlSearchBox.Controls.Add(lblSearchIcon);
             pnlSearchBox.Controls.Add(txtSearch);
             pnlSearchBox.Location = new Point(20, 19);
-            pnlSearchBox.Margin = new Padding(4, 4, 4, 4);
+            pnlSearchBox.Margin = new Padding(4);
             pnlSearchBox.Name = "pnlSearchBox";
             pnlSearchBox.Size = new Size(870, 63);
             pnlSearchBox.TabIndex = 0;
@@ -136,7 +140,7 @@ namespace UI_Tier
             txtSearch.BorderStyle = BorderStyle.None;
             txtSearch.Font = new Font("Segoe UI", 14F);
             txtSearch.Location = new Point(62, 8);
-            txtSearch.Margin = new Padding(4, 4, 4, 4);
+            txtSearch.Margin = new Padding(4);
             txtSearch.Name = "txtSearch";
             txtSearch.Size = new Size(780, 50);
             txtSearch.TabIndex = 0;
@@ -150,7 +154,7 @@ namespace UI_Tier
             pnlRight.Controls.Add(pnlNoChatSelected);
             pnlRight.Dock = DockStyle.Fill;
             pnlRight.Location = new Point(911, 0);
-            pnlRight.Margin = new Padding(4, 4, 4, 4);
+            pnlRight.Margin = new Padding(4);
             pnlRight.Name = "pnlRight";
             pnlRight.Size = new Size(649, 768);
             pnlRight.TabIndex = 1;
@@ -163,7 +167,7 @@ namespace UI_Tier
             pnlChatActive.Controls.Add(pnlChatHeader);
             pnlChatActive.Dock = DockStyle.Fill;
             pnlChatActive.Location = new Point(0, 0);
-            pnlChatActive.Margin = new Padding(4, 4, 4, 4);
+            pnlChatActive.Margin = new Padding(4);
             pnlChatActive.Name = "pnlChatActive";
             pnlChatActive.Size = new Size(649, 768);
             pnlChatActive.TabIndex = 1;
@@ -176,7 +180,7 @@ namespace UI_Tier
             flowMessages.Dock = DockStyle.Fill;
             flowMessages.FlowDirection = FlowDirection.TopDown;
             flowMessages.Location = new Point(0, 154);
-            flowMessages.Margin = new Padding(4, 4, 4, 4);
+            flowMessages.Margin = new Padding(4);
             flowMessages.Name = "flowMessages";
             flowMessages.Padding = new Padding(0, 13, 0, 13);
             flowMessages.Size = new Size(649, 499);
@@ -192,7 +196,7 @@ namespace UI_Tier
             pnlChatFooter.Controls.Add(btnImage);
             pnlChatFooter.Dock = DockStyle.Bottom;
             pnlChatFooter.Location = new Point(0, 653);
-            pnlChatFooter.Margin = new Padding(4, 4, 4, 4);
+            pnlChatFooter.Margin = new Padding(4);
             pnlChatFooter.Name = "pnlChatFooter";
             pnlChatFooter.Size = new Size(649, 115);
             pnlChatFooter.TabIndex = 1;
@@ -206,7 +210,7 @@ namespace UI_Tier
             btnSend.Font = new Font("Segoe MDL2 Assets", 16F);
             btnSend.ForeColor = Color.White;
             btnSend.Location = new Point(564, 26);
-            btnSend.Margin = new Padding(4, 4, 4, 4);
+            btnSend.Margin = new Padding(4);
             btnSend.Name = "btnSend";
             btnSend.Size = new Size(65, 64);
             btnSend.TabIndex = 3;
@@ -218,11 +222,10 @@ namespace UI_Tier
             // 
             pnlInputBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             pnlInputBox.BackColor = Color.FromArgb(249, 250, 251);
-            pnlInputBox.BorderStyle = BorderStyle.None;
             pnlInputBox.Controls.Add(txtInput);
             pnlInputBox.Controls.Add(btnEmoji);
             pnlInputBox.Location = new Point(125, 26);
-            pnlInputBox.Margin = new Padding(4, 4, 4, 4);
+            pnlInputBox.Margin = new Padding(4);
             pnlInputBox.Name = "pnlInputBox";
             pnlInputBox.Size = new Size(424, 63);
             pnlInputBox.TabIndex = 2;
@@ -234,10 +237,10 @@ namespace UI_Tier
             txtInput.BackColor = Color.FromArgb(249, 250, 251);
             txtInput.BorderStyle = BorderStyle.None;
             txtInput.Font = new Font("Segoe UI", 14F);
-            txtInput.Location = new Point(16, 16);
-            txtInput.Margin = new Padding(4, 4, 4, 4);
+            txtInput.Location = new Point(16, 10);
+            txtInput.Margin = new Padding(4);
             txtInput.Name = "txtInput";
-            txtInput.Size = new Size(348, 38);
+            txtInput.Size = new Size(348, 50);
             txtInput.TabIndex = 0;
             txtInput.Text = "Nhập tin nhắn...";
             txtInput.KeyDown += txtInput_KeyDown;
@@ -250,10 +253,10 @@ namespace UI_Tier
             btnEmoji.FlatStyle = FlatStyle.Flat;
             btnEmoji.Font = new Font("Segoe UI", 14F);
             btnEmoji.ForeColor = Color.FromArgb(107, 114, 128);
-            btnEmoji.Location = new Point(372, 9);
+            btnEmoji.Location = new Point(372, 2);
             btnEmoji.Margin = new Padding(0);
             btnEmoji.Name = "btnEmoji";
-            btnEmoji.Size = new Size(40, 45);
+            btnEmoji.Size = new Size(50, 55);
             btnEmoji.TabIndex = 1;
             btnEmoji.Text = "🙂";
             btnEmoji.UseVisualStyleBackColor = false;
@@ -267,11 +270,11 @@ namespace UI_Tier
             btnAttach.Font = new Font("Segoe MDL2 Assets", 16F);
             btnAttach.ForeColor = Color.FromArgb(107, 114, 128);
             btnAttach.Location = new Point(15, 26);
-            btnAttach.Margin = new Padding(4, 4, 4, 4);
+            btnAttach.Margin = new Padding(4);
             btnAttach.Name = "btnAttach";
             btnAttach.Size = new Size(40, 64);
             btnAttach.TabIndex = 0;
-            btnAttach.Text = "\uE723";
+            btnAttach.Text = "";
             btnAttach.UseVisualStyleBackColor = false;
             btnAttach.Click += btnAttach_Click;
             // 
@@ -282,12 +285,12 @@ namespace UI_Tier
             btnImage.FlatStyle = FlatStyle.Flat;
             btnImage.Font = new Font("Segoe MDL2 Assets", 16F);
             btnImage.ForeColor = Color.FromArgb(107, 114, 128);
-            btnImage.Location = new Point(70, 26);
-            btnImage.Margin = new Padding(4, 4, 4, 4);
+            btnImage.Location = new Point(68, 30);
+            btnImage.Margin = new Padding(4);
             btnImage.Name = "btnImage";
-            btnImage.Size = new Size(40, 64);
+            btnImage.Size = new Size(50, 55);
             btnImage.TabIndex = 4;
-            btnImage.Text = "\uEB9F";
+            btnImage.Text = "";
             btnImage.UseVisualStyleBackColor = false;
             btnImage.Click += btnImage_Click;
             // 
@@ -301,14 +304,10 @@ namespace UI_Tier
             pnlChatHeader.Controls.Add(lblHeaderSpecialty);
             pnlChatHeader.Dock = DockStyle.Top;
             pnlChatHeader.Location = new Point(0, 0);
-            pnlChatHeader.Margin = new Padding(4, 4, 4, 4);
+            pnlChatHeader.Margin = new Padding(4);
             pnlChatHeader.Name = "pnlChatHeader";
             pnlChatHeader.Size = new Size(649, 154);
             pnlChatHeader.TabIndex = 0;
-            // 
-            // btnOptions
-            // 
-            btnOptions.Visible = false;
             // 
             // btnVideo
             // 
@@ -319,7 +318,7 @@ namespace UI_Tier
             btnVideo.Font = new Font("Segoe MDL2 Assets", 16F);
             btnVideo.ForeColor = Color.FromArgb(75, 85, 99);
             btnVideo.Location = new Point(572, 44);
-            btnVideo.Margin = new Padding(4, 4, 4, 4);
+            btnVideo.Margin = new Padding(4);
             btnVideo.Name = "btnVideo";
             btnVideo.Size = new Size(65, 64);
             btnVideo.TabIndex = 4;
@@ -336,7 +335,7 @@ namespace UI_Tier
             btnPhone.Font = new Font("Segoe MDL2 Assets", 16F);
             btnPhone.ForeColor = Color.FromArgb(75, 85, 99);
             btnPhone.Location = new Point(499, 45);
-            btnPhone.Margin = new Padding(4, 4, 4, 4);
+            btnPhone.Margin = new Padding(4);
             btnPhone.Name = "btnPhone";
             btnPhone.Size = new Size(65, 64);
             btnPhone.TabIndex = 6;
@@ -358,18 +357,6 @@ namespace UI_Tier
             lblHeaderName.Text = "Nguyễn Văn A";
             lblHeaderName.Click += lblHeaderName_Click;
             // 
-            // lblHeaderSpecialty
-            // 
-            lblHeaderSpecialty.AutoSize = true;
-            lblHeaderSpecialty.Font = new Font("Segoe UI", 12F, FontStyle.Regular);
-            lblHeaderSpecialty.ForeColor = Color.FromArgb(37, 99, 235);
-            lblHeaderSpecialty.Location = new Point(169, 85);
-            lblHeaderSpecialty.Margin = new Padding(4, 0, 4, 0);
-            lblHeaderSpecialty.Name = "lblHeaderSpecialty";
-            lblHeaderSpecialty.Size = new Size(150, 32);
-            lblHeaderSpecialty.TabIndex = 7;
-            lblHeaderSpecialty.Text = "Chuyên khoa";
-            // 
             // lblHeaderAvatar
             // 
             lblHeaderAvatar.BackColor = Color.FromArgb(229, 231, 235);
@@ -385,12 +372,24 @@ namespace UI_Tier
             lblHeaderAvatar.TextAlign = ContentAlignment.MiddleCenter;
             lblHeaderAvatar.Click += lblHeaderAvatar_Click;
             // 
+            // lblHeaderSpecialty
+            // 
+            lblHeaderSpecialty.AutoSize = true;
+            lblHeaderSpecialty.Font = new Font("Segoe UI", 12F);
+            lblHeaderSpecialty.ForeColor = Color.FromArgb(37, 99, 235);
+            lblHeaderSpecialty.Location = new Point(169, 85);
+            lblHeaderSpecialty.Margin = new Padding(4, 0, 4, 0);
+            lblHeaderSpecialty.Name = "lblHeaderSpecialty";
+            lblHeaderSpecialty.Size = new Size(204, 45);
+            lblHeaderSpecialty.TabIndex = 7;
+            lblHeaderSpecialty.Text = "Chuyên khoa";
+            // 
             // pnlNoChatSelected
             // 
             pnlNoChatSelected.Controls.Add(lblSelectPrompt);
             pnlNoChatSelected.Dock = DockStyle.Fill;
             pnlNoChatSelected.Location = new Point(0, 0);
-            pnlNoChatSelected.Margin = new Padding(4, 4, 4, 4);
+            pnlNoChatSelected.Margin = new Padding(4);
             pnlNoChatSelected.Name = "pnlNoChatSelected";
             pnlNoChatSelected.Size = new Size(649, 768);
             pnlNoChatSelected.TabIndex = 0;
@@ -408,20 +407,23 @@ namespace UI_Tier
             lblSelectPrompt.Text = "Chọn một cuộc trò chuyện để bắt đầu nhắn tin";
             lblSelectPrompt.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // btnOptions
+            // 
+            btnOptions.Location = new Point(0, 0);
+            btnOptions.Name = "btnOptions";
+            btnOptions.Size = new Size(75, 23);
+            btnOptions.TabIndex = 0;
+            btnOptions.Visible = false;
+            // 
             // pnlSeparator
             // 
             pnlSeparator.BackColor = Color.FromArgb(229, 231, 235);
             pnlSeparator.Dock = DockStyle.Left;
             pnlSeparator.Location = new Point(910, 0);
-            pnlSeparator.Margin = new Padding(4, 4, 4, 4);
+            pnlSeparator.Margin = new Padding(4);
             pnlSeparator.Name = "pnlSeparator";
             pnlSeparator.Size = new Size(1, 768);
             pnlSeparator.TabIndex = 2;
-            // 
-            // pollTimer
-            // 
-            pollTimer.Interval = 4000;
-            pollTimer.Tick += PollTimer_Tick;
             // 
             // ucPatient_Chat
             // 
@@ -431,7 +433,7 @@ namespace UI_Tier
             Controls.Add(pnlRight);
             Controls.Add(pnlSeparator);
             Controls.Add(pnlLeft);
-            Margin = new Padding(4, 4, 4, 4);
+            Margin = new Padding(4);
             Name = "ucPatient_Chat";
             Size = new Size(1560, 768);
             Load += ucPatient_Chat_Load;

@@ -28,13 +28,6 @@ namespace UI_Tier
             dtpDate = new DateTimePicker();
             lblTimeTitle = new Label();
             flpTimeSlots = new FlowLayoutPanel();
-            pnlLegend = new Panel();
-            lblLegendSelected = new Label();
-            picLegendSelected = new PictureBox();
-            lblLegendAvailable = new Label();
-            picLegendAvailable = new PictureBox();
-            lblLegendBooked = new Label();
-            picLegendBooked = new PictureBox();
             lblReasonTitle = new Label();
             lblReasonIcon = new Label();
             txtReason = new RichTextBox();
@@ -47,10 +40,6 @@ namespace UI_Tier
             pnlHeader.SuspendLayout();
             pnlDoctorInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picDocAvatar).BeginInit();
-            pnlLegend.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)picLegendSelected).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)picLegendAvailable).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)picLegendBooked).BeginInit();
             SuspendLayout();
             // 
             // pnlHeader
@@ -64,15 +53,13 @@ namespace UI_Tier
             pnlHeader.Name = "pnlHeader";
             pnlHeader.Size = new Size(950, 128);
             pnlHeader.TabIndex = 0;
-            pnlHeader.MouseDown += panelHeader_MouseDown;
-            pnlHeader.MouseMove += panelHeader_MouseMove;
             // 
             // lblTitle
             // 
             lblTitle.AutoSize = true;
             lblTitle.Font = new Font("Segoe UI", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTitle.ForeColor = Color.White;
-            lblTitle.Location = new Point(140, 10);
+            lblTitle.Location = new Point(47, 19);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(304, 59);
             lblTitle.TabIndex = 1;
@@ -83,7 +70,7 @@ namespace UI_Tier
             lblSubTitle.AutoSize = true;
             lblSubTitle.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
             lblSubTitle.ForeColor = Color.FromArgb(219, 234, 254);
-            lblSubTitle.Location = new Point(140, 69);
+            lblSubTitle.Location = new Point(47, 74);
             lblSubTitle.Name = "lblSubTitle";
             lblSubTitle.Size = new Size(479, 45);
             lblSubTitle.TabIndex = 2;
@@ -153,7 +140,7 @@ namespace UI_Tier
             lblDateTitle.AutoSize = true;
             lblDateTitle.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             lblDateTitle.ForeColor = Color.FromArgb(31, 41, 55);
-            lblDateTitle.Location = new Point(100, 325);
+            lblDateTitle.Location = new Point(104, 325);
             lblDateTitle.Name = "lblDateTitle";
             lblDateTitle.Size = new Size(290, 45);
             lblDateTitle.TabIndex = 1;
@@ -186,7 +173,7 @@ namespace UI_Tier
             lblTimeTitle.AutoSize = true;
             lblTimeTitle.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             lblTimeTitle.ForeColor = Color.FromArgb(31, 41, 55);
-            lblTimeTitle.Location = new Point(100, 481);
+            lblTimeTitle.Location = new Point(106, 474);
             lblTimeTitle.Name = "lblTimeTitle";
             lblTimeTitle.Size = new Size(266, 45);
             lblTimeTitle.TabIndex = 3;
@@ -195,87 +182,17 @@ namespace UI_Tier
             // flpTimeSlots
             // 
             flpTimeSlots.ForeColor = Color.Gray;
-            flpTimeSlots.Location = new Point(55, 543);
+            flpTimeSlots.Location = new Point(55, 546);
             flpTimeSlots.Name = "flpTimeSlots";
-            flpTimeSlots.Size = new Size(833, 320);
+            flpTimeSlots.Size = new Size(833, 385);
             flpTimeSlots.TabIndex = 4;
-            // 
-            // pnlLegend
-            // 
-            pnlLegend.Controls.Add(lblLegendSelected);
-            pnlLegend.Controls.Add(picLegendSelected);
-            pnlLegend.Controls.Add(lblLegendAvailable);
-            pnlLegend.Controls.Add(picLegendAvailable);
-            pnlLegend.Controls.Add(lblLegendBooked);
-            pnlLegend.Controls.Add(picLegendBooked);
-            pnlLegend.Location = new Point(55, 869);
-            pnlLegend.Name = "pnlLegend";
-            pnlLegend.Size = new Size(833, 70);
-            pnlLegend.TabIndex = 5;
-            // 
-            // lblLegendSelected
-            // 
-            lblLegendSelected.AutoSize = true;
-            lblLegendSelected.Font = new Font("Segoe UI", 12F);
-            lblLegendSelected.Location = new Point(51, 18);
-            lblLegendSelected.Name = "lblLegendSelected";
-            lblLegendSelected.Size = new Size(137, 45);
-            lblLegendSelected.TabIndex = 1;
-            lblLegendSelected.Text = "Đã chọn";
-            // 
-            // picLegendSelected
-            // 
-            picLegendSelected.BackColor = Color.FromArgb(37, 99, 235);
-            picLegendSelected.Location = new Point(15, 30);
-            picLegendSelected.Name = "picLegendSelected";
-            picLegendSelected.Size = new Size(30, 30);
-            picLegendSelected.TabIndex = 0;
-            picLegendSelected.TabStop = false;
-            // 
-            // lblLegendAvailable
-            // 
-            lblLegendAvailable.AutoSize = true;
-            lblLegendAvailable.Font = new Font("Segoe UI", 12F);
-            lblLegendAvailable.Location = new Point(275, 18);
-            lblLegendAvailable.Name = "lblLegendAvailable";
-            lblLegendAvailable.Size = new Size(164, 45);
-            lblLegendAvailable.TabIndex = 3;
-            lblLegendAvailable.Text = "Còn trống";
-            // 
-            // picLegendAvailable
-            // 
-            picLegendAvailable.BackColor = Color.White;
-            picLegendAvailable.Location = new Point(239, 30);
-            picLegendAvailable.Name = "picLegendAvailable";
-            picLegendAvailable.Size = new Size(30, 30);
-            picLegendAvailable.TabIndex = 2;
-            picLegendAvailable.TabStop = false;
-            // 
-            // lblLegendBooked
-            // 
-            lblLegendBooked.AutoSize = true;
-            lblLegendBooked.Font = new Font("Segoe UI", 12F);
-            lblLegendBooked.Location = new Point(549, 18);
-            lblLegendBooked.Name = "lblLegendBooked";
-            lblLegendBooked.Size = new Size(113, 45);
-            lblLegendBooked.TabIndex = 5;
-            lblLegendBooked.Text = "Đã đặt";
-            // 
-            // picLegendBooked
-            // 
-            picLegendBooked.BackColor = Color.FromArgb(243, 244, 246);
-            picLegendBooked.Location = new Point(513, 30);
-            picLegendBooked.Name = "picLegendBooked";
-            picLegendBooked.Size = new Size(30, 30);
-            picLegendBooked.TabIndex = 4;
-            picLegendBooked.TabStop = false;
             // 
             // lblReasonTitle
             // 
             lblReasonTitle.AutoSize = true;
             lblReasonTitle.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             lblReasonTitle.ForeColor = Color.FromArgb(31, 41, 55);
-            lblReasonTitle.Location = new Point(100, 970);
+            lblReasonTitle.Location = new Point(103, 969);
             lblReasonTitle.Name = "lblReasonTitle";
             lblReasonTitle.Size = new Size(197, 45);
             lblReasonTitle.TabIndex = 6;
@@ -323,7 +240,7 @@ namespace UI_Tier
             btnConfirm.FlatStyle = FlatStyle.Flat;
             btnConfirm.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
             btnConfirm.ForeColor = Color.White;
-            btnConfirm.Location = new Point(55, 1302);
+            btnConfirm.Location = new Point(55, 1277);
             btnConfirm.Name = "btnConfirm";
             btnConfirm.Size = new Size(591, 65);
             btnConfirm.TabIndex = 10;
@@ -339,7 +256,7 @@ namespace UI_Tier
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
             btnCancel.ForeColor = Color.FromArgb(31, 41, 55);
-            btnCancel.Location = new Point(686, 1302);
+            btnCancel.Location = new Point(686, 1276);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(202, 65);
             btnCancel.TabIndex = 11;
@@ -353,7 +270,7 @@ namespace UI_Tier
             label1.BackColor = Color.White;
             label1.Font = new Font("Segoe UI", 10.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.ForeColor = SystemColors.ControlDarkDark;
-            label1.Location = new Point(294, 975);
+            label1.Location = new Point(294, 972);
             label1.Name = "label1";
             label1.Size = new Size(236, 40);
             label1.TabIndex = 16;
@@ -398,7 +315,6 @@ namespace UI_Tier
             Controls.Add(lblCharCount);
             Controls.Add(txtReason);
             Controls.Add(lblReasonTitle);
-            Controls.Add(pnlLegend);
             Controls.Add(flpTimeSlots);
             Controls.Add(dtpDate);
             Controls.Add(lblDateTitle);
@@ -411,11 +327,6 @@ namespace UI_Tier
             pnlDoctorInfo.ResumeLayout(false);
             pnlDoctorInfo.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)picDocAvatar).EndInit();
-            pnlLegend.ResumeLayout(false);
-            pnlLegend.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)picLegendSelected).EndInit();
-            ((System.ComponentModel.ISupportInitialize)picLegendAvailable).EndInit();
-            ((System.ComponentModel.ISupportInitialize)picLegendBooked).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -434,13 +345,6 @@ namespace UI_Tier
         private DateTimePicker dtpDate;
         private Label lblTimeTitle;
         private FlowLayoutPanel flpTimeSlots;
-        private Panel pnlLegend;
-        private Label lblLegendSelected;
-        private PictureBox picLegendSelected;
-        private Label lblLegendAvailable;
-        private PictureBox picLegendAvailable;
-        private Label lblLegendBooked;
-        private PictureBox picLegendBooked;
         private Label lblReasonTitle;
         private Label lblReasonIcon;
         private RichTextBox txtReason;

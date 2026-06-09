@@ -86,7 +86,7 @@ namespace UI_Tier
             lblDate.AutoSize = true;
             lblDate.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblDate.ForeColor = Color.Gray;
-            lblDate.Location = new Point(286, 79);
+            lblDate.Location = new Point(286, 83);
             lblDate.Name = "lblDate";
             lblDate.Size = new Size(180, 45);
             lblDate.TabIndex = 3;
@@ -109,7 +109,7 @@ namespace UI_Tier
             lblYourReview.BackColor = Color.FromArgb(235, 245, 255);
             lblYourReview.Font = new Font("Segoe UI Semibold", 10F);
             lblYourReview.ForeColor = Color.FromArgb(37, 99, 235);
-            lblYourReview.Location = new Point(426, 30);
+            lblYourReview.Location = new Point(472, 84);
             lblYourReview.Name = "lblYourReview";
             lblYourReview.Padding = new Padding(8, 4, 8, 4);
             lblYourReview.Size = new Size(245, 45);

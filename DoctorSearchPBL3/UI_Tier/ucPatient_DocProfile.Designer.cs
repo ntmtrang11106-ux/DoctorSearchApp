@@ -114,7 +114,7 @@ namespace UI_Tier
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(2019, 392);
+            panel1.Size = new Size(2019, 386);
             panel1.TabIndex = 0;
             // 
             // btnBack
@@ -136,7 +136,7 @@ namespace UI_Tier
             label7.BackColor = Color.Transparent;
             label7.Font = new Font("Segoe MDL2 Assets", 15F);
             label7.ForeColor = Color.DodgerBlue;
-            label7.Location = new Point(1504, 328);
+            label7.Location = new Point(1504, 314);
             label7.Margin = new Padding(4, 0, 4, 0);
             label7.Name = "label7";
             label7.Size = new Size(65, 64);
@@ -158,7 +158,7 @@ namespace UI_Tier
             // 
             label4.Font = new Font("Segoe MDL2 Assets", 15F);
             label4.ForeColor = Color.DodgerBlue;
-            label4.Location = new Point(1504, 104);
+            label4.Location = new Point(1504, 127);
             label4.Margin = new Padding(4, 0, 4, 0);
             label4.Name = "label4";
             label4.Size = new Size(65, 64);
@@ -169,7 +169,7 @@ namespace UI_Tier
             // 
             label3.Font = new Font("Segoe MDL2 Assets", 15F);
             label3.ForeColor = Color.DodgerBlue;
-            label3.Location = new Point(1502, 168);
+            label3.Location = new Point(1502, 191);
             label3.Margin = new Padding(4, 0, 4, 0);
             label3.Name = "label3";
             label3.Size = new Size(65, 64);
@@ -193,7 +193,7 @@ namespace UI_Tier
             lblWorkingTime.AutoSize = true;
             lblWorkingTime.Font = new Font("Segoe UI", 10F);
             lblWorkingTime.ForeColor = Color.DimGray;
-            lblWorkingTime.Location = new Point(1585, 107);
+            lblWorkingTime.Location = new Point(1585, 130);
             lblWorkingTime.Margin = new Padding(0, 5, 0, 5);
             lblWorkingTime.Name = "lblWorkingTime";
             lblWorkingTime.Size = new Size(90, 37);
@@ -205,7 +205,7 @@ namespace UI_Tier
             lblSpecificAdress.AutoSize = true;
             lblSpecificAdress.Font = new Font("Segoe UI", 10F);
             lblSpecificAdress.ForeColor = Color.DimGray;
-            lblSpecificAdress.Location = new Point(1585, 170);
+            lblSpecificAdress.Location = new Point(1585, 193);
             lblSpecificAdress.Margin = new Padding(0, 5, 0, 5);
             lblSpecificAdress.Name = "lblSpecificAdress";
             lblSpecificAdress.Size = new Size(90, 37);
@@ -216,7 +216,7 @@ namespace UI_Tier
             // 
             lblEx.AutoSize = true;
             lblEx.Font = new Font("Segoe UI", 10F);
-            lblEx.Location = new Point(1585, 328);
+            lblEx.Location = new Point(1585, 314);
             lblEx.Name = "lblEx";
             lblEx.Size = new Size(90, 37);
             lblEx.TabIndex = 33;
@@ -226,7 +226,7 @@ namespace UI_Tier
             // 
             lblGender.AutoSize = true;
             lblGender.Font = new Font("Segoe UI", 10F);
-            lblGender.Location = new Point(612, 297);
+            lblGender.Location = new Point(612, 294);
             lblGender.Name = "lblGender";
             lblGender.Size = new Size(119, 37);
             lblGender.TabIndex = 28;
@@ -237,7 +237,7 @@ namespace UI_Tier
             lblSpecialties.AutoSize = true;
             lblSpecialties.Font = new Font("Segoe UI", 11F);
             lblSpecialties.ForeColor = Color.FromArgb(37, 99, 235);
-            lblSpecialties.Location = new Point(612, 235);
+            lblSpecialties.Location = new Point(612, 232);
             lblSpecialties.Margin = new Padding(0, 5, 0, 5);
             lblSpecialties.MaximumSize = new Size(600, 0);
             lblSpecialties.Name = "lblSpecialties";
@@ -270,7 +270,7 @@ namespace UI_Tier
             // 
             // picDoctor
             // 
-            picDoctor.Location = new Point(158, 22);
+            picDoctor.Location = new Point(158, 18);
             picDoctor.Name = "picDoctor";
             picDoctor.Size = new Size(350, 350);
             picDoctor.SizeMode = PictureBoxSizeMode.Zoom;
@@ -315,16 +315,17 @@ namespace UI_Tier
             panel2.Controls.Add(tlpContent);
             panel2.Controls.Add(panel3);
             panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(0, 392);
+            panel2.Location = new Point(0, 386);
             panel2.Name = "panel2";
-            panel2.Size = new Size(2019, 1103);
+            panel2.Size = new Size(2019, 1109);
             panel2.TabIndex = 1;
             // 
             // tlpContent
             // 
+            tlpContent.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
             tlpContent.ColumnCount = 2;
-            tlpContent.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 49.975235F));
-            tlpContent.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50.024765F));
+            tlpContent.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50.074295F));
+            tlpContent.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 49.925705F));
             tlpContent.Controls.Add(panel5, 0, 0);
             tlpContent.Controls.Add(panel4, 1, 0);
             tlpContent.Dock = DockStyle.Fill;
@@ -332,7 +333,7 @@ namespace UI_Tier
             tlpContent.Name = "tlpContent";
             tlpContent.RowCount = 1;
             tlpContent.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlpContent.Size = new Size(2019, 846);
+            tlpContent.Size = new Size(2019, 852);
             tlpContent.TabIndex = 3;
             // 
             // panel5
@@ -342,9 +343,9 @@ namespace UI_Tier
             panel5.Controls.Add(lblNoReviews);
             panel5.Controls.Add(panel16);
             panel5.Dock = DockStyle.Fill;
-            panel5.Location = new Point(3, 3);
+            panel5.Location = new Point(4, 4);
             panel5.Name = "panel5";
-            panel5.Size = new Size(1003, 840);
+            panel5.Size = new Size(1003, 844);
             panel5.TabIndex = 3;
             // 
             // pnlReviewPagination
@@ -407,7 +408,7 @@ namespace UI_Tier
             flpReview.Location = new Point(0, 198);
             flpReview.Margin = new Padding(20, 10, 20, 0);
             flpReview.Name = "flpReview";
-            flpReview.Padding = new Padding(5, 5, 5, 10);
+            flpReview.Padding = new Padding(20);
             flpReview.Size = new Size(1003, 581);
             flpReview.TabIndex = 4;
             flpReview.WrapContents = false;
@@ -457,12 +458,12 @@ namespace UI_Tier
             btnWriteReview.Cursor = Cursors.Hand;
             btnWriteReview.FlatAppearance.BorderSize = 0;
             btnWriteReview.FlatStyle = FlatStyle.Flat;
-            btnWriteReview.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
+            btnWriteReview.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
             btnWriteReview.ForeColor = Color.WhiteSmoke;
-            btnWriteReview.Location = new Point(633, 0);
+            btnWriteReview.Location = new Point(672, 7);
             btnWriteReview.Name = "btnWriteReview";
             btnWriteReview.Padding = new Padding(5);
-            btnWriteReview.Size = new Size(358, 84);
+            btnWriteReview.Size = new Size(319, 69);
             btnWriteReview.TabIndex = 57;
             btnWriteReview.Text = " Viết đánh giá";
             btnWriteReview.UseVisualStyleBackColor = false;
@@ -470,15 +471,14 @@ namespace UI_Tier
             // 
             // panel4
             // 
-            panel4.BorderStyle = BorderStyle.FixedSingle;
             panel4.Controls.Add(pnlAppPagination);
             panel4.Controls.Add(flpAppItem);
             panel4.Controls.Add(lblNoApp);
             panel4.Controls.Add(pnlAppHeader);
             panel4.Dock = DockStyle.Fill;
-            panel4.Location = new Point(1012, 3);
+            panel4.Location = new Point(1014, 4);
             panel4.Name = "panel4";
-            panel4.Size = new Size(1004, 840);
+            panel4.Size = new Size(1001, 844);
             panel4.TabIndex = 2;
             // 
             // pnlAppPagination
@@ -491,7 +491,7 @@ namespace UI_Tier
             pnlAppPagination.Location = new Point(0, 778);
             pnlAppPagination.Margin = new Padding(0, 10, 0, 10);
             pnlAppPagination.Name = "pnlAppPagination";
-            pnlAppPagination.Size = new Size(1002, 60);
+            pnlAppPagination.Size = new Size(1001, 60);
             pnlAppPagination.TabIndex = 60;
             pnlAppPagination.Visible = false;
             // 
@@ -500,7 +500,7 @@ namespace UI_Tier
             lblAppPageStatus.Anchor = AnchorStyles.Top;
             lblAppPageStatus.AutoSize = true;
             lblAppPageStatus.Font = new Font("Segoe UI", 10.5F);
-            lblAppPageStatus.Location = new Point(420, 10);
+            lblAppPageStatus.Location = new Point(419, 10);
             lblAppPageStatus.Name = "lblAppPageStatus";
             lblAppPageStatus.Size = new Size(151, 38);
             lblAppPageStatus.TabIndex = 2;
@@ -526,7 +526,7 @@ namespace UI_Tier
             lblAppNext.Cursor = Cursors.Hand;
             lblAppNext.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
             lblAppNext.ForeColor = Color.FromArgb(0, 120, 212);
-            lblAppNext.Location = new Point(775, 10);
+            lblAppNext.Location = new Point(774, 10);
             lblAppNext.Name = "lblAppNext";
             lblAppNext.Size = new Size(191, 38);
             lblAppNext.TabIndex = 0;
@@ -541,8 +541,8 @@ namespace UI_Tier
             flpAppItem.Location = new Point(0, 338);
             flpAppItem.Margin = new Padding(20, 10, 20, 0);
             flpAppItem.Name = "flpAppItem";
-            flpAppItem.Padding = new Padding(5, 5, 5, 10);
-            flpAppItem.Size = new Size(1002, 440);
+            flpAppItem.Padding = new Padding(30);
+            flpAppItem.Size = new Size(1001, 440);
             flpAppItem.TabIndex = 0;
             flpAppItem.WrapContents = false;
             // 
@@ -555,7 +555,7 @@ namespace UI_Tier
             lblNoApp.Margin = new Padding(0);
             lblNoApp.Name = "lblNoApp";
             lblNoApp.Padding = new Padding(0, 30, 0, 0);
-            lblNoApp.Size = new Size(1002, 100);
+            lblNoApp.Size = new Size(1001, 100);
             lblNoApp.TabIndex = 7;
             lblNoApp.Text = "Bạn chưa có lịch hẹn nào với bác sĩ này";
             lblNoApp.TextAlign = ContentAlignment.TopCenter;
@@ -576,7 +576,7 @@ namespace UI_Tier
             pnlAppHeader.Dock = DockStyle.Top;
             pnlAppHeader.Location = new Point(0, 0);
             pnlAppHeader.Name = "pnlAppHeader";
-            pnlAppHeader.Size = new Size(1002, 238);
+            pnlAppHeader.Size = new Size(1001, 238);
             pnlAppHeader.TabIndex = 61;
             // 
             // btnBook
@@ -586,12 +586,12 @@ namespace UI_Tier
             btnBook.Cursor = Cursors.Hand;
             btnBook.FlatAppearance.BorderSize = 0;
             btnBook.FlatStyle = FlatStyle.Flat;
-            btnBook.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
+            btnBook.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
             btnBook.ForeColor = Color.WhiteSmoke;
-            btnBook.Location = new Point(651, 3);
+            btnBook.Location = new Point(650, 3);
             btnBook.Name = "btnBook";
             btnBook.Padding = new Padding(5);
-            btnBook.Size = new Size(334, 81);
+            btnBook.Size = new Size(334, 72);
             btnBook.TabIndex = 58;
             btnBook.Text = " Đặt lịch ngay";
             btnBook.UseVisualStyleBackColor = false;
@@ -695,7 +695,6 @@ namespace UI_Tier
             // 
             // panel3
             // 
-            panel3.BorderStyle = BorderStyle.FixedSingle;
             panel3.Controls.Add(label1);
             panel3.Controls.Add(lblBio);
             panel3.Dock = DockStyle.Top;
@@ -720,7 +719,7 @@ namespace UI_Tier
             lblBio.Font = new Font("Segoe UI", 10F);
             lblBio.Location = new Point(27, 61);
             lblBio.Name = "lblBio";
-            lblBio.Size = new Size(1959, 180);
+            lblBio.Size = new Size(1961, 182);
             lblBio.TabIndex = 0;
             lblBio.Text = resources.GetString("lblBio.Text");
             // 

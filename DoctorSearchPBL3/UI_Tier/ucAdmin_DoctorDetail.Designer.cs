@@ -247,7 +247,7 @@ namespace UI_Tier
             flpMain.Margin = new Padding(5, 6, 5, 6);
             flpMain.Name = "flpMain";
             flpMain.Padding = new Padding(100, 30, 100, 60);
-            flpMain.Size = new Size(1266, 1765);
+            flpMain.Size = new Size(1266, 1925);
             flpMain.TabIndex = 0;
             flpMain.WrapContents = false;
             // 
@@ -288,7 +288,7 @@ namespace UI_Tier
             tlpBasic.RowStyles.Add(new RowStyle());
             tlpBasic.RowStyles.Add(new RowStyle());
             tlpBasic.RowStyles.Add(new RowStyle());
-            tlpBasic.Size = new Size(1020, 690);
+            tlpBasic.Size = new Size(1120, 770);
             tlpBasic.TabIndex = 1;
             // 
             // pnlName
@@ -333,7 +333,7 @@ namespace UI_Tier
             txtEditName.Font = new Font("Segoe UI", 12F);
             txtEditName.Location = new Point(0, 0);
             txtEditName.Name = "txtEditName";
-            txtEditName.Size = new Size(100, 54);
+            txtEditName.Size = new Size(100, 50);
             txtEditName.TabIndex = 0;
             // 
             // pnlRole
@@ -341,7 +341,7 @@ namespace UI_Tier
             pnlRole.Controls.Add(lblLRole);
             pnlRole.Controls.Add(pnlBadgeRole);
             pnlRole.Dock = DockStyle.Fill;
-            pnlRole.Location = new Point(515, 6);
+            pnlRole.Location = new Point(615, 6);
             pnlRole.Margin = new Padding(5, 6, 5, 6);
             pnlRole.Name = "pnlRole";
             pnlRole.Size = new Size(500, 150);
@@ -389,7 +389,7 @@ namespace UI_Tier
             pnlPhone.Controls.Add(lblVPhone);
             pnlPhone.Controls.Add(txtEditPhone);
             pnlPhone.Dock = DockStyle.Fill;
-            pnlPhone.Location = new Point(5, 148);
+            pnlPhone.Location = new Point(5, 168);
             pnlPhone.Margin = new Padding(5, 6, 5, 6);
             pnlPhone.Name = "pnlPhone";
             pnlPhone.Size = new Size(500, 150);
@@ -425,7 +425,7 @@ namespace UI_Tier
             txtEditPhone.Font = new Font("Segoe UI", 12F);
             txtEditPhone.Location = new Point(0, 0);
             txtEditPhone.Name = "txtEditPhone";
-            txtEditPhone.Size = new Size(100, 54);
+            txtEditPhone.Size = new Size(100, 50);
             txtEditPhone.TabIndex = 0;
             // 
             // pnlDob
@@ -434,7 +434,7 @@ namespace UI_Tier
             pnlDob.Controls.Add(lblVDob);
             pnlDob.Controls.Add(dtpEditDob);
             pnlDob.Dock = DockStyle.Fill;
-            pnlDob.Location = new Point(515, 148);
+            pnlDob.Location = new Point(615, 168);
             pnlDob.Margin = new Padding(5, 6, 5, 6);
             pnlDob.Name = "pnlDob";
             pnlDob.Size = new Size(500, 150);
@@ -469,7 +469,7 @@ namespace UI_Tier
             dtpEditDob.Font = new Font("Segoe UI", 12F);
             dtpEditDob.Location = new Point(0, 0);
             dtpEditDob.Name = "dtpEditDob";
-            dtpEditDob.Size = new Size(200, 54);
+            dtpEditDob.Size = new Size(200, 50);
             dtpEditDob.TabIndex = 0;
             // 
             // pnlGender
@@ -478,7 +478,7 @@ namespace UI_Tier
             pnlGender.Controls.Add(lblVGender);
             pnlGender.Controls.Add(cboEditGender);
             pnlGender.Dock = DockStyle.Fill;
-            pnlGender.Location = new Point(5, 290);
+            pnlGender.Location = new Point(5, 330);
             pnlGender.Margin = new Padding(5, 6, 5, 6);
             pnlGender.Name = "pnlGender";
             pnlGender.Size = new Size(500, 150);
@@ -514,7 +514,7 @@ namespace UI_Tier
             cboEditGender.Font = new Font("Segoe UI", 12F);
             cboEditGender.Location = new Point(0, 0);
             cboEditGender.Name = "cboEditGender";
-            cboEditGender.Size = new Size(121, 55);
+            cboEditGender.Size = new Size(121, 53);
             cboEditGender.TabIndex = 0;
             // 
             // pnlCCCD
@@ -523,7 +523,7 @@ namespace UI_Tier
             pnlCCCD.Controls.Add(lblVCCCD);
             pnlCCCD.Controls.Add(txtEditCCCD);
             pnlCCCD.Dock = DockStyle.Fill;
-            pnlCCCD.Location = new Point(515, 290);
+            pnlCCCD.Location = new Point(615, 330);
             pnlCCCD.Margin = new Padding(5, 6, 5, 6);
             pnlCCCD.Name = "pnlCCCD";
             pnlCCCD.Size = new Size(500, 150);
@@ -559,7 +559,7 @@ namespace UI_Tier
             txtEditCCCD.Font = new Font("Segoe UI", 12F);
             txtEditCCCD.Location = new Point(0, 0);
             txtEditCCCD.Name = "txtEditCCCD";
-            txtEditCCCD.Size = new Size(100, 54);
+            txtEditCCCD.Size = new Size(100, 50);
             txtEditCCCD.TabIndex = 0;
             // 
             // pnlAddress
@@ -569,10 +569,10 @@ namespace UI_Tier
             pnlAddress.Controls.Add(lblVAddress);
             pnlAddress.Controls.Add(txtEditAddress);
             pnlAddress.Dock = DockStyle.Fill;
-            pnlAddress.Location = new Point(5, 432);
+            pnlAddress.Location = new Point(5, 492);
             pnlAddress.Margin = new Padding(5, 6, 5, 6);
             pnlAddress.Name = "pnlAddress";
-            pnlAddress.Size = new Size(1010, 150);
+            pnlAddress.Size = new Size(1110, 150);
             pnlAddress.TabIndex = 6;
             // 
             // lblLAddress
@@ -605,7 +605,7 @@ namespace UI_Tier
             txtEditAddress.Font = new Font("Segoe UI", 12F);
             txtEditAddress.Location = new Point(0, 0);
             txtEditAddress.Name = "txtEditAddress";
-            txtEditAddress.Size = new Size(100, 54);
+            txtEditAddress.Size = new Size(100, 50);
             txtEditAddress.TabIndex = 0;
             // 
             // pnlStatus
@@ -613,7 +613,7 @@ namespace UI_Tier
             pnlStatus.Controls.Add(lblLStatus);
             pnlStatus.Controls.Add(pnlBadgeStatus);
             pnlStatus.Dock = DockStyle.Fill;
-            pnlStatus.Location = new Point(5, 574);
+            pnlStatus.Location = new Point(5, 654);
             pnlStatus.Margin = new Padding(5, 6, 5, 6);
             pnlStatus.Name = "pnlStatus";
             pnlStatus.Size = new Size(500, 110);
@@ -660,7 +660,7 @@ namespace UI_Tier
             pnlCreatedAt.Controls.Add(lblLCreatedAt);
             pnlCreatedAt.Controls.Add(lblVCreatedAt);
             pnlCreatedAt.Dock = DockStyle.Fill;
-            pnlCreatedAt.Location = new Point(515, 574);
+            pnlCreatedAt.Location = new Point(615, 654);
             pnlCreatedAt.Margin = new Padding(5, 6, 5, 6);
             pnlCreatedAt.Name = "pnlCreatedAt";
             pnlCreatedAt.Size = new Size(500, 110);
@@ -693,7 +693,7 @@ namespace UI_Tier
             // pnlDivider
             // 
             pnlDivider.BackColor = Color.Black;
-            pnlDivider.Location = new Point(100, 822);
+            pnlDivider.Location = new Point(100, 902);
             pnlDivider.Margin = new Padding(0, 40, 0, 20);
             pnlDivider.Name = "pnlDivider";
             pnlDivider.Size = new Size(1266, 1);
@@ -703,7 +703,7 @@ namespace UI_Tier
             // 
             lblProfessionalHeader.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             lblProfessionalHeader.ForeColor = Color.FromArgb(17, 24, 39);
-            lblProfessionalHeader.Location = new Point(105, 843);
+            lblProfessionalHeader.Location = new Point(105, 923);
             lblProfessionalHeader.Margin = new Padding(5, 0, 5, 0);
             lblProfessionalHeader.Name = "lblProfessionalHeader";
             lblProfessionalHeader.Size = new Size(1100, 50);
@@ -726,7 +726,7 @@ namespace UI_Tier
             tlpProfessional.Controls.Add(pnlApproval, 2, 2);
             tlpProfessional.Controls.Add(pnlLicense, 0, 3);
             tlpProfessional.Controls.Add(pnlRating, 0, 1);
-            tlpProfessional.Location = new Point(105, 899);
+            tlpProfessional.Location = new Point(105, 979);
             tlpProfessional.Margin = new Padding(5, 6, 5, 6);
             tlpProfessional.Name = "tlpProfessional";
             tlpProfessional.RowCount = 5;
@@ -735,7 +735,7 @@ namespace UI_Tier
             tlpProfessional.RowStyles.Add(new RowStyle());
             tlpProfessional.RowStyles.Add(new RowStyle());
             tlpProfessional.RowStyles.Add(new RowStyle());
-            tlpProfessional.Size = new Size(1020, 800);
+            tlpProfessional.Size = new Size(1120, 880);
             tlpProfessional.TabIndex = 3;
             // 
             // pnlDept
@@ -780,7 +780,7 @@ namespace UI_Tier
             cboEditDept.Font = new Font("Segoe UI", 12F);
             cboEditDept.Location = new Point(0, 0);
             cboEditDept.Name = "cboEditDept";
-            cboEditDept.Size = new Size(121, 55);
+            cboEditDept.Size = new Size(121, 53);
             cboEditDept.TabIndex = 0;
             // 
             // pnlPosition
@@ -789,7 +789,7 @@ namespace UI_Tier
             pnlPosition.Controls.Add(lblVPosition);
             pnlPosition.Controls.Add(txtEditPosition);
             pnlPosition.Dock = DockStyle.Fill;
-            pnlPosition.Location = new Point(515, 6);
+            pnlPosition.Location = new Point(615, 6);
             pnlPosition.Margin = new Padding(5, 6, 5, 6);
             pnlPosition.Name = "pnlPosition";
             pnlPosition.Size = new Size(500, 150);
@@ -825,7 +825,7 @@ namespace UI_Tier
             txtEditPosition.Font = new Font("Segoe UI", 12F);
             txtEditPosition.Location = new Point(0, 0);
             txtEditPosition.Name = "txtEditPosition";
-            txtEditPosition.Size = new Size(100, 54);
+            txtEditPosition.Size = new Size(100, 50);
             txtEditPosition.TabIndex = 0;
             // 
             // pnlExp
@@ -834,7 +834,7 @@ namespace UI_Tier
             pnlExp.Controls.Add(lblVExp);
             pnlExp.Controls.Add(nudEditExp);
             pnlExp.Dock = DockStyle.Fill;
-            pnlExp.Location = new Point(515, 148);
+            pnlExp.Location = new Point(615, 168);
             pnlExp.Margin = new Padding(5, 6, 5, 6);
             pnlExp.Name = "pnlExp";
             pnlExp.Size = new Size(500, 150);
@@ -869,7 +869,7 @@ namespace UI_Tier
             nudEditExp.Font = new Font("Segoe UI", 12F);
             nudEditExp.Location = new Point(0, 0);
             nudEditExp.Name = "nudEditExp";
-            nudEditExp.Size = new Size(120, 54);
+            nudEditExp.Size = new Size(120, 50);
             nudEditExp.TabIndex = 0;
             nudEditExp.Visible = false;
             // 
@@ -879,7 +879,7 @@ namespace UI_Tier
             pnlFee.Controls.Add(lblVFee);
             pnlFee.Controls.Add(nudEditFee);
             pnlFee.Dock = DockStyle.Fill;
-            pnlFee.Location = new Point(5, 290);
+            pnlFee.Location = new Point(5, 330);
             pnlFee.Margin = new Padding(5, 6, 5, 6);
             pnlFee.Name = "pnlFee";
             pnlFee.Size = new Size(500, 150);
@@ -915,7 +915,7 @@ namespace UI_Tier
             nudEditFee.Location = new Point(0, 0);
             nudEditFee.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
             nudEditFee.Name = "nudEditFee";
-            nudEditFee.Size = new Size(120, 54);
+            nudEditFee.Size = new Size(120, 50);
             nudEditFee.TabIndex = 0;
             nudEditFee.Visible = false;
             // 
@@ -926,10 +926,10 @@ namespace UI_Tier
             pnlBio.Controls.Add(lblVBio);
             pnlBio.Controls.Add(txtEditBio);
             pnlBio.Dock = DockStyle.Fill;
-            pnlBio.Location = new Point(5, 574);
+            pnlBio.Location = new Point(5, 654);
             pnlBio.Margin = new Padding(5, 6, 5, 6);
             pnlBio.Name = "pnlBio";
-            pnlBio.Size = new Size(1010, 220);
+            pnlBio.Size = new Size(1110, 220);
             pnlBio.TabIndex = 8;
             // 
             // lblLBio
@@ -962,7 +962,7 @@ namespace UI_Tier
             txtEditBio.Font = new Font("Segoe UI", 12F);
             txtEditBio.Location = new Point(0, 0);
             txtEditBio.Name = "txtEditBio";
-            txtEditBio.Size = new Size(100, 54);
+            txtEditBio.Size = new Size(100, 50);
             txtEditBio.TabIndex = 0;
             txtEditBio.Visible = false;
             // 
@@ -971,7 +971,7 @@ namespace UI_Tier
             pnlApproval.Controls.Add(lblLApproval);
             pnlApproval.Controls.Add(pnlBadgeApproval);
             pnlApproval.Dock = DockStyle.Fill;
-            pnlApproval.Location = new Point(515, 290);
+            pnlApproval.Location = new Point(615, 330);
             pnlApproval.Margin = new Padding(5, 6, 5, 6);
             pnlApproval.Name = "pnlApproval";
             pnlApproval.Size = new Size(500, 150);
@@ -1021,7 +1021,7 @@ namespace UI_Tier
             pnlLicense.Controls.Add(lblLLicense);
             pnlLicense.Controls.Add(lblVLicense);
             pnlLicense.Controls.Add(txtEditLicense);
-            pnlLicense.Location = new Point(5, 432);
+            pnlLicense.Location = new Point(5, 492);
             pnlLicense.Margin = new Padding(5, 6, 5, 6);
             pnlLicense.Name = "pnlLicense";
             pnlLicense.Size = new Size(1010, 150);
@@ -1080,7 +1080,7 @@ namespace UI_Tier
             txtEditLicense.Font = new Font("Segoe UI", 12F);
             txtEditLicense.Location = new Point(0, 0);
             txtEditLicense.Name = "txtEditLicense";
-            txtEditLicense.Size = new Size(100, 54);
+            txtEditLicense.Size = new Size(100, 50);
             txtEditLicense.TabIndex = 0;
             txtEditLicense.Visible = false;
             // 
@@ -1089,7 +1089,7 @@ namespace UI_Tier
             pnlRating.Controls.Add(lblLRating);
             pnlRating.Controls.Add(lblVRating);
             pnlRating.Dock = DockStyle.Fill;
-            pnlRating.Location = new Point(5, 148);
+            pnlRating.Location = new Point(5, 168);
             pnlRating.Margin = new Padding(5, 6, 5, 6);
             pnlRating.Name = "pnlRating";
             pnlRating.Size = new Size(500, 150);
