@@ -751,5 +751,45 @@ namespace UI_Tier
                 TextRenderer.DrawText(g, part3, lbl.Font, pt, defaultColor, TextFormatFlags.NoPadding);
             }
         }
+
+        /// <summary>
+        /// Chuẩn hóa chức danh bác sĩ: GS., PGS., TS., ThS., BSCK., BS.
+        /// Bỏ "BS." thừa khi đã có chức danh cao hơn (vd: "Giáo sư Bác sĩ" → "GS.")
+        /// </summary>
+        public static string NormalizeDoctorTitle(string? position)
+        {
+            if (string.IsNullOrWhiteSpace(position)) return "BS.";
+
+            string title = position.Trim();
+            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)phó giáo sư", "PGS.");
+            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)giáo sư", "GS.");
+            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)tiến sĩ", "TS.");
+            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)thạc sĩ", "ThS.");
+            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)bác sĩ chuyên khoa", "BSCK.");
+            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)bác sĩ", "BS.");
+            title = System.Text.RegularExpressions.Regex.Replace(title, @"\s+", " ").Trim();
+
+            // Bỏ "BS." thừa nếu đã có chức danh cao hơn
+            if (System.Text.RegularExpressions.Regex.IsMatch(title, @"(GS\.|PGS\.|TS\.|ThS\.|BSCK\.)"))
+                title = System.Text.RegularExpressions.Regex.Replace(title, @"\bBS\.\s*", "").Trim();
+
+            return title;
+        }
+
+        /// <summary>
+        /// Chuẩn hóa họ tên bác sĩ, loại bỏ tiền tố "BS." hoặc "Bác sĩ" nếu đã có trong tên DB.
+        /// </summary>
+        public static string NormalizeDoctorName(string? fullName)
+        {
+            if (string.IsNullOrWhiteSpace(fullName)) return "Chưa cập nhật";
+
+            string name = fullName.Trim();
+            if (name.StartsWith("BS.", StringComparison.OrdinalIgnoreCase))
+                return name.Substring(3).Trim();
+            if (name.StartsWith("Bác sĩ", StringComparison.OrdinalIgnoreCase))
+                return name.Substring("Bác sĩ".Length).Trim();
+
+            return name;
+        }
     }
 }

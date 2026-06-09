@@ -82,6 +82,18 @@ namespace UI_Tier
             UIHelper.SetupInputFocusEffect(cbRoom, pnlRoomBorder, focusColor, unfocusColor, highlightColor);
             UIHelper.SetupInputFocusEffect(numMax, pnlMaxBorder, focusColor, unfocusColor, highlightColor);
 
+            // Dùng Format event để hiển thị Position + FullName (không sửa DTO)
+            cbDoctor.FormattingEnabled = true;
+            cbDoctor.Format += (s, args) =>
+            {
+                if (args.ListItem is DoctorDTO doc)
+                {
+                    string position = UIHelper.NormalizeDoctorTitle(doc.Position);
+                    string fullName = UIHelper.NormalizeDoctorName(doc.User?.FullName);
+                    args.Value = $"{position} {fullName}";
+                }
+            };
+
             SetupRepeatInputsStyling(focusColor, unfocusColor, highlightColor);
 
             if (_editSlotId == 0)
@@ -92,6 +104,7 @@ namespace UI_Tier
             InitDayPicker();
             WireDynamicFilteringEvents();
         }
+
 
         private void WireDynamicFilteringEvents()
         {
@@ -143,14 +156,26 @@ namespace UI_Tier
                 .Where(d => d.DepartmentId == departmentId)
                 .ToList();
 
-            cbDoctor.DataSource = doctors;
-            cbDoctor.DisplayMember = "FullName";
-            cbDoctor.ValueMember = "Id";
-            cbDoctor.SelectedIndex = -1;
-
-            if (preferredDoctorId.HasValue && doctors.Any(d => d.Id == preferredDoctorId.Value))
+            if (doctors.Count == 0)
             {
-                cbDoctor.SelectedValue = preferredDoctorId.Value;
+                cbDoctor.DataSource = null;
+                cbDoctor.Items.Clear();
+                cbDoctor.Items.Add("Không có bác sĩ nào hợp lệ");
+                cbDoctor.SelectedIndex = 0;
+                cbDoctor.Enabled = false;
+            }
+            else
+            {
+                cbDoctor.Enabled = true;
+                cbDoctor.DataSource = doctors;
+                cbDoctor.ValueMember = "Id";
+                // Không đặt DisplayMember - Format event (wire trong Load) xử lý hiển thị User.FullName
+                cbDoctor.SelectedIndex = -1;
+
+                if (preferredDoctorId.HasValue && doctors.Any(d => d.Id == preferredDoctorId.Value))
+                {
+                    cbDoctor.SelectedValue = preferredDoctorId.Value;
+                }
             }
         }
 
@@ -164,6 +189,8 @@ namespace UI_Tier
             if (!(cbDept.SelectedValue is int departmentId) || departmentId <= 0)
             {
                 cbRoom.DataSource = null;
+                cbRoom.Items.Clear();
+                cbRoom.Enabled = true;
                 return;
             }
 
@@ -174,14 +201,26 @@ namespace UI_Tier
                 ? _roomBus.GetAvailableRoomsByDepartmentAndTime(departmentId, dtpWorkDate.Value.Date, startTime, endTime, _editSlotId > 0 ? _editSlotId : null)
                 : _roomBus.GetRoomsByDepartment(departmentId);
 
-            cbRoom.DataSource = rooms;
-            cbRoom.DisplayMember = "RoomCode";
-            cbRoom.ValueMember = "Id";
-            cbRoom.SelectedIndex = -1;
-
-            if (preferredRoomId.HasValue && rooms.Any(r => r.Id == preferredRoomId.Value))
+            if (rooms.Count == 0)
             {
-                cbRoom.SelectedValue = preferredRoomId.Value;
+                cbRoom.DataSource = null;
+                cbRoom.Items.Clear();
+                cbRoom.Items.Add("Chưa có phòng trống");
+                cbRoom.SelectedIndex = 0;
+                cbRoom.Enabled = false;
+            }
+            else
+            {
+                cbRoom.Enabled = true;
+                cbRoom.DataSource = rooms;
+                cbRoom.DisplayMember = "RoomCode";
+                cbRoom.ValueMember = "Id";
+                cbRoom.SelectedIndex = -1;
+
+                if (preferredRoomId.HasValue && rooms.Any(r => r.Id == preferredRoomId.Value))
+                {
+                    cbRoom.SelectedValue = preferredRoomId.Value;
+                }
             }
         }
 
@@ -200,7 +239,11 @@ namespace UI_Tier
             else
             {
                 cbDoctor.DataSource = null;
+                cbDoctor.Items.Clear();
+                cbDoctor.Enabled = true;
                 cbRoom.DataSource = null;
+                cbRoom.Items.Clear();
+                cbRoom.Enabled = true;
             }
         }
 
@@ -258,8 +301,8 @@ namespace UI_Tier
         private void btnConfirm_Click(object sender, EventArgs e)
         {
             if (cbDept.SelectedIndex == -1) { MessageBox.Show("Vui lòng chọn khoa!", "Thông báo"); return; }
-            if (cbDoctor.SelectedIndex == -1) { MessageBox.Show("Vui lòng chọn bác sĩ!", "Thông báo"); return; }
-            if (cbRoom.SelectedIndex == -1) { MessageBox.Show("Vui lòng chọn phòng khám!", "Thông báo"); return; }
+            if (!cbDoctor.Enabled || cbDoctor.SelectedIndex == -1 || cbDoctor.DataSource == null) { MessageBox.Show("Vui lòng chọn bác sĩ!", "Thông báo"); return; }
+            if (!cbRoom.Enabled || cbRoom.SelectedIndex == -1 || cbRoom.DataSource == null) { MessageBox.Show("Vui lòng chọn phòng khám!", "Thông báo"); return; }
 
             int adminId = GlobalAccount.GetProfileId();
             if (adminId <= 0)
