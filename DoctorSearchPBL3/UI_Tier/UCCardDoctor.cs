@@ -36,14 +36,13 @@ namespace UI_Tier
         private void lblFullName_Paint(object sender, PaintEventArgs e)
         {
             if (_currentDoc == null) return;
-            string position = NormalizeDoctorTitle(_currentDoc.Position);
-            string fullName = NormalizeDoctorName(_currentDoc.User?.FullName);
+            string position = UIHelper.NormalizeDoctorTitle(_currentDoc.Position);
+            string fullName = UIHelper.NormalizeDoctorName(_currentDoc.User?.FullName);
             string displayName = string.IsNullOrWhiteSpace(position)
                 ? $"BS. {fullName}"
                 : $"{position} {fullName}";
 
-            // Gọi UIHelper vẽ chữ với từ khóa tìm kiếm được highlight (nền xanh chữ trắng/đen nổi bật)
-            UIHelper.DrawHighlightText(e.Graphics, lblFullName, displayName, _searchKeyword, 
+            UIHelper.DrawHighlightText(e.Graphics, lblFullName, displayName, _searchKeyword,
                 Color.Black, Color.FromArgb(206, 225, 255), Color.FromArgb(0, 98, 255));
         }
 
@@ -60,8 +59,8 @@ namespace UI_Tier
             lblFullName.Invalidate(); // Yêu cầu vẽ lại tên bác sĩ để cập nhật Highlight
 
             // 1. Tên Bác sĩ: Chuẩn hóa chức danh (Position) và Họ tên (FullName)
-            string position = NormalizeDoctorTitle(doctor.Position);
-            string fullName = NormalizeDoctorName(doctor.User?.FullName);
+            string position = UIHelper.NormalizeDoctorTitle(doctor.Position);
+            string fullName = UIHelper.NormalizeDoctorName(doctor.User?.FullName);
             lblFullName.Text = string.IsNullOrWhiteSpace(position)
                 ? $"BS. {fullName}"
                 : $"{position} {fullName}";
@@ -148,48 +147,6 @@ namespace UI_Tier
             LoadDoctorImage(fileName);
         }
 
-        /// <summary>
-        /// Chuẩn hóa chức danh hiển thị của bác sĩ (ví dụ: PGS, GS, TS, ThS, BS, BSCK).
-        /// </summary>
-        private static string NormalizeDoctorTitle(string? position)
-        {
-            if (string.IsNullOrWhiteSpace(position)) return "BS.";
-
-            string title = position.Trim();
-
-            // Thay thế các học hàm, học vị, chức danh phổ biến theo thứ tự ưu tiên
-            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)phó giáo sư", "PGS.");
-            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)giáo sư", "GS.");
-            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)tiến sĩ", "TS.");
-            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)thạc sĩ", "ThS.");
-            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)bác sĩ chuyên khoa", "BSCK.");
-            title = System.Text.RegularExpressions.Regex.Replace(title, "(?i)bác sĩ", "BS.");
-
-            // Chuẩn hóa khoảng trắng dư thừa
-            title = System.Text.RegularExpressions.Regex.Replace(title, @"\s+", " ").Trim();
-
-            return title;
-        }
-
-        /// <summary>
-        /// Chuẩn hóa tên bác sĩ, loại bỏ các chữ tiền tố lặp lại.
-        /// </summary>
-        private static string NormalizeDoctorName(string? fullName)
-        {
-            if (string.IsNullOrWhiteSpace(fullName)) return "Chưa cập nhật";
-
-            string name = fullName.Trim();
-            if (name.StartsWith("BS.", StringComparison.OrdinalIgnoreCase))
-            {
-                return name.Substring(3).Trim();
-            }
-            if (name.StartsWith("Bác sĩ", StringComparison.OrdinalIgnoreCase))
-            {
-                return name.Substring("Bác sĩ".Length).Trim();
-            }
-
-            return name;
-        }
 
         /// <summary>
         /// Tải hình ảnh của Bác sĩ từ các thư mục tài nguyên cục bộ.
