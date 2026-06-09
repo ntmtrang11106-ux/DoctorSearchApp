@@ -320,19 +320,8 @@ namespace UI_Tier
                 string msg = $"Bạn có muốn mở khóa tài khoản cho {_user.FullName}? Người dùng có thể đăng nhập lại vào hệ thống.";
                 if (MessageBox.Show(msg, "Mở khóa tài khoản", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    if (_adminBUS.UpdateUserStatus(_user.Id, "Active"))
+                    if (_adminBUS.UnblockUserWithRoleRestore(_user.Id, _user.Role))
                     {
-                        // Nếu là bác sĩ, cũng cần mở lại IsActive trong bảng Doctors
-                        if (_user.Role == "Doctor")
-                        {
-                            var doc = _adminBUS.GetDoctorByUserId(_user.Id);
-                            if (doc != null)
-                            {
-                                // Cần một phương thức để mở lại IsActive bác sĩ nếu cần, 
-                                // nhưng hiện tại UpdateUserStatus có thể đã đủ hoặc cần bổ sung vào DAL.
-                                // Tuy nhiên, yêu cầu tập trung vào phần CHẶN.
-                            }
-                        }
                         DataChanged?.Invoke(this, EventArgs.Empty);
                     }
                 }

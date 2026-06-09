@@ -13,12 +13,16 @@ namespace UI_Tier
     {
         private AdminBUS _adminBUS = new AdminBUS();
         private string _currentTab = "All"; // "All", "Pending", "Patient", "Doctor"
-        private string _currentStatus = "Tất cả"; // "Tất cả", "Hoạt động", "Bị khóa"
+        private string _currentStatus = StatusAll; // StatusAll, StatusActive, StatusPending, StatusBlocked
         private int _pageSize = 6;
         private int _currentPage = 1;
         private int _totalItems = 0;
 
         private const int EM_SETCUEBANNER = 0x1501;
+        private const string StatusAll = "Tất cả trạng thái";
+        private const string StatusActive = "Hoạt động";
+        private const string StatusPending = "Chờ duyệt";
+        private const string StatusBlocked = "Bị khóa";
 
         public ucAdmin_UserManagement()
         {
@@ -58,7 +62,7 @@ namespace UI_Tier
             UIHelper.SetupInputFocusEffect(txtSearch, pnlSearch, Color.White, Color.White, Color.FromArgb(59, 130, 246));
             UIHelper.RegisterClickToUnfocus(this, lblTitle);
             
-            cboStatusFilter.SelectedIndex = 0;
+            ConfigureStatusFilter();
             LoadData();
 
             UIHelper.SetupSearchTextBox(txtSearch, "Tìm kiếm theo tên, SĐT...");
@@ -71,10 +75,11 @@ namespace UI_Tier
         {
             string keyword = txtSearch.Text.Trim();
             if (keyword == "Tìm kiếm theo tên, SĐT...") keyword = "";
-            string status = cboStatusFilter.SelectedItem?.ToString() ?? "Tất cả trạng thái";
+            string status = cboStatusFilter.SelectedItem?.ToString() ?? StatusAll;
             
-            // Get all users (filtered by keyword, excluding admins)
-            var allUsers = _adminBUS.SearchUsers(keyword, "Tất cả");
+            string searchRole = GetSearchRoleForCurrentTab();
+            var counterUsers = _adminBUS.SearchUsers(keyword, "Tất cả");
+            var allUsers = _adminBUS.SearchUsers(keyword, searchRole);
             
             // Get pending doctors for the alert subtitle and for "Pending" status filter
             var pendingDocs = _adminBUS.GetPendingDoctors();
@@ -87,13 +92,15 @@ namespace UI_Tier
             }
 
             // Update UI Counters
-            int totalAll = allUsers.Count;
-            int totalPatients = allUsers.Count(u => u.Role == "Patient");
-            int totalDoctors = allUsers.Count(u => u.Role == "Doctor");
+            int totalAll = counterUsers.Count;
+            int totalPatients = counterUsers.Count(u => u.Role == "Patient");
+            int totalDoctors = counterUsers.Count(u => u.Role == "Doctor");
 
             btnAllUsers.Text = $"Tất cả ({totalAll})";
             btnPatients.Text = $"Bệnh nhân ({totalPatients})";
             btnDoctors.Text = $"Bác sĩ ({totalDoctors})";
+
+            LayoutTabButtons();
 
             // Update Subtitle Alert
             if (pendingDocs.Count > 0)
@@ -108,20 +115,20 @@ namespace UI_Tier
 
             // Apply Status Filter
             IEnumerable<UserDTO> filteredList = allUsers;
-            if (status == "Chờ duyệt")
+            if (status == StatusPending)
             {
-                // Only show doctors that are in the pending list
                 var pendingUserIds = new HashSet<int>(pendingDocs.Select(d => d.UserId));
                 filteredList = allUsers.Where(u => pendingUserIds.Contains(u.Id));
             }
-            else if (status == "Hoạt động")
+            else if (status == StatusActive)
             {
                 filteredList = allUsers.Where(u => u.Status == "Active");
             }
-            else if (status == "Bị khóa")
+            else if (status == StatusBlocked)
             {
                 filteredList = allUsers.Where(u => u.Status == "Blocked");
             }
+
 
             // Apply Tab Filter
             if (_currentTab == "Patient")
@@ -191,6 +198,7 @@ namespace UI_Tier
         private void btnAllUsers_Click(object sender, EventArgs e)
         {
             _currentTab = "All";
+            ConfigureStatusFilter();
             SetActiveTab(btnAllUsers);
             _currentPage = 1;
             LoadData();
@@ -207,6 +215,7 @@ namespace UI_Tier
         private void btnPatients_Click(object sender, EventArgs e)
         {
             _currentTab = "Patient";
+            ConfigureStatusFilter();
             SetActiveTab(btnPatients);
             _currentPage = 1;
             LoadData();
@@ -215,9 +224,74 @@ namespace UI_Tier
         private void btnDoctors_Click(object sender, EventArgs e)
         {
             _currentTab = "Doctor";
+            ConfigureStatusFilter();
             SetActiveTab(btnDoctors);
             _currentPage = 1;
             LoadData();
+        }
+
+        private void ConfigureStatusFilter()
+        {
+            cboStatusFilter.SelectedIndexChanged -= cboStatusFilter_SelectedIndexChanged;
+            cboStatusFilter.Items.Clear();
+            if (_currentTab == "Patient")
+            {
+                cboStatusFilter.Items.AddRange(new object[] { StatusAll, StatusActive, StatusBlocked });
+            }
+            else
+            {
+                cboStatusFilter.Items.AddRange(new object[] { StatusAll, StatusActive, StatusPending, StatusBlocked });
+            }
+
+            if (string.IsNullOrWhiteSpace(_currentStatus) || !cboStatusFilter.Items.Contains(_currentStatus))
+            {
+                _currentStatus = StatusAll;
+            }
+
+            cboStatusFilter.SelectedItem = _currentStatus;
+            if (cboStatusFilter.SelectedIndex < 0)
+            {
+                cboStatusFilter.SelectedIndex = 0;
+            }
+
+            _currentStatus = cboStatusFilter.SelectedItem?.ToString() ?? StatusAll;
+            cboStatusFilter.SelectedIndexChanged += cboStatusFilter_SelectedIndexChanged;
+        }
+
+        private void LayoutTabButtons()
+        {
+            Button[] btns = { btnAllUsers, btnPatients, btnDoctors };
+            int left = 0;
+
+            foreach (var btn in btns)
+            {
+                int width = TextRenderer.MeasureText(btn.Text, btn.Font).Width + 42;
+                btn.Width = Math.Max(width, 160);
+                btn.Left = left;
+                left += btn.Width + 14;
+            }
+
+            SetActiveTab(GetActiveTabButton());
+        }
+
+        private Button GetActiveTabButton()
+        {
+            return _currentTab switch
+            {
+                "Patient" => btnPatients,
+                "Doctor" => btnDoctors,
+                _ => btnAllUsers
+            };
+        }
+
+        private string GetSearchRoleForCurrentTab()
+        {
+            return _currentTab switch
+            {
+                "Patient" => "Patient",
+                "Doctor" => "Doctor",
+                _ => "Tất cả"
+            };
         }
 
         private void SetActiveTab(Button activeBtn)
