@@ -18,10 +18,20 @@ namespace UI_Tier
         
         private int _pageSize = 6;
         private int _currentPage = 1;
+        private string _lastKeyword = "";
+        private System.Windows.Forms.Timer _searchTimer;
 
         public ucAdmin_AppointmentManagement()
         {
             InitializeComponent();
+            
+            _searchTimer = new System.Windows.Forms.Timer();
+            _searchTimer.Interval = 300;
+            _searchTimer.Tick += (s, e) => 
+            {
+                _searchTimer.Stop();
+                ApplyFilter();
+            };
             UIHelper.SetDoubleBuffered(this);
             UIHelper.SetupScrollableContainer(flpAppItem);
             
@@ -29,6 +39,8 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(pnlSearchArea, 15);
             UIHelper.ApplyRoundedRegion(btnCreateSchedule, 8);
             
+
+
             // Pagination styling and events
             UIHelper.SetupPaginationLabels(lblReviewPrevBtn, lblReviewNext);
             lblReviewPrevBtn.Click += lblPrev_Click;
@@ -43,7 +55,7 @@ namespace UI_Tier
             flpAppItem.Resize += (s, e) => {
                 foreach (Control ctrl in flpAppItem.Controls)
                 {
-                    ctrl.Width = flpAppItem.ClientSize.Width - 40;
+                    ctrl.Width = flpAppItem.ClientSize.Width - (ctrl.Margin.Left + ctrl.Margin.Right) - 20;
                 }
             };
 
@@ -56,39 +68,89 @@ namespace UI_Tier
         {
             UIHelper.ApplyBorderPanelStyle(pnlSearchArea);
 
-            UIHelper.SetupSearchTextBox(txtSearch, "Tìm kiếm theo bác sĩ, khoa, phòng...");
-            UIHelper.SetupComboBox(cbDept);
-            UIHelper.SetupComboBox(cbStatusFilter);
-            LoadDepartments();
-            LoadStatusFilter();
+            UIHelper.SetupSearchTextBox(txtSearch, _searchPlaceholder);
+            
+            LoadCapacityFilter();
+            SetupFilterButtons();
             InitData();
         }
 
-        private void LoadDepartments()
+        private void LoadCapacityFilter()
         {
-            try
-            {
-                var depts = _deptBus.GetAllDepartments();
-                depts.Insert(0, new DepartmentDTO { Id = 0, DepartmentName = "Tất cả chuyên khoa" });
-                cbDept.DataSource = depts;
-                cbDept.DisplayMember = "DepartmentName";
-                cbDept.ValueMember = "Id";
-            }
-            catch { }
+            cbCapacity.Items.Add("Tất cả sức chứa");
+            cbCapacity.Items.Add("Còn trống");
+            cbCapacity.Items.Add("Đầy");
+            cbCapacity.SelectedIndex = 0;
+            UIHelper.SetupComboBox(cbCapacity);
         }
 
-        private void LoadStatusFilter()
+        private void cbCapacity_SelectedIndexChanged(object sender, EventArgs e)
         {
-            cbStatusFilter.Items.Clear();
-            cbStatusFilter.Items.Add("Tất cả trạng thái");
-            cbStatusFilter.Items.Add("Chờ duyệt");
-            cbStatusFilter.Items.Add("Đã duyệt");
-            cbStatusFilter.Items.Add("Đã hủy");
-            cbStatusFilter.Items.Add("Còn trống");
-            cbStatusFilter.Items.Add("Đầy");
-            cbStatusFilter.Items.Add("Đã ẩn");
-            cbStatusFilter.Items.Add("Đã xóa");
-            cbStatusFilter.SelectedIndex = 0;
+            ApplyFilter();
+        }
+
+
+
+        private int _currentDeptFilterId = 0; // 0 means "Tất cả chuyên khoa"
+        private readonly string _searchPlaceholder = "Tìm kiếm theo tên bác sĩ, theo khoa, tên phòng...";
+
+        private void SetupFilterButtons()
+        {
+            flpFilter.Controls.Clear();
+            var depts = new List<DepartmentDTO>(_deptBus.GetAllDepartments());
+            depts.Insert(0, new DepartmentDTO { Id = 0, DepartmentName = "Tất cả chuyên khoa" });
+
+            foreach (var dept in depts)
+            {
+                Button btn = new Button
+                {
+                    Text = dept.DepartmentName,
+                    Tag = dept.Id,
+                    AutoSize = true,
+                    Height = 55,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 12),
+                    Margin = new Padding(3, 3, 10, 3)
+                };
+                btn.FlatAppearance.BorderSize = 0;
+                btn.Click += DeptFilter_Click;
+                flpFilter.Controls.Add(btn);
+            }
+
+            if (flpFilter.Controls.Count > 0)
+                UpdateFilterButtonStyles((Button)flpFilter.Controls[0]);
+        }
+
+        private void DeptFilter_Click(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                UpdateFilterButtonStyles(btn);
+                _currentDeptFilterId = (int)btn.Tag;
+                ApplyFilter();
+            }
+        }
+
+        private void UpdateFilterButtonStyles(Button activeBtn)
+        {
+            foreach (Control ctrl in flpFilter.Controls)
+            {
+                if (ctrl is Button btn)
+                {
+                    if (btn == activeBtn)
+                    {
+                        btn.BackColor = Color.FromArgb(24, 112, 255);
+                        btn.ForeColor = Color.White;
+                        UIHelper.ApplyRoundedRegion(btn, 25);
+                    }
+                    else
+                    {
+                        btn.BackColor = Color.FromArgb(242, 246, 250);
+                        btn.ForeColor = Color.Black;
+                        UIHelper.ApplyRoundedRegion(btn, 25);
+                    }
+                }
+            }
         }
 
         public void InitData(bool keepPage = false)
@@ -106,20 +168,30 @@ namespace UI_Tier
 
         private void ApplyFilter(bool keepPage = false)
         {
-            string keyword = txtSearch.Text.Trim().ToLower();
-            if (keyword == "tìm kiếm theo bác sĩ, khoa, phòng...") keyword = "";
+            string rawKeyword = txtSearch.Text.Trim();
+            if (rawKeyword.Equals(_searchPlaceholder, StringComparison.OrdinalIgnoreCase)) rawKeyword = "";
+            string keyword = DAL_Tier.DBHelper.RemoveDiacritics(rawKeyword).ToLower();
             
-            int deptId = (cbDept.SelectedValue is int id) ? id : 0;
-            string statusFilter = cbStatusFilter.SelectedItem?.ToString() ?? "Tất cả trạng thái";
+            int deptId = _currentDeptFilterId;
+            string capacityFilter = cbCapacity.SelectedItem?.ToString() ?? "Tất cả sức chứa";
 
             _filteredApps = _allApps.Where(a => 
-                (string.IsNullOrEmpty(keyword) || 
-                 (a.Doctor?.User?.FullName?.ToLower().Contains(keyword) ?? false) ||
-                 (a.Doctor?.Department?.DepartmentName?.ToLower().Contains(keyword) ?? false) ||
-                 (a.Room?.RoomCode?.ToLower().Contains(keyword) ?? false)) &&
-                (deptId == 0 || a.Doctor?.DepartmentId == deptId) &&
-                (statusFilter == "Tất cả trạng thái" || CheckStatusFilter(a, statusFilter))
-            ).ToList();
+            {
+                string docName = DAL_Tier.DBHelper.RemoveDiacritics(a.Doctor?.User?.FullName ?? "").ToLower();
+                string deptName = DAL_Tier.DBHelper.RemoveDiacritics(a.Doctor?.Department?.DepartmentName ?? "").ToLower();
+                string roomCode = DAL_Tier.DBHelper.RemoveDiacritics(a.Room?.RoomCode ?? "").ToLower();
+                bool matchPatient = a.Appointments != null && a.Appointments.Any(app => DAL_Tier.DBHelper.RemoveDiacritics(app.Patient?.User?.FullName ?? "").ToLower().Contains(keyword));
+
+                return (string.IsNullOrEmpty(keyword) || 
+                        docName.Contains(keyword) || 
+                        deptName.Contains(keyword) || 
+                        roomCode.Contains(keyword) || 
+                        matchPatient) &&
+                       (deptId == 0 || a.Doctor?.DepartmentId == deptId) &&
+                       (capacityFilter == "Tất cả sức chứa" || 
+                        (capacityFilter == "Còn trống" && a.BookedCount < a.MaxAppointments) || 
+                        (capacityFilter == "Đầy" && a.BookedCount >= a.MaxAppointments));
+            }).ToList();
 
             if (!keepPage) _currentPage = 1;
             
@@ -132,7 +204,12 @@ namespace UI_Tier
 
         public void DisplayPage(int pageNumber)
         {
+            UIHelper.SuspendDrawing(this);
             flpAppItem.SuspendLayout();
+            foreach (Control ctrl in flpAppItem.Controls)
+            {
+                ctrl.Dispose();
+            }
             flpAppItem.Controls.Clear();
 
             // Hiển thị thông báo khi không có dữ liệu (Căn giữa giống Review Management)
@@ -146,86 +223,81 @@ namespace UI_Tier
                 
                 lblReviewPageStatus.Text = ""; // Xóa text phân trang
                 flpAppItem.ResumeLayout();
+                UIHelper.ResumeDrawing(this);
                 return;
             }
 
             int startIndex = (pageNumber - 1) * _pageSize;
             var pageItems = _filteredApps.Skip(startIndex).Take(_pageSize).ToList();
 
+            var cards = new List<Control>();
             foreach (var slot in pageItems)
             {
-                ucAdminScheduleCard card = new ucAdminScheduleCard();
-                card.SetData(slot);
-                card.Width = flpAppItem.ClientSize.Width - 20;
-                card.Height = 252;
-                card.Margin = new Padding(-10, 10, 10, 10);
+                ucAppItem card = new ucAppItem();
+                card.SetupCard(slot, ucAppItem.AppCardMode.AdminView);
                 
-                card.TimeSlotEditClicked += (s, slotData) => {
-                    var editDialog = new ucTimeSlotDialog();
-                    editDialog.SetupEditMode(slotData);
-                    ShowOverlay(editDialog);
-                };
+                string currentRawKeyword = txtSearch.Text.Trim();
+                if (currentRawKeyword != _searchPlaceholder)
+                {
+                    card.SearchKeyword = currentRawKeyword;
+                }
 
-                card.TimeSlotRemoveClicked += (s, slotData) => {
-                    if (slotData.Appointments != null && slotData.Appointments.Any(a => a.Status == "Confirmed"))
+                card.Margin = new Padding(3, 10, 3, 10);
+                card.Width = flpAppItem.ClientSize.Width - (card.Margin.Left + card.Margin.Right) - 20;
+                card.Height = 252;
+                
+                card.RefreshData = () => InitData(true);
+                card.AdminTimeSlotEdited += (s, slotId) => {
+                    var slotData = _allApps.FirstOrDefault(ts => ts.Id == slotId);
+                    if (slotData != null)
                     {
-                        MessageBox.Show("Không thể xóa lịch đã có bệnh nhân được duyệt khám!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
+                        int pendingApps = slotData.Appointments?.Count(a => a.Status == "Pending") ?? 0;
+                        int confirmedApps = slotData.Appointments?.Count(a => a.Status == "Confirmed" || a.Status == "Completed") ?? 0;
 
-                    bool hasPending = slotData.Appointments != null && slotData.Appointments.Any(a => a.Status == "Pending");
-                    string confirmMsg = hasPending
-                        ? "Lịch này đang có bệnh nhân CHỜ DUYỆT. Nếu xóa, lịch của họ sẽ bị hủy tự động. Bạn có chắc chắn muốn xóa không?"
-                        : "Bạn có chắc chắn muốn xóa lịch làm việc này không?";
-
-                    if (MessageBox.Show(confirmMsg, "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                    {
-                        if (new TimeSlotBUS().DeleteTimeSlot(slotData.Id))
+                        if (confirmedApps > 0)
                         {
-                            MessageBox.Show("Đã xóa khung giờ làm việc thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            InitData(true);
+                            MessageBox.Show("Không thể chỉnh sửa ca khám này vì đã có lịch hẹn được duyệt!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
                         }
-                    }
-                };
 
-                card.TimeSlotHideClicked += (s, slotData) => {
-                    var bus = new TimeSlotBUS();
-                    string result = bus.HideTimeSlot(slotData.Id);
-
-                    if (result == "Success")
-                    {
-                        InitData(true);
-                    }
-                    else if (result == "ConfirmedExists")
-                    {
-                        MessageBox.Show("Không thể ẩn lịch đã có bệnh nhân được duyệt khám!", "Lưu ý", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                    else if (result == "PendingExists")
-                    {
-                        if (MessageBox.Show("Lịch này đang có bệnh nhân CHỜ DUYỆT. Nếu ẩn, lịch của họ sẽ bị hủy. Bạn có chắc chắn muốn ẩn không?",
-                            "Xác nhận ẩn lịch", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        if (pendingApps > 0)
                         {
-                            if (bus.ForceHideTimeSlot(slotData.Id))
+                            if (MessageBox.Show($"Ca khám này đang có {pendingApps} bệnh nhân chờ duyệt.\nBạn có chắc chắn muốn tiếp tục chỉnh sửa không?", "Xác nhận chỉnh sửa", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                             {
-                                InitData(true);
+                                return;
                             }
                         }
+
+                        var editDialog = new ucTimeSlotDialog();
+                        editDialog.SetupEditMode(slotData);
+                        ShowOverlay(editDialog);
                     }
-                    else
+                };
+
+                card.OnViewPatientsClicked += (s, slotId) => {
+                    var detailsDialog = new ucAdmin_TimeSlotDetailsDialog();
+                    var slotData = _allApps.FirstOrDefault(ts => ts.Id == slotId);
+                    if (slotData != null)
                     {
-                        MessageBox.Show(result, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        detailsDialog.SetupData(slotData);
+                        ShowOverlay(detailsDialog);
                     }
                 };
                 
-                flpAppItem.Controls.Add(card);
+                cards.Add(card);
+            }
+
+            if (cards.Count > 0)
+            {
+                flpAppItem.Controls.AddRange(cards.ToArray());
             }
 
             int totalPages = (int)Math.Ceiling((double)_filteredApps.Count / _pageSize);
-            lblReviewPageStatus.Text = $"Trang {_currentPage} / {totalPages} ";
+            flpAppItem.ResumeLayout();
+            lblReviewPageStatus.Text = $"Trang {_currentPage} / {totalPages}";
+            UIHelper.ResumeDrawing(this);
 
             pnlReviewPagination.Visible = _filteredApps.Count > 0;
-
-            flpAppItem.ResumeLayout();
         }
 
         private void lblPrev_Click(object sender, EventArgs e)
@@ -267,6 +339,14 @@ namespace UI_Tier
                 };
             }
 
+            if (uc is ucAdmin_TimeSlotDetailsDialog detailsDialog)
+            {
+                detailsDialog.OnCloseModal += (s, e) => {
+                    this.Controls.Remove(detailsDialog);
+                    detailsDialog.Dispose();
+                };
+            }
+
             this.Controls.Add(uc);
             uc.BringToFront();
         }
@@ -289,10 +369,7 @@ namespace UI_Tier
             ApplyFilter();
         }
 
-        private void cbStatusFilter_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ApplyFilter();
-        }
+
 
         private bool CheckStatusFilter(TimeSlotsDTO slot, string filter)
         {
@@ -310,6 +387,7 @@ namespace UI_Tier
             if (filter == "Chờ duyệt") return slot.Appointments != null && slot.Appointments.Any(a => a.Status == "Pending");
             if (filter == "Đã duyệt") return slot.Appointments != null && slot.Appointments.Any(a => a.Status == "Confirmed");
             if (filter == "Đã hủy") return slot.Appointments != null && slot.Appointments.Any(a => a.Status == "Cancelled");
+            if (filter == "Thành công") return slot.Appointments != null && slot.Appointments.Any(a => a.Status == "Completed");
             if (filter == "Còn trống") return slot.BookedCount < slot.MaxAppointments;
             if (filter == "Đầy") return slot.BookedCount >= slot.MaxAppointments;
             
@@ -318,7 +396,14 @@ namespace UI_Tier
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            ApplyFilter();
+            string currentKeyword = txtSearch.Text.Trim().ToLower();
+            if (currentKeyword == _searchPlaceholder.ToLower()) currentKeyword = "";
+
+            if (_lastKeyword == currentKeyword) return;
+            _lastKeyword = currentKeyword;
+
+            _searchTimer.Stop();
+            _searchTimer.Start();
         }
     }
 }

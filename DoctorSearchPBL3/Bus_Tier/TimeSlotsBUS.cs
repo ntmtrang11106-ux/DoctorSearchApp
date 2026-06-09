@@ -209,7 +209,8 @@ namespace BUS_Tier
 
         public List<TimeSlotsDTO> GetAllTimeSlots()
         {
-            return _dal.GetAll() ?? new List<TimeSlotsDTO>();
+            var list = _dal.GetAll() ?? new List<TimeSlotsDTO>();
+            return list.Where(s => !s.IsDeleted).ToList();
         }
 
         public List<TimeSlotsDTO> GetTimeSlotsByDoctor(int doctorId)
@@ -217,7 +218,8 @@ namespace BUS_Tier
             if (doctorId <= 0) return new List<TimeSlotsDTO>();
 
             var list = _dal.GetByDoctorId(doctorId);
-            return list.OrderByDescending(s => s.WorkDate)
+            return list.Where(s => !s.IsDeleted)
+                       .OrderByDescending(s => s.WorkDate)
                        .ThenBy(s => s.StartTime)
                        .ToList();
         }
@@ -225,7 +227,8 @@ namespace BUS_Tier
         public List<TimeSlotsDTO> GetSlotsByDoctorAndDate(int doctorId, DateTime date)
         {
             if (doctorId <= 0) return new List<TimeSlotsDTO>();
-            return _dal.GetSlotsByDoctorAndDate(doctorId, date);
+            var list = _dal.GetSlotsByDoctorAndDate(doctorId, date);
+            return list.Where(s => !s.IsDeleted).ToList();
         }
 
         public bool DeleteTimeSlot(int slotId)
@@ -342,29 +345,18 @@ namespace BUS_Tier
 
             try
             {
-                if (!_dal.SoftDeleteSlot(slot.Id))
-                {
-                    return "Không thể xóa mềm lịch cũ. Vui lòng kiểm tra lại.";
-                }
+                // Thay vì xóa mềm và tạo mới (gây lỗi trùng lặp Unique Index do bản ghi xóa mềm vẫn tồn tại),
+                // ta cập nhật trực tiếp bản ghi hiện tại.
+                fullSlot.DoctorId = slot.DoctorId;
+                fullSlot.RoomId = slot.RoomId;
+                fullSlot.WorkDate = slot.WorkDate;
+                fullSlot.StartTime = slot.StartTime;
+                fullSlot.EndTime = slot.EndTime;
+                fullSlot.MaxAppointments = slot.MaxAppointments;
 
-                TimeSlotsDTO newSlot = new TimeSlotsDTO
+                if (!_dal.Update(fullSlot))
                 {
-                    DoctorId = slot.DoctorId,
-                    RoomId = slot.RoomId,
-                    WorkDate = slot.WorkDate,
-                    StartTime = slot.StartTime,
-                    EndTime = slot.EndTime,
-                    MaxAppointments = slot.MaxAppointments,
-                    BookedCount = 0,
-                    Status = "Open",
-                    IsDeleted = false,
-                    CreatedAt = DateTime.Now,
-                    CreatedByAdminId = adminId
-                };
-
-                if (!_dal.AddSingle(newSlot))
-                {
-                    return "Lỗi khi lưu khung giờ mới vào CSDL.";
+                    return "Lỗi khi cập nhật khung giờ vào CSDL.";
                 }
 
                 return "Success";

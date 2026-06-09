@@ -137,8 +137,7 @@ namespace UI_Tier
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
             // QUAN TRỌNG: Trừ đi 1 pixel ở Width và Height 
-            // Điều này giúp đường vẽ của Pen nằm trọn vẹn bên trong khung đã cắt
-            Rectangle rect = new Rectangle(0, 0, uc.Width - 1, uc.Height - 1);
+            Rectangle rect = new Rectangle(1, 1, uc.Width - 3, uc.Height - 3);
 
             if (borderSize > 0)
             {
@@ -171,7 +170,7 @@ namespace UI_Tier
         {
             Control ctrl = (Control)sender;
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            Rectangle rect = new Rectangle(0, 0, ctrl.Width - 1, ctrl.Height - 1);
+            Rectangle rect = new Rectangle(1, 1, ctrl.Width - 3, ctrl.Height - 3);
             using (GraphicsPath path = GetRoundedPath(rect, radius))
             {
                 using (Pen pen = new Pen(borderColor, borderSize))
@@ -568,17 +567,33 @@ namespace UI_Tier
         }
 
         // --- BỔ SUNG: Helper bật DoubleBuffered cho mọi Control con ---
-        public static void SetDoubleBuffered(Control c)
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, Int32 wMsg, bool wParam, Int32 lParam);
+
+        private const int WM_SETREDRAW = 11;
+
+        public static void SuspendDrawing(Control parent)
         {
-            if (c == null) return;
+            SendMessage(parent.Handle, WM_SETREDRAW, false, 0);
+        }
+
+        public static void ResumeDrawing(Control parent)
+        {
+            SendMessage(parent.Handle, WM_SETREDRAW, true, 0);
+            parent.Refresh();
+        }
+
+        public static void SetDoubleBuffered(Control control)
+        {
+            if (control == null) return;
             if (System.Windows.Forms.SystemInformation.TerminalServerSession) return;
             
             System.Reflection.PropertyInfo dbProp = typeof(Control).GetProperty("DoubleBuffered",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            dbProp?.SetValue(c, true, null);
+            dbProp?.SetValue(control, true, null);
 
             // Đệ quy cho toàn bộ control con bên trong
-            foreach (Control child in c.Controls)
+            foreach (Control child in control.Controls)
             {
                 SetDoubleBuffered(child);
             }
