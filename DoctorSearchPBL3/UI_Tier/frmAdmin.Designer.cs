@@ -259,7 +259,7 @@ namespace UI_Tier
             lblIconDoctor.Name = "lblIconDoctor";
             lblIconDoctor.Size = new Size(65, 65);
             lblIconDoctor.TabIndex = 1;
-            lblIconDoctor.Text = "";
+            lblIconDoctor.Text = "\uE779";
             lblIconDoctor.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lblDoctor

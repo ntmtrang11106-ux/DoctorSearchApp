@@ -51,44 +51,45 @@ namespace UI_Tier
             // lblPatientName
             // 
             lblPatientName.AutoSize = true;
-            lblPatientName.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblPatientName.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             lblPatientName.ForeColor = Color.FromArgb(17, 34, 71);
             lblPatientName.Location = new Point(279, 42);
             lblPatientName.Name = "lblPatientName";
-            lblPatientName.Size = new Size(269, 50);
+            lblPatientName.Size = new Size(233, 45);
             lblPatientName.TabIndex = 2;
             lblPatientName.Text = "Nguyễn Văn A";
             // 
             // lblPatientPhone
             // 
             lblPatientPhone.AutoSize = true;
-            lblPatientPhone.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblPatientPhone.Font = new Font("Segoe UI", 11F);
             lblPatientPhone.ForeColor = Color.Gray;
             lblPatientPhone.Location = new Point(279, 97);
             lblPatientPhone.Name = "lblPatientPhone";
-            lblPatientPhone.Size = new Size(190, 45);
+            lblPatientPhone.Size = new Size(178, 41);
             lblPatientPhone.TabIndex = 5;
             lblPatientPhone.Text = "0000000000";
             // 
             // lblReason
             // 
             lblReason.AutoSize = true;
-            lblReason.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblReason.Font = new Font("Segoe UI", 11F);
             lblReason.ForeColor = Color.DimGray;
             lblReason.Location = new Point(0, 0);
             lblReason.MaximumSize = new Size(350, 0);
             lblReason.Name = "lblReason";
-            lblReason.Size = new Size(250, 45);
+            lblReason.Size = new Size(232, 41);
             lblReason.TabIndex = 3;
             lblReason.Text = "Khám tổng quát";
             // 
             // pnlReason
             // 
+            pnlReason.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             pnlReason.AutoScroll = true;
             pnlReason.Controls.Add(lblReason);
-            pnlReason.Location = new Point(699, 30);
+            pnlReason.Location = new Point(756, 51);
             pnlReason.Name = "pnlReason";
-            pnlReason.Size = new Size(440, 115);
+            pnlReason.Size = new Size(383, 89);
             pnlReason.TabIndex = 13;
             // 
             // lblStatus
@@ -106,9 +107,10 @@ namespace UI_Tier
             // 
             // label2
             // 
-            label2.Font = new Font("Segoe MDL2 Assets", 30F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label2.Font = new Font("Segoe MDL2 Assets", 25F);
             label2.ForeColor = Color.DimGray;
-            label2.Location = new Point(593, 21);
+            label2.Location = new Point(653, 32);
             label2.Margin = new Padding(0);
             label2.Name = "label2";
             label2.Size = new Size(100, 100);

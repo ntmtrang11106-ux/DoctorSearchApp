@@ -35,7 +35,7 @@ namespace UI_Tier
             // btnLogin
             // 
             btnLogin.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnLogin.BackColor = Color.FromArgb(0, 120, 212);
+            btnLogin.BackColor = Color.FromArgb(24, 112, 255);
             btnLogin.FlatAppearance.BorderSize = 0;
             btnLogin.FlatStyle = FlatStyle.Flat;
             btnLogin.Font = new Font("Segoe UI", 12F, FontStyle.Bold);

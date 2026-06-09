@@ -128,7 +128,7 @@ namespace UI_Tier
             lblArticleText.FlatStyle = FlatStyle.Flat;
             lblArticleText.Font = new Font("Segoe UI", 13F);
             lblArticleText.ForeColor = SystemColors.ControlDarkDark;
-            lblArticleText.Location = new Point(84, 14);
+            lblArticleText.Location = new Point(103, 18);
             lblArticleText.Name = "lblArticleText";
             lblArticleText.Size = new Size(141, 47);
             lblArticleText.TabIndex = 1;
@@ -139,7 +139,7 @@ namespace UI_Tier
             lblArticleIcon.BackColor = Color.Transparent;
             lblArticleIcon.Font = new Font("Segoe MDL2 Assets", 17F);
             lblArticleIcon.ForeColor = SystemColors.ControlDarkDark;
-            lblArticleIcon.Location = new Point(22, 11);
+            lblArticleIcon.Location = new Point(32, 14);
             lblArticleIcon.Name = "lblArticleIcon";
             lblArticleIcon.Size = new Size(75, 75);
             lblArticleIcon.TabIndex = 0;
