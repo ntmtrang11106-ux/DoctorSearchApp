@@ -52,7 +52,7 @@ namespace UI_Tier
             txtReason.BorderStyle = BorderStyle.None;
             txtReason.BackColor = Color.White; // Nền trắng mặc định đồng bộ
             pnlReasonBorder.Padding = new Padding(12, 10, 12, 10);
-            
+
             // Bo góc và vẽ viền đen độ dày 2 cho khung lý do
             UIHelper.ApplyRoundedRegion(pnlReasonBorder, 15);
             pnlReasonBorder.Paint += (s, ev) => UIHelper.DrawControlBorder(s, ev, 15, Color.Black, 2);
@@ -112,7 +112,7 @@ namespace UI_Tier
             // Set default date hoặc dữ liệu Edit
             if (_editAppointmentId != -1)
             {
-                dtpDate.Value = _currentDate; 
+                dtpDate.Value = _currentDate;
                 txtReason.Text = _prefilledReason;
                 txtReason.ForeColor = string.IsNullOrEmpty(_prefilledReason) || _prefilledReason == "Vui lòng mô tả lý do bạn cần khám bệnh..." ? Color.Gray : Color.Black;
                 _selectedTimeSlotId = _preselectedSlotId;
@@ -168,9 +168,9 @@ namespace UI_Tier
                     // Status based styling - Nếu là slot đang sửa thì LUÔN cho phép chọn lại
                     if (slot.Id != _preselectedSlotId && (slot.Status == "Full" || slot.BookedCount >= slot.MaxAppointments))
                     {
-                        btnSlot.BackColor = Color.FromArgb(249, 250, 251); 
+                        btnSlot.BackColor = Color.FromArgb(249, 250, 251);
                         btnSlot.ForeColor = Color.FromArgb(156, 163, 175);
-                        btnSlot.FlatAppearance.BorderColor = Color.FromArgb(249, 250, 251); 
+                        btnSlot.FlatAppearance.BorderColor = Color.FromArgb(249, 250, 251);
                         btnSlot.Enabled = false;
                     }
                     else
@@ -192,9 +192,9 @@ namespace UI_Tier
                         btnSlot.BackColor = Color.FromArgb(37, 99, 235);
                         btnSlot.ForeColor = Color.White;
                         btnSlot.FlatAppearance.BorderColor = Color.FromArgb(37, 99, 235);
+                    }
                 }
             }
-        }
 
             flpTimeSlots.ResumeLayout();
         }
@@ -348,5 +348,6 @@ namespace UI_Tier
             }
         }
         #endregion
+
     }
 }

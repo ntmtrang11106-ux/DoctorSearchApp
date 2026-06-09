@@ -55,7 +55,7 @@ namespace UI_Tier
             // 
             // pnlHeader
             // 
-            pnlHeader.BackColor = Color.FromArgb(37, 99, 235);
+            pnlHeader.BackColor = Color.FromArgb(24, 112, 255);
             pnlHeader.Controls.Add(lblTitle);
             pnlHeader.Controls.Add(lblSubTitle);
             pnlHeader.Controls.Add(btnClose);
@@ -81,11 +81,11 @@ namespace UI_Tier
             // lblSubTitle
             // 
             lblSubTitle.AutoSize = true;
-            lblSubTitle.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblSubTitle.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
             lblSubTitle.ForeColor = Color.FromArgb(219, 234, 254);
             lblSubTitle.Location = new Point(140, 69);
             lblSubTitle.Name = "lblSubTitle";
-            lblSubTitle.Size = new Size(472, 45);
+            lblSubTitle.Size = new Size(479, 45);
             lblSubTitle.TabIndex = 2;
             lblSubTitle.Text = "Chọn thời gian phù hợp với bạn";
             // 
@@ -122,7 +122,7 @@ namespace UI_Tier
             lblDocDept.AutoSize = true;
             lblDocDept.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             lblDocDept.ForeColor = Color.FromArgb(37, 99, 235);
-            lblDocDept.Location = new Point(215, 86);
+            lblDocDept.Location = new Point(227, 97);
             lblDocDept.Name = "lblDocDept";
             lblDocDept.Size = new Size(162, 45);
             lblDocDept.TabIndex = 2;
@@ -131,17 +131,17 @@ namespace UI_Tier
             // lblDocName
             // 
             lblDocName.AutoSize = true;
-            lblDocName.Font = new Font("Microsoft Sans Serif", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblDocName.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblDocName.ForeColor = Color.FromArgb(31, 41, 55);
-            lblDocName.Location = new Point(215, 25);
+            lblDocName.Location = new Point(227, 36);
             lblDocName.Name = "lblDocName";
-            lblDocName.Size = new Size(368, 42);
+            lblDocName.Size = new Size(356, 50);
             lblDocName.TabIndex = 1;
             lblDocName.Text = "BS. Nguyễn Văn An";
             // 
             // picDocAvatar
             // 
-            picDocAvatar.Location = new Point(30, 25);
+            picDocAvatar.Location = new Point(62, 22);
             picDocAvatar.Name = "picDocAvatar";
             picDocAvatar.Size = new Size(140, 140);
             picDocAvatar.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -175,9 +175,9 @@ namespace UI_Tier
             dtpDate.CustomFormat = "dd/MM/yyyy";
             dtpDate.Font = new Font("Segoe UI", 12F);
             dtpDate.Format = DateTimePickerFormat.Custom;
-            dtpDate.Location = new Point(30, 394);
+            dtpDate.Location = new Point(55, 394);
             dtpDate.Name = "dtpDate";
-            dtpDate.Size = new Size(870, 50);
+            dtpDate.Size = new Size(833, 50);
             dtpDate.TabIndex = 2;
             dtpDate.ValueChanged += dtpDate_ValueChanged;
             // 
@@ -186,7 +186,7 @@ namespace UI_Tier
             lblTimeTitle.AutoSize = true;
             lblTimeTitle.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             lblTimeTitle.ForeColor = Color.FromArgb(31, 41, 55);
-            lblTimeTitle.Location = new Point(100, 472);
+            lblTimeTitle.Location = new Point(100, 481);
             lblTimeTitle.Name = "lblTimeTitle";
             lblTimeTitle.Size = new Size(266, 45);
             lblTimeTitle.TabIndex = 3;
@@ -195,9 +195,9 @@ namespace UI_Tier
             // flpTimeSlots
             // 
             flpTimeSlots.ForeColor = Color.Gray;
-            flpTimeSlots.Location = new Point(40, 543);
+            flpTimeSlots.Location = new Point(55, 543);
             flpTimeSlots.Name = "flpTimeSlots";
-            flpTimeSlots.Size = new Size(870, 320);
+            flpTimeSlots.Size = new Size(833, 320);
             flpTimeSlots.TabIndex = 4;
             // 
             // pnlLegend
@@ -208,9 +208,9 @@ namespace UI_Tier
             pnlLegend.Controls.Add(picLegendAvailable);
             pnlLegend.Controls.Add(lblLegendBooked);
             pnlLegend.Controls.Add(picLegendBooked);
-            pnlLegend.Location = new Point(40, 869);
+            pnlLegend.Location = new Point(55, 869);
             pnlLegend.Name = "pnlLegend";
-            pnlLegend.Size = new Size(870, 70);
+            pnlLegend.Size = new Size(833, 70);
             pnlLegend.TabIndex = 5;
             // 
             // lblLegendSelected
@@ -297,9 +297,9 @@ namespace UI_Tier
             txtReason.BorderStyle = BorderStyle.None;
             txtReason.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtReason.ForeColor = Color.Gray;
-            txtReason.Location = new Point(40, 1036);
+            txtReason.Location = new Point(55, 1036);
             txtReason.Name = "txtReason";
-            txtReason.Size = new Size(870, 180);
+            txtReason.Size = new Size(833, 180);
             txtReason.TabIndex = 7;
             txtReason.Text = "Vui lòng mô tả lý do bạn cần khám bệnh...";
             txtReason.TextChanged += txtReason_TextChanged;
@@ -309,7 +309,7 @@ namespace UI_Tier
             lblCharCount.AutoSize = true;
             lblCharCount.Font = new Font("Segoe UI", 9F);
             lblCharCount.ForeColor = Color.Gray;
-            lblCharCount.Location = new Point(40, 1219);
+            lblCharCount.Location = new Point(47, 1221);
             lblCharCount.Name = "lblCharCount";
             lblCharCount.Size = new Size(135, 32);
             lblCharCount.TabIndex = 8;
@@ -321,11 +321,11 @@ namespace UI_Tier
             btnConfirm.Cursor = Cursors.Hand;
             btnConfirm.FlatAppearance.BorderSize = 0;
             btnConfirm.FlatStyle = FlatStyle.Flat;
-            btnConfirm.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
+            btnConfirm.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
             btnConfirm.ForeColor = Color.White;
-            btnConfirm.Location = new Point(40, 1278);
+            btnConfirm.Location = new Point(55, 1302);
             btnConfirm.Name = "btnConfirm";
-            btnConfirm.Size = new Size(591, 80);
+            btnConfirm.Size = new Size(591, 65);
             btnConfirm.TabIndex = 10;
             btnConfirm.Text = "Xác nhận đặt lịch";
             btnConfirm.UseVisualStyleBackColor = false;
@@ -337,11 +337,11 @@ namespace UI_Tier
             btnCancel.Cursor = Cursors.Hand;
             btnCancel.FlatAppearance.BorderSize = 0;
             btnCancel.FlatStyle = FlatStyle.Flat;
-            btnCancel.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
+            btnCancel.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
             btnCancel.ForeColor = Color.FromArgb(31, 41, 55);
-            btnCancel.Location = new Point(708, 1278);
+            btnCancel.Location = new Point(686, 1302);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(202, 80);
+            btnCancel.Size = new Size(202, 65);
             btnCancel.TabIndex = 11;
             btnCancel.Text = "Hủy";
             btnCancel.UseVisualStyleBackColor = false;
@@ -350,8 +350,10 @@ namespace UI_Tier
             // label1
             // 
             label1.AutoSize = true;
+            label1.BackColor = Color.White;
             label1.Font = new Font("Segoe UI", 10.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.Location = new Point(303, 975);
+            label1.ForeColor = SystemColors.ControlDarkDark;
+            label1.Location = new Point(294, 975);
             label1.Name = "label1";
             label1.Size = new Size(236, 40);
             label1.TabIndex = 16;
@@ -359,9 +361,9 @@ namespace UI_Tier
             // 
             // label2
             // 
-            label2.Font = new Font("Segoe MDL2 Assets", 27F);
+            label2.Font = new Font("Segoe MDL2 Assets", 23F);
             label2.ForeColor = Color.DimGray;
-            label2.Location = new Point(18, 447);
+            label2.Location = new Point(29, 456);
             label2.Margin = new Padding(0);
             label2.Name = "label2";
             label2.Size = new Size(92, 84);
@@ -370,9 +372,9 @@ namespace UI_Tier
             // 
             // label3
             // 
-            label3.Font = new Font("Segoe MDL2 Assets", 27F);
+            label3.Font = new Font("Segoe MDL2 Assets", 23F);
             label3.ForeColor = Color.DimGray;
-            label3.Location = new Point(17, 942);
+            label3.Location = new Point(29, 944);
             label3.Margin = new Padding(0);
             label3.Name = "label3";
             label3.Size = new Size(80, 91);
@@ -384,6 +386,7 @@ namespace UI_Tier
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
+            Controls.Add(lblTimeTitle);
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
@@ -397,7 +400,6 @@ namespace UI_Tier
             Controls.Add(lblReasonTitle);
             Controls.Add(pnlLegend);
             Controls.Add(flpTimeSlots);
-            Controls.Add(lblTimeTitle);
             Controls.Add(dtpDate);
             Controls.Add(lblDateTitle);
             Controls.Add(pnlHeader);

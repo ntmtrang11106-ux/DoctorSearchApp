@@ -264,7 +264,8 @@ namespace UI_Tier
 
             pnlSecurity.Height = show ? 700 : 180;
 
-            if (show) {
+            if (show)
+            {
                 txtCurrentPass.Clear();
                 txtNewPass.Clear();
                 txtConfirmPass.Clear();
@@ -280,26 +281,41 @@ namespace UI_Tier
         {
             if (_currentUser == null) return;
 
-            // Gather info
-            _currentUser.FullName = txtFullName.Text;
-            _currentUser.PhoneNumber = txtPhone.Text;
-            _currentUser.Dob = dtpBirthday.Value;
-            _currentUser.Gender = txtGender.Text;
-            _currentUser.CCCD = txtCCCD.Text;
-            _currentUser.Residential_Address = txtAddress.Text;
-
-            // Validate and Update via BUS
-            string result = _userBUS.UpdateAdminProfile(_currentUser);
-
-            if (result == "Success")
+            // 1. Tạo một bản sao tạm thời để hứng dữ liệu mới, KHÔNG sửa trực tiếp vào _currentUser vội
+            UserDTO tempUser = new UserDTO
             {
+                Id = _currentUser.Id, // Đảm bảo giữ lại ID để update
+                FullName = txtFullName.Text,
+                PhoneNumber = txtPhone.Text,
+                Dob = dtpBirthday.Value,
+                Gender = txtGender.Text,
+                CCCD = txtCCCD.Text,
+                Residential_Address = txtAddress.Text,
+                Picture = _currentUser.Picture, // Giữ nguyên ảnh
+                Role = _currentUser.Role,
+                Status = _currentUser.Status
+            };
+
+            // 2. Truyền bản sao tạm thời này xuống BUS để lưu vào DB
+            string result = _userBUS.UpdateAdminProfile(tempUser);
+
+            // 3. Check kết quả (Chấp nhận cả "Success" lẫn "success")
+            if (string.Equals(result, "Success", StringComparison.OrdinalIgnoreCase))
+            {
+                // DB lưu thành công thì mới chính thức cập nhật vào biến toàn cục _currentUser
+                _currentUser = tempUser;
+
                 SetEditMode(false);
                 lblAdminName.Text = txtFullName.Text;
                 MessageBox.Show("Cập nhật thông tin thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                MessageBox.Show(result, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                // Nếu thực sự thất bại, hiện thông báo lỗi của BUS trả về
+                MessageBox.Show(result, "Lỗi cập nhật", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                // ĐỒNG THỜI: Ép giao diện tải lại dữ liệu cũ từ DB/hoặc giữ nguyên biến cũ để hủy bỏ các chữ m vừa gõ bậy
+                LoadUserData(_currentUser.Id);
             }
         }
 
@@ -359,11 +375,13 @@ namespace UI_Tier
 
         private void LoadDefaultAvatar()
         {
-            try {
+            try
+            {
                 string defaultPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources_Images", "default.jpg");
                 if (File.Exists(defaultPath)) picAvatar.ImageLocation = defaultPath;
                 picAvatar.SizeMode = PictureBoxSizeMode.Zoom;
-            } catch { }
+            }
+            catch { }
         }
 
         private void SectionPanel_Paint(object sender, PaintEventArgs e)
@@ -379,5 +397,6 @@ namespace UI_Tier
         }
 
         private void Button_Paint(object sender, PaintEventArgs e) => UIHelper.btn_Paint(sender, e);
+
     }
 }

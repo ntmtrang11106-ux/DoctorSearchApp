@@ -39,11 +39,7 @@ namespace UI_Tier
             UIHelper.SetDoubleBuffered(this);
             UIHelper.SetDoubleBuffered(pnlMain);
             UIHelper.SetupSmoothScrolling(pnlMain);
-            
-            // Apply rounded corners to avatar
-            UIHelper.ApplyRoundedRegion(picAvatar, picAvatar.Width / 2);
-            
-            // Set initial state
+
             SetEditMode(false, "basic");
             SetEditMode(false, "medical");
 
@@ -55,29 +51,41 @@ namespace UI_Tier
             UIHelper.SetDoubleBuffered(pnlBasicInfoActions);
             UIHelper.SetDoubleBuffered(pnlMedicalActions);
 
-            // Wire up events
+            // THÊM: Gán sự kiện Click cho tất cả các nút (Nếu designer chưa có)
+            btnEditBasicInfo.Click += btnEdit_Click;
+            btnEditMedical.Click += btnEdit_Click;
+            btnChangePassword.Click += btnEdit_Click;
+
+            btnCancelBasicInfo.Click += btnCancel_Click;
+            btnCancelMedical.Click += btnCancel_Click;
+            btnCancelPass.Click += btnCancel_Click;
+
+            btnSaveBasicInfo.Click += btnSave_Click;
+            btnSaveMedical.Click += btnSave_Click;
+            btnSavePass.Click += btnSave_Click;
+
+            // Gán sự kiện cho các nhãn Toggle Password (ví dụ đặt tên nhãn là lblToggleNewPass,...)
+            // lblToggleNewPass.Click += TogglePassVisibility_Click;
+
             picAvatar.Cursor = Cursors.Hand;
-            picAvatar.Click += (s, e) => ChangeAvatar();
-            lblUpload.Click += (s, e) => ChangeAvatar();
+            picAvatar.Click += picAvatar_Click; // Dùng hàm riêng của m bên dưới bọc sẵn check edit mode
+            lblUpload.Click += picAvatar_Click;
             dtpBirthday.ValueChanged += dtpBirthday_ValueChanged;
             SetupFocusEffects();
             SetupViewModeInputBehavior();
             SetEditMode(false, "basic");
             SetEditMode(false, "medical");
 
-            // Gán sự kiện Paint để vẽ viền và bóng đổ
-            pnlBasicInfo.Paint += SectionPanel_Paint;
-            pnlMedicalProfile.Paint += SectionPanel_Paint;
-            pnlSecurity.Paint += SectionPanel_Paint;
-            pnlChangePassword.Paint += SectionPanel_Paint;
-
-            this.HandleCreated += (s, e) => {
-                InitData();
-                UIHelper.ApplyRoundedRegion(lblUpload, lblUpload.Width / 2);
-                UIHelper.ApplyRoundedRegion(picAvatar, picAvatar.Width / 2);
+            // THAY VÌ HandleCreated -> Dùng VisibleChanged để reset dữ liệu chuẩn khi chuyển Tab
+            this.VisibleChanged += (s, e) => {
+                if (this.Visible)
+                {
+                    InitData();
+                    UIHelper.ApplyRoundedRegion(lblUpload, lblUpload.Width / 2);
+                    UIHelper.ApplyRoundedRegion(picAvatar, picAvatar.Width / 2);
+                }
             };
 
-            // Đăng ký click ra ngoài để thoát focus cho toàn bộ form và các panel chính
             UIHelper.RegisterClickToUnfocus(this);
             UIHelper.RegisterClickToUnfocus(pnlMain);
             UIHelper.RegisterClickToUnfocus(pnlBasicInfo);
@@ -414,7 +422,7 @@ namespace UI_Tier
             btnChangePassword.Visible = !show;
             
             // Adjust height of security panel to fit the form
-            pnlSecurity.Height = show ? 850 : 150;
+            pnlSecurity.Height = show ? 700 : 200;
             
             if (show) {
                 txtCurrentPass.Clear();
@@ -529,9 +537,20 @@ namespace UI_Tier
         private void btnCancel_Click(object sender, EventArgs e)
         {
             Button btn = sender as Button;
-            if (btn == btnCancelBasicInfo) SetEditMode(false, "basic");
-            else if (btn == btnCancelMedical) SetEditMode(false, "medical");
-            else if (btn == btnCancelPass) ShowChangePassword(false);
+            if (btn == btnCancelBasicInfo)
+            {
+                SetEditMode(false, "basic");
+                InitData(); // <-- PHẢI CÓ: Xóa chữ đang gõ bậy, nạp lại dữ liệu gốc từ DB
+            }
+            else if (btn == btnCancelMedical)
+            {
+                SetEditMode(false, "medical");
+                InitData(); // <-- PHẢI CÓ: Reset hồ sơ y tế về ban đầu
+            }
+            else if (btn == btnCancelPass)
+            {
+                ShowChangePassword(false);
+            }
         }
 
         private void TogglePassVisibility_Click(object sender, EventArgs e)

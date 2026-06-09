@@ -35,6 +35,21 @@ namespace UI_Tier
             UIHelper.SetDoubleBuffered(pnlMain);
             UIHelper.SetupSmoothScrolling(pnlMain);
 
+            // XÓA các dòng gán Paint ở đây đi vì Designer có rồi:
+            // pnlBasicInfo.Paint += SectionPanel_Paint; <-- XÓA
+            // pnlSecurity.Paint += SectionPanel_Paint;   <-- XÓA
+            pnlChangePassword.Paint += SectionPanel_Paint; // Giữ lại dòng này vì designer chưa có
+
+            // THÊM: Gán sự kiện click cho các nút bấm hoạt động
+            btnEditBasicInfo.Click += btnEdit_Click;
+            btnChangePassword.Click += btnEdit_Click;
+
+            btnCancelBasicInfo.Click += btnCancel_Click;
+            btnCancelPass.Click += btnCancel_Click;
+
+            btnSaveBasicInfo.Click += btnSave_Click;
+            btnSavePass.Click += btnSave_Click;
+
             SetEditMode(false, "basic");
 
             // Fix blinking
@@ -67,6 +82,12 @@ namespace UI_Tier
             UIHelper.RegisterClickToUnfocus(pnlBasicInfo);
             UIHelper.RegisterClickToUnfocus(pnlSecurity);
             UIHelper.RegisterClickToUnfocus(pnlChangePassword);
+
+            //Bo góc các nút
+            btnCancelBasicInfo.Paint += Button_Paint;
+            btnCancelPass.Paint += Button_Paint;
+            btnSaveBasicInfo.Paint += Button_Paint;
+            btnSavePass.Paint += Button_Paint;
         }
 
         private void SetupFocusEffects()
@@ -272,6 +293,10 @@ namespace UI_Tier
             {
                 pnlChangePassword.Visible = isEdit;
                 btnChangePassword.Visible = !isEdit;
+
+                // THÊM: Tự động co giãn chiều cao của panel cha để tránh khoảng trống bự
+                pnlSecurity.Height = isEdit ? 700 : 200;
+
                 if (isEdit) txtCurrentPass.Focus();
                 else
                 {
