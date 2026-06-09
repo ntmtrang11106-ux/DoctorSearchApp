@@ -197,19 +197,19 @@ namespace DAL_Tier
 
             var doctors = new[]
             {
-                new DoctorSeed(new UserSeed("BS. Nguyễn Văn An", "Doctor", "0910000001", "Nam", new DateTime(1981, 3, 14), "049181000001", "25 Nguyễn Tri Phương, Thanh Khê, Đà Nẵng", "Active", "bs1.jpg"), "Nội khoa", "Bác sĩ chuyên khoa", "100001/DNG-CCHN", 12, 150000m, true, true, "Có kinh nghiệm khám nội tổng quát, bệnh tiêu hóa và tư vấn sức khỏe định kỳ."),
-                new DoctorSeed(new UserSeed("BS. Lê Thị Mỹ Hạnh", "Doctor", "0910000002", "Nữ", new DateTime(1984, 7, 20), "049184000002", "83 Hải Phòng, Hải Châu, Đà Nẵng", "Active", "bs2.jpg"), "Tim mạch", "Bác sĩ chuyên khoa", "100002/DNG-CCHN", 10, 180000m, true, true, "Tập trung điều trị tăng huyết áp, rối loạn nhịp tim và tư vấn phòng ngừa bệnh tim."),
-                new DoctorSeed(new UserSeed("BS. Trần Thành Nhân", "Doctor", "0910000003", "Nam", new DateTime(1979, 11, 5), "049179000003", "12 Trần Phú, Hải Châu, Đà Nẵng", "Active", "bs3.jpg"), "Nhi khoa", "Bác sĩ chuyên khoa", "100003/DNG-CCHN", 15, 160000m, true, true, "Chuyên khám nhi tổng quát, dinh dưỡng trẻ em và theo dõi phát triển."),
-                new DoctorSeed(new UserSeed("BS. Phạm Minh Tuấn", "Doctor", "0910000004", "Nam", new DateTime(1986, 2, 2), "049186000004", "48 Nguyễn Hữu Thọ, Cẩm Lệ, Đà Nẵng", "Active", "bs4.jpg"), "Da liễu", "Bác sĩ chuyên khoa", "100004/DNG-CCHN", 9, 170000m, true, true, "Khám mụn, viêm da cơ địa, dị ứng da và chăm sóc da y khoa."),
-                new DoctorSeed(new UserSeed("BS. Võ Thu Hà", "Doctor", "0910000005", "Nữ", new DateTime(1982, 9, 18), "049182000005", "67 Điện Biên Phủ, Thanh Khê, Đà Nẵng", "Active", "bs5.jpg"), "Sản phụ khoa", "Bác sĩ chuyên khoa", "100005/DNG-CCHN", 13, 200000m, true, true, "Theo dõi thai kỳ, tư vấn sức khỏe phụ nữ và khám phụ khoa định kỳ."),
-                new DoctorSeed(new UserSeed("BS. Hoàng Đức Long", "Doctor", "0910000006", "Nam", new DateTime(1980, 12, 8), "049180000006", "29 Lê Lợi, Hải Châu, Đà Nẵng", "Active", "bs6.jpg"), "Tai mũi họng", "Bác sĩ chuyên khoa", "100006/DNG-CCHN", 14, 155000m, true, true, "Khám viêm xoang, viêm họng, viêm tai giữa và nội soi tai mũi họng."),
-                new DoctorSeed(new UserSeed("BS. Đặng Ngọc Mai", "Doctor", "0910000007", "Nữ", new DateTime(1987, 4, 25), "049187000007", "102 Núi Thành, Hải Châu, Đà Nẵng", "Active", "bs7.jpg"), "Cơ xương khớp", "Bác sĩ chuyên khoa", "100007/DNG-CCHN", 8, 165000m, true, true, "Tư vấn đau lưng, thoái hóa khớp, chấn thương vận động và phục hồi chức năng."),
-                new DoctorSeed(new UserSeed("BS. Bùi Khánh Linh", "Doctor", "0910000008", "Nữ", new DateTime(1989, 6, 12), "049189000008", "36 Ông Ích Khiêm, Hải Châu, Đà Nẵng", "Active", "bs8.jpg"), "Tâm lý", "Bác sĩ chuyên khoa", "100008/DNG-CCHN", 7, 190000m, true, true, "Tư vấn căng thẳng, lo âu, rối loạn giấc ngủ và chăm sóc sức khỏe tinh thần."),
-                new DoctorSeed(new UserSeed("BS. Nguyễn Quốc Huy", "Doctor", "0910000009", "Nam", new DateTime(1978, 8, 3), "049178000009", "19 Nguyễn Công Trứ, Sơn Trà, Đà Nẵng", "Active", "bs9.jpg"), "Nội khoa", "Thạc sĩ bác sĩ", "100009/BYT-CCHN", 17, 220000m, true, true, "Nhiều năm kinh nghiệm trong điều trị bệnh nội khoa mạn tính."),
-                new DoctorSeed(new UserSeed("BS. Trương An Nhiên", "Doctor", "0910000010", "Nữ", new DateTime(1991, 10, 29), "049191000010", "55 Phan Châu Trinh, Hải Châu, Đà Nẵng", "Active", "bs10.jpg"), "Tim mạch", "Bác sĩ chuyên khoa", "100010/BYT-CCHN", 5, 145000m, true, true, "Tư vấn tầm soát tim mạch, dinh dưỡng và vận động cho người trẻ."),
-                new DoctorSeed(new UserSeed("BS. Phan Hoài Nam", "Doctor", "0910000011", "Nam", new DateTime(1985, 1, 9), "049185000011", "78 Nguyễn Văn Thoại, Sơn Trà, Đà Nẵng", "Blocked", "bs11.jpg"), "Da liễu", "Bác sĩ chuyên khoa", "100011/HCM-CCHN", 11, 150000m, true, false, "Tài khoản mẫu ở trạng thái bị khóa để kiểm thử nghiệp vụ chặn người dùng."),
-                new DoctorSeed(new UserSeed("BS. Vũ Minh Khang", "Doctor", "0910000012", "Nam", new DateTime(1993, 5, 6), "049193000012", "31 Hà Huy Tập, Thanh Khê, Đà Nẵng", "Active", "bs12.jpg"), "Nhi khoa", "Bác sĩ chuyên khoa", "100012/HCM-CCHN", 3, 130000m, false, false, "Tài khoản mẫu chờ duyệt để kiểm thử luồng duyệt bác sĩ."),
-                new DoctorSeed(new UserSeed("BS. Đỗ Lan Chi", "Doctor", "0910000013", "Nữ", new DateTime(1992, 2, 16), "049192000013", "44 Hoàng Diệu, Hải Châu, Đà Nẵng", "Active", "bs14.jpg"), "Sản phụ khoa", "Bác sĩ chuyên khoa", "100013/HCM-CCHN", 4, 135000m, false, false, "Tài khoản mẫu chờ duyệt cho màn hình quản lý bác sĩ.")
+                new DoctorSeed(new UserSeed("Nguyễn Văn An", "Doctor", "0910000001", "Nam", new DateTime(1981, 3, 14), "049181000001", "25 Lê lợi, Thanh Khê, Đà Nẵng", "Active", "bs1.jpg"), "Nội khoa", "Bác sĩ chuyên khoa", "100001/DNG-CCHN", 12, 150000m, true, true, "Có kinh nghiệm khám nội tổng quát, bệnh tiêu hóa và tư vấn sức khỏe định kỳ."),
+                new DoctorSeed(new UserSeed("Lê Thị Mỹ Hạnh", "Doctor", "0910000002", "Nữ", new DateTime(1984, 7, 20), "049184000002", "83 Hải Phòng, Hải Châu, Đà Nẵng", "Active", "bs2.jpg"), "Tim mạch", "Bác sĩ chuyên khoa", "100002/DNG-CCHN", 10, 180000m, true, true, "Tập trung điều trị tăng huyết áp, rối loạn nhịp tim và tư vấn phòng ngừa bệnh tim."),
+                new DoctorSeed(new UserSeed("Trần Thành Nhân", "Doctor", "0910000003", "Nam", new DateTime(1979, 11, 5), "049179000003", "12 Trần Phú, Hải Châu, Đà Nẵng", "Active", "bs3.jpg"), "Nhi khoa", "Bác sĩ chuyên khoa", "100003/DNG-CCHN", 15, 160000m, true, true, "Chuyên khám nhi tổng quát, dinh dưỡng trẻ em và theo dõi phát triển."),
+                new DoctorSeed(new UserSeed("Phạm Minh Tuấn", "Doctor", "0910000004", "Nam", new DateTime(1986, 2, 2), "049186000004", "48 Lê lợi, Cẩm Lệ, Đà Nẵng", "Active", "bs4.jpg"), "Da liễu", "Bác sĩ chuyên khoa", "100004/DNG-CCHN", 9, 170000m, true, true, "Khám mụn, viêm da cơ địa, dị ứng da và chăm sóc da y khoa."),
+                new DoctorSeed(new UserSeed("Võ Thu Hà", "Doctor", "0910000005", "Nữ", new DateTime(1982, 9, 18), "049182000005", "67 Lê lợi, Thanh Khê, Đà Nẵng", "Active", "bs5.jpg"), "Sản phụ khoa", "Bác sĩ chuyên khoa", "100005/DNG-CCHN", 13, 200000m, true, true, "Theo dõi thai kỳ, tư vấn sức khỏe phụ nữ và khám phụ khoa định kỳ."),
+                new DoctorSeed(new UserSeed("Hoàng Đức Long", "Doctor", "0910000006", "Nam", new DateTime(1980, 12, 8), "049180000006", "29 Lê Lợi, Hải Châu, Đà Nẵng", "Active", "bs6.jpg"), "Tai mũi họng", "Bác sĩ chuyên khoa", "100006/DNG-CCHN", 14, 155000m, true, true, "Khám viêm xoang, viêm họng, viêm tai giữa và nội soi tai mũi họng."),
+                new DoctorSeed(new UserSeed("Đặng Ngọc Mai", "Doctor", "0910000007", "Nữ", new DateTime(1987, 4, 25), "049187000007", "102 Núi Thành, Hải Châu, Đà Nẵng", "Active", "bs7.jpg"), "Cơ xương khớp", "Bác sĩ chuyên khoa", "100007/DNG-CCHN", 8, 165000m, true, true, "Tư vấn đau lưng, thoái hóa khớp, chấn thương vận động và phục hồi chức năng."),
+                new DoctorSeed(new UserSeed("Bùi Khánh Linh", "Doctor", "0910000008", "Nữ", new DateTime(1989, 6, 12), "049189000008", "36 Lê lợi, Hải Châu, Đà Nẵng", "Active", "bs8.jpg"), "Tâm lý", "Bác sĩ chuyên khoa", "100008/DNG-CCHN", 7, 190000m, true, true, "Tư vấn căng thẳng, lo âu, rối loạn giấc ngủ và chăm sóc sức khỏe tinh thần."),
+                new DoctorSeed(new UserSeed("Nguyễn Quốc Huy", "Doctor", "0910000009", "Nam", new DateTime(1978, 8, 3), "049178000009", "19 Lê lợi, Sơn Trà, Đà Nẵng", "Active", "bs9.jpg"), "Nội khoa", "Thạc sĩ bác sĩ", "100009/BYT-CCHN", 17, 220000m, true, true, "Nhiều năm kinh nghiệm trong điều trị bệnh nội khoa mạn tính."),
+                new DoctorSeed(new UserSeed("Trương An Nhiên", "Doctor", "0910000010", "Nữ", new DateTime(1991, 10, 29), "049191000010", "55 Lê lợi, Hải Châu, Đà Nẵng", "Active", "bs10.jpg"), "Tim mạch", "Bác sĩ chuyên khoa", "100010/BYT-CCHN", 5, 145000m, true, true, "Tư vấn tầm soát tim mạch, dinh dưỡng và vận động cho người trẻ."),
+                new DoctorSeed(new UserSeed("Phan Hoài Nam", "Doctor", "0910000011", "Nam", new DateTime(1985, 1, 9), "049185000011", "78 Lê lợi, Sơn Trà, Đà Nẵng", "Blocked", "bs11.jpg"), "Da liễu", "Bác sĩ chuyên khoa", "100011/HCM-CCHN", 11, 150000m, true, false, "Tài khoản mẫu ở trạng thái bị khóa để kiểm thử nghiệp vụ chặn người dùng."),
+                new DoctorSeed(new UserSeed("Vũ Minh Khang", "Doctor", "0910000012", "Nam", new DateTime(1993, 5, 6), "049193000012", "31 Lê lợi, Thanh Khê, Đà Nẵng", "Active", "bs12.jpg"), "Nhi khoa", "Bác sĩ chuyên khoa", "100012/HCM-CCHN", 3, 130000m, false, false, "Tài khoản mẫu chờ duyệt để kiểm thử luồng duyệt bác sĩ."),
+                new DoctorSeed(new UserSeed("Đỗ Lan Chi", "Doctor", "0910000013", "Nữ", new DateTime(1992, 2, 16), "049192000013", "44 Hoàng Diệu, Hải Châu, Đà Nẵng", "Active", "bs14.jpg"), "Sản phụ khoa", "Bác sĩ chuyên khoa", "100013/HCM-CCHN", 4, 135000m, false, false, "Tài khoản mẫu chờ duyệt cho màn hình quản lý bác sĩ.")
             };
 
             foreach (var seed in doctors)
@@ -753,6 +753,10 @@ namespace DAL_Tier
 
         private static UserDTO CreateUser(UserSeed seed)
         {
+            string avatar = string.IsNullOrWhiteSpace(seed.AvatarUrl) 
+                ? "Resources_Images/default.jpg" 
+                : seed.AvatarUrl;
+
             return new UserDTO
             {
                 FullName = seed.FullName,
@@ -763,7 +767,7 @@ namespace DAL_Tier
                 Gender = seed.Gender,
                 CCCD = seed.CCCD,
                 Residential_Address = seed.Address,
-                Picture = "Resources_Images/default.jpg",
+                Picture = avatar,
                 Status = seed.Status,
                 CreatedAt = DateTime.Now.AddDays(-Math.Abs(seed.PhoneNumber.GetHashCode()) % 45),
                 IsDeleted = false
@@ -772,6 +776,10 @@ namespace DAL_Tier
 
         private static void UpdateUser(UserDTO user, UserSeed seed)
         {
+            string avatar = string.IsNullOrWhiteSpace(seed.AvatarUrl) 
+                ? "Resources_Images/default.jpg" 
+                : seed.AvatarUrl;
+
             user.FullName = seed.FullName;
             user.Role = seed.Role;
             user.PhoneNumber = seed.PhoneNumber;
@@ -779,7 +787,7 @@ namespace DAL_Tier
             user.Gender = seed.Gender;
             user.CCCD = seed.CCCD;
             user.Residential_Address = seed.Address;
-            user.Picture ??= "Resources_Images/default.jpg";
+            user.Picture = avatar;
             user.Status = seed.Status;
             user.IsDeleted = false;
             user.UpdatedAt = DateTime.Now;

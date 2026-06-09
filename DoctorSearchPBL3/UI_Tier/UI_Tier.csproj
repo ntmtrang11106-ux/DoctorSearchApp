@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -38,8 +38,8 @@
     <None Update="Fonts\PaytoneOne-Regular.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Resources_Images\bs_nguyen_van_an.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="Resources_Images\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
