@@ -57,7 +57,9 @@ namespace DAL_Tier
                             LastMessage = i == 0 ? "Cảm ơn bác sĩ rất nhiều!" :
                                           i == 1 ? "Bác sĩ cho em hỏi về đơn thuốc..." :
                                           i == 2 ? "Em muốn đặt lịch tái khám" : "Triệu chứng đã giảm nhiều ạ",
-                            LastActive = DateTime.Now.AddMinutes(-10 * (i + 1) - (i == 3 ? 1440 : 0))
+                            LastActive = DateTime.Now.AddMinutes(-10 * (i + 1) - (i == 3 ? 1440 : 0)),
+                            IsActive = true,
+                            IsDeleted = false
                         };
                         _context.Conversations.Add(conv);
                         _context.SaveChanges();
@@ -70,7 +72,8 @@ namespace DAL_Tier
                                 SenderID = patient.UserId,
                                 Content = "Chào bác sĩ, em muốn hỏi về kết quả xét nghiệm",
                                 SentAt = DateTime.Now.AddMinutes(-72),
-                                IsRead = true
+                                IsRead = true,
+                                MessageType = "Text"
                             };
                             var msg2 = new MessagesDTO
                             {
@@ -78,7 +81,8 @@ namespace DAL_Tier
                                 SenderID = docUserId,
                                 Content = "Chào bạn, kết quả xét nghiệm của bạn đã về. Các chỉ số đều trong ngưỡng bình thường.",
                                 SentAt = DateTime.Now.AddMinutes(-67),
-                                IsRead = true
+                                IsRead = true,
+                                MessageType = "Text"
                             };
                             var msg3 = new MessagesDTO
                             {
@@ -86,7 +90,8 @@ namespace DAL_Tier
                                 SenderID = patient.UserId,
                                 Content = "Vậy em có cần tái khám không ạ?",
                                 SentAt = DateTime.Now.AddMinutes(-65),
-                                IsRead = true
+                                IsRead = true,
+                                MessageType = "Text"
                             };
                             var msg4 = new MessagesDTO
                             {
@@ -94,7 +99,8 @@ namespace DAL_Tier
                                 SenderID = docUserId,
                                 Content = "Bạn nên tái khám sau 2 tuần để theo dõi. Bạn có thể đặt lịch qua hệ thống.",
                                 SentAt = DateTime.Now.AddMinutes(-62),
-                                IsRead = true
+                                IsRead = true,
+                                MessageType = "Text"
                             };
                             var msg5 = new MessagesDTO
                             {
@@ -102,7 +108,8 @@ namespace DAL_Tier
                                 SenderID = patient.UserId,
                                 Content = "Cảm ơn bác sĩ rất nhiều!",
                                 SentAt = DateTime.Now.AddMinutes(-60),
-                                IsRead = true
+                                IsRead = true,
+                                MessageType = "Text"
                             };
 
                             _context.Messages.AddRange(msg1, msg2, msg3, msg4, msg5);
@@ -115,7 +122,8 @@ namespace DAL_Tier
                                 SenderID = patient.UserId,
                                 Content = conv.LastMessage,
                                 SentAt = conv.LastActive,
-                                IsRead = false
+                                IsRead = false,
+                                MessageType = "Text"
                             };
                             _context.Messages.Add(msg);
                         }
@@ -147,7 +155,9 @@ namespace DAL_Tier
                             LastMessage = i == 0 ? "Cảm ơn bác sĩ rất nhiều!" :
                                           i == 1 ? "Bác sĩ cho em hỏi về đơn thuốc..." :
                                           i == 2 ? "Em muốn đặt lịch tái khám" : "Triệu chứng đã giảm nhiều ạ",
-                            LastActive = DateTime.Now.AddMinutes(-10 * (i + 1) - (i == 3 ? 1440 : 0))
+                            LastActive = DateTime.Now.AddMinutes(-10 * (i + 1) - (i == 3 ? 1440 : 0)),
+                            IsActive = true,
+                            IsDeleted = false
                         };
                         _context.Conversations.Add(conv);
                         _context.SaveChanges();
@@ -160,7 +170,8 @@ namespace DAL_Tier
                                 SenderID = patUserId,
                                 Content = "Chào bác sĩ, em muốn hỏi về kết quả xét nghiệm",
                                 SentAt = DateTime.Now.AddMinutes(-72),
-                                IsRead = true
+                                IsRead = true,
+                                MessageType = "Text"
                             };
                             var msg2 = new MessagesDTO
                             {
@@ -168,7 +179,8 @@ namespace DAL_Tier
                                 SenderID = doctor.UserId,
                                 Content = "Chào bạn, kết quả xét nghiệm của bạn đã về. Các chỉ số đều trong ngưỡng bình thường.",
                                 SentAt = DateTime.Now.AddMinutes(-67),
-                                IsRead = true
+                                IsRead = true,
+                                MessageType = "Text"
                             };
                             var msg3 = new MessagesDTO
                             {
@@ -176,7 +188,8 @@ namespace DAL_Tier
                                 SenderID = patUserId,
                                 Content = "Vậy em có cần tái khám không ạ?",
                                 SentAt = DateTime.Now.AddMinutes(-65),
-                                IsRead = true
+                                IsRead = true,
+                                MessageType = "Text"
                             };
                             var msg4 = new MessagesDTO
                             {
@@ -184,7 +197,8 @@ namespace DAL_Tier
                                 SenderID = doctor.UserId,
                                 Content = "Bạn nên tái khám sau 2 tuần để theo dõi. Bạn có thể đặt lịch qua hệ thống.",
                                 SentAt = DateTime.Now.AddMinutes(-62),
-                                IsRead = true
+                                IsRead = true,
+                                MessageType = "Text"
                             };
                             var msg5 = new MessagesDTO
                             {
@@ -192,7 +206,8 @@ namespace DAL_Tier
                                 SenderID = patUserId,
                                 Content = "Cảm ơn bác sĩ rất nhiều!",
                                 SentAt = DateTime.Now.AddMinutes(-60),
-                                IsRead = true
+                                IsRead = true,
+                                MessageType = "Text"
                             };
 
                             _context.Messages.AddRange(msg1, msg2, msg3, msg4, msg5);
@@ -205,7 +220,8 @@ namespace DAL_Tier
                                 SenderID = doctor.UserId,
                                 Content = conv.LastMessage,
                                 SentAt = conv.LastActive,
-                                IsRead = false
+                                IsRead = false,
+                                MessageType = "Text"
                             };
                             _context.Messages.Add(msg);
                         }
@@ -219,7 +235,7 @@ namespace DAL_Tier
             }
         }
 
-        // Lấy danh sách hội thoại
+        // Lấy danh sách hội thoại hoạt động (IsActive == true && IsDeleted == false)
         public List<ConversationDTO> GetConversations(int profileId, string role)
         {
             SeedMockDataIfNeeded(profileId, role);
@@ -228,7 +244,7 @@ namespace DAL_Tier
             {
                 return _context.Conversations
                     .Include(c => c.Doctor).ThenInclude(d => d.User)
-                    .Where(c => c.PatientID == profileId)
+                    .Where(c => c.PatientID == profileId && c.IsActive && !c.IsDeleted)
                     .OrderByDescending(c => c.LastActive)
                     .ToList();
             }
@@ -236,27 +252,27 @@ namespace DAL_Tier
             {
                 return _context.Conversations
                     .Include(c => c.Patient).ThenInclude(p => p.User)
-                    .Where(c => c.DoctorID == profileId)
+                    .Where(c => c.DoctorID == profileId && c.IsActive && !c.IsDeleted)
                     .OrderByDescending(c => c.LastActive)
                     .ToList();
             }
         }
 
-        // Lấy tin nhắn của cuộc hội thoại
+        // Lấy tin nhắn chưa bị xóa của cuộc hội thoại (IsDeleted == false)
         public List<MessagesDTO> GetMessages(int conversationId)
         {
             return _context.Messages
                 .Include(m => m.Sender)
-                .Where(m => m.ConversationId == conversationId)
+                .Where(m => m.ConversationId == conversationId && !m.IsDeleted)
                 .OrderBy(m => m.SentAt)
                 .ToList();
         }
 
-        // Đánh dấu tin nhắn đã đọc
+        // Đánh dấu tin nhắn hoạt động đã nhận là đã đọc
         public void MarkAsRead(int conversationId, int currentUserId)
         {
             var unreadMsgs = _context.Messages
-                .Where(m => m.ConversationId == conversationId && m.SenderID != currentUserId && !m.IsRead)
+                .Where(m => m.ConversationId == conversationId && m.SenderID != currentUserId && !m.IsRead && !m.IsDeleted)
                 .ToList();
 
             if (unreadMsgs.Any())
@@ -269,14 +285,14 @@ namespace DAL_Tier
             }
         }
 
-        // Lấy số lượng tin nhắn chưa đọc
+        // Lấy số lượng tin nhắn chưa đọc và chưa bị xóa
         public int GetUnreadCount(int conversationId, int currentUserId)
         {
-            return _context.Messages.Count(m => m.ConversationId == conversationId && m.SenderID != currentUserId && !m.IsRead);
+            return _context.Messages.Count(m => m.ConversationId == conversationId && m.SenderID != currentUserId && !m.IsRead && !m.IsDeleted);
         }
 
-        // Gửi tin nhắn mới
-        public MessagesDTO SendMessage(int conversationId, int senderUserId, string content)
+        // Gửi tin nhắn mới có hỗ trợ MessageType, AttachmentName, AttachmentPath
+        public MessagesDTO SendMessage(int conversationId, int senderUserId, string content, string messageType = "Text", string attachmentName = null, string attachmentPath = null)
         {
             var msg = new MessagesDTO
             {
@@ -284,7 +300,10 @@ namespace DAL_Tier
                 SenderID = senderUserId,
                 Content = content,
                 SentAt = DateTime.Now,
-                IsRead = false
+                IsRead = false,
+                MessageType = messageType,
+                AttachmentName = attachmentName,
+                AttachmentPath = attachmentPath
             };
 
             _context.Messages.Add(msg);
@@ -292,7 +311,7 @@ namespace DAL_Tier
             var conv = _context.Conversations.Find(conversationId);
             if (conv != null)
             {
-                conv.LastMessage = content;
+                conv.LastMessage = messageType == "Text" ? content : $"[{messageType}] {attachmentName}";
                 conv.LastActive = DateTime.Now;
             }
 
@@ -300,7 +319,7 @@ namespace DAL_Tier
             return msg;
         }
 
-        // Lấy hoặc tạo mới cuộc hội thoại giữa Patient và Doctor
+        // Lấy hoặc tạo mới/khôi phục cuộc hội thoại giữa Patient và Doctor
         public ConversationDTO GetOrCreateConversation(int patientId, int doctorId)
         {
             var conv = _context.Conversations
@@ -315,7 +334,9 @@ namespace DAL_Tier
                     PatientID = patientId,
                     DoctorID = doctorId,
                     LastMessage = "Bắt đầu cuộc trò chuyện",
-                    LastActive = DateTime.Now
+                    LastActive = DateTime.Now,
+                    IsActive = true,
+                    IsDeleted = false
                 };
                 _context.Conversations.Add(conv);
                 _context.SaveChanges();
@@ -324,8 +345,65 @@ namespace DAL_Tier
                 _context.Entry(conv).Reference(c => c.Patient).Query().Include(p => p.User).Load();
                 _context.Entry(conv).Reference(c => c.Doctor).Query().Include(d => d.User).Load();
             }
+            else if (conv.IsDeleted || !conv.IsActive)
+            {
+                conv.IsDeleted = false;
+                conv.IsActive = true;
+                conv.LastActive = DateTime.Now;
+                _context.SaveChanges();
+            }
 
             return conv;
+        }
+
+        // Xóa cuộc hội thoại (Soft Delete)
+        public bool DeleteConversation(int conversationId)
+        {
+            var conv = _context.Conversations.Find(conversationId);
+            if (conv != null)
+            {
+                conv.IsDeleted = true;
+                conv.DeletedAt = DateTime.Now;
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+
+        // Thu hồi tin nhắn (Soft Delete) và cập nhật LastMessage phù hợp
+        public bool RecallMessage(int messageId)
+        {
+            var msg = _context.Messages.Find(messageId);
+            if (msg != null)
+            {
+                msg.IsDeleted = true;
+                msg.DeletedAt = DateTime.Now;
+
+                // Cập nhật LastMessage hiển thị ngoài danh sách hội thoại
+                var conv = _context.Conversations.Find(msg.ConversationId);
+                if (conv != null)
+                {
+                    var lastActiveMsg = _context.Messages
+                        .Where(m => m.ConversationId == msg.ConversationId && !m.IsDeleted && m.Id != messageId)
+                        .OrderByDescending(m => m.SentAt)
+                        .FirstOrDefault();
+
+                    if (lastActiveMsg != null)
+                    {
+                        conv.LastMessage = lastActiveMsg.MessageType == "Text" 
+                            ? lastActiveMsg.Content 
+                            : $"[{lastActiveMsg.MessageType}] {lastActiveMsg.AttachmentName}";
+                    }
+                    else
+                    {
+                        conv.LastMessage = "Tin nhắn đã bị thu hồi";
+                    }
+                }
+
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
         }
     }
 }

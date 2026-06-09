@@ -45,11 +45,14 @@ namespace UI_Tier
             txtInput = new TextBox();
             btnEmoji = new Button();
             btnAttach = new Button();
+            btnImage = new Button();
             pnlChatHeader = new Panel();
             btnOptions = new Button();
             btnVideo = new Button();
+            btnPhone = new Button();
             lblHeaderName = new Label();
             lblHeaderAvatar = new Label();
+            lblHeaderSpecialty = new Label();
             pnlNoChatSelected = new Panel();
             lblSelectPrompt = new Label();
             pnlSeparator = new Panel();
@@ -104,7 +107,7 @@ namespace UI_Tier
             // pnlSearchBox
             // 
             pnlSearchBox.BackColor = Color.FromArgb(249, 250, 251);
-            pnlSearchBox.BorderStyle = BorderStyle.FixedSingle;
+            pnlSearchBox.BorderStyle = BorderStyle.None;
             pnlSearchBox.Controls.Add(lblSearchIcon);
             pnlSearchBox.Controls.Add(txtSearch);
             pnlSearchBox.Location = new Point(20, 19);
@@ -112,6 +115,7 @@ namespace UI_Tier
             pnlSearchBox.Name = "pnlSearchBox";
             pnlSearchBox.Size = new Size(870, 63);
             pnlSearchBox.TabIndex = 0;
+            pnlSearchBox.Paint += pnlSearchBox_Paint;
             // 
             // lblSearchIcon
             // 
@@ -168,7 +172,7 @@ namespace UI_Tier
             // flowMessages
             // 
             flowMessages.AutoScroll = true;
-            flowMessages.BackColor = Color.White;
+            flowMessages.BackColor = Color.FromArgb(248, 249, 250);
             flowMessages.Dock = DockStyle.Fill;
             flowMessages.FlowDirection = FlowDirection.TopDown;
             flowMessages.Location = new Point(0, 154);
@@ -184,8 +188,8 @@ namespace UI_Tier
             pnlChatFooter.BackColor = Color.White;
             pnlChatFooter.Controls.Add(btnSend);
             pnlChatFooter.Controls.Add(pnlInputBox);
-            pnlChatFooter.Controls.Add(btnEmoji);
             pnlChatFooter.Controls.Add(btnAttach);
+            pnlChatFooter.Controls.Add(btnImage);
             pnlChatFooter.Dock = DockStyle.Bottom;
             pnlChatFooter.Location = new Point(0, 653);
             pnlChatFooter.Margin = new Padding(4, 4, 4, 4);
@@ -196,11 +200,11 @@ namespace UI_Tier
             // btnSend
             // 
             btnSend.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnSend.BackColor = Color.FromArgb(243, 244, 246);
+            btnSend.BackColor = Color.FromArgb(0, 98, 255);
             btnSend.FlatAppearance.BorderSize = 0;
             btnSend.FlatStyle = FlatStyle.Flat;
             btnSend.Font = new Font("Segoe MDL2 Assets", 16F);
-            btnSend.ForeColor = Color.FromArgb(107, 114, 128);
+            btnSend.ForeColor = Color.White;
             btnSend.Location = new Point(564, 26);
             btnSend.Margin = new Padding(4, 4, 4, 4);
             btnSend.Name = "btnSend";
@@ -214,42 +218,46 @@ namespace UI_Tier
             // 
             pnlInputBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             pnlInputBox.BackColor = Color.FromArgb(249, 250, 251);
-            pnlInputBox.BorderStyle = BorderStyle.FixedSingle;
+            pnlInputBox.BorderStyle = BorderStyle.None;
             pnlInputBox.Controls.Add(txtInput);
-            pnlInputBox.Location = new Point(169, 26);
+            pnlInputBox.Controls.Add(btnEmoji);
+            pnlInputBox.Location = new Point(125, 26);
             pnlInputBox.Margin = new Padding(4, 4, 4, 4);
             pnlInputBox.Name = "pnlInputBox";
-            pnlInputBox.Size = new Size(382, 63);
+            pnlInputBox.Size = new Size(424, 63);
             pnlInputBox.TabIndex = 2;
+            pnlInputBox.Paint += pnlInputBox_Paint;
             // 
             // txtInput
             // 
             txtInput.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             txtInput.BackColor = Color.FromArgb(249, 250, 251);
             txtInput.BorderStyle = BorderStyle.None;
-            txtInput.Font = new Font("Segoe UI", 16F);
-            txtInput.Location = new Point(16, 6);
+            txtInput.Font = new Font("Segoe UI", 14F);
+            txtInput.Location = new Point(16, 16);
             txtInput.Margin = new Padding(4, 4, 4, 4);
             txtInput.Name = "txtInput";
-            txtInput.Size = new Size(350, 57);
+            txtInput.Size = new Size(348, 38);
             txtInput.TabIndex = 0;
             txtInput.Text = "Nhập tin nhắn...";
             txtInput.KeyDown += txtInput_KeyDown;
             // 
             // btnEmoji
             // 
+            btnEmoji.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnEmoji.BackColor = Color.Transparent;
             btnEmoji.FlatAppearance.BorderSize = 0;
             btnEmoji.FlatStyle = FlatStyle.Flat;
-            btnEmoji.Font = new Font("Segoe MDL2 Assets", 16F);
+            btnEmoji.Font = new Font("Segoe UI", 14F);
             btnEmoji.ForeColor = Color.FromArgb(107, 114, 128);
-            btnEmoji.Location = new Point(93, 25);
-            btnEmoji.Margin = new Padding(4, 4, 4, 4);
+            btnEmoji.Location = new Point(372, 9);
+            btnEmoji.Margin = new Padding(0);
             btnEmoji.Name = "btnEmoji";
-            btnEmoji.Size = new Size(65, 64);
+            btnEmoji.Size = new Size(40, 45);
             btnEmoji.TabIndex = 1;
             btnEmoji.Text = "🙂";
             btnEmoji.UseVisualStyleBackColor = false;
+            btnEmoji.Click += btnEmoji_Click;
             // 
             // btnAttach
             // 
@@ -258,21 +266,39 @@ namespace UI_Tier
             btnAttach.FlatStyle = FlatStyle.Flat;
             btnAttach.Font = new Font("Segoe MDL2 Assets", 16F);
             btnAttach.ForeColor = Color.FromArgb(107, 114, 128);
-            btnAttach.Location = new Point(20, 26);
+            btnAttach.Location = new Point(15, 26);
             btnAttach.Margin = new Padding(4, 4, 4, 4);
             btnAttach.Name = "btnAttach";
-            btnAttach.Size = new Size(65, 64);
+            btnAttach.Size = new Size(40, 64);
             btnAttach.TabIndex = 0;
-            btnAttach.Text = "";
+            btnAttach.Text = "\uE723";
             btnAttach.UseVisualStyleBackColor = false;
+            btnAttach.Click += btnAttach_Click;
+            // 
+            // btnImage
+            // 
+            btnImage.BackColor = Color.Transparent;
+            btnImage.FlatAppearance.BorderSize = 0;
+            btnImage.FlatStyle = FlatStyle.Flat;
+            btnImage.Font = new Font("Segoe MDL2 Assets", 16F);
+            btnImage.ForeColor = Color.FromArgb(107, 114, 128);
+            btnImage.Location = new Point(70, 26);
+            btnImage.Margin = new Padding(4, 4, 4, 4);
+            btnImage.Name = "btnImage";
+            btnImage.Size = new Size(40, 64);
+            btnImage.TabIndex = 4;
+            btnImage.Text = "\uEB9F";
+            btnImage.UseVisualStyleBackColor = false;
+            btnImage.Click += btnImage_Click;
             // 
             // pnlChatHeader
             // 
             pnlChatHeader.BackColor = Color.White;
-            pnlChatHeader.Controls.Add(btnOptions);
             pnlChatHeader.Controls.Add(btnVideo);
+            pnlChatHeader.Controls.Add(btnPhone);
             pnlChatHeader.Controls.Add(lblHeaderName);
             pnlChatHeader.Controls.Add(lblHeaderAvatar);
+            pnlChatHeader.Controls.Add(lblHeaderSpecialty);
             pnlChatHeader.Dock = DockStyle.Top;
             pnlChatHeader.Location = new Point(0, 0);
             pnlChatHeader.Margin = new Padding(4, 4, 4, 4);
@@ -282,19 +308,7 @@ namespace UI_Tier
             // 
             // btnOptions
             // 
-            btnOptions.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnOptions.BackColor = Color.Transparent;
-            btnOptions.FlatAppearance.BorderSize = 0;
-            btnOptions.FlatStyle = FlatStyle.Flat;
-            btnOptions.Font = new Font("Segoe MDL2 Assets", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnOptions.ForeColor = Color.FromArgb(75, 85, 99);
-            btnOptions.Location = new Point(572, 44);
-            btnOptions.Margin = new Padding(4, 4, 4, 4);
-            btnOptions.Name = "btnOptions";
-            btnOptions.Size = new Size(65, 64);
-            btnOptions.TabIndex = 5;
-            btnOptions.Text = "⋮";
-            btnOptions.UseVisualStyleBackColor = false;
+            btnOptions.Visible = false;
             // 
             // btnVideo
             // 
@@ -304,17 +318,36 @@ namespace UI_Tier
             btnVideo.FlatStyle = FlatStyle.Flat;
             btnVideo.Font = new Font("Segoe MDL2 Assets", 16F);
             btnVideo.ForeColor = Color.FromArgb(75, 85, 99);
-            btnVideo.Location = new Point(499, 45);
+            btnVideo.Location = new Point(572, 44);
             btnVideo.Margin = new Padding(4, 4, 4, 4);
             btnVideo.Name = "btnVideo";
             btnVideo.Size = new Size(65, 64);
             btnVideo.TabIndex = 4;
             btnVideo.Text = "";
             btnVideo.UseVisualStyleBackColor = false;
+            btnVideo.Click += btnVideo_Click;
+            // 
+            // btnPhone
+            // 
+            btnPhone.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnPhone.BackColor = Color.Transparent;
+            btnPhone.FlatAppearance.BorderSize = 0;
+            btnPhone.FlatStyle = FlatStyle.Flat;
+            btnPhone.Font = new Font("Segoe MDL2 Assets", 16F);
+            btnPhone.ForeColor = Color.FromArgb(75, 85, 99);
+            btnPhone.Location = new Point(499, 45);
+            btnPhone.Margin = new Padding(4, 4, 4, 4);
+            btnPhone.Name = "btnPhone";
+            btnPhone.Size = new Size(65, 64);
+            btnPhone.TabIndex = 6;
+            btnPhone.Text = "";
+            btnPhone.UseVisualStyleBackColor = false;
+            btnPhone.Click += btnPhone_Click;
             // 
             // lblHeaderName
             // 
             lblHeaderName.AutoSize = true;
+            lblHeaderName.Cursor = Cursors.Hand;
             lblHeaderName.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             lblHeaderName.ForeColor = Color.FromArgb(17, 24, 39);
             lblHeaderName.Location = new Point(169, 26);
@@ -323,10 +356,24 @@ namespace UI_Tier
             lblHeaderName.Size = new Size(314, 59);
             lblHeaderName.TabIndex = 1;
             lblHeaderName.Text = "Nguyễn Văn A";
+            lblHeaderName.Click += lblHeaderName_Click;
+            // 
+            // lblHeaderSpecialty
+            // 
+            lblHeaderSpecialty.AutoSize = true;
+            lblHeaderSpecialty.Font = new Font("Segoe UI", 12F, FontStyle.Regular);
+            lblHeaderSpecialty.ForeColor = Color.FromArgb(37, 99, 235);
+            lblHeaderSpecialty.Location = new Point(169, 85);
+            lblHeaderSpecialty.Margin = new Padding(4, 0, 4, 0);
+            lblHeaderSpecialty.Name = "lblHeaderSpecialty";
+            lblHeaderSpecialty.Size = new Size(150, 32);
+            lblHeaderSpecialty.TabIndex = 7;
+            lblHeaderSpecialty.Text = "Chuyên khoa";
             // 
             // lblHeaderAvatar
             // 
             lblHeaderAvatar.BackColor = Color.FromArgb(229, 231, 235);
+            lblHeaderAvatar.Cursor = Cursors.Hand;
             lblHeaderAvatar.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
             lblHeaderAvatar.ForeColor = Color.FromArgb(75, 85, 99);
             lblHeaderAvatar.Location = new Point(26, 19);
@@ -336,6 +383,7 @@ namespace UI_Tier
             lblHeaderAvatar.TabIndex = 0;
             lblHeaderAvatar.Text = "N";
             lblHeaderAvatar.TextAlign = ContentAlignment.MiddleCenter;
+            lblHeaderAvatar.Click += lblHeaderAvatar_Click;
             // 
             // pnlNoChatSelected
             // 
@@ -422,11 +470,14 @@ namespace UI_Tier
         private TextBox txtInput;
         private Button btnEmoji;
         private Button btnAttach;
+        private Button btnImage;
         private Panel pnlChatHeader;
         private Button btnOptions;
         private Button btnVideo;
+        private Button btnPhone;
         private Label lblHeaderName;
         private Label lblHeaderAvatar;
+        private Label lblHeaderSpecialty;
         private Panel pnlSeparator;
         private System.Windows.Forms.Timer pollTimer;
     }
