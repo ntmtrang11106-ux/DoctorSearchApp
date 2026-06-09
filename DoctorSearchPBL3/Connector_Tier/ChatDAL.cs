@@ -240,9 +240,19 @@ namespace DAL_Tier
         {
             SeedMockDataIfNeeded(profileId, role);
 
+            int currentUserId = -1;
+            if (role == "Patient") {
+                var p = _context.Patients.Find(profileId);
+                if (p != null) currentUserId = p.UserId;
+            } else {
+                var d = _context.Doctors.Find(profileId);
+                if (d != null) currentUserId = d.UserId;
+            }
+
+            List<ConversationDTO> convs;
             if (role == "Patient")
             {
-                return _context.Conversations
+                convs = _context.Conversations
                     .Include(c => c.Doctor).ThenInclude(d => d.User)
                     .Where(c => c.PatientID == profileId && c.IsActive && !c.IsDeleted)
                     .OrderByDescending(c => c.LastActive)
@@ -250,20 +260,47 @@ namespace DAL_Tier
             }
             else
             {
-                return _context.Conversations
+                convs = _context.Conversations
                     .Include(c => c.Patient).ThenInclude(p => p.User)
                     .Where(c => c.DoctorID == profileId && c.IsActive && !c.IsDeleted)
                     .OrderByDescending(c => c.LastActive)
                     .ToList();
             }
+
+            // Cập nhật LastMessage hiển thị dựa trên lịch sử xóa của user hiện tại
+            foreach (var c in convs)
+            {
+                var clearTime = _context.Messages
+                    .Where(m => m.ConversationId == c.Id && m.SenderID == currentUserId && m.MessageType == "System_Clear")
+                    .Max(m => (DateTime?)m.SentAt);
+
+                if (clearTime.HasValue)
+                {
+                    var realLast = _context.Messages
+                        .Where(m => m.ConversationId == c.Id && m.MessageType != "System_Clear" && m.SentAt >= clearTime.Value && !m.IsDeleted)
+                        .OrderByDescending(m => m.SentAt)
+                        .FirstOrDefault();
+
+                    if (realLast != null)
+                        c.LastMessage = realLast.MessageType == "Text" ? realLast.Content : $"[{realLast.MessageType}] {realLast.AttachmentName}";
+                    else
+                        c.LastMessage = "Gửi lời chào";
+                }
+            }
+            return convs;
         }
 
-        // Lấy tin nhắn chưa bị xóa của cuộc hội thoại (IsDeleted == false)
-        public List<MessagesDTO> GetMessages(int conversationId)
+        public List<MessagesDTO> GetMessages(int conversationId, int currentUserId)
         {
+            var clearTime = _context.Messages
+                .Where(m => m.ConversationId == conversationId && m.SenderID == currentUserId && m.MessageType == "System_Clear")
+                .Max(m => (DateTime?)m.SentAt);
+
+            DateTime filterTime = clearTime ?? DateTime.MinValue;
+
             return _context.Messages
                 .Include(m => m.Sender)
-                .Where(m => m.ConversationId == conversationId && !m.IsDeleted)
+                .Where(m => m.ConversationId == conversationId && m.MessageType != "System_Clear" && m.SentAt >= filterTime)
                 .OrderBy(m => m.SentAt)
                 .ToList();
         }
@@ -280,6 +317,7 @@ namespace DAL_Tier
                 foreach (var msg in unreadMsgs)
                 {
                     msg.IsRead = true;
+                    msg.ReadAt = DateTime.Now;
                 }
                 _context.SaveChanges();
             }
@@ -356,14 +394,23 @@ namespace DAL_Tier
             return conv;
         }
 
-        // Xóa cuộc hội thoại (Soft Delete)
-        public bool DeleteConversation(int conversationId)
+        // Xóa lịch sử cuộc hội thoại (Clear History cho 1 người)
+        public bool DeleteConversation(int conversationId, int userId)
         {
             var conv = _context.Conversations.Find(conversationId);
             if (conv != null)
             {
-                conv.IsDeleted = true;
-                conv.DeletedAt = DateTime.Now;
+                // Thêm một tin nhắn hệ thống đánh dấu mốc xóa lịch sử
+                var clearMsg = new MessagesDTO
+                {
+                    ConversationId = conversationId,
+                    SenderID = userId,
+                    Content = "System_Clear",
+                    MessageType = "System_Clear",
+                    SentAt = DateTime.Now,
+                    IsRead = true
+                };
+                _context.Messages.Add(clearMsg);
                 _context.SaveChanges();
                 return true;
             }
@@ -378,6 +425,8 @@ namespace DAL_Tier
             {
                 msg.IsDeleted = true;
                 msg.DeletedAt = DateTime.Now;
+
+                msg.UpdatedAt = DateTime.Now;
 
                 // Cập nhật LastMessage hiển thị ngoài danh sách hội thoại
                 var conv = _context.Conversations.Find(msg.ConversationId);
@@ -398,6 +447,38 @@ namespace DAL_Tier
                     {
                         conv.LastMessage = "Tin nhắn đã bị thu hồi";
                     }
+                    conv.UpdatedAt = DateTime.Now;
+                }
+
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+
+        // Chỉnh sửa tin nhắn
+        public bool EditMessage(int messageId, string newContent)
+        {
+            var msg = _context.Messages.Find(messageId);
+            if (msg != null && !msg.IsDeleted && msg.MessageType == "Text")
+            {
+                msg.Content = newContent;
+                msg.EditedAt = DateTime.Now;
+                msg.UpdatedAt = DateTime.Now;
+
+                var conv = _context.Conversations.Find(msg.ConversationId);
+                if (conv != null)
+                {
+                    var lastActiveMsg = _context.Messages
+                        .Where(m => m.ConversationId == msg.ConversationId && !m.IsDeleted)
+                        .OrderByDescending(m => m.SentAt)
+                        .FirstOrDefault();
+
+                    if (lastActiveMsg != null && lastActiveMsg.Id == messageId)
+                    {
+                        conv.LastMessage = newContent;
+                    }
+                    conv.UpdatedAt = DateTime.Now;
                 }
 
                 _context.SaveChanges();

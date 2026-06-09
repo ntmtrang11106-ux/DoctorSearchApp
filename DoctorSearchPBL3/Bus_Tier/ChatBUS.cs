@@ -15,10 +15,10 @@ namespace BUS_Tier
             return _chatDAL.GetConversations(profileId, role);
         }
 
-        public List<MessagesDTO> GetMessages(int conversationId)
+        public List<MessagesDTO> GetMessages(int conversationId, int currentUserId)
         {
-            if (conversationId <= 0) return new List<MessagesDTO>();
-            return _chatDAL.GetMessages(conversationId);
+            if (conversationId <= 0 || currentUserId <= 0) return new List<MessagesDTO>();
+            return _chatDAL.GetMessages(conversationId, currentUserId);
         }
 
         public void MarkAsRead(int conversationId, int currentUserId)
@@ -50,16 +50,22 @@ namespace BUS_Tier
             return _chatDAL.GetOrCreateConversation(patientId, doctorId);
         }
 
-        public bool DeleteConversation(int conversationId)
+        public bool DeleteConversation(int conversationId, int userId)
         {
-            if (conversationId <= 0) return false;
-            return _chatDAL.DeleteConversation(conversationId);
+            if (conversationId <= 0 || userId <= 0) return false;
+            return _chatDAL.DeleteConversation(conversationId, userId);
         }
 
         public bool RecallMessage(int messageId)
         {
             if (messageId <= 0) return false;
             return _chatDAL.RecallMessage(messageId);
+        }
+
+        public bool EditMessage(int messageId, string newContent)
+        {
+            if (messageId <= 0 || string.IsNullOrWhiteSpace(newContent)) return false;
+            return _chatDAL.EditMessage(messageId, newContent.Trim());
         }
 
         // Định dạng thời gian tương đối

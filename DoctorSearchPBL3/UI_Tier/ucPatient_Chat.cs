@@ -27,6 +27,7 @@ namespace UI_Tier
         
         // Cuộc hội thoại hiện đang được mở và tương tác
         private ConversationDTO _activeConversation = null;
+        private int? _editingMessageId = null;
         
         // Item hiển thị cuộc hội thoại đang được lựa chọn trên giao diện danh sách bên trái
         private ucConversationItem _selectedItem = null;
@@ -72,7 +73,8 @@ namespace UI_Tier
                 flowMessages.SuspendLayout();
                 
                 // Trừ đi khoảng cách 40px an toàn để không xuất hiện thanh cuộn ngang (Horizontal Scrollbar)
-                int newWidth = flowMessages.ClientSize.Width - 50;
+                int newWidth = flowMessages.ClientSize.Width - 60;
+                flowMessages.HorizontalScroll.Visible = false;
                 foreach (Control ctrl in flowMessages.Controls)
                 {
                     if (ctrl is ucMessageBubble bubble)
@@ -261,7 +263,7 @@ namespace UI_Tier
             {
                 partnerName = conv.Patient?.User?.FullName ?? "Bệnh nhân";
                 partnerPic = conv.Patient?.User?.Picture ?? "";
-                partnerSpecialty = "Bệnh nhân";
+                //partnerSpecialty = "Bệnh nhân";
             }
 
             lblHeaderName.Text = (_role == "Patient" ? "BS. " : "") + partnerName;
@@ -317,7 +319,7 @@ namespace UI_Tier
         {
             try
             {
-                var messages = _chatBUS.GetMessages(conversationId);
+                var messages = _chatBUS.GetMessages(conversationId, _userId);
 
                 // Tạm hoãn vẽ giao diện flowMessages để tránh giật lag khi render hàng loạt bong bóng tin nhắn
                 flowMessages.SuspendLayout();
@@ -328,11 +330,16 @@ namespace UI_Tier
                     var bubble = new ucMessageBubble();
                     bool isSender = (msg.SenderID == _userId);
                     
-                    // Chiều rộng bong bóng = chiều rộng khung chứa trừ đi khoảng cách đệm 40px an toàn
-                    bubble.SetMessage(msg, isSender, flowMessages.ClientSize.Width - 40);
+                    // Chiều rộng bong bóng = chiều rộng khung chứa trừ đi khoảng cách đệm an toàn
+                    bubble.SetMessage(msg, isSender, flowMessages.ClientSize.Width - 60);
+                    bubble.Margin = new Padding(0, 5, 0, 5);
                     // Đăng ký sự kiện thu hồi tin nhắn
                     bubble.MessageRecalled += (s, msgId) => {
                         RecallMessage(msgId);
+                    };
+                    // Đăng ký sự kiện chỉnh sửa tin nhắn
+                    bubble.MessageEdited += (s, msgId) => {
+                        EditMessage(msgId);
                     };
                     flowMessages.Controls.Add(bubble);
                 }
@@ -357,7 +364,7 @@ namespace UI_Tier
 
             try
             {
-                var messages = _chatBUS.GetMessages(_activeConversation.Id);
+                var messages = _chatBUS.GetMessages(_activeConversation.Id, _userId);
                 int currentBubbleCount = flowMessages.Controls.Count;
 
                 // Nếu số lượng tin nhắn trong Cơ sở dữ liệu lớn hơn số lượng bong bóng đang hiển thị
@@ -371,10 +378,15 @@ namespace UI_Tier
                         var msg = messages[i];
                         var bubble = new ucMessageBubble();
                         bool isSender = (msg.SenderID == _userId);
-                        bubble.SetMessage(msg, isSender, flowMessages.ClientSize.Width - 40);
+                        bubble.SetMessage(msg, isSender, flowMessages.ClientSize.Width - 60);
+                        bubble.Margin = new Padding(0, 5, 0, 5);
                         // Đăng ký sự kiện thu hồi tin nhắn
                         bubble.MessageRecalled += (s, msgId) => {
                             RecallMessage(msgId);
+                        };
+                        // Đăng ký sự kiện chỉnh sửa tin nhắn
+                        bubble.MessageEdited += (s, msgId) => {
+                            EditMessage(msgId);
                         };
                         flowMessages.Controls.Add(bubble);
                     }
@@ -454,48 +466,58 @@ namespace UI_Tier
 
             try
             {
-                // 1. Lưu tin nhắn vào Cơ sở dữ liệu thông qua BUS
-                var sentMsg = _chatBUS.SendMessage(_activeConversation.Id, _userId, content);
+                if (_editingMessageId.HasValue)
+                {
+                    // Chỉnh sửa tin nhắn hiện tại
+                    _chatBUS.EditMessage(_editingMessageId.Value, content);
+                    _editingMessageId = null;
+                    
+                    // Gọi LoadMessages để nạp lại toàn bộ giao diện tin nhắn đã được chỉnh sửa
+                    LoadMessages(_activeConversation.Id);
+                }
+                else
+                {
+                    // 1. Lưu tin nhắn mới vào Cơ sở dữ liệu thông qua BUS
+                    _chatBUS.SendMessage(_activeConversation.Id, _userId, content);
+                    
+                    // 3. Tải tin nhắn mới lên giao diện tức thời và cập nhật nội dung xem trước
+                    RefreshActiveMessages();
+                }
 
                 // 2. Làm sạch ô nhập liệu và đưa con trỏ tập trung lại ô nhập tin nhắn
                 txtInput.Text = "";
                 txtInput.Focus();
 
-                // 3. Tải tin nhắn mới lên giao diện tức thời và cập nhật nội dung xem trước ở danh sách bên trái
-                RefreshActiveMessages();
                 RefreshConversationsOnly();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Không thể gửi tin nhắn: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi thao tác tin nhắn: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
 
-        // Sự kiện click nút Emoji để hiển thị ContextMenu nhanh các icon
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, uint dwExtraInfo);
+        private const byte VK_LWIN = 0x5B;
+        private const byte VK_OEM_PERIOD = 0xBE;
+        private const uint KEYEVENTF_KEYUP = 0x0002;
+
+        // Sự kiện click nút Emoji để hiển thị Windows Emoji Panel
         private void btnEmoji_Click(object sender, EventArgs e)
         {
-            ContextMenuStrip emojiMenu = new ContextMenuStrip();
-            string[] emojis = { "😊", "👍", "❤️", "😆", "😮", "😢", "🙏", "👏", "😷", "💉" };
-            foreach (var emoji in emojis)
+            txtInput.Focus();
+            if (txtInput.Text == "Nhập tin nhắn...")
             {
-                ToolStripMenuItem item = new ToolStripMenuItem(emoji);
-                item.Click += (s, ev) =>
-                {
-                    if (txtInput.Text == "Nhập tin nhắn...")
-                    {
-                        txtInput.Text = emoji;
-                        txtInput.ForeColor = Color.Black;
-                    }
-                    else
-                    {
-                        txtInput.Text += emoji;
-                    }
-                    txtInput.Focus();
-                };
-                emojiMenu.Items.Add(item);
+                txtInput.Text = "";
+                txtInput.ForeColor = Color.Black;
             }
-            emojiMenu.Show(btnEmoji, new Point(0, -emojiMenu.Height));
+            
+            // Giả lập tổ hợp phím Win + . để mở bảng Emoji hệ thống
+            keybd_event(VK_LWIN, 0, 0, 0);
+            keybd_event(VK_OEM_PERIOD, 0, 0, 0);
+            keybd_event(VK_OEM_PERIOD, 0, KEYEVENTF_KEYUP, 0);
+            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, 0);
         }
 
         private void pnlSearchBox_Paint(object sender, PaintEventArgs e)
@@ -621,40 +643,119 @@ namespace UI_Tier
         {
             if (_activeConversation == null) return;
 
-            string partnerName = "";
-            string details = "";
-            
+            int partnerUserId = 0;
+            string partnerRole = "";
+
             if (_role == "Patient")
             {
                 var doc = _activeConversation.Doctor;
-                if (doc != null)
+                if (doc != null && doc.User != null)
                 {
-                    partnerName = doc.User?.FullName ?? "Bác sĩ";
-                    details = $"Họ tên bác sĩ: {partnerName}\n" +
-                              $"Chuyên khoa: {doc.Department?.DepartmentName}\n" +
-                              $"Học vị/Chức vụ: {doc.Position}\n" +
-                              $"Kinh nghiệm: {doc.ExperienceYears} năm\n" +
-                              $"Phí khám: {doc.ConsultationFee:N0} VNĐ\n" +
-                              $"Số điện thoại: {doc.User?.PhoneNumber}";
+                    partnerUserId = doc.UserId;
+                    partnerRole = "Doctor";
                 }
             }
             else
             {
                 var pat = _activeConversation.Patient;
-                if (pat != null)
+                if (pat != null && pat.User != null)
                 {
-                    partnerName = pat.User?.FullName ?? "Bệnh nhân";
-                    details = $"Họ tên bệnh nhân: {partnerName}\n" +
-                              $"Mã y tế: {pat.MedicalCode}\n" +
-                              $"Nhóm máu: {pat.BloodType}\n" +
-                              $"Số điện thoại: {pat.User?.PhoneNumber}\n" +
-                              $"Ghi chú y khoa: {pat.Note}";
+                    partnerUserId = pat.UserId;
+                    partnerRole = "Patient";
                 }
             }
 
-            MessageBox.Show(details, $"Thông tin: {partnerName}", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (partnerUserId > 0)
+            {
+                try
+                {
+                    var adminBUS = new BUS_Tier.AdminBUS();
+                    var result = adminBUS.GetFullUserDetails(partnerUserId, partnerRole);
+
+                    if (result.User != null)
+                    {
+                        UserControl detail;
+                        if (partnerRole == "Doctor")
+                        {
+                            var docDetail = new ucAdmin_DoctorDetail();
+                            docDetail.SetData(result.User, result.Doctor);
+                            detail = docDetail;
+                        }
+                        else
+                        {
+                            var patDetail = new ucAdmin_PatientDetail();
+                            patDetail.SetData(result.User, result.Patient);
+                            detail = patDetail;
+                        }
+
+                        ShowOverlay(detail);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Không thể nạp thông tin hồ sơ: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
+        private void ShowOverlay(UserControl detail)
+        {
+            detail.Tag = "OverlayChild";
+            
+            // Tự động căn chỉnh kích thước phù hợp với cửa sổ chat hiện tại
+            int w = Math.Min(1200, this.Width - 100);
+            int h = Math.Min(950, this.Height - 100);
+            if (w < 400) w = this.Width - 20;
+            if (h < 400) h = this.Height - 20;
+            
+            detail.Size = new Size(w, h);
+            detail.Location = new Point((this.Width - detail.Width) / 2, (this.Height - detail.Height) / 2);
+
+            // Bắt sự kiện khi user control tự đóng (nhấn nút Đóng bên trong)
+            detail.ParentChanged += (s, e) =>
+            {
+                if (detail.Parent == null)
+                {
+                    HideOverlay();
+                }
+            };
+
+            // Đăng ký sự kiện Resize cho ucPatient_Chat để form con luôn ở giữa
+            EventHandler resizeHandler = null;
+            resizeHandler = (s, e) =>
+            {
+                if (this.Controls.Contains(detail))
+                {
+                    int newW = Math.Min(1200, this.Width - 100);
+                    int newH = Math.Min(950, this.Height - 100);
+                    if (newW < 400) newW = this.Width - 20;
+                    if (newH < 400) newH = this.Height - 20;
+                    detail.Size = new Size(newW, newH);
+                    detail.Location = new Point((this.Width - detail.Width) / 2, (this.Height - detail.Height) / 2);
+                }
+                else
+                {
+                    this.Resize -= resizeHandler; // Hủy đăng ký nếu detail đã bị đóng
+                }
+            };
+            this.Resize += resizeHandler;
+
+            this.Controls.Add(detail);
+            detail.BringToFront();
+        }
+
+        private void HideOverlay()
+        {
+            for (int i = this.Controls.Count - 1; i >= 0; i--)
+            {
+                var ctrl = this.Controls[i];
+                if (ctrl.Tag?.ToString() == "OverlayChild")
+                {
+                    this.Controls.RemoveAt(i);
+                    ctrl.Dispose();
+                }
+            }
+        }
         // Xóa cuộc trò chuyện hoạt động (Soft Delete)
         private void DeleteActiveConversation()
         {
@@ -668,15 +769,13 @@ namespace UI_Tier
 
             if (confirmResult == DialogResult.Yes)
             {
-                bool success = _chatBUS.DeleteConversation(_activeConversation.Id);
+                bool success = _chatBUS.DeleteConversation(_activeConversation.Id, _userId);
                 if (success)
                 {
-                    _activeConversation = null;
-                    _selectedItem = null;
-                    pnlChatActive.Visible = false;
-                    pnlNoChatSelected.Visible = true;
-                    LoadConversations();
-                    MessageBox.Show("Đã xóa cuộc trò chuyện thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Chỉ nạp lại giao diện chat (sẽ trống rỗng) và cập nhật danh sách bên trái
+                    LoadMessages(_activeConversation.Id);
+                    RefreshConversationsOnly();
+                    MessageBox.Show("Đã xóa toàn bộ tin nhắn thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -709,6 +808,22 @@ namespace UI_Tier
                 {
                     MessageBox.Show("Không thể thu hồi tin nhắn.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+        }
+
+        // Bắt đầu chỉnh sửa tin nhắn
+        private void EditMessage(int msgId)
+        {
+            if (_activeConversation == null) return;
+
+            var msg = _chatBUS.GetMessages(_activeConversation.Id, _userId).FirstOrDefault(m => m.Id == msgId);
+            if (msg != null && msg.MessageType == "Text")
+            {
+                _editingMessageId = msgId;
+                txtInput.Text = msg.Content;
+                txtInput.ForeColor = Color.Black;
+                txtInput.Focus();
+                txtInput.Select(txtInput.Text.Length, 0);
             }
         }
 

@@ -47,8 +47,6 @@ namespace UI_Tier
             btnAttach = new Button();
             btnImage = new Button();
             pnlChatHeader = new Panel();
-            btnVideo = new Button();
-            btnPhone = new Button();
             lblHeaderName = new Label();
             lblHeaderAvatar = new Label();
             lblHeaderSpecialty = new Label();
@@ -236,7 +234,7 @@ namespace UI_Tier
             txtInput.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             txtInput.BackColor = Color.FromArgb(249, 250, 251);
             txtInput.BorderStyle = BorderStyle.None;
-            txtInput.Font = new Font("Segoe UI", 14F);
+            txtInput.Font = new Font("Segoe UI", 12F);
             txtInput.Location = new Point(16, 10);
             txtInput.Margin = new Padding(4);
             txtInput.Name = "txtInput";
@@ -297,8 +295,6 @@ namespace UI_Tier
             // pnlChatHeader
             // 
             pnlChatHeader.BackColor = Color.White;
-            pnlChatHeader.Controls.Add(btnVideo);
-            pnlChatHeader.Controls.Add(btnPhone);
             pnlChatHeader.Controls.Add(lblHeaderName);
             pnlChatHeader.Controls.Add(lblHeaderAvatar);
             pnlChatHeader.Controls.Add(lblHeaderSpecialty);
@@ -308,40 +304,6 @@ namespace UI_Tier
             pnlChatHeader.Name = "pnlChatHeader";
             pnlChatHeader.Size = new Size(649, 154);
             pnlChatHeader.TabIndex = 0;
-            // 
-            // btnVideo
-            // 
-            btnVideo.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnVideo.BackColor = Color.Transparent;
-            btnVideo.FlatAppearance.BorderSize = 0;
-            btnVideo.FlatStyle = FlatStyle.Flat;
-            btnVideo.Font = new Font("Segoe MDL2 Assets", 16F);
-            btnVideo.ForeColor = Color.FromArgb(75, 85, 99);
-            btnVideo.Location = new Point(572, 44);
-            btnVideo.Margin = new Padding(4);
-            btnVideo.Name = "btnVideo";
-            btnVideo.Size = new Size(65, 64);
-            btnVideo.TabIndex = 4;
-            btnVideo.Text = "";
-            btnVideo.UseVisualStyleBackColor = false;
-            btnVideo.Click += btnVideo_Click;
-            // 
-            // btnPhone
-            // 
-            btnPhone.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnPhone.BackColor = Color.Transparent;
-            btnPhone.FlatAppearance.BorderSize = 0;
-            btnPhone.FlatStyle = FlatStyle.Flat;
-            btnPhone.Font = new Font("Segoe MDL2 Assets", 16F);
-            btnPhone.ForeColor = Color.FromArgb(75, 85, 99);
-            btnPhone.Location = new Point(499, 45);
-            btnPhone.Margin = new Padding(4);
-            btnPhone.Name = "btnPhone";
-            btnPhone.Size = new Size(65, 64);
-            btnPhone.TabIndex = 6;
-            btnPhone.Text = "";
-            btnPhone.UseVisualStyleBackColor = false;
-            btnPhone.Click += btnPhone_Click;
             // 
             // lblHeaderName
             // 
@@ -475,8 +437,6 @@ namespace UI_Tier
         private Button btnImage;
         private Panel pnlChatHeader;
         private Button btnOptions;
-        private Button btnVideo;
-        private Button btnPhone;
         private Label lblHeaderName;
         private Label lblHeaderAvatar;
         private Label lblHeaderSpecialty;
