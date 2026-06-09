@@ -79,6 +79,12 @@ namespace BUS_Tier
             return _appointmentDAL.GetAppointmentsByPatientId(patientId);
         }
 
+        public bool HasCompletedAppointment(int patientId, int doctorId)
+        {
+            if (patientId <= 0 || doctorId <= 0) return false;
+            return _appointmentDAL.HasCompletedAppointment(patientId, doctorId);
+        }
+
         public List<AppointmentsDTO> GetFilteredAppointments(int doctorId, DateTime startDate, DateTime endDate, string uiStatus)
         {
             var rawApps = doctorId > 0 ? GetAppointmentsByDoctorId(doctorId) : GetAll();

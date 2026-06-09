@@ -489,6 +489,12 @@ namespace UI_Tier
         private void DisplayDoctors(int page)
         {
             flpDoctors.SuspendLayout();
+            
+            // Dọn dẹp RAM trước khi tạo thẻ mới
+            foreach (Control c in flpDoctors.Controls)
+            {
+                c.Dispose();
+            }
             flpDoctors.Controls.Clear();
 
             int startIndex = (page - 1) * _pageSize;
@@ -520,6 +526,12 @@ namespace UI_Tier
         private void DisplayArticles(int page)
         {
             flpArticles.SuspendLayout();
+
+            // Dọn dẹp RAM trước khi tạo thẻ mới
+            foreach (Control c in flpArticles.Controls)
+            {
+                c.Dispose();
+            }
             flpArticles.Controls.Clear();
 
             int startIndex = (page - 1) * _pageSize;

@@ -67,6 +67,17 @@ namespace UI_Tier
         {
             _currentDoctor = doctor;
             _doctorId = doctor.Id; // Lưu ID bác sĩ để sử dụng sau này
+            
+            try
+            {
+                int currentPatientId = GlobalAccount.GetProfileId();
+                bool hasCompletedApp = new AppointmentBUS().HasCompletedAppointment(currentPatientId, _doctorId);
+                btnWriteReview.Visible = hasCompletedApp;
+            }
+            catch
+            {
+                btnWriteReview.Visible = false;
+            }
 
             /// 1. Tên Bác sĩ: Kết hợp Chức danh + Họ tên
             // Ví dụ: "Thạc sĩ Nguyễn Văn A" hoặc "Bác sĩ Trần Thị B"
