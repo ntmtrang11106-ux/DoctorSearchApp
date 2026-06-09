@@ -1,4 +1,4 @@
-namespace UI_Tier
+﻿namespace UI_Tier
 {
     partial class ucDoctor_Profile
     {
@@ -115,15 +115,15 @@ namespace UI_Tier
             // 
             // lblUpload
             // 
-            lblUpload.BackColor = Color.FromArgb(200, 37, 99, 235);
+            lblUpload.BackColor = Color.FromArgb(37, 99, 235);
             lblUpload.Cursor = Cursors.Hand;
-            lblUpload.Font = new Font("Segoe MDL2 Assets", 18F);
+            lblUpload.Font = new Font("Segoe UI Semibold", 22F, FontStyle.Bold);
             lblUpload.ForeColor = Color.White;
             lblUpload.Location = new Point(345, 415);
             lblUpload.Name = "lblUpload";
             lblUpload.Size = new Size(55, 65);
             lblUpload.TabIndex = 27;
-            lblUpload.Text = "îœ¢";
+            lblUpload.Text = "+";
             lblUpload.TextAlign = ContentAlignment.MiddleCenter;
             lblUpload.Visible = false;
             // 
@@ -964,7 +964,7 @@ namespace UI_Tier
             lblDoctorName.Name = "lblDoctorName";
             lblDoctorName.Size = new Size(390, 102);
             lblDoctorName.TabIndex = 3;
-            lblDoctorName.Text = "BS. Nguyễn Văn A";
+            lblDoctorName.Text = "B\u00e1c s\u0129 chuy\u00ean khoa\r\nNguy\u1ec5n V\u0103n A";
             lblDoctorName.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // picAvatar

@@ -78,6 +78,7 @@ namespace UI_Tier
                         this.Location = mainForm.Location;
                         this.Size = mainForm.Size;
                         this.WindowState = mainForm.WindowState;
+                        RefreshSearchResults();
 
                         // Nếu đã gọi Logout -> Hiện lại màn hình Guest ngay lập tức
                         this.Show();
@@ -90,12 +91,14 @@ namespace UI_Tier
                 }
                 else
                 {
+                    RefreshSearchResults();
                     this.Show();
                 }
             }
             else
             {
                 // Nếu hủy đăng nhập hoặc nhấn nút quay lại -> Hiện lại Form Guest
+                RefreshSearchResults();
                 this.Show();
             }
         }
@@ -103,7 +106,12 @@ namespace UI_Tier
         /// Xử lý sự kiện Load Form.
         private void frmGuest_Load(object sender, EventArgs e)
         {
-            _searchControl.ExecuteSearch();
+            RefreshSearchResults();
+        }
+
+        private void RefreshSearchResults()
+        {
+            _searchControl?.ExecuteSearch();
         }
 
         public async void OpenArticleDetail(ContentDTO art)

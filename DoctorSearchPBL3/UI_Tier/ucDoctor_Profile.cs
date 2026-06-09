@@ -17,6 +17,11 @@ namespace UI_Tier
         private readonly UserBUS _userBUS = new UserBUS();
         private DoctorDTO _currentDoctor;
         private bool _isEditingBasic = false;
+        private string _pendingAvatarSourcePath;
+        private readonly Color _viewFieldBackColor = Color.FromArgb(248, 250, 252);
+        private readonly Color _lockedFieldBackColor = Color.FromArgb(241, 245, 249);
+        private readonly Color _fieldTextColor = Color.FromArgb(33, 37, 41);
+        private readonly Color _lockedTextColor = Color.FromArgb(100, 116, 139);
 
         protected override CreateParams CreateParams
         {
@@ -60,6 +65,8 @@ namespace UI_Tier
             UIHelper.SetDoubleBuffered(pnlPassActions);
 
             SetupFocusEffects();
+            SetupViewModeInputBehavior();
+            SetEditMode(false, "basic");
 
             // Gán sự kiện Paint để vẽ viền và bóng đổ
             pnlBasicInfo.Paint += SectionPanel_Paint;
@@ -109,6 +116,107 @@ namespace UI_Tier
             UIHelper.SetupInputFocusEffect(dtpBirthday, pnlBirthdayBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
         }
 
+        private void SetupViewModeInputBehavior()
+        {
+            TextBox[] textBoxes =
+            {
+                txtFullName, txtPhone, txtGender, txtCCCD, txtAddress,
+                txtPosition, txtSpecialty, txtLicense, txtExperienceYears,
+                txtConsultationFee, txtBiography
+            };
+
+            foreach (TextBox textBox in textBoxes)
+            {
+                textBox.Enter += ReadOnlyTextBox_Enter;
+            }
+
+            Panel[] inputBorders =
+            {
+                pnlFullNameBorder, pnlPhoneBorder, pnlGenderBorder, pnlBirthdayBorder,
+                pnlCCCDBorder, pnlAddressBorder, pnlPositionBorder, pnlSpecialtyBorder,
+                pnlLicenseBorder, pnlExperienceYearsBorder, pnlConsultationFeeBorder,
+                pnlBiographyBorder
+            };
+
+            foreach (Panel panel in inputBorders)
+            {
+                UIHelper.ApplyRoundedRegion(panel, 10);
+                panel.Paint += ProfileInputBorder_Paint;
+            }
+        }
+
+        private void ReadOnlyTextBox_Enter(object sender, EventArgs e)
+        {
+            if (sender is not TextBox textBox || !textBox.ReadOnly) return;
+
+            BeginInvoke(new Action(() =>
+            {
+                if (IsDisposed || !textBox.ReadOnly) return;
+
+                textBox.SelectionLength = 0;
+                ClearActiveProfileFocus();
+                InvalidateProfileInputBorders();
+            }));
+        }
+
+        private void SetTextBoxEditState(TextBox textBox, Panel borderPanel, bool canEdit, bool locked = false)
+        {
+            textBox.Enabled = true;
+            textBox.ReadOnly = !canEdit;
+            textBox.TabStop = canEdit;
+            textBox.Cursor = canEdit ? Cursors.IBeam : Cursors.Default;
+            textBox.ForeColor = locked ? _lockedTextColor : _fieldTextColor;
+
+            Color backColor = canEdit ? Color.White : (locked ? _lockedFieldBackColor : _viewFieldBackColor);
+            textBox.BackColor = backColor;
+            borderPanel.BackColor = backColor;
+            borderPanel.Invalidate();
+        }
+
+        private void ProfileInputBorder_Paint(object sender, PaintEventArgs e)
+        {
+            if (sender is not Panel panel) return;
+
+            if (!IsPanelEditable(panel))
+            {
+                UIHelper.uc_Paint(panel, e, 10, Color.FromArgb(226, 232, 240), 2);
+            }
+        }
+
+        private bool IsPanelEditable(Panel panel)
+        {
+            if (panel == pnlCCCDBorder || panel == pnlPositionBorder ||
+                panel == pnlSpecialtyBorder || panel == pnlLicenseBorder ||
+                panel == pnlExperienceYearsBorder)
+            {
+                return false;
+            }
+
+            return _isEditingBasic;
+        }
+
+        private void InvalidateProfileInputBorders()
+        {
+            Panel[] inputBorders =
+            {
+                pnlFullNameBorder, pnlPhoneBorder, pnlGenderBorder, pnlBirthdayBorder,
+                pnlCCCDBorder, pnlAddressBorder, pnlPositionBorder, pnlSpecialtyBorder,
+                pnlLicenseBorder, pnlExperienceYearsBorder, pnlConsultationFeeBorder,
+                pnlBiographyBorder
+            };
+
+            foreach (Panel panel in inputBorders)
+            {
+                panel.Invalidate();
+            }
+        }
+
+        private void ClearActiveProfileFocus()
+        {
+            Form form = FindForm();
+            if (form != null) form.ActiveControl = null;
+        }
+
         private void ChangeAvatar()
         {
             if (!_isEditingBasic) return;
@@ -126,24 +234,9 @@ namespace UI_Tier
                 {
                     try
                     {
-                        string uploadDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "uploads", "avatars");
-                        if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
-
-                        string fileName = $"doc_{GlobalAccount.GetUserId()}_{DateTime.Now.Ticks}{Path.GetExtension(ofd.FileName)}";
-                        string destPath = Path.Combine(uploadDir, fileName);
-                        string relativePath = Path.Combine("uploads", "avatars", fileName);
-
-                        File.Copy(ofd.FileName, destPath, true);
-                        
-                        // Save to database immediately
-                        string result = _userBUS.UpdateAvatar(GlobalAccount.GetUserId(), relativePath);
-                        if (result == "Success")
-                        {
-                            picAvatar.ImageLocation = destPath;
-                            picAvatar.SizeMode = PictureBoxSizeMode.Zoom;
-                            _currentDoctor.User.Picture = relativePath;
-                            MessageBox.Show("Cập nhật ảnh đại diện thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
+                        _pendingAvatarSourcePath = ofd.FileName;
+                        picAvatar.ImageLocation = _pendingAvatarSourcePath;
+                        picAvatar.SizeMode = PictureBoxSizeMode.Zoom;
                     }
                     catch (Exception ex)
                     {
@@ -153,8 +246,32 @@ namespace UI_Tier
             }
         }
 
+        private string PreparePendingAvatar(out string relativePath)
+        {
+            relativePath = "";
+
+            if (string.IsNullOrWhiteSpace(_pendingAvatarSourcePath))
+                return "Success";
+
+            if (!File.Exists(_pendingAvatarSourcePath))
+                return "Không tìm thấy file ảnh đã chọn.";
+
+            string uploadDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "uploads", "avatars");
+            if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
+
+            string extension = Path.GetExtension(_pendingAvatarSourcePath);
+            string fileName = $"doc_{GlobalAccount.GetUserId()}_{DateTime.Now.Ticks}{extension}";
+            string destPath = Path.Combine(uploadDir, fileName);
+
+            File.Copy(_pendingAvatarSourcePath, destPath, true);
+            relativePath = Path.Combine("uploads", "avatars", fileName);
+            return "Success";
+        }
+
         public void InitData()
         {
+            _pendingAvatarSourcePath = null;
+
             int profileId = GlobalAccount.GetProfileId();
             if (profileId <= 0) return;
 
@@ -162,8 +279,13 @@ namespace UI_Tier
 
             if (_currentDoctor != null && _currentDoctor.User != null)
             {
-                txtFullName.Text = _currentDoctor.User.FullName;
-                lblDoctorName.Text = (_currentDoctor.Position + " " + _currentDoctor.User.FullName).Trim();
+                string displayName = StripDoctorTitlePrefix(_currentDoctor.User.FullName);
+                string displayPosition = (_currentDoctor.Position ?? "").Trim();
+
+                txtFullName.Text = displayName;
+                lblDoctorName.Text = string.IsNullOrWhiteSpace(displayPosition)
+                    ? displayName
+                    : $"{displayPosition}{Environment.NewLine}{displayName}";
                 txtPhone.Text = _currentDoctor.User.PhoneNumber;
                 dtpBirthday.Value = _currentDoctor.User.Dob ?? DateTime.Now;
                 txtGender.Text = _currentDoctor.User.Gender ?? "";
@@ -212,82 +334,59 @@ namespace UI_Tier
             catch { }
         }
 
+        private static string StripDoctorTitlePrefix(string fullName)
+        {
+            string name = (fullName ?? "").Trim();
+            string[] prefixes = { "BS.", "BS", "Bác sĩ", "Bac si" };
+
+            bool changed;
+            do
+            {
+                changed = false;
+                foreach (string prefix in prefixes)
+                {
+                    if (name.StartsWith(prefix, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        name = name.Substring(prefix.Length).TrimStart('.', ' ');
+                        changed = true;
+                        break;
+                    }
+                }
+            } while (changed);
+
+            return name;
+        }
+
         private void SetEditMode(bool isEdit, string section)
         {
             this.ActiveControl = null;
             if (section == "basic")
             {
                 _isEditingBasic = isEdit;
-                // Editable fields
-                txtFullName.ReadOnly = !isEdit;
-                txtPhone.ReadOnly = !isEdit;
-                txtGender.ReadOnly = !isEdit;
-                txtCCCD.ReadOnly = !isEdit;
-                txtAddress.ReadOnly = !isEdit;
-                dtpBirthday.Enabled = isEdit;
-                txtConsultationFee.ReadOnly = !isEdit;
-                txtBiography.ReadOnly = !isEdit;
 
-                // Always Read-Only fields
-                txtPosition.ReadOnly = true;
-                txtSpecialty.ReadOnly = true;
-                txtLicense.ReadOnly = true;
-                txtExperienceYears.ReadOnly = true;
+                SetTextBoxEditState(txtFullName, pnlFullNameBorder, isEdit);
+                SetTextBoxEditState(txtPhone, pnlPhoneBorder, isEdit);
+                SetTextBoxEditState(txtGender, pnlGenderBorder, isEdit);
+                SetTextBoxEditState(txtAddress, pnlAddressBorder, isEdit);
+                SetTextBoxEditState(txtConsultationFee, pnlConsultationFeeBorder, isEdit);
+                SetTextBoxEditState(txtBiography, pnlBiographyBorder, isEdit);
+
+                SetTextBoxEditState(txtCCCD, pnlCCCDBorder, false, true);
+                SetTextBoxEditState(txtPosition, pnlPositionBorder, false, true);
+                SetTextBoxEditState(txtSpecialty, pnlSpecialtyBorder, false, true);
+                SetTextBoxEditState(txtLicense, pnlLicenseBorder, false, true);
+                SetTextBoxEditState(txtExperienceYears, pnlExperienceYearsBorder, false, true);
+
+                dtpBirthday.Enabled = isEdit;
+                pnlBirthdayBorder.BackColor = isEdit ? Color.White : _viewFieldBackColor;
 
                 pnlBasicInfoActions.Visible = isEdit;
                 btnEditBasicInfo.Visible = !isEdit;
-
-                Color editColor = Color.White;
-                Color readOnlyColor = Color.FromArgb(241, 243, 245);
-
-                // Set backgrounds based on editability
-                txtFullName.BackColor = isEdit ? editColor : readOnlyColor;
-                pnlFullNameBorder.BackColor = isEdit ? editColor : readOnlyColor;
-                txtPhone.BackColor = isEdit ? editColor : readOnlyColor;
-                pnlPhoneBorder.BackColor = isEdit ? editColor : readOnlyColor;
-                txtGender.BackColor = isEdit ? editColor : readOnlyColor;
-                pnlGenderBorder.BackColor = isEdit ? editColor : readOnlyColor;
-                txtCCCD.BackColor = isEdit ? editColor : readOnlyColor;
-                pnlCCCDBorder.BackColor = isEdit ? editColor : readOnlyColor;
-                txtAddress.BackColor = isEdit ? editColor : readOnlyColor;
-                pnlAddressBorder.BackColor = isEdit ? editColor : readOnlyColor;
-                txtConsultationFee.BackColor = isEdit ? editColor : readOnlyColor;
-                pnlConsultationFeeBorder.BackColor = isEdit ? editColor : readOnlyColor;
-                txtBiography.BackColor = isEdit ? editColor : readOnlyColor;
-                pnlBiographyBorder.BackColor = isEdit ? editColor : readOnlyColor;
-
-                // These always stay gray
-                txtPosition.BackColor = readOnlyColor;
-                pnlPositionBorder.BackColor = readOnlyColor;
-                txtSpecialty.BackColor = readOnlyColor;
-                pnlSpecialtyBorder.BackColor = readOnlyColor;
-                txtLicense.BackColor = readOnlyColor;
-                pnlLicenseBorder.BackColor = readOnlyColor;
-                txtExperienceYears.BackColor = readOnlyColor;
-                pnlExperienceYearsBorder.BackColor = readOnlyColor;
-
-                pnlBirthdayBorder.BackColor = isEdit ? editColor : readOnlyColor;
-
                 if (lblUpload != null) lblUpload.Visible = isEdit;
 
-                if (isEdit)
-                {
-                    txtFullName.Focus();
-                    // Nếu đang sửa mà tuổi < 16 thì vẫn phải xám CCCD
-                    int age = _userBUS.CalculateAge(dtpBirthday.Value);
-                    if (age < 16)
-                    {
-                        txtCCCD.ReadOnly = true;
-                        txtCCCD.Enabled = false;
-                        txtCCCD.BackColor = Color.FromArgb(241, 243, 245);
-                        pnlCCCDBorder.BackColor = Color.FromArgb(241, 243, 245);
-                    }
-                }
-                else
-                {
-                    // Khi thoát chế độ sửa, cập nhật lại trạng thái CCCD dựa trên tuổi
-                    dtpBirthday_ValueChanged(dtpBirthday, EventArgs.Empty);
-                }
+                InvalidateProfileInputBorders();
+                if (isEdit) txtFullName.Focus();
+                else ClearActiveProfileFocus();
             }
             else if (section == "security")
             {
@@ -317,6 +416,7 @@ namespace UI_Tier
         {
             if (sender == btnCancelBasicInfo)
             {
+                _pendingAvatarSourcePath = null;
                 SetEditMode(false, "basic");
                 InitData(); // Reset values
             }
@@ -334,10 +434,9 @@ namespace UI_Tier
             if (_currentDoctor == null || _currentDoctor.User == null) return;
 
             // 1. Thu thập dữ liệu từ UI
-            _currentDoctor.User.FullName = txtFullName.Text.Trim();
+            _currentDoctor.User.FullName = StripDoctorTitlePrefix(txtFullName.Text);
             _currentDoctor.User.PhoneNumber = txtPhone.Text.Trim();
             _currentDoctor.User.Gender = txtGender.Text.Trim();
-            _currentDoctor.User.CCCD = txtCCCD.Text.Trim();
             _currentDoctor.User.Residential_Address = txtAddress.Text.Trim();
             _currentDoctor.User.Dob = dtpBirthday.Value;
 
@@ -348,17 +447,40 @@ namespace UI_Tier
             else
                 _currentDoctor.ConsultationFee = -1;
 
+            string previousPicture = _currentDoctor.User.Picture;
+            if (!string.IsNullOrWhiteSpace(_pendingAvatarSourcePath))
+            {
+                try
+                {
+                    string avatarResult = PreparePendingAvatar(out string avatarPath);
+                    if (avatarResult != "Success")
+                    {
+                        MessageBox.Show(avatarResult, "Lưu ảnh thất bại", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    _currentDoctor.User.Picture = avatarPath;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi lưu ảnh đại diện: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
             // 2. Gọi BUS để xử lý (có Validation bên trong)
             string result = _doctorBUS.UpdateDoctorInfo(_currentDoctor);
 
             if (result.Contains("thành công"))
             {
+                _pendingAvatarSourcePath = null;
                 MessageBox.Show(result, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 SetEditMode(false, "basic");
                 InitData(); // Nạp lại dữ liệu mới nhất
             }
             else
             {
+                _currentDoctor.User.Picture = previousPicture;
                 MessageBox.Show(result, "Lưu thất bại", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
@@ -402,29 +524,7 @@ namespace UI_Tier
 
         private void dtpBirthday_ValueChanged(object sender, EventArgs e)
         {
-            int age = _userBUS.CalculateAge(dtpBirthday.Value);
-
-            if (age < 16)
-            {
-                // Khóa ô nhập CCCD và hiển thị trạng thái như hồ sơ bệnh nhân
-                txtCCCD.Text = "Chưa đủ tuổi";
-                txtCCCD.Enabled = false;
-                txtCCCD.BackColor = Color.FromArgb(241, 243, 245);
-                pnlCCCDBorder.BackColor = Color.FromArgb(241, 243, 245);
-            }
-            else
-            {
-                // Mở khóa nếu từ 16 tuổi trở lên
-                if (txtCCCD.Text == "Chưa đủ tuổi") txtCCCD.Text = "";
-                txtCCCD.Enabled = true;
-
-                // Chỉ thực sự cho sửa nếu đang trong mode Edit
-                bool isEditing = pnlBasicInfoActions.Visible;
-                txtCCCD.ReadOnly = !isEditing;
-                Color bg = isEditing ? Color.White : Color.FromArgb(241, 243, 245);
-                txtCCCD.BackColor = bg;
-                pnlCCCDBorder.BackColor = bg;
-            }
+            SetTextBoxEditState(txtCCCD, pnlCCCDBorder, false, true);
         }
     }
 }
