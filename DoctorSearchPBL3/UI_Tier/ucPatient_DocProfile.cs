@@ -220,6 +220,15 @@ namespace UI_Tier
             };
         }
 
+        private void btnChat_Click(object sender, EventArgs e)
+        {
+            if (_currentDoctor == null) return;
+            if (this.ParentForm is frmPatient frm)
+            {
+                frm.OpenChatWithDoctor(_currentDoctor);
+            }
+        }
+
         private void btnBack_Click(object sender, EventArgs e)
         {
             // Tìm về Form chính để điều hướng trang

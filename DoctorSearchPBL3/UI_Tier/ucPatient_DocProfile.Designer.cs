@@ -31,6 +31,7 @@ namespace UI_Tier
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ucPatient_DocProfile));
             panel1 = new Panel();
             btnBack = new Button();
+            btnChat = new Button();
             label7 = new Label();
             label5 = new Label();
             label4 = new Label();
@@ -98,6 +99,7 @@ namespace UI_Tier
             panel1.BackColor = Color.Azure;
             panel1.BorderStyle = BorderStyle.FixedSingle;
             panel1.Controls.Add(btnBack);
+            panel1.Controls.Add(btnChat);
             panel1.Controls.Add(label7);
             panel1.Controls.Add(label5);
             panel1.Controls.Add(label4);
@@ -130,6 +132,24 @@ namespace UI_Tier
             btnBack.Text = "";
             btnBack.UseVisualStyleBackColor = true;
             btnBack.Click += btnBack_Click;
+            // 
+            // btnChat
+            // 
+            btnChat.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnChat.BackColor = Color.FromArgb(37, 99, 235);
+            btnChat.Cursor = Cursors.Hand;
+            btnChat.FlatAppearance.BorderSize = 0;
+            btnChat.FlatStyle = FlatStyle.Flat;
+            btnChat.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            btnChat.ForeColor = Color.WhiteSmoke;
+            btnChat.Location = new Point(1750, 40);
+            btnChat.Name = "btnChat";
+            btnChat.Padding = new Padding(5);
+            btnChat.Size = new Size(200, 60);
+            btnChat.TabIndex = 60;
+            btnChat.Text = "Nhắn tin";
+            btnChat.UseVisualStyleBackColor = false;
+            btnChat.Click += btnChat_Click;
             // 
             // label7
             // 
@@ -786,6 +806,7 @@ namespace UI_Tier
         private Panel panel5;
         private Label label10;
         private Button btnBack;
+        private Button btnChat;
         private Button btnWriteReview;
         private Button btnBook;
         private Label label1;

@@ -222,6 +222,19 @@ namespace UI_Tier
             }
         }
 
+        public void OpenChatWithDoctor(DoctorDTO doctor)
+        {
+            // Switch to Chat tab
+            PanelTab_Click(pnlChat, EventArgs.Empty);
+            
+            // Get the ucPatient_Chat control
+            if (_tabMapping.ContainsKey(pnlChat) && _tabMapping[pnlChat] is ucPatient_Chat chatCtrl)
+            {
+                // Open the conversation with the doctor
+                chatCtrl.OpenConversationWithDoctor(doctor);
+            }
+        }
+
         public void BackToDoctorList()
         {
             // 1. Tìm và tiêu diệt thằng Profile đang hiện
