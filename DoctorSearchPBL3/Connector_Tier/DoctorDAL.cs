@@ -364,14 +364,12 @@ namespace DAL_Tier
             }
         }
 
-        public int GetDoctorCountByDepartmentId(int departmentId)
+        public int GetDoctorCountByDepartmentId(int departmentId, bool includeDeleted = false)
         {
             using var context = new AppDbContext();
             return context.Doctors.Count(doc =>
                 doc.DepartmentId == departmentId &&
-                !doc.IsDeleted &&
-                doc.IsActive &&
-                doc.IsApproved);
+                (includeDeleted || (!doc.IsDeleted && doc.IsActive && doc.IsApproved)));
         }
     }
 }
