@@ -39,6 +39,11 @@ namespace BUS_Tier
             return _adminDAL.UpdateUserStatus(userId, status);
         }
 
+        public bool UnblockUserWithRoleRestore(int userId, string role)
+        {
+            return _adminDAL.UnblockUserWithRoleRestore(userId, role);
+        }
+
         public List<UserDTO> SearchUsers(string keyword, string role)
         {
             return _adminDAL.SearchUsers(keyword, role);

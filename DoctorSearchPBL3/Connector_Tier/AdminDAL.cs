@@ -83,6 +83,28 @@ namespace DAL_Tier
             return db.SaveChanges() > 0;
         }
 
+        public bool UnblockUserWithRoleRestore(int userId, string role)
+        {
+            using var db = new AppDbContext();
+            var user = db.Users.Find(userId);
+            if (user == null || user.IsDeleted) return false;
+
+            user.Status = "Active";
+            user.UpdatedAt = DateTime.Now;
+
+            if (role == "Doctor")
+            {
+                var doctor = db.Doctors.FirstOrDefault(d => d.UserId == userId);
+                if (doctor != null && !doctor.IsDeleted)
+                {
+                    doctor.IsActive = doctor.IsApproved;
+                    doctor.UpdatedAt = DateTime.Now;
+                }
+            }
+
+            return db.SaveChanges() > 0;
+        }
+
         public List<UserDTO> SearchUsers(string keyword, string role)
         {
             using var db = new AppDbContext();
@@ -90,10 +112,17 @@ namespace DAL_Tier
 
             if (!string.IsNullOrWhiteSpace(keyword))
             {
-                query = query.Where(u => u.FullName.Contains(keyword) || u.PhoneNumber.Contains(keyword));
+                query = query.Where(u =>
+                    u.FullName.Contains(keyword) ||
+                    u.PhoneNumber.Contains(keyword) ||
+                    (u.Role == "Patient" && db.Patients.Any(p =>
+                        p.UserId == u.Id &&
+                        !p.IsDeleted &&
+                        ((p.MedicalCode != null && p.MedicalCode.Contains(keyword)) ||
+                         (p.InsuranceCode != null && p.InsuranceCode.Contains(keyword))))));
             }
 
-            if (!string.IsNullOrWhiteSpace(role) && role != "Tất cả")
+            if (!IsAllUserRole(role))
             {
                 query = query.Where(u => u.Role == role);
             }
@@ -106,6 +135,13 @@ namespace DAL_Tier
             return query.OrderByDescending(u => u.CreatedAt).ToList();
         }
 
+        private static bool IsAllUserRole(string role)
+        {
+            return string.IsNullOrWhiteSpace(role) ||
+                   role.Equals("Tất cả", StringComparison.OrdinalIgnoreCase) ||
+                   role.Equals("Tat ca", StringComparison.OrdinalIgnoreCase) ||
+                   role.Equals("All", StringComparison.OrdinalIgnoreCase);
+        }
         public (UserDTO, DoctorDTO, PatientDTO) GetFullUserDetails(int userId, string role)
         {
             using var db = new AppDbContext();
