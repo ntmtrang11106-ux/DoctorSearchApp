@@ -127,16 +127,16 @@ namespace UI_Tier
             // 
             // lblUpload
             // 
-            lblUpload.BackColor = Color.FromArgb(200, 37, 99, 235);
+            lblUpload.BackColor = Color.FromArgb(37, 99, 235);
             lblUpload.Cursor = Cursors.Hand;
-            lblUpload.Font = new Font("Segoe MDL2 Assets", 18F);
+            lblUpload.Font = new Font("Segoe UI Semibold", 22F, FontStyle.Bold);
             lblUpload.ForeColor = Color.White;
-            lblUpload.Location = new Point(265, 324);
+            lblUpload.Location = new Point(262, 324);
             lblUpload.Margin = new Padding(2, 0, 2, 0);
             lblUpload.Name = "lblUpload";
-            lblUpload.Size = new Size(42, 51);
+            lblUpload.Size = new Size(56, 56);
             lblUpload.TabIndex = 27;
-            lblUpload.Text = "îœ¢";
+            lblUpload.Text = "+";
             lblUpload.TextAlign = ContentAlignment.MiddleCenter;
             lblUpload.Visible = false;
             // 
@@ -162,7 +162,7 @@ namespace UI_Tier
             pnlSecurity.Controls.Add(btnChangePassword);
             pnlSecurity.Controls.Add(lblSecurityTitle);
             pnlSecurity.Dock = DockStyle.Top;
-            pnlSecurity.Location = new Point(40, 1310);
+            pnlSecurity.Location = new Point(40, 1440);
             pnlSecurity.Margin = new Padding(0, 0, 0, 30);
             pnlSecurity.Name = "pnlSecurity";
             pnlSecurity.Size = new Size(1610, 500);
@@ -397,7 +397,7 @@ namespace UI_Tier
             pnlMedicalProfile.Controls.Add(pnlBHYTBorder);
             pnlMedicalProfile.Controls.Add(lblMedicalTitle);
             pnlMedicalProfile.Dock = DockStyle.Top;
-            pnlMedicalProfile.Location = new Point(40, 750);
+            pnlMedicalProfile.Location = new Point(40, 880);
             pnlMedicalProfile.Margin = new Padding(0, 0, 0, 30);
             pnlMedicalProfile.Name = "pnlMedicalProfile";
             pnlMedicalProfile.Size = new Size(1610, 560);
@@ -643,7 +643,7 @@ namespace UI_Tier
             pnlBasicInfo.Location = new Point(40, 30);
             pnlBasicInfo.Margin = new Padding(0, 0, 0, 30);
             pnlBasicInfo.Name = "pnlBasicInfo";
-            pnlBasicInfo.Size = new Size(1610, 720);
+            pnlBasicInfo.Size = new Size(1610, 850);
             pnlBasicInfo.TabIndex = 0;
             pnlBasicInfo.Paint += SectionPanel_Paint;
             // 
@@ -651,7 +651,7 @@ namespace UI_Tier
             // 
             pnlBasicInfoActions.Controls.Add(btnCancelBasicInfo);
             pnlBasicInfoActions.Controls.Add(btnSaveBasicInfo);
-            pnlBasicInfoActions.Location = new Point(34, 625);
+            pnlBasicInfoActions.Location = new Point(34, 760);
             pnlBasicInfoActions.Name = "pnlBasicInfoActions";
             pnlBasicInfoActions.Size = new Size(478, 70);
             pnlBasicInfoActions.TabIndex = 26;
@@ -694,7 +694,7 @@ namespace UI_Tier
             lblAddressRuleHint.BackColor = Color.Transparent;
             lblAddressRuleHint.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
             lblAddressRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblAddressRuleHint.Location = new Point(350, 568);
+            lblAddressRuleHint.Location = new Point(350, 708);
             lblAddressRuleHint.Name = "lblAddressRuleHint";
             lblAddressRuleHint.Size = new Size(1193, 36);
             lblAddressRuleHint.TabIndex = 45;
@@ -706,7 +706,7 @@ namespace UI_Tier
             lblEmergencyPhoneRuleHint.BackColor = Color.Transparent;
             lblEmergencyPhoneRuleHint.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
             lblEmergencyPhoneRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblEmergencyPhoneRuleHint.Location = new Point(350, 284);
+            lblEmergencyPhoneRuleHint.Location = new Point(350, 318);
             lblEmergencyPhoneRuleHint.Name = "lblEmergencyPhoneRuleHint";
             lblEmergencyPhoneRuleHint.Size = new Size(565, 36);
             lblEmergencyPhoneRuleHint.TabIndex = 40;
@@ -717,7 +717,7 @@ namespace UI_Tier
             // 
             pnlEmergencyPhoneBorder.BackColor = Color.White;
             pnlEmergencyPhoneBorder.Controls.Add(txtEmergencyPhone);
-            pnlEmergencyPhoneBorder.Location = new Point(350, 231);
+            pnlEmergencyPhoneBorder.Location = new Point(350, 265);
             pnlEmergencyPhoneBorder.Margin = new Padding(2);
             pnlEmergencyPhoneBorder.Name = "pnlEmergencyPhoneBorder";
             pnlEmergencyPhoneBorder.Padding = new Padding(8);
@@ -741,7 +741,7 @@ namespace UI_Tier
             lblEmergencyPhone.AutoSize = true;
             lblEmergencyPhone.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             lblEmergencyPhone.ForeColor = Color.FromArgb(73, 80, 87);
-            lblEmergencyPhone.Location = new Point(350, 194);
+            lblEmergencyPhone.Location = new Point(350, 228);
             lblEmergencyPhone.Name = "lblEmergencyPhone";
             lblEmergencyPhone.Size = new Size(243, 32);
             lblEmergencyPhone.TabIndex = 22;
@@ -752,7 +752,7 @@ namespace UI_Tier
             lblEmergencyContactRuleHint.BackColor = Color.Transparent;
             lblEmergencyContactRuleHint.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
             lblEmergencyContactRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblEmergencyContactRuleHint.Location = new Point(350, 472);
+            lblEmergencyContactRuleHint.Location = new Point(350, 578);
             lblEmergencyContactRuleHint.Name = "lblEmergencyContactRuleHint";
             lblEmergencyContactRuleHint.Size = new Size(565, 36);
             lblEmergencyContactRuleHint.TabIndex = 41;
@@ -763,7 +763,7 @@ namespace UI_Tier
             // 
             pnlEmergencyContactBorder.BackColor = Color.White;
             pnlEmergencyContactBorder.Controls.Add(txtEmergencyContact);
-            pnlEmergencyContactBorder.Location = new Point(350, 420);
+            pnlEmergencyContactBorder.Location = new Point(350, 525);
             pnlEmergencyContactBorder.Margin = new Padding(2);
             pnlEmergencyContactBorder.Name = "pnlEmergencyContactBorder";
             pnlEmergencyContactBorder.Padding = new Padding(8);
@@ -787,7 +787,7 @@ namespace UI_Tier
             lblEmergencyContact.AutoSize = true;
             lblEmergencyContact.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             lblEmergencyContact.ForeColor = Color.FromArgb(73, 80, 87);
-            lblEmergencyContact.Location = new Point(350, 383);
+            lblEmergencyContact.Location = new Point(350, 488);
             lblEmergencyContact.Name = "lblEmergencyContact";
             lblEmergencyContact.Size = new Size(268, 32);
             lblEmergencyContact.TabIndex = 20;
@@ -797,7 +797,7 @@ namespace UI_Tier
             // 
             pnlPatientIDBorder.BackColor = Color.White;
             pnlPatientIDBorder.Controls.Add(txtPatientID);
-            pnlPatientIDBorder.Location = new Point(992, 420);
+            pnlPatientIDBorder.Location = new Point(992, 525);
             pnlPatientIDBorder.Margin = new Padding(2);
             pnlPatientIDBorder.Name = "pnlPatientIDBorder";
             pnlPatientIDBorder.Padding = new Padding(8);
@@ -821,7 +821,7 @@ namespace UI_Tier
             lblPatientID.AutoSize = true;
             lblPatientID.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             lblPatientID.ForeColor = Color.FromArgb(73, 80, 87);
-            lblPatientID.Location = new Point(992, 383);
+            lblPatientID.Location = new Point(992, 488);
             lblPatientID.Name = "lblPatientID";
             lblPatientID.Size = new Size(173, 32);
             lblPatientID.TabIndex = 18;
@@ -832,7 +832,7 @@ namespace UI_Tier
             lblPatientIDRuleHint.BackColor = Color.Transparent;
             lblPatientIDRuleHint.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
             lblPatientIDRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblPatientIDRuleHint.Location = new Point(992, 472);
+            lblPatientIDRuleHint.Location = new Point(992, 578);
             lblPatientIDRuleHint.Name = "lblPatientIDRuleHint";
             lblPatientIDRuleHint.Size = new Size(565, 32);
             lblPatientIDRuleHint.TabIndex = 48;
@@ -844,7 +844,7 @@ namespace UI_Tier
             lblCccdRuleHint.BackColor = Color.Transparent;
             lblCccdRuleHint.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
             lblCccdRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblCccdRuleHint.Location = new Point(992, 376);
+            lblCccdRuleHint.Location = new Point(992, 448);
             lblCccdRuleHint.Name = "lblCccdRuleHint";
             lblCccdRuleHint.Size = new Size(565, 36);
             lblCccdRuleHint.TabIndex = 42;
@@ -855,7 +855,7 @@ namespace UI_Tier
             // 
             pnlCCCDBorder.BackColor = Color.White;
             pnlCCCDBorder.Controls.Add(txtCCCD);
-            pnlCCCDBorder.Location = new Point(992, 320);
+            pnlCCCDBorder.Location = new Point(992, 395);
             pnlCCCDBorder.Margin = new Padding(2);
             pnlCCCDBorder.Name = "pnlCCCDBorder";
             pnlCCCDBorder.Padding = new Padding(8);
@@ -879,7 +879,7 @@ namespace UI_Tier
             lblCCCD.AutoSize = true;
             lblCCCD.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             lblCCCD.ForeColor = Color.FromArgb(73, 80, 87);
-            lblCCCD.Location = new Point(992, 283);
+            lblCCCD.Location = new Point(992, 358);
             lblCCCD.Name = "lblCCCD";
             lblCCCD.Size = new Size(229, 32);
             lblCCCD.TabIndex = 14;
@@ -890,7 +890,7 @@ namespace UI_Tier
             lblGenderRuleHint.BackColor = Color.Transparent;
             lblGenderRuleHint.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
             lblGenderRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblGenderRuleHint.Location = new Point(350, 380);
+            lblGenderRuleHint.Location = new Point(350, 448);
             lblGenderRuleHint.Name = "lblGenderRuleHint";
             lblGenderRuleHint.Size = new Size(565, 36);
             lblGenderRuleHint.TabIndex = 43;
@@ -901,7 +901,7 @@ namespace UI_Tier
             // 
             pnlGenderBorder.BackColor = Color.White;
             pnlGenderBorder.Controls.Add(txtGender);
-            pnlGenderBorder.Location = new Point(350, 325);
+            pnlGenderBorder.Location = new Point(350, 395);
             pnlGenderBorder.Margin = new Padding(2);
             pnlGenderBorder.Name = "pnlGenderBorder";
             pnlGenderBorder.Padding = new Padding(8);
@@ -925,7 +925,7 @@ namespace UI_Tier
             lblGender.AutoSize = true;
             lblGender.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             lblGender.ForeColor = Color.FromArgb(73, 80, 87);
-            lblGender.Location = new Point(350, 288);
+            lblGender.Location = new Point(350, 358);
             lblGender.Name = "lblGender";
             lblGender.Size = new Size(108, 32);
             lblGender.TabIndex = 12;
@@ -936,7 +936,7 @@ namespace UI_Tier
             lblBirthdayRuleHint.BackColor = Color.Transparent;
             lblBirthdayRuleHint.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
             lblBirthdayRuleHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblBirthdayRuleHint.Location = new Point(992, 282);
+            lblBirthdayRuleHint.Location = new Point(992, 318);
             lblBirthdayRuleHint.Name = "lblBirthdayRuleHint";
             lblBirthdayRuleHint.Size = new Size(565, 36);
             lblBirthdayRuleHint.TabIndex = 44;
@@ -948,7 +948,7 @@ namespace UI_Tier
             pnlBirthdayBorder.BackColor = Color.White;
             pnlBirthdayBorder.Controls.Add(lblBirthdayValue);
             pnlBirthdayBorder.Controls.Add(dtpBirthday);
-            pnlBirthdayBorder.Location = new Point(992, 230);
+            pnlBirthdayBorder.Location = new Point(992, 265);
             pnlBirthdayBorder.Margin = new Padding(2);
             pnlBirthdayBorder.Name = "pnlBirthdayBorder";
             pnlBirthdayBorder.Padding = new Padding(12, 6, 12, 6);
@@ -986,7 +986,7 @@ namespace UI_Tier
             lblBirthday.AutoSize = true;
             lblBirthday.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             lblBirthday.ForeColor = Color.FromArgb(73, 80, 87);
-            lblBirthday.Location = new Point(992, 192);
+            lblBirthday.Location = new Point(992, 228);
             lblBirthday.Name = "lblBirthday";
             lblBirthday.Size = new Size(122, 32);
             lblBirthday.TabIndex = 10;
@@ -996,7 +996,7 @@ namespace UI_Tier
             // 
             pnlAddressBorder.BackColor = Color.White;
             pnlAddressBorder.Controls.Add(txtAddress);
-            pnlAddressBorder.Location = new Point(350, 515);
+            pnlAddressBorder.Location = new Point(350, 655);
             pnlAddressBorder.Margin = new Padding(2);
             pnlAddressBorder.Name = "pnlAddressBorder";
             pnlAddressBorder.Padding = new Padding(8);
@@ -1020,7 +1020,7 @@ namespace UI_Tier
             lblAddress.AutoSize = true;
             lblAddress.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             lblAddress.ForeColor = Color.FromArgb(73, 80, 87);
-            lblAddress.Location = new Point(350, 476);
+            lblAddress.Location = new Point(350, 618);
             lblAddress.Name = "lblAddress";
             lblAddress.Size = new Size(88, 32);
             lblAddress.TabIndex = 8;
