@@ -17,6 +17,11 @@ namespace UI_Tier
         private DTO_Tier.PatientDTO _currentPatient;
         private UserDTO _currentUser;
         private bool _isEditingBasic = false;
+        private bool _isEditingMedical = false;
+        private readonly Color _viewFieldBackColor = Color.FromArgb(248, 250, 252);
+        private readonly Color _lockedFieldBackColor = Color.FromArgb(241, 245, 249);
+        private readonly Color _fieldTextColor = Color.FromArgb(33, 37, 41);
+        private readonly Color _lockedTextColor = Color.FromArgb(100, 116, 139);
 
         protected override CreateParams CreateParams
         {
@@ -56,6 +61,9 @@ namespace UI_Tier
             lblUpload.Click += (s, e) => ChangeAvatar();
             dtpBirthday.ValueChanged += dtpBirthday_ValueChanged;
             SetupFocusEffects();
+            SetupViewModeInputBehavior();
+            SetEditMode(false, "basic");
+            SetEditMode(false, "medical");
 
             // Gán sự kiện Paint để vẽ viền và bóng đổ
             pnlBasicInfo.Paint += SectionPanel_Paint;
@@ -142,6 +150,111 @@ namespace UI_Tier
             UIHelper.SetupInputFocusEffect(dtpBirthday, pnlBirthdayBorder, Color.FromArgb(242, 248, 255), Color.White, Color.FromArgb(37, 99, 235));
         }
 
+        private void SetupViewModeInputBehavior()
+        {
+            TextBox[] textBoxes =
+            {
+                txtFullName, txtPhone, txtGender, txtCCCD, txtAddress,
+                txtPatientID, txtEmergencyContact, txtEmergencyPhone,
+                txtBHYT, txtBloodType, txtMedicalHistory
+            };
+
+            foreach (TextBox textBox in textBoxes)
+            {
+                textBox.Enter += ReadOnlyTextBox_Enter;
+            }
+
+            Panel[] inputBorders =
+            {
+                pnlFullNameBorder, pnlPhoneBorder, pnlGenderBorder, pnlBirthdayBorder,
+                pnlCCCDBorder, pnlAddressBorder, pnlEmergencyContactBorder,
+                pnlEmergencyPhoneBorder, pnlPatientIDBorder, pnlBHYTBorder,
+                pnlBloodTypeBorder, pnlMedicalHistoryBorder
+            };
+
+            foreach (Panel panel in inputBorders)
+            {
+                UIHelper.ApplyRoundedRegion(panel, 10);
+                panel.Paint += ProfileInputBorder_Paint;
+            }
+        }
+
+        private void ReadOnlyTextBox_Enter(object sender, EventArgs e)
+        {
+            if (sender is not TextBox textBox || !textBox.ReadOnly) return;
+
+            BeginInvoke(new Action(() =>
+            {
+                if (IsDisposed || !textBox.ReadOnly) return;
+
+                textBox.SelectionLength = 0;
+                Form form = FindForm();
+                if (form != null) form.ActiveControl = null;
+                InvalidateProfileInputBorders();
+            }));
+        }
+
+        private void SetTextBoxEditState(TextBox textBox, Panel borderPanel, bool canEdit, bool locked = false)
+        {
+            textBox.Enabled = true;
+            textBox.ReadOnly = !canEdit;
+            textBox.TabStop = canEdit;
+            textBox.Cursor = canEdit ? Cursors.IBeam : Cursors.Default;
+            textBox.ForeColor = locked ? _lockedTextColor : _fieldTextColor;
+
+            Color backColor = canEdit ? Color.White : (locked ? _lockedFieldBackColor : _viewFieldBackColor);
+            textBox.BackColor = backColor;
+            borderPanel.BackColor = backColor;
+            borderPanel.Invalidate();
+        }
+
+        private void ProfileInputBorder_Paint(object sender, PaintEventArgs e)
+        {
+            if (sender is not Panel panel) return;
+
+            if (!IsPanelEditable(panel))
+            {
+                UIHelper.uc_Paint(panel, e, 10, Color.FromArgb(226, 232, 240), 2);
+            }
+        }
+
+        private bool IsPanelEditable(Panel panel)
+        {
+            if (panel == pnlPatientIDBorder || panel == pnlBHYTBorder) return false;
+            if (panel == pnlBloodTypeBorder || panel == pnlMedicalHistoryBorder) return _isEditingMedical;
+            return _isEditingBasic;
+        }
+
+        private void InvalidateProfileInputBorders()
+        {
+            Panel[] inputBorders =
+            {
+                pnlFullNameBorder, pnlPhoneBorder, pnlGenderBorder, pnlBirthdayBorder,
+                pnlCCCDBorder, pnlAddressBorder, pnlEmergencyContactBorder,
+                pnlEmergencyPhoneBorder, pnlPatientIDBorder, pnlBHYTBorder,
+                pnlBloodTypeBorder, pnlMedicalHistoryBorder
+            };
+
+            foreach (Panel panel in inputBorders)
+            {
+                panel.Invalidate();
+            }
+        }
+
+        private void ClearActiveProfileFocus()
+        {
+            Form form = FindForm();
+            if (form != null) form.ActiveControl = null;
+        }
+
+        private void UpdateBirthdayDisplay()
+        {
+            if (lblBirthdayValue != null)
+            {
+                lblBirthdayValue.Text = dtpBirthday.Value.ToString("dd / MM / yyyy");
+            }
+        }
+
         public void InitData()
         {
             int profileId = DTO_Tier.GlobalAccount.GetProfileId();
@@ -173,11 +286,14 @@ namespace UI_Tier
                 txtGender.Text = _currentPatient.User.Gender ?? "";
                 txtCCCD.Text = _currentPatient.User.CCCD ?? "";
                 txtBHYT.Text = _currentPatient.InsuranceCode ?? "";
-                txtPatientID.Text = _currentPatient.MedicalCode ?? ""; // Không tự để BN-0001 nếu DB trống
+                txtPatientID.Text = string.IsNullOrWhiteSpace(_currentPatient.MedicalCode)
+                    ? $"BN-{_currentPatient.Id:0000}"
+                    : _currentPatient.MedicalCode;
                 txtEmergencyContact.Text = _currentPatient.EmergencyContactName ?? "";
                 txtEmergencyPhone.Text = _currentPatient.EmergencyContactPhone ?? "";
                 txtAddress.Text = _currentPatient.User.Residential_Address ?? "";
                 txtBloodType.Text = _currentPatient.BloodType ?? "";
+                UpdateBirthdayDisplay();
 
                 // Parse Note for medical info
                 ParseMedicalNote(_currentPatient.Note);
@@ -225,6 +341,7 @@ namespace UI_Tier
             lblPatientName.Text = "Nguyễn Văn Minh";
             txtPhone.Text = "0987654321";
             dtpBirthday.Value = new DateTime(1990, 5, 15);
+            UpdateBirthdayDisplay();
             txtGender.Text = "Nam";
             txtCCCD.Text = "001234567890";
             txtBHYT.Text = "DN1234567890123";
@@ -248,48 +365,45 @@ namespace UI_Tier
             if (section == "basic")
             {
                 _isEditingBasic = isEditing;
-                txtFullName.ReadOnly = !isEditing;
-                txtPhone.ReadOnly = !isEditing;
-                txtAddress.ReadOnly = !isEditing;
-                dtpBirthday.Enabled = isEditing;
-                txtGender.ReadOnly = !isEditing;
-                txtCCCD.ReadOnly = !isEditing;
-                txtBHYT.ReadOnly = true; 
-                txtPatientID.ReadOnly = true; 
-                txtEmergencyContact.ReadOnly = !isEditing;
-                txtEmergencyPhone.ReadOnly = !isEditing;
 
-                Color bg = isEditing ? Color.White : Color.FromArgb(241, 243, 245);
-                txtFullName.BackColor = bg; pnlFullNameBorder.BackColor = bg;
-                txtPhone.BackColor = bg; pnlPhoneBorder.BackColor = bg;
-                txtGender.BackColor = bg; pnlGenderBorder.BackColor = bg;
-                txtCCCD.BackColor = bg; pnlCCCDBorder.BackColor = bg;
-                txtBHYT.BackColor = Color.FromArgb(241, 243, 245); pnlBHYTBorder.BackColor = Color.FromArgb(241, 243, 245); // Luôn xám không được sửa
-                txtPatientID.BackColor = Color.FromArgb(241, 243, 245); pnlPatientIDBorder.BackColor = Color.FromArgb(241, 243, 245); // Luôn xám vì là ID
-                txtEmergencyContact.BackColor = bg; pnlEmergencyContactBorder.BackColor = bg;
-                txtEmergencyPhone.BackColor = bg; pnlEmergencyPhoneBorder.BackColor = bg;
-                txtAddress.BackColor = bg; pnlAddressBorder.BackColor = bg;
-                pnlBirthdayBorder.BackColor = bg;
+                dtpBirthday.Enabled = isEditing;
+                dtpBirthday.Visible = isEditing;
+                lblBirthdayValue.Visible = !isEditing;
+                UpdateBirthdayDisplay();
+
+                SetTextBoxEditState(txtFullName, pnlFullNameBorder, isEditing);
+                SetTextBoxEditState(txtPhone, pnlPhoneBorder, isEditing);
+                SetTextBoxEditState(txtGender, pnlGenderBorder, isEditing);
+                SetTextBoxEditState(txtAddress, pnlAddressBorder, isEditing);
+                SetTextBoxEditState(txtEmergencyContact, pnlEmergencyContactBorder, isEditing);
+                SetTextBoxEditState(txtEmergencyPhone, pnlEmergencyPhoneBorder, isEditing);
+                SetTextBoxEditState(txtPatientID, pnlPatientIDBorder, false, true);
+
+                bool canEditCccd = isEditing && _userBUS.CalculateAge(dtpBirthday.Value) >= 16;
+                SetTextBoxEditState(txtCCCD, pnlCCCDBorder, canEditCccd, !canEditCccd);
+                pnlBirthdayBorder.BackColor = isEditing ? Color.White : _viewFieldBackColor;
 
                 pnlBasicInfoActions.Visible = isEditing;
                 btnEditBasicInfo.Visible = !isEditing;
                 if (lblUpload != null) lblUpload.Visible = isEditing;
-                
+
+                InvalidateProfileInputBorders();
                 if (isEditing) txtFullName.Focus();
+                else ClearActiveProfileFocus();
             }
             else if (section == "medical")
             {
-                txtBloodType.ReadOnly = !isEditing;
-                txtMedicalHistory.ReadOnly = !isEditing;
-
-                Color bg = isEditing ? Color.White : Color.FromArgb(241, 243, 245);
-                txtBloodType.BackColor = bg; pnlBloodTypeBorder.BackColor = bg;
-                txtMedicalHistory.BackColor = isEditing ? Color.White : Color.FromArgb(248, 249, 250); pnlMedicalHistoryBorder.BackColor = isEditing ? Color.White : Color.FromArgb(248, 249, 250);
+                _isEditingMedical = isEditing;
+                SetTextBoxEditState(txtBloodType, pnlBloodTypeBorder, isEditing);
+                SetTextBoxEditState(txtMedicalHistory, pnlMedicalHistoryBorder, isEditing);
+                SetTextBoxEditState(txtBHYT, pnlBHYTBorder, false, true);
 
                 pnlMedicalActions.Visible = isEditing;
                 btnEditMedical.Visible = !isEditing;
 
+                InvalidateProfileInputBorders();
                 if (isEditing) txtBloodType.Focus();
+                else ClearActiveProfileFocus();
             }
         }
 
@@ -332,8 +446,6 @@ namespace UI_Tier
                 _currentPatient.User.Gender = txtGender.Text;
                 _currentPatient.User.CCCD = txtCCCD.Text;
                 _currentPatient.User.Residential_Address = txtAddress.Text;
-                _currentPatient.InsuranceCode = txtBHYT.Text;
-                _currentPatient.MedicalCode = txtPatientID.Text;
                 _currentPatient.EmergencyContactName = txtEmergencyContact.Text;
                 _currentPatient.EmergencyContactPhone = txtEmergencyPhone.Text;
 
@@ -471,25 +583,19 @@ namespace UI_Tier
         }
         private void dtpBirthday_ValueChanged(object sender, EventArgs e)
         {
+            UpdateBirthdayDisplay();
             int age = _userBUS.CalculateAge(dtpBirthday.Value);
 
             if (age < 16)
             {
                 // Khóa ô nhập CCCD và hiển thị trạng thái như màn Register
                 txtCCCD.Text = "Chưa đủ tuổi";
-                txtCCCD.Enabled = false;
-                txtCCCD.BackColor = Color.FromArgb(241, 243, 245); 
-                pnlCCCDBorder.BackColor = Color.FromArgb(241, 243, 245);
+                SetTextBoxEditState(txtCCCD, pnlCCCDBorder, false, true);
             }
             else
             {
-                // Mở khóa nếu từ 16 tuổi trở lên
                 if (txtCCCD.Text == "Chưa đủ tuổi") txtCCCD.Text = "";
-                txtCCCD.Enabled = true; // Lưu ý: khi ở chế độ ReadOnly thì Enabled vẫn có thể true nhưng k sửa đc
-                // Chỉ thực sự cho sửa nếu đang trong mode Edit
-                // Logic này sẽ được SetEditMode quản lý thêm
-                txtCCCD.BackColor = Color.White;
-                pnlCCCDBorder.BackColor = Color.White;
+                SetTextBoxEditState(txtCCCD, pnlCCCDBorder, _isEditingBasic);
             }
         }
     }
