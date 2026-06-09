@@ -79,6 +79,36 @@ namespace BUS_Tier
             return _appointmentDAL.GetAppointmentsByPatientId(patientId);
         }
 
+        public List<AppointmentsDTO> GetFilteredAppointments(int doctorId, DateTime startDate, DateTime endDate, string uiStatus)
+        {
+            var rawApps = doctorId > 0 ? GetAppointmentsByDoctorId(doctorId) : GetAll();
+
+            return (rawApps ?? new List<AppointmentsDTO>()).Where(a =>
+            {
+                DateTime appDate = (a.TimeSlot != null) ? a.TimeSlot.WorkDate.Date : a.CreatedAt.Date;
+                if (appDate < startDate.Date || appDate > endDate.Date) return false;
+
+                if (uiStatus == "Tất cả") return true;
+
+                return MapDbStatusToUiStatus(a.Status) == uiStatus;
+            })
+            .OrderBy(a => (a.TimeSlot != null) ? a.TimeSlot.WorkDate : a.CreatedAt.Date)
+            .ThenBy(a => (a.TimeSlot != null) ? a.TimeSlot.StartTime : TimeSpan.Zero)
+            .ToList();
+        }
+
+        private string MapDbStatusToUiStatus(string dbStatus)
+        {
+            switch (dbStatus)
+            {
+                case "Pending": return "Chờ duyệt";
+                case "Confirmed": return "Đã duyệt";
+                case "Cancelled": return "Đã hủy";
+                case "Completed": return "Thành công";
+                default: return dbStatus;
+            }
+        }
+
         public string CreateRepeatingAppointments(AppointmentsDTO baseApp, List<DateTime> selectedDates)
         {
             // 1. Kiểm tra ngày trong quá khứ
@@ -176,9 +206,9 @@ namespace BUS_Tier
             return _appointmentDAL.UpdateAppointment(appointmentId, newTimeSlotId, newReason);
         }
 
-        public bool DeleteAppointment(int appointmentId)
+        public bool UndoAppointment(int appointmentId)
         {
-            return _appointmentDAL.DeleteAppointment(appointmentId);
+            return _appointmentDAL.UndoAppointment(appointmentId);
         }
 
         public AppointmentsDTO CheckPatientOverlap(int patientId, int timeSlotId)

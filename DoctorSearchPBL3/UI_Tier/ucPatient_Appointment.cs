@@ -133,7 +133,7 @@ namespace UI_Tier
                     card.RemoveClicked += (s, appData) => {
                         if (MessageBox.Show("Bạn có chắc chắn muốn hủy lịch hẹn này không?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
-                            if (new AppointmentBUS().DeleteAppointment(appData.Id))
+                            if (new AppointmentBUS().UndoAppointment(appData.Id))
                             {
                                 MessageBox.Show("Đã hủy lịch hẹn thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 InitData();

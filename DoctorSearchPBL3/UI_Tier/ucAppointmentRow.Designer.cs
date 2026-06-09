@@ -88,7 +88,7 @@ namespace UI_Tier
             pnlReason.Controls.Add(lblReason);
             pnlReason.Location = new Point(699, 30);
             pnlReason.Name = "pnlReason";
-            pnlReason.Size = new Size(397, 115);
+            pnlReason.Size = new Size(440, 115);
             pnlReason.TabIndex = 13;
             // 
             // lblStatus
@@ -97,11 +97,11 @@ namespace UI_Tier
             lblStatus.BackColor = Color.FromArgb(235, 252, 245);
             lblStatus.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblStatus.ForeColor = Color.FromArgb(40, 199, 111);
-            lblStatus.Location = new Point(1108, 64);
+            lblStatus.Location = new Point(1145, 64);
             lblStatus.Name = "lblStatus";
-            lblStatus.Size = new Size(220, 50);
+            lblStatus.Size = new Size(184, 50);
             lblStatus.TabIndex = 4;
-            lblStatus.Text = "Đã xác nhận";
+            lblStatus.Text = "Đã duyệt";
             lblStatus.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label2

@@ -138,7 +138,7 @@ namespace UI_Tier
         private void SetupButtons(AppCardMode mode, string status)
         {
             // 1. Ẩn tất cả các nút để dọn dẹp mặt bằng
-            foreach (Button btn in new Button[] { btnAccept, btnCancel, btnRemove, btnBook, btnRate, btnViewRecord, btnEdit, btnHide })
+            foreach (Button btn in new Button[] { btnAccept, btnCancel, btnRemove, btnBook, btnRate, btnViewRecord, btnEdit, btnHide, btnComplete })
             {
                 btn.Visible = false;
             }
@@ -182,6 +182,10 @@ namespace UI_Tier
                     {
                         btnAccept.Visible = true;
                         btnCancel.Visible = true;
+                    }
+                    else if (status == "Confirmed")
+                    {
+                        btnComplete.Visible = true;
                     }
                     else if (status == "Completed")
                     {
@@ -251,8 +255,24 @@ namespace UI_Tier
                 }
                 else // DoctorView
                 {
-                    lblName.Text = data.Patient?.User?.FullName ?? "Bệnh nhân chưa đặt";
-                    lblPhoneNumber.Text = data.Patient?.User?.PhoneNumber ?? "0000000000";
+                    if (data.Patient == null || data.Patient.User == null)
+                    {
+                        lblName.Text = "Chưa có bệnh nhân";
+                        lblPhoneNumber.Visible = false;
+                        
+                        lblSymptoms.Text = "Trống";
+                        lblSymptoms.Font = new Font("Segoe UI", 12F, FontStyle.Italic, GraphicsUnit.Point, 0);
+                        lblSymptoms.ForeColor = Color.DarkGray;
+                    }
+                    else
+                    {
+                        lblName.Text = data.Patient.User.FullName;
+                        lblPhoneNumber.Text = data.Patient.User.PhoneNumber;
+                        lblPhoneNumber.Visible = true;
+                        
+                        //lblSymptoms.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+                        //lblSymptoms.ForeColor = Color.Black;
+                    }
                 }
 
                 if (mode == AppCardMode.DoctorSchedule)
@@ -404,6 +424,19 @@ namespace UI_Tier
             }
         }
 
+        private void btnComplete_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Xác nhận bệnh nhân đã khám xong và cập nhật trạng thái thành 'Thành công'?", "Hoàn thành ca khám", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                AppointmentBUS bus = new AppointmentBUS();
+                if (bus.UpdateStatus(_appointmentId, "Completed", "Khám hoàn tất"))
+                {
+                    MessageBox.Show("Đã cập nhật trạng thái lịch hẹn thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    RefreshData?.Invoke();
+                }
+            }
+        }
+
         private void btnCancel_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Từ chối lịch hẹn này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
@@ -423,7 +456,7 @@ namespace UI_Tier
             if (MessageBox.Show("Bạn có chắc chắn muốn hủy lịch hẹn này không?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 AppointmentBUS bus = new AppointmentBUS();
-                if (bus.DeleteAppointment(_appointmentId))
+                if (bus.UndoAppointment(_appointmentId))
                 {
                     MessageBox.Show("Đã hủy lịch hẹn thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     AppointmentDeleted?.Invoke(this, EventArgs.Empty);

@@ -279,7 +279,7 @@ namespace UI_Tier
 
                 if (diagResult == DialogResult.Yes)
                 {
-                    _appointmentBUS.DeleteAppointment(conflict.Id);
+                    _appointmentBUS.UndoAppointment(conflict.Id);
                 }
                 else
                 {

@@ -39,6 +39,7 @@ namespace UI_Tier
             lblPendingCount = new Label();
             label2 = new Label();
             label1 = new Label();
+            btnComplete = new Button();
             btnAccept = new Button();
             flpAction = new FlowLayoutPanel();
             btnViewRecord = new Button();
@@ -59,9 +60,9 @@ namespace UI_Tier
             lblAdminPhone = new Label();
             lblArrow = new Label();
             flpAdminPhones = new FlowLayoutPanel();
+            pnlSymptoms.SuspendLayout();
             flpAction.SuspendLayout();
             pnlAdminInfo.SuspendLayout();
-            pnlSymptoms.SuspendLayout();
             SuspendLayout();
             // 
             // lblName
@@ -104,15 +105,6 @@ namespace UI_Tier
             lblTime.TabIndex = 6;
             lblTime.Text = "8h30' - 9h45'";
             // 
-            // pnlSymptoms
-            // 
-            pnlSymptoms.Location = new Point(1110, 91);
-            pnlSymptoms.Name = "pnlSymptoms";
-            pnlSymptoms.Size = new Size(553, 131);
-            pnlSymptoms.TabIndex = 13;
-            pnlSymptoms.AutoScroll = true;
-            pnlSymptoms.Controls.Add(lblSymptoms);
-            // 
             // lblSymptoms
             // 
             lblSymptoms.AutoSize = true;
@@ -121,9 +113,18 @@ namespace UI_Tier
             lblSymptoms.Location = new Point(0, 0);
             lblSymptoms.MaximumSize = new Size(520, 0);
             lblSymptoms.Name = "lblSymptoms";
-            lblSymptoms.Size = new Size(520, 45);
+            lblSymptoms.Size = new Size(282, 45);
             lblSymptoms.TabIndex = 7;
             lblSymptoms.Text = "Đau ngực, khó thở";
+            // 
+            // pnlSymptoms
+            // 
+            pnlSymptoms.AutoScroll = true;
+            pnlSymptoms.Controls.Add(lblSymptoms);
+            pnlSymptoms.Location = new Point(1110, 91);
+            pnlSymptoms.Name = "pnlSymptoms";
+            pnlSymptoms.Size = new Size(553, 131);
+            pnlSymptoms.TabIndex = 13;
             // 
             // btnStatus
             // 
@@ -174,6 +175,25 @@ namespace UI_Tier
             label1.TabIndex = 13;
             label1.Text = "🕓";
             // 
+            // btnComplete
+            // 
+            btnComplete.Anchor = AnchorStyles.None;
+            btnComplete.BackColor = Color.Azure;
+            btnComplete.FlatAppearance.BorderSize = 0;
+            btnComplete.FlatStyle = FlatStyle.Flat;
+            btnComplete.Font = new Font("Segoe MDL2 Assets", 20F);
+            btnComplete.ForeColor = Color.Teal;
+            btnComplete.Location = new Point(351, 33);
+            btnComplete.Margin = new Padding(25, 5, 0, 0);
+            btnComplete.Name = "btnComplete";
+            btnComplete.Size = new Size(80, 80);
+            btnComplete.TabIndex = 20;
+            btnComplete.Text = "";
+            btnComplete.TextAlign = ContentAlignment.MiddleLeft;
+            ttAction.SetToolTip(btnComplete, "Đánh dấu hoàn thành ca khám");
+            btnComplete.UseVisualStyleBackColor = false;
+            btnComplete.Click += btnComplete_Click;
+            // 
             // btnAccept
             // 
             btnAccept.Anchor = AnchorStyles.None;
@@ -182,7 +202,7 @@ namespace UI_Tier
             btnAccept.FlatStyle = FlatStyle.Flat;
             btnAccept.Font = new Font("Segoe MDL2 Assets", 20F);
             btnAccept.ForeColor = Color.Green;
-            btnAccept.Location = new Point(351, 33);
+            btnAccept.Location = new Point(456, 33);
             btnAccept.Margin = new Padding(25, 5, 0, 0);
             btnAccept.Name = "btnAccept";
             btnAccept.Size = new Size(80, 80);
@@ -206,11 +226,12 @@ namespace UI_Tier
             flpAction.Controls.Add(btnEdit);
             flpAction.Controls.Add(btnCancel);
             flpAction.Controls.Add(btnAccept);
+            flpAction.Controls.Add(btnComplete);
             flpAction.Controls.Add(pnlAdminInfo);
             flpAction.FlowDirection = FlowDirection.RightToLeft;
-            flpAction.Location = new Point(984, 59);
+            flpAction.Location = new Point(879, 59);
             flpAction.Name = "flpAction";
-            flpAction.Size = new Size(1181, 141);
+            flpAction.Size = new Size(1286, 141);
             flpAction.TabIndex = 15;
             flpAction.WrapContents = false;
             // 
@@ -222,7 +243,7 @@ namespace UI_Tier
             btnViewRecord.FlatStyle = FlatStyle.Flat;
             btnViewRecord.Font = new Font("Segoe MDL2 Assets", 18F);
             btnViewRecord.ForeColor = Color.DodgerBlue;
-            btnViewRecord.Location = new Point(1101, 33);
+            btnViewRecord.Location = new Point(1206, 33);
             btnViewRecord.Margin = new Padding(25, 5, 0, 0);
             btnViewRecord.Name = "btnViewRecord";
             btnViewRecord.Size = new Size(80, 80);
@@ -240,7 +261,7 @@ namespace UI_Tier
             btnRate.FlatStyle = FlatStyle.Flat;
             btnRate.Font = new Font("Segoe MDL2 Assets", 18F);
             btnRate.ForeColor = Color.Goldenrod;
-            btnRate.Location = new Point(996, 33);
+            btnRate.Location = new Point(1101, 33);
             btnRate.Margin = new Padding(25, 5, 0, 0);
             btnRate.Name = "btnRate";
             btnRate.Size = new Size(80, 80);
@@ -258,7 +279,7 @@ namespace UI_Tier
             btnBook.FlatStyle = FlatStyle.Flat;
             btnBook.Font = new Font("Segoe MDL2 Assets", 18F);
             btnBook.ForeColor = Color.DodgerBlue;
-            btnBook.Location = new Point(891, 33);
+            btnBook.Location = new Point(996, 33);
             btnBook.Margin = new Padding(25, 5, 0, 0);
             btnBook.Name = "btnBook";
             btnBook.Size = new Size(80, 80);
@@ -277,7 +298,7 @@ namespace UI_Tier
             btnHide.FlatStyle = FlatStyle.Flat;
             btnHide.Font = new Font("Segoe MDL2 Assets", 20F);
             btnHide.ForeColor = Color.FromArgb(107, 114, 128);
-            btnHide.Location = new Point(781, 30);
+            btnHide.Location = new Point(886, 30);
             btnHide.Margin = new Padding(25, 5, 0, 0);
             btnHide.Name = "btnHide";
             btnHide.Size = new Size(85, 85);
@@ -295,7 +316,7 @@ namespace UI_Tier
             btnRemove.FlatStyle = FlatStyle.Flat;
             btnRemove.Font = new Font("Segoe MDL2 Assets", 20F);
             btnRemove.ForeColor = Color.FromArgb(217, 119, 6);
-            btnRemove.Location = new Point(671, 30);
+            btnRemove.Location = new Point(776, 30);
             btnRemove.Margin = new Padding(25, 5, 0, 0);
             btnRemove.Name = "btnRemove";
             btnRemove.Size = new Size(85, 85);
@@ -314,7 +335,7 @@ namespace UI_Tier
             btnEdit.FlatStyle = FlatStyle.Flat;
             btnEdit.Font = new Font("Segoe MDL2 Assets", 20F);
             btnEdit.ForeColor = Color.FromArgb(37, 99, 235);
-            btnEdit.Location = new Point(561, 30);
+            btnEdit.Location = new Point(666, 30);
             btnEdit.Margin = new Padding(25, 5, 0, 0);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(85, 85);
@@ -332,7 +353,7 @@ namespace UI_Tier
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe MDL2 Assets", 20F);
             btnCancel.ForeColor = Color.DarkRed;
-            btnCancel.Location = new Point(456, 33);
+            btnCancel.Location = new Point(561, 33);
             btnCancel.Margin = new Padding(25, 5, 0, 0);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(80, 80);
@@ -481,12 +502,12 @@ namespace UI_Tier
             Padding = new Padding(10);
             Size = new Size(2186, 252);
             Load += ucAppItem_Load;
+            pnlSymptoms.ResumeLayout(false);
+            pnlSymptoms.PerformLayout();
             flpAction.ResumeLayout(false);
             flpAction.PerformLayout();
             pnlAdminInfo.ResumeLayout(false);
             pnlAdminInfo.PerformLayout();
-            pnlSymptoms.PerformLayout();
-            pnlSymptoms.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -504,6 +525,7 @@ namespace UI_Tier
         private Label label2;
         private Label label1;
         private Button btnAccept;
+        private Button btnComplete;
         private FlowLayoutPanel flpAction;
         private Button btnCancel;
         private Button btnRemove;

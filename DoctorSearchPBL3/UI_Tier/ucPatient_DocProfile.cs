@@ -192,7 +192,7 @@ namespace UI_Tier
                 {
                     if (ctrl is ucUserAppointmentCard card)
                     {
-                        card.Width = 700;
+                        card.Width = flpAppItem.ClientSize.Width - 40;
                     }
                 }
 
@@ -341,7 +341,7 @@ namespace UI_Tier
                     card.RemoveClicked += (s, appData) => {
                         if (MessageBox.Show("Bạn có chắc chắn muốn hủy lịch hẹn này không?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
-                            if (new AppointmentBUS().DeleteAppointment(appData.Id))
+                            if (new AppointmentBUS().UndoAppointment(appData.Id))
                             {
                                 MessageBox.Show("Đã hủy lịch hẹn thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 InitData();
@@ -359,7 +359,7 @@ namespace UI_Tier
                         editUc.BringToFront();
                     };
 
-                    card.Width = 700;
+                    card.Width = flpAppItem.ClientSize.Width - 40;
                     flpAppItem.Controls.Add(card);
                 }
 

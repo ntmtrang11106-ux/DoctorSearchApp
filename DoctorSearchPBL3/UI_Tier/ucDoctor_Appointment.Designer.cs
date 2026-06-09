@@ -167,7 +167,6 @@ namespace UI_Tier
             // 
             flpFilter.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             flpFilter.Controls.Add(btnAll);
-            flpFilter.Controls.Add(btnEmpty);
             flpFilter.Controls.Add(btnWaitting);
             flpFilter.Controls.Add(btnAccepted);
             flpFilter.Controls.Add(btnCanceled);

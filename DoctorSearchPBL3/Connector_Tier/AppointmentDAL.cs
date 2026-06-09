@@ -316,7 +316,7 @@ namespace DAL_Tier
             }
         }
 
-        public bool DeleteAppointment(int appointmentId)
+        public bool UndoAppointment(int appointmentId)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -333,7 +333,9 @@ namespace DAL_Tier
                             app.TimeSlot.Status = "Open";
                     }
 
-                    _context.Appointments.Remove(app);
+                    app.Status = "Cancelled";
+                    app.CancelledAt = DateTime.Now;
+                    
                     _context.SaveChanges();
                     transaction.Commit();
                     return true;

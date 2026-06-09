@@ -29,14 +29,19 @@ namespace UI_Tier
             // Tự động co giãn các card khi resize form
             flpAppItem.Resize += (s, e) =>
             {
+                flpAppItem.SuspendLayout();
                 foreach (Control ctrl in flpAppItem.Controls)
                 {
                     if (ctrl is ucUserAppointmentCard card)
                     {
-                        card.Width = flpAppItem.ClientSize.Width - 40;
+                        card.Width = flpAppItem.ClientSize.Width - 80;
+                    }
+                    else if (ctrl is Label lbl)
+                    {
+                        lbl.Width = flpAppItem.ClientSize.Width - 80;
                     }
                 }
-                //UpdateListLayout();
+                flpAppItem.ResumeLayout();
             };
 
             // Đăng ký sự kiện lọc
@@ -77,52 +82,11 @@ namespace UI_Tier
             {
                 string status = _selectedStatus.Trim();
 
-                // 1. Lấy dữ liệu thô
-                var rawApps = _doctorId > 0 ? _bus.GetAppointmentsByDoctorId(_doctorId) : _bus.GetAll();
-                TimeSlotBUS tsBus = new TimeSlotBUS();
-                var rawSlots = _doctorId > 0 ? tsBus.GetTimeSlotsByDoctor(_doctorId) : tsBus.GetAllTimeSlots();
-
                 DateTime startDate = dtpBegin.Value.Date;
                 DateTime endDate = dtpEnd.Value.Date;
 
-                // 2. Lọc Appointments theo ngày và trạng thái
-                var filteredApps = (rawApps ?? new List<AppointmentsDTO>()).Where(a =>
-                {
-                    DateTime appDate = (a.TimeSlot != null) ? a.TimeSlot.WorkDate.Date : a.CreatedAt.Date;
-                    bool isInDateRange = appDate >= startDate && appDate <= endDate;
-                    if (!isInDateRange) return false;
-
-                    if (status == "Tất cả") return true;
-                    if (status == "Trống") return false;
-
-                    return MapStatusToDatabase(a.Status) == status;
-                }).ToList();
-
-                List<AppointmentsDTO> finalItems = new List<AppointmentsDTO>(filteredApps);
-
-                // 3. Xử lý hiển thị các Slot trống (Chỉ khi chọn "Tất cả" hoặc "Trống")
-                if (status == "Tất cả" || status == "Trống")
-                {
-                    var slotsInDateRange = (rawSlots ?? new List<TimeSlotsDTO>()).Where(s =>
-                        s.WorkDate.Date >= startDate && s.WorkDate.Date <= endDate && !s.IsDeleted
-                    ).ToList();
-
-                    foreach (var slot in slotsInDateRange)
-                    {
-                        // Kiểm tra xem khung giờ này còn chỗ hay không (BookedCount < MaxAppointments)
-                        // Bất kể đã có lịch Pending/Confirmed hay chưa, nếu còn chỗ thì vẫn hiện thẻ "Trống"
-                        if (slot.BookedCount < slot.MaxAppointments)
-                        {
-                            finalItems.Add(CreateEmptyAppointment(slot));
-                        }
-                    }
-                }
-
-                // 4. Sắp xếp: Ngày -> Giờ (Tăng dần để giống lịch trình)
-                _allApps = finalItems
-                    .OrderBy(a => (a.TimeSlot != null) ? a.TimeSlot.WorkDate : a.CreatedAt.Date)
-                    .ThenBy(a => (a.TimeSlot != null) ? a.TimeSlot.StartTime : TimeSpan.Zero)
-                    .ToList();
+                // Sử dụng BUS để lọc và sắp xếp dữ liệu
+                _allApps = _bus.GetFilteredAppointments(_doctorId, startDate, endDate, status);
 
                 _currentPage = 1;
                 DisplayPage(_currentPage);
@@ -177,61 +141,99 @@ namespace UI_Tier
                 int startIndex = (pageNumber - 1) * _pageSize;
                 var pageItems = _allApps.Skip(startIndex).Take(_pageSize).ToList();
 
-                foreach (var ap in pageItems)
+                var groupedItems = pageItems
+                    .Where(a => a.TimeSlot != null)
+                    .GroupBy(a => new { a.TimeSlot.WorkDate, a.TimeSlot.StartTime, a.TimeSlot.EndTime })
+                    .ToList();
+
+                foreach (var group in groupedItems)
                 {
-                    ucUserAppointmentCard card = new ucUserAppointmentCard();
-                    card.SetData(ap, ucUserAppointmentCard.UserAppCardMode.DoctorView);
-                    card.Margin = new Padding(20, 10, 20, 10);
-                    card.Width = flpAppItem.ClientSize.Width - 40;
-                    card.Height = 252;
+                    var slot = group.FirstOrDefault()?.TimeSlot;
+                    int actualCount = group.Count();
+                    int maxApp = slot != null ? slot.MaxAppointments : 0;
 
-                    card.AcceptClicked += (s, appData) => {
-                        if (MessageBox.Show("Chấp nhận lịch này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                        {
-                            if (new AppointmentBUS().AcceptAppointment(appData.Id))
-                            {
-                                MessageBox.Show("Chấp nhận lịch hẹn thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                InitData();
-                            }
-                        }
-                    };
-                    card.CancelClicked += (s, appData) => {
-                        if (MessageBox.Show("Từ chối lịch hẹn này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                        {
-                            if (new AppointmentBUS().RejectAppointment(appData.Id))
-                            {
-                                MessageBox.Show("Đã từ chối lịch hẹn thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                InitData();
-                            }
-                        }
-                    };
-                    card.RemoveClicked += (s, appData) => {
-                        if (MessageBox.Show("Bạn có chắc chắn muốn hủy lịch hẹn này không?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                        {
-                            if (new AppointmentBUS().DeleteAppointment(appData.Id))
-                            {
-                                MessageBox.Show("Đã hủy lịch hẹn thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                InitData();
-                            }
-                        }
-                    };
-                    card.EditClicked += (s, appData) =>
+                    foreach (var ap in group)
                     {
-                        if (appData.Doctor == null) return;
-                        ucBookingDialog editUc = new ucBookingDialog(appData.Doctor);
-                        editUc.SetEditData(appData);
-                        editUc.Location = new Point((this.Width - editUc.Width) / 2, (this.Height - editUc.Height) / 2);
-                        editUc.AppointmentBooked += (s2, ev2) => InitData();
-                        editUc.CloseRequested += (s2, ev2) =>
-                        {
-                            this.Controls.Remove(editUc);
-                            editUc.Dispose();
-                        };
-                        this.Controls.Add(editUc);
-                        editUc.BringToFront();
-                    };
+                        ucUserAppointmentCard card = new ucUserAppointmentCard();
+                        card.SetData(ap, ucUserAppointmentCard.UserAppCardMode.DoctorView);
+                        card.Margin = new Padding(20, 10, 20, 10);
+                        card.Width = flpAppItem.ClientSize.Width - 80;
+                        card.Height = 252;
 
-                    flpAppItem.Controls.Add(card);
+                        card.AcceptClicked += (s, appData) => {
+                            if (MessageBox.Show("Chấp nhận lịch này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            {
+                                if (new AppointmentBUS().AcceptAppointment(appData.Id))
+                                {
+                                    MessageBox.Show("Chấp nhận lịch hẹn thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    InitData();
+                                }
+                            }
+                        };
+                        card.CancelClicked += (s, appData) => {
+                            if (MessageBox.Show("Từ chối lịch hẹn này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                            {
+                                if (new AppointmentBUS().RejectAppointment(appData.Id))
+                                {
+                                    MessageBox.Show("Đã từ chối lịch hẹn thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    InitData();
+                                }
+                            }
+                        };
+                        card.RemoveClicked += (s, appData) => {
+                            if (MessageBox.Show("Bạn có chắc chắn muốn hủy lịch hẹn này không?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            {
+                                if (new AppointmentBUS().UndoAppointment(appData.Id))
+                                {
+                                    MessageBox.Show("Đã hủy lịch hẹn thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    InitData();
+                                }
+                            }
+                        };
+                        card.CompleteClicked += (s, appData) => {
+                            if (MessageBox.Show("Xác nhận bệnh nhân đã khám xong và cập nhật trạng thái thành 'Thành công'?", "Hoàn thành ca khám", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            {
+                                if (new AppointmentBUS().UpdateStatus(appData.Id, "Completed", "Khám hoàn tất"))
+                                {
+                                    MessageBox.Show("Đã cập nhật trạng thái lịch hẹn thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    InitData();
+                                }
+                            }
+                        };
+                        card.EditClicked += (s, appData) =>
+                        {
+                            if (appData.Doctor == null) return;
+                            ucBookingDialog editUc = new ucBookingDialog(appData.Doctor);
+                            editUc.SetEditData(appData);
+                            editUc.Location = new Point((this.Width - editUc.Width) / 2, (this.Height - editUc.Height) / 2);
+                            editUc.AppointmentBooked += (s2, ev2) => InitData();
+                            editUc.CloseRequested += (s2, ev2) =>
+                            {
+                                this.Controls.Remove(editUc);
+                                editUc.Dispose();
+                            };
+                            this.Controls.Add(editUc);
+                            editUc.BringToFront();
+                        };
+
+                        flpAppItem.Controls.Add(card);
+                    }
+
+                    // Add summary label for the group
+                    if (slot != null)
+                    {
+                        Label lblSummary = new Label();
+                        lblSummary.Text = $"Tổng kết: Có {actualCount}/{maxApp} lịch vào khung giờ {group.Key.StartTime:hh\\:mm} - {group.Key.EndTime:hh\\:mm} ngày {group.Key.WorkDate:dd/MM/yyyy}";
+                        lblSummary.Font = new Font("Segoe UI", 12, FontStyle.Italic | FontStyle.Bold);
+                        lblSummary.ForeColor = Color.FromArgb(0, 120, 212);
+                        lblSummary.AutoSize = false;
+                        lblSummary.Width = flpAppItem.ClientSize.Width - 80;
+                        lblSummary.Height = 40;
+                        lblSummary.TextAlign = ContentAlignment.MiddleCenter;
+                        lblSummary.Margin = new Padding(20, 0, 20, 20); // space below the group
+
+                        flpAppItem.Controls.Add(lblSummary);
+                    }
                 }
 
                 pnlReviewPagination.Visible = _allApps.Count > 0;
@@ -299,18 +301,6 @@ namespace UI_Tier
             }
         }
 
-        private string MapStatusToDatabase(string statusInDb)
-        {
-            switch (statusInDb)
-            {
-                case "Open": return "Trống";
-                case "Pending": return "Chờ duyệt";
-                case "Confirmed": return "Đã duyệt";
-                case "Cancelled": return "Đã hủy";
-                case "Completed": return "Thành công";
-                default: return statusInDb;
-            }
-        }
         #region Xử lý phân trang (Pagination)
         private void UpdateListLayout()
         {

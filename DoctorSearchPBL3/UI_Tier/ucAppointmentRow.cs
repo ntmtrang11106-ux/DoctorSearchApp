@@ -27,13 +27,13 @@ namespace UI_Tier
 
             if (app.Status == "Confirmed")
             {
-                lblStatus.Text = "Đã xác nhận";
+                lblStatus.Text = "Đã duyệt";
                 lblStatus.ForeColor = Color.FromArgb(40, 199, 111);
                 lblStatus.BackColor = Color.FromArgb(235, 252, 245);
             }
             else if (app.Status == "Pending")
             {
-                lblStatus.Text = "Chờ xác nhận";
+                lblStatus.Text = "Chờ duyệt";
                 lblStatus.ForeColor = Color.FromArgb(255, 159, 67);
                 lblStatus.BackColor = Color.FromArgb(255, 248, 235);
             }

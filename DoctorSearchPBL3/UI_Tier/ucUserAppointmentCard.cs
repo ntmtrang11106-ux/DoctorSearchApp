@@ -29,6 +29,7 @@ namespace UI_Tier
         public event EventHandler<AppointmentsDTO>? EditClicked;
         public event EventHandler<AppointmentsDTO>? RateClicked;
         public event EventHandler<AppointmentsDTO>? ViewRecordClicked;
+        public event EventHandler<AppointmentsDTO>? CompleteClicked;
 
         public ucUserAppointmentCard()
         {
@@ -46,6 +47,7 @@ namespace UI_Tier
             UIHelper.ApplyRoundedRegion(btnEdit, 40);
             UIHelper.ApplyRoundedRegion(btnRate, 40);
             UIHelper.ApplyRoundedRegion(btnViewRecord, 40);
+            UIHelper.ApplyRoundedRegion(btnComplete, 40);
 
             // Vẽ viền cho card
             this.Paint += (s, ev) =>
@@ -101,6 +103,7 @@ namespace UI_Tier
             btnRate.Visible = false;
             btnViewRecord.Visible = false;
             btnEdit.Visible = false;
+            btnComplete.Visible = false;
 
             switch (mode)
             {
@@ -112,7 +115,7 @@ namespace UI_Tier
                     }
                     else if (status == "Cancelled")
                     {
-                        btnRemove.Visible = true; // Xóa khỏi danh sách hiển thị
+                        // Ẩn nút Undo khi đã hủy
                     }
                     break;
 
@@ -130,9 +133,9 @@ namespace UI_Tier
                         btnAccept.Visible = true;
                         btnCancel.Visible = true;
                     }
-                    else if (status == "Completed")
+                    else if (status == "Confirmed")
                     {
-                        btnViewRecord.Visible = true;
+                        btnComplete.Visible = true;
                     }
                     break;
             }
@@ -152,23 +155,42 @@ namespace UI_Tier
             }
 
             // 2. Điền thông tin chi tiết dựa vào đối tượng tương tác
-            lblSymptoms.Text = data.Reason ?? "N/A";
-
             if (mode == UserAppCardMode.PatientView || mode == UserAppCardMode.HistoryView)
             {
+                lblSymptoms.Text = data.Reason ?? "N/A";
                 // Bệnh nhân nhìn: Hiện thông tin Bác sĩ
-                string position = data.Doctor?.Position ?? "BS.";
-                string fullName = data.Doctor?.User?.FullName ?? "N/A";
-                lblName.Text = fullName.StartsWith(position, StringComparison.OrdinalIgnoreCase) 
-                    ? fullName 
+                string position = UIHelper.NormalizeDoctorTitle(data.Doctor?.Position);
+                string fullName = UIHelper.NormalizeDoctorName(data.Doctor?.User?.FullName ?? "N/A");
+                lblName.Text = string.IsNullOrWhiteSpace(position)
+                    ? $"BS. {fullName}"
                     : $"{position} {fullName}".Trim();
                 lblPhoneNumber.Text = data.Doctor?.User?.PhoneNumber ?? "N/A";
+                
+                lblSymptoms.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+                lblSymptoms.ForeColor = Color.Black;
+                lblPhoneNumber.Visible = true;
             }
             else // DoctorView
             {
-                // Bác sĩ nhìn: Hiện thông tin Bệnh nhân
-                lblName.Text = data.Patient?.User?.FullName ?? "Bệnh nhân chưa đặt";
-                lblPhoneNumber.Text = data.Patient?.User?.PhoneNumber ?? "0000000000";
+                if (data.Patient == null || data.Patient.User == null)
+                {
+                    lblName.Text = "Chưa có bệnh nhân";
+                    lblPhoneNumber.Visible = false;
+                    
+                    lblSymptoms.Text = "Chưa ghi chú";
+                    lblSymptoms.Font = new Font("Segoe UI", 12F, FontStyle.Italic, GraphicsUnit.Point, 0);
+                    lblSymptoms.ForeColor = Color.DarkGray;
+                }
+                else
+                {
+                    lblName.Text = data.Patient.User.FullName;
+                    lblPhoneNumber.Text = data.Patient.User.PhoneNumber;
+                    lblPhoneNumber.Visible = true;
+                    
+                    lblSymptoms.Text = data.Reason ?? "N/A";
+                    lblSymptoms.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+                    lblSymptoms.ForeColor = Color.Black;
+                }
             }
 
             // Cập nhật trạng thái và hiển thị nút
@@ -195,7 +217,8 @@ namespace UI_Tier
             else
             {
                 lblName.Visible = true;
-                lblPhoneNumber.Visible = true;
+                bool isEmptySlot = mode == UserAppCardMode.DoctorView && (data.Patient == null || data.Patient.User == null);
+                lblPhoneNumber.Visible = !isEmptySlot;
                 label2.Visible = true;
                 lblSymptoms.Visible = true;
                 flpAction.Visible = true;
@@ -206,6 +229,11 @@ namespace UI_Tier
         private void btnAccept_Click(object sender, EventArgs e)
         {
             if (_currentAppData != null) AcceptClicked?.Invoke(this, _currentAppData);
+        }
+
+        private void btnComplete_Click(object sender, EventArgs e)
+        {
+            if (_currentAppData != null) CompleteClicked?.Invoke(this, _currentAppData);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

@@ -44,6 +44,7 @@ namespace UI_Tier
             btnEdit = new Button();
             btnCancel = new Button();
             btnAccept = new Button();
+            btnComplete = new Button();
             ttAction = new ToolTip(components);
             flpAction.SuspendLayout();
             SuspendLayout();
@@ -146,6 +147,7 @@ namespace UI_Tier
             flpAction.Controls.Add(btnEdit);
             flpAction.Controls.Add(btnCancel);
             flpAction.Controls.Add(btnAccept);
+            flpAction.Controls.Add(btnComplete);
             flpAction.FlowDirection = FlowDirection.RightToLeft;
             flpAction.Location = new Point(1540, 85);
             flpAction.Name = "flpAction";
@@ -195,15 +197,15 @@ namespace UI_Tier
             btnRemove.BackColor = Color.FromArgb(255, 252, 255);
             btnRemove.FlatAppearance.BorderSize = 0;
             btnRemove.FlatStyle = FlatStyle.Flat;
-            btnRemove.Font = new Font("Segoe MDL2 Assets", 20F);
+            btnRemove.Font = new Font("Segoe MDL2 Assets", 24F);
             btnRemove.ForeColor = Color.FromArgb(217, 119, 6);
             btnRemove.Location = new Point(305, 5);
             btnRemove.Margin = new Padding(15, 5, 0, 0);
             btnRemove.Name = "btnRemove";
             btnRemove.Size = new Size(85, 85);
             btnRemove.TabIndex = 16;
-            btnRemove.Text = "";
-            ttAction.SetToolTip(btnRemove, "Xóa/Hủy lịch");
+            btnRemove.Text = "";
+            ttAction.SetToolTip(btnRemove, "Hủy lịch");
             btnRemove.UseVisualStyleBackColor = false;
             btnRemove.Click += btnRemove_Click;
             // 
@@ -261,6 +263,25 @@ namespace UI_Tier
             btnAccept.UseVisualStyleBackColor = false;
             btnAccept.Click += btnAccept_Click;
             // 
+            // btnComplete
+            // 
+            btnComplete.Anchor = AnchorStyles.None;
+            btnComplete.BackColor = Color.Azure;
+            btnComplete.FlatAppearance.BorderSize = 0;
+            btnComplete.FlatStyle = FlatStyle.Flat;
+            btnComplete.Font = new Font("Segoe MDL2 Assets", 20F);
+            btnComplete.ForeColor = Color.Teal;
+            btnComplete.Location = new Point(15, 97);
+            btnComplete.Margin = new Padding(15, 5, 0, 0);
+            btnComplete.Name = "btnComplete";
+            btnComplete.Size = new Size(80, 80);
+            btnComplete.TabIndex = 21;
+            btnComplete.Text = "";
+            ttAction.SetToolTip(btnComplete, "Đánh dấu hoàn thành");
+            btnComplete.UseVisualStyleBackColor = false;
+            btnComplete.Visible = false;
+            btnComplete.Click += new EventHandler(this.btnComplete_Click);
+            // 
             // ttAction
             // 
             ttAction.AutoPopDelay = 5000;
@@ -309,6 +330,7 @@ namespace UI_Tier
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnAccept;
+        private System.Windows.Forms.Button btnComplete;
         private System.Windows.Forms.ToolTip ttAction;
     }
 }
