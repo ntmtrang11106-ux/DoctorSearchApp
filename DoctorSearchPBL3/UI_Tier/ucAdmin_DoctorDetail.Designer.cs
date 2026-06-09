@@ -466,7 +466,10 @@ namespace UI_Tier
             // 
             // dtpEditDob
             // 
+            dtpEditDob.CalendarFont = new Font("Segoe UI", 12F);
+            dtpEditDob.CustomFormat = "  dd / MM / yyyy";
             dtpEditDob.Font = new Font("Segoe UI", 12F);
+            dtpEditDob.Format = DateTimePickerFormat.Custom;
             dtpEditDob.Location = new Point(0, 0);
             dtpEditDob.Name = "dtpEditDob";
             dtpEditDob.Size = new Size(200, 54);
@@ -688,7 +691,7 @@ namespace UI_Tier
             lblVCreatedAt.Name = "lblVCreatedAt";
             lblVCreatedAt.Size = new Size(271, 45);
             lblVCreatedAt.TabIndex = 1;
-            lblVCreatedAt.Text = "10:15:00 9/5/2026";
+            lblVCreatedAt.Text = "10:15:00 09/05/2026";
             // 
             // pnlDivider
             // 

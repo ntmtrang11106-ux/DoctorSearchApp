@@ -68,6 +68,10 @@ namespace UI_Tier
             pnlMedCode = new Panel();
             lblLMedCode = new Label();
             lblVMedCode = new Label();
+            pnlBloodType = new Panel();
+            lblLBloodType = new Label();
+            lblVBloodType = new Label();
+            cboEditBloodType = new ComboBox();
             pnlInsCode = new Panel();
             lblLInsCode = new Label();
             lblVInsCode = new Label();
@@ -102,6 +106,7 @@ namespace UI_Tier
             pnlCreatedAt.SuspendLayout();
             tlpMedical.SuspendLayout();
             pnlMedCode.SuspendLayout();
+            pnlBloodType.SuspendLayout();
             pnlInsCode.SuspendLayout();
             pnlEmerName.SuspendLayout();
             pnlEmerPhone.SuspendLayout();
@@ -474,7 +479,10 @@ namespace UI_Tier
             // 
             // dtpEditDob
             // 
+            dtpEditDob.CalendarFont = new Font("Segoe UI", 12F);
+            dtpEditDob.CustomFormat = "  dd / MM / yyyy";
             dtpEditDob.Font = new Font("Segoe UI", 12F);
+            dtpEditDob.Format = DateTimePickerFormat.Custom;
             dtpEditDob.Location = new Point(0, 0);
             dtpEditDob.Margin = new Padding(2, 2, 2, 2);
             dtpEditDob.Name = "dtpEditDob";
@@ -686,9 +694,9 @@ namespace UI_Tier
             lblLCreatedAt.Location = new Point(0, 8);
             lblLCreatedAt.Margin = new Padding(4, 0, 4, 0);
             lblLCreatedAt.Name = "lblLCreatedAt";
-            lblLCreatedAt.Size = new Size(217, 32);
+            lblLCreatedAt.Size = new Size(174, 32);
             lblLCreatedAt.TabIndex = 0;
-            lblLCreatedAt.Text = "Ngày tạo tài khoản";
+            lblLCreatedAt.Text = "Ngày tạo hồ sơ";
             // 
             // lblVCreatedAt
             // 
@@ -700,7 +708,7 @@ namespace UI_Tier
             lblVCreatedAt.Name = "lblVCreatedAt";
             lblVCreatedAt.Size = new Size(205, 32);
             lblVCreatedAt.TabIndex = 1;
-            lblVCreatedAt.Text = "10:15:00 9/5/2026";
+            lblVCreatedAt.Text = "10:15:00 09/05/2026";
             // 
             // lblMedicalHeader
             // 
@@ -721,9 +729,10 @@ namespace UI_Tier
             tlpMedical.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tlpMedical.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tlpMedical.Controls.Add(pnlMedCode, 0, 0);
-            tlpMedical.Controls.Add(pnlInsCode, 1, 0);
-            tlpMedical.Controls.Add(pnlEmerName, 0, 1);
-            tlpMedical.Controls.Add(pnlEmerPhone, 1, 1);
+            tlpMedical.Controls.Add(pnlBloodType, 1, 0);
+            tlpMedical.Controls.Add(pnlInsCode, 0, 1);
+            tlpMedical.Controls.Add(pnlEmerName, 1, 1);
+            tlpMedical.Controls.Add(pnlEmerPhone, 0, 2);
             tlpMedical.Controls.Add(pnlNotes, 0, 3);
             tlpMedical.Location = new Point(81, 768);
             tlpMedical.Margin = new Padding(4, 5, 4, 5);
@@ -733,7 +742,7 @@ namespace UI_Tier
             tlpMedical.RowStyles.Add(new RowStyle());
             tlpMedical.RowStyles.Add(new RowStyle());
             tlpMedical.RowStyles.Add(new RowStyle());
-            tlpMedical.Size = new Size(786, 420);
+            tlpMedical.Size = new Size(786, 547);
             tlpMedical.TabIndex = 3;
             // 
             // pnlMedCode
@@ -770,18 +779,65 @@ namespace UI_Tier
             lblVMedCode.Size = new Size(124, 32);
             lblVMedCode.TabIndex = 1;
             lblVMedCode.Text = "BN002345";
-            // 
+            //
+            // pnlBloodType
+            //
+            pnlBloodType.Controls.Add(lblLBloodType);
+            pnlBloodType.Controls.Add(lblVBloodType);
+            pnlBloodType.Controls.Add(cboEditBloodType);
+            pnlBloodType.Dock = DockStyle.Fill;
+            pnlBloodType.Location = new Point(397, 5);
+            pnlBloodType.Margin = new Padding(4, 5, 4, 5);
+            pnlBloodType.Name = "pnlBloodType";
+            pnlBloodType.Size = new Size(385, 117);
+            pnlBloodType.TabIndex = 1;
+            //
+            // lblLBloodType
+            //
+            lblLBloodType.AutoSize = true;
+            lblLBloodType.Font = new Font("Segoe UI", 12F);
+            lblLBloodType.ForeColor = Color.FromArgb(107, 114, 128);
+            lblLBloodType.Location = new Point(0, 4);
+            lblLBloodType.Margin = new Padding(4, 0, 4, 0);
+            lblLBloodType.Name = "lblLBloodType";
+            lblLBloodType.Size = new Size(133, 32);
+            lblLBloodType.TabIndex = 0;
+            lblLBloodType.Text = "Nhóm máu";
+            //
+            // lblVBloodType
+            //
+            lblVBloodType.AutoSize = true;
+            lblVBloodType.Font = new Font("Segoe UI", 12F);
+            lblVBloodType.ForeColor = Color.FromArgb(17, 24, 39);
+            lblVBloodType.Location = new Point(0, 47);
+            lblVBloodType.Margin = new Padding(4, 0, 4, 0);
+            lblVBloodType.Name = "lblVBloodType";
+            lblVBloodType.Size = new Size(43, 32);
+            lblVBloodType.TabIndex = 1;
+            lblVBloodType.Text = "AB";
+            //
+            // cboEditBloodType
+            //
+            cboEditBloodType.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboEditBloodType.FlatStyle = FlatStyle.Flat;
+            cboEditBloodType.Font = new Font("Segoe UI", 12F);
+            cboEditBloodType.Location = new Point(0, 0);
+            cboEditBloodType.Margin = new Padding(2, 2, 2, 2);
+            cboEditBloodType.Name = "cboEditBloodType";
+            cboEditBloodType.Size = new Size(94, 40);
+            cboEditBloodType.TabIndex = 0;
+            //
             // pnlInsCode
             // 
             pnlInsCode.Controls.Add(lblLInsCode);
             pnlInsCode.Controls.Add(lblVInsCode);
             pnlInsCode.Controls.Add(txtEditInsCode);
             pnlInsCode.Dock = DockStyle.Fill;
-            pnlInsCode.Location = new Point(397, 5);
+            pnlInsCode.Location = new Point(4, 132);
             pnlInsCode.Margin = new Padding(4, 5, 4, 5);
             pnlInsCode.Name = "pnlInsCode";
             pnlInsCode.Size = new Size(385, 117);
-            pnlInsCode.TabIndex = 1;
+            pnlInsCode.TabIndex = 2;
             // 
             // lblLInsCode
             // 
@@ -823,11 +879,11 @@ namespace UI_Tier
             pnlEmerName.Controls.Add(lblVEmerName);
             pnlEmerName.Controls.Add(txtEditEmerName);
             pnlEmerName.Dock = DockStyle.Fill;
-            pnlEmerName.Location = new Point(4, 132);
+            pnlEmerName.Location = new Point(397, 132);
             pnlEmerName.Margin = new Padding(4, 5, 4, 5);
             pnlEmerName.Name = "pnlEmerName";
             pnlEmerName.Size = new Size(385, 117);
-            pnlEmerName.TabIndex = 2;
+            pnlEmerName.TabIndex = 3;
             // 
             // lblLEmerName
             // 
@@ -869,11 +925,11 @@ namespace UI_Tier
             pnlEmerPhone.Controls.Add(lblVEmerPhone);
             pnlEmerPhone.Controls.Add(txtEditEmerPhone);
             pnlEmerPhone.Dock = DockStyle.Fill;
-            pnlEmerPhone.Location = new Point(397, 132);
+            pnlEmerPhone.Location = new Point(4, 259);
             pnlEmerPhone.Margin = new Padding(4, 5, 4, 5);
             pnlEmerPhone.Name = "pnlEmerPhone";
             pnlEmerPhone.Size = new Size(385, 117);
-            pnlEmerPhone.TabIndex = 3;
+            pnlEmerPhone.TabIndex = 4;
             // 
             // lblLEmerPhone
             // 
@@ -915,11 +971,11 @@ namespace UI_Tier
             pnlNotes.Controls.Add(lblLNotes);
             pnlNotes.Controls.Add(pnlNotesContainer);
             pnlNotes.Dock = DockStyle.Fill;
-            pnlNotes.Location = new Point(4, 259);
+            pnlNotes.Location = new Point(4, 386);
             pnlNotes.Margin = new Padding(4, 5, 4, 5);
             pnlNotes.Name = "pnlNotes";
             pnlNotes.Size = new Size(778, 156);
-            pnlNotes.TabIndex = 4;
+            pnlNotes.TabIndex = 5;
             // 
             // lblLNotes
             // 
@@ -999,6 +1055,8 @@ namespace UI_Tier
             tlpMedical.ResumeLayout(false);
             pnlMedCode.ResumeLayout(false);
             pnlMedCode.PerformLayout();
+            pnlBloodType.ResumeLayout(false);
+            pnlBloodType.PerformLayout();
             pnlInsCode.ResumeLayout(false);
             pnlInsCode.PerformLayout();
             pnlEmerName.ResumeLayout(false);
@@ -1057,6 +1115,9 @@ namespace UI_Tier
         private System.Windows.Forms.Panel pnlMedCode;
         private System.Windows.Forms.Label lblLMedCode;
         private System.Windows.Forms.Label lblVMedCode;
+        private System.Windows.Forms.Panel pnlBloodType;
+        private System.Windows.Forms.Label lblLBloodType;
+        private System.Windows.Forms.Label lblVBloodType;
         private System.Windows.Forms.Panel pnlInsCode;
         private System.Windows.Forms.Label lblLInsCode;
         private System.Windows.Forms.Label lblVInsCode;
@@ -1077,6 +1138,7 @@ namespace UI_Tier
         private System.Windows.Forms.ComboBox cboEditGender;
         private System.Windows.Forms.TextBox txtEditCCCD;
         private System.Windows.Forms.TextBox txtEditAddress;
+        private System.Windows.Forms.ComboBox cboEditBloodType;
         private System.Windows.Forms.TextBox txtEditInsCode;
         private System.Windows.Forms.TextBox txtEditEmerName;
         private System.Windows.Forms.TextBox txtEditEmerPhone;
