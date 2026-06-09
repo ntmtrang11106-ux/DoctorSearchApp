@@ -163,9 +163,9 @@ namespace UI_Tier
             lblRoomHint.Location = new Point(73, 822);
             lblRoomHint.Margin = new Padding(5, 0, 5, 0);
             lblRoomHint.Name = "lblRoomHint";
-            lblRoomHint.Size = new Size(672, 38);
+            lblRoomHint.Size = new Size(666, 38);
             lblRoomHint.TabIndex = 9;
-            lblRoomHint.Text = "Định dạng bắt buộc: <Tên khu>.<Tầng><Số phòng>.";
+            lblRoomHint.Text = "Định dạng bắt buộc: <Tên khu><Tầng>.<Số phòng>";
             // 
             // pnlRoomList
             // 
@@ -293,7 +293,9 @@ namespace UI_Tier
             ForeColor = Color.White;
             Margin = new Padding(5);
             Name = "ucAdmin_AddDepartment";
+            Padding = new Padding(3);
             Size = new Size(1578, 1520);
+            Paint += ucAdmin_AddDepartment_Paint;
             pnlRoomList.ResumeLayout(false);
             pnlRoomList.PerformLayout();
             pnlName.ResumeLayout(false);

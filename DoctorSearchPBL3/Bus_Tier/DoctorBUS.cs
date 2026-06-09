@@ -290,10 +290,10 @@ namespace BUS_Tier
             }
         }
 
-        public int GetDoctorCountByDepartmentId(int departmentId)
+        public int GetDoctorCountByDepartmentId(int departmentId, bool includeDeleted = false)
         {
             if (departmentId <= 0) return 0;
-            return doctorDAL.GetDoctorCountByDepartmentId(departmentId);
+            return doctorDAL.GetDoctorCountByDepartmentId(departmentId, includeDeleted);
         }
     }
 }

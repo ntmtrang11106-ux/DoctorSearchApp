@@ -22,6 +22,11 @@ namespace UI_Tier
             UIHelper.SetDoubleBuffered(this);
             UIHelper.SetDoubleBuffered(flpList);
             
+            // Khởi tạo danh sách bộ lọc trạng thái chương trình để tránh bị thiết kế (Designer) ghi đè
+            cboStatusFilter.Items.Clear();
+            cboStatusFilter.Items.AddRange(new object[] { "Tất cả trạng thái", "Hiển thị", "Ẩn", "Đã xóa" });
+            cboStatusFilter.SelectedIndex = 0;
+            
             pnlSearch.Paint += pnlSearch_Paint;
             pnlSearch.Click += (s, e) => txtSearch.Focus();
             lblSearchIcon.Click += (s, e) => txtSearch.Focus();
@@ -64,7 +69,7 @@ namespace UI_Tier
 
         public void InitData(bool keepPage = false)
         {
-            _allDepts = _deptBUS.GetAllDepartments();
+            _allDepts = _deptBUS.GetAllDepartments(true);
             if (cboStatusFilter.SelectedIndex == -1) cboStatusFilter.SelectedIndex = 0;
             
             UIHelper.SetupSearchTextBox(txtSearch, "Tìm kiếm theo tên chuyên khoa, mô tả...");
@@ -80,7 +85,12 @@ namespace UI_Tier
 
             _filteredDepts = _allDepts.Where(d => 
                 (string.IsNullOrEmpty(keyword) || d.DepartmentName.ToLower().Contains(keyword) || (d.Description != null && d.Description.ToLower().Contains(keyword))) &&
-                (statusFilter == "Tất cả trạng thái" || (statusFilter == "Hiển thị" && d.IsActive) || (statusFilter == "Ẩn" && !d.IsActive))
+                (
+                    (statusFilter == "Tất cả trạng thái" && !d.IsDeleted) || 
+                    (statusFilter == "Hiển thị" && d.IsActive && !d.IsDeleted) || 
+                    (statusFilter == "Ẩn" && !d.IsActive && !d.IsDeleted) ||
+                    (statusFilter == "Đã xóa" && d.IsDeleted)
+                )
             ).ToList();
 
             if (!keepPage) _currentPage = 1;
@@ -107,10 +117,16 @@ namespace UI_Tier
                 return;
             }
 
+            string keyword = txtSearch.Text.Trim();
+            if (keyword.Equals("Tìm kiếm theo tên chuyên khoa, mô tả...", StringComparison.OrdinalIgnoreCase))
+            {
+                keyword = "";
+            }
+
             foreach (var dept in pageItems)
             {
                 ucAdmin_DepartmentItem item = new ucAdmin_DepartmentItem();
-                item.SetData(dept);
+                item.SetData(dept, keyword);
                 item.DataChanged += (s, ev) => InitData(true);
                 item.Width = flpList.ClientSize.Width - (item.Margin.Left + item.Margin.Right) - 20;
                 flpList.Controls.Add(item);
