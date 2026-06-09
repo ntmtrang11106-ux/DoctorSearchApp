@@ -12,8 +12,10 @@ namespace UI_Tier
     public partial class ucAdmin_UserManagement : UserControl
     {
         private AdminBUS _adminBUS = new AdminBUS();
+        private DepartmentBUS _departmentBUS = new DepartmentBUS();
         private string _currentTab = "All"; // "All", "Pending", "Patient", "Doctor"
         private string _currentStatus = StatusAll; // StatusAll, StatusActive, StatusPending, StatusBlocked
+        private int? _selectedDoctorDepartmentId = null;
         private int _pageSize = 6;
         private int _currentPage = 1;
         private int _totalItems = 0;
@@ -62,7 +64,9 @@ namespace UI_Tier
             UIHelper.SetupInputFocusEffect(txtSearch, pnlSearch, Color.White, Color.White, Color.FromArgb(59, 130, 246));
             UIHelper.RegisterClickToUnfocus(this, lblTitle);
             
+            LoadDoctorDepartmentTabs();
             ConfigureStatusFilter();
+            UpdateDoctorDepartmentFilterVisibility();
             LoadData();
 
             UIHelper.SetupSearchTextBox(txtSearch, "Tìm kiếm theo tên, SĐT...");
@@ -76,10 +80,11 @@ namespace UI_Tier
             string keyword = txtSearch.Text.Trim();
             if (keyword == "Tìm kiếm theo tên, SĐT...") keyword = "";
             string status = cboStatusFilter.SelectedItem?.ToString() ?? StatusAll;
+            int? doctorDepartmentId = _currentTab == "Doctor" ? _selectedDoctorDepartmentId : null;
             
             string searchRole = GetSearchRoleForCurrentTab();
             var counterUsers = _adminBUS.SearchUsers(keyword, "Tất cả");
-            var allUsers = _adminBUS.SearchUsers(keyword, searchRole);
+            var allUsers = _adminBUS.SearchUsers(keyword, searchRole, doctorDepartmentId);
             
             // Get pending doctors for the alert subtitle and for "Pending" status filter
             var pendingDocs = _adminBUS.GetPendingDoctors();
@@ -89,6 +94,12 @@ namespace UI_Tier
                     d.User.FullName.Contains(keyword, StringComparison.OrdinalIgnoreCase) || 
                     d.User.PhoneNumber.Contains(keyword)
                 ).ToList();
+            }
+            if (doctorDepartmentId.HasValue)
+            {
+                pendingDocs = pendingDocs
+                    .Where(d => d.DepartmentId == doctorDepartmentId.Value)
+                    .ToList();
             }
 
             // Update UI Counters
@@ -199,6 +210,7 @@ namespace UI_Tier
         {
             _currentTab = "All";
             ConfigureStatusFilter();
+            UpdateDoctorDepartmentFilterVisibility();
             SetActiveTab(btnAllUsers);
             _currentPage = 1;
             LoadData();
@@ -216,6 +228,7 @@ namespace UI_Tier
         {
             _currentTab = "Patient";
             ConfigureStatusFilter();
+            UpdateDoctorDepartmentFilterVisibility();
             SetActiveTab(btnPatients);
             _currentPage = 1;
             LoadData();
@@ -225,6 +238,7 @@ namespace UI_Tier
         {
             _currentTab = "Doctor";
             ConfigureStatusFilter();
+            UpdateDoctorDepartmentFilterVisibility();
             SetActiveTab(btnDoctors);
             _currentPage = 1;
             LoadData();
@@ -272,6 +286,73 @@ namespace UI_Tier
             }
 
             SetActiveTab(GetActiveTabButton());
+        }
+
+        private void LoadDoctorDepartmentTabs()
+        {
+            flpDoctorDepartments.Controls.Clear();
+            AddDoctorDepartmentTab("Tất cả chuyên khoa", null, true);
+
+            foreach (var dept in _departmentBUS.GetDepartmentsForUI())
+            {
+                AddDoctorDepartmentTab(dept.DepartmentName, dept.Id, false);
+            }
+        }
+
+        private void AddDoctorDepartmentTab(string text, int? departmentId, bool isSelected)
+        {
+            Font normalFont = new Font("Segoe UI", 12F, FontStyle.Regular);
+            Font boldFont = new Font("Segoe UI", 12F, FontStyle.Bold);
+            int width = TextRenderer.MeasureText(text, boldFont).Width + 32;
+
+            Label lbl = new Label
+            {
+                Text = text,
+                Tag = departmentId,
+                AutoSize = false,
+                Size = new Size(Math.Max(width, 110), 46),
+                Margin = new Padding(0, 0, 12, 8),
+                Cursor = Cursors.Hand,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Font = isSelected ? boldFont : normalFont
+            };
+
+            lbl.Click += DoctorDepartmentTab_Click;
+            lbl.SizeChanged += (s, e) => UIHelper.ApplyRoundedRegion(lbl, 18);
+            UpdateDoctorDepartmentTabStyle(lbl, isSelected);
+            flpDoctorDepartments.Controls.Add(lbl);
+        }
+
+        private void DoctorDepartmentTab_Click(object sender, EventArgs e)
+        {
+            if (sender is not Label clicked) return;
+
+            _selectedDoctorDepartmentId = clicked.Tag is int departmentId ? departmentId : null;
+            foreach (Control ctrl in flpDoctorDepartments.Controls)
+            {
+                if (ctrl is Label lbl)
+                {
+                    UpdateDoctorDepartmentTabStyle(lbl, lbl == clicked);
+                }
+            }
+
+            _currentPage = 1;
+            LoadData();
+        }
+
+        private void UpdateDoctorDepartmentTabStyle(Label lbl, bool isSelected)
+        {
+            lbl.BackColor = isSelected ? Color.FromArgb(37, 99, 235) : Color.FromArgb(243, 244, 246);
+            lbl.ForeColor = isSelected ? Color.White : Color.FromArgb(75, 85, 99);
+            lbl.Font = new Font("Segoe UI", 12F, isSelected ? FontStyle.Bold : FontStyle.Regular);
+            UIHelper.ApplyRoundedRegion(lbl, 18);
+        }
+
+        private void UpdateDoctorDepartmentFilterVisibility()
+        {
+            bool showDoctorDepartments = _currentTab == "Doctor";
+            flpDoctorDepartments.Visible = showDoctorDepartments;
+            pnlFilters.Height = showDoctorDepartments ? 190 : 114;
         }
 
         private Button GetActiveTabButton()

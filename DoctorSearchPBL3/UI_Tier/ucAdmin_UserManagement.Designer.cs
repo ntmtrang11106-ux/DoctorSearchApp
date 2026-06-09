@@ -24,6 +24,7 @@ namespace UI_Tier
             btnPatients = new Button();
             btnAllUsers = new Button();
             pnlFilters = new Panel();
+            flpDoctorDepartments = new FlowLayoutPanel();
             cboStatusFilter = new ComboBox();
             pnlSearch = new Panel();
             txtSearch = new TextBox();
@@ -153,6 +154,7 @@ namespace UI_Tier
             // 
             // pnlFilters
             // 
+            pnlFilters.Controls.Add(flpDoctorDepartments);
             pnlFilters.Controls.Add(cboStatusFilter);
             pnlFilters.Controls.Add(pnlSearch);
             pnlFilters.Dock = DockStyle.Top;
@@ -161,6 +163,16 @@ namespace UI_Tier
             pnlFilters.Name = "pnlFilters";
             pnlFilters.Size = new Size(1615, 114);
             pnlFilters.TabIndex = 2;
+            //
+            // flpDoctorDepartments
+            //
+            flpDoctorDepartments.AutoScroll = true;
+            flpDoctorDepartments.Location = new Point(109, 98);
+            flpDoctorDepartments.Name = "flpDoctorDepartments";
+            flpDoctorDepartments.Size = new Size(1444, 70);
+            flpDoctorDepartments.TabIndex = 2;
+            flpDoctorDepartments.Visible = false;
+            flpDoctorDepartments.WrapContents = false;
             // 
             // cboStatusFilter
             // 
@@ -392,6 +404,7 @@ namespace UI_Tier
         private System.Windows.Forms.Button btnPatients;
         private System.Windows.Forms.Button btnDoctors;
         private System.Windows.Forms.Panel pnlFilters;
+        private System.Windows.Forms.FlowLayoutPanel flpDoctorDepartments;
         private System.Windows.Forms.Panel pnlSearch;
         private System.Windows.Forms.Label lblSearchIcon;
         private System.Windows.Forms.TextBox txtSearch;

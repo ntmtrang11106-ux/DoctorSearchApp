@@ -44,9 +44,9 @@ namespace BUS_Tier
             return _adminDAL.UnblockUserWithRoleRestore(userId, role);
         }
 
-        public List<UserDTO> SearchUsers(string keyword, string role)
+        public List<UserDTO> SearchUsers(string keyword, string role, int? doctorDepartmentId = null)
         {
-            return _adminDAL.SearchUsers(keyword, role);
+            return _adminDAL.SearchUsers(keyword, role, doctorDepartmentId);
         }
 
         public (UserDTO User, DoctorDTO Doctor, PatientDTO Patient) GetFullUserDetails(int userId, string role)

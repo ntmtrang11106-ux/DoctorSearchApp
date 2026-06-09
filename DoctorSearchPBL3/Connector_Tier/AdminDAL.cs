@@ -105,7 +105,7 @@ namespace DAL_Tier
             return db.SaveChanges() > 0;
         }
 
-        public List<UserDTO> SearchUsers(string keyword, string role)
+        public List<UserDTO> SearchUsers(string keyword, string role, int? doctorDepartmentId = null)
         {
             using var db = new AppDbContext();
             var query = db.Users.Where(u => !u.IsDeleted).AsQueryable();
@@ -130,6 +130,17 @@ namespace DAL_Tier
             {
                 // If "All" is selected, only show Doctors and Patients
                 query = query.Where(u => u.Role != "Admin");
+            }
+
+            if (doctorDepartmentId.HasValue)
+            {
+                int departmentId = doctorDepartmentId.Value;
+                query = query.Where(u =>
+                    u.Role == "Doctor" &&
+                    db.Doctors.Any(d =>
+                        d.UserId == u.Id &&
+                        !d.IsDeleted &&
+                        d.DepartmentId == departmentId));
             }
 
             return query.OrderByDescending(u => u.CreatedAt).ToList();
