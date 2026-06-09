@@ -300,7 +300,7 @@ namespace UI_Tier
             btnChangePassword.Visible = !show;
             
             // Adjust height of security panel to fit the form
-            pnlSecurity.Height = show ? 850 : 150;
+            pnlSecurity.Height = show ? 700 : 200;
             
             if (show) {
                 txtCurrentPass.Clear();
