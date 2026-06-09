@@ -33,14 +33,15 @@ namespace UI_Tier
             // 
             // lblStatus
             // 
+            lblStatus.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblStatus.AutoSize = true;
             lblStatus.BackColor = Color.FromArgb(243, 244, 246);
-            lblStatus.Font = new Font("Segoe UI Semibold", 14F);
+            lblStatus.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblStatus.ForeColor = Color.FromArgb(107, 114, 128);
-            lblStatus.Location = new Point(900, 75);
+            lblStatus.Location = new Point(1015, 38);
             lblStatus.Name = "lblStatus";
             lblStatus.Padding = new Padding(10, 4, 10, 4);
-            lblStatus.Size = new Size(274, 59);
+            lblStatus.Size = new Size(263, 58);
             lblStatus.TabIndex = 32;
             lblStatus.Text = "Đang hiển thị";
             lblStatus.TextAlign = ContentAlignment.MiddleCenter;
@@ -51,7 +52,7 @@ namespace UI_Tier
             lblAvatar.BackColor = Color.FromArgb(240, 240, 240);
             lblAvatar.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblAvatar.ForeColor = Color.FromArgb(100, 100, 100);
-            lblAvatar.Location = new Point(20, 20);
+            lblAvatar.Location = new Point(34, 27);
             lblAvatar.Name = "lblAvatar";
             lblAvatar.Size = new Size(60, 60);
             lblAvatar.TabIndex = 0;
@@ -62,7 +63,8 @@ namespace UI_Tier
             // 
             lblName.AutoSize = true;
             lblName.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold);
-            lblName.Location = new Point(100, 15);
+            lblName.ForeColor = SystemColors.ControlText;
+            lblName.Location = new Point(103, 25);
             lblName.Name = "lblName";
             lblName.Size = new Size(294, 50);
             lblName.TabIndex = 1;
@@ -71,11 +73,11 @@ namespace UI_Tier
             // lblRating
             // 
             lblRating.AutoSize = true;
-            lblRating.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblRating.Font = new Font("Segoe UI", 13F);
             lblRating.ForeColor = Color.Orange;
-            lblRating.Location = new Point(100, 65);
+            lblRating.Location = new Point(110, 81);
             lblRating.Name = "lblRating";
-            lblRating.Size = new Size(155, 45);
+            lblRating.Size = new Size(165, 47);
             lblRating.TabIndex = 2;
             lblRating.Text = "★★★★★";
             // 
@@ -84,7 +86,7 @@ namespace UI_Tier
             lblDate.AutoSize = true;
             lblDate.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblDate.ForeColor = Color.Gray;
-            lblDate.Location = new Point(261, 65);
+            lblDate.Location = new Point(286, 79);
             lblDate.Name = "lblDate";
             lblDate.Size = new Size(180, 45);
             lblDate.TabIndex = 3;
@@ -95,9 +97,9 @@ namespace UI_Tier
             lblComment.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             lblComment.Font = new Font("Segoe UI", 12F);
             lblComment.ForeColor = Color.FromArgb(40, 40, 40);
-            lblComment.Location = new Point(100, 124);
+            lblComment.Location = new Point(110, 153);
             lblComment.Name = "lblComment";
-            lblComment.Size = new Size(1188, 90);
+            lblComment.Size = new Size(1415, 99);
             lblComment.TabIndex = 4;
             lblComment.Text = "Bác sĩ rất tận tâm và chuyên nghiệp.";
             // 
@@ -107,7 +109,7 @@ namespace UI_Tier
             lblYourReview.BackColor = Color.FromArgb(235, 245, 255);
             lblYourReview.Font = new Font("Segoe UI Semibold", 10F);
             lblYourReview.ForeColor = Color.FromArgb(37, 99, 235);
-            lblYourReview.Location = new Point(423, 20);
+            lblYourReview.Location = new Point(426, 30);
             lblYourReview.Name = "lblYourReview";
             lblYourReview.Padding = new Padding(8, 4, 8, 4);
             lblYourReview.Size = new Size(245, 45);
@@ -121,7 +123,7 @@ namespace UI_Tier
             lblArrow.BackColor = Color.Transparent;
             lblArrow.Font = new Font("Segoe UI", 12F);
             lblArrow.ForeColor = Color.Silver;
-            lblArrow.Location = new Point(451, 20);
+            lblArrow.Location = new Point(454, 30);
             lblArrow.Name = "lblArrow";
             lblArrow.Size = new Size(48, 45);
             lblArrow.TabIndex = 23;
@@ -134,7 +136,7 @@ namespace UI_Tier
             lblDoctorName.BackColor = Color.Transparent;
             lblDoctorName.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold);
             lblDoctorName.ForeColor = Color.FromArgb(37, 99, 235);
-            lblDoctorName.Location = new Point(526, 15);
+            lblDoctorName.Location = new Point(529, 25);
             lblDoctorName.Name = "lblDoctorName";
             lblDoctorName.Size = new Size(262, 50);
             lblDoctorName.TabIndex = 24;
@@ -150,7 +152,7 @@ namespace UI_Tier
             flpAction.Controls.Add(btnHide);
             flpAction.Controls.Add(btnEdit);
             flpAction.FlowDirection = FlowDirection.RightToLeft;
-            flpAction.Location = new Point(973, 20);
+            flpAction.Location = new Point(1315, 20);
             flpAction.Name = "flpAction";
             flpAction.Size = new Size(315, 90);
             flpAction.TabIndex = 31;
@@ -222,8 +224,9 @@ namespace UI_Tier
             Controls.Add(lblRating);
             Controls.Add(lblName);
             Controls.Add(lblAvatar);
+            Margin = new Padding(3, 20, 3, 20);
             Name = "ucReviewItem";
-            Size = new Size(1308, 220);
+            Size = new Size(1650, 287);
             Load += ucReviewItem_Load;
             flpAction.ResumeLayout(false);
             ResumeLayout(false);

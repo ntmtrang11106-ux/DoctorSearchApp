@@ -54,7 +54,6 @@ namespace UI_Tier
             pnlSearch.Invalidate();
 
             Panel[] cards = { pnlCard1, pnlCard2, pnlCard3, pnlCard4 };
-            Panel[] icons = { pnlIcon1, pnlIcon2, pnlIcon3, pnlIcon4 };
 
             foreach (var card in cards)
             {
@@ -66,11 +65,6 @@ namespace UI_Tier
                     card.Paint += StatPanel_Paint;
                     card.Invalidate();
                 }
-            }
-
-            foreach (var icon in icons)
-            {
-                if (icon != null) UIHelper.ApplyRoundedRegion(icon, 20);
             }
 
             // Căn giữa label thông báo
@@ -133,7 +127,7 @@ namespace UI_Tier
             int hidden = _allReviews.Count(r => !r.IsVisible);
 
             lblStatValue1.Text = total.ToString("N0");
-            lblStatValue2.Text = avg.ToString("F1") + " ★";
+            lblStatValue2.Text = avg.ToString("F1");
             lblStatValue3.Text = visible.ToString("N0");
             lblStatValue4.Text = hidden.ToString("N0");
         }

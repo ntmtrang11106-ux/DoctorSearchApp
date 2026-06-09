@@ -19,18 +19,16 @@ namespace UI_Tier
             pnlRoleBadge = new Panel();
             lblRole = new Label();
             lblFullName = new Label();
-            pnlApprovalBadge = new Panel();
             lblApproval = new Label();
-            pnlStatusBadge = new Panel();
             lblStatus = new Label();
             pnlCard = new Panel();
             flpActions = new FlowLayoutPanel();
+            btnApprove = new Button();
+            btnReject = new Button();
+            btnToggleStatus = new Button();
+            btnDetail = new Button();
             btnRemove = new Button();
             btnEdit = new Button();
-            btnToggleStatus = new Button();
-            btnReject = new Button();
-            btnApprove = new Button();
-            btnDetail = new Button();
             lblExp = new Label();
             lblDepartment = new Label();
             lblPhone = new Label();
@@ -39,8 +37,6 @@ namespace UI_Tier
             lblDob = new Label();
             flpHeader.SuspendLayout();
             pnlRoleBadge.SuspendLayout();
-            pnlApprovalBadge.SuspendLayout();
-            pnlStatusBadge.SuspendLayout();
             pnlCard.SuspendLayout();
             flpActions.SuspendLayout();
             SuspendLayout();
@@ -50,11 +46,11 @@ namespace UI_Tier
             flpHeader.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             flpHeader.Controls.Add(pnlRoleBadge);
             flpHeader.Controls.Add(lblFullName);
-            flpHeader.Controls.Add(pnlApprovalBadge);
-            flpHeader.Controls.Add(pnlStatusBadge);
-            flpHeader.Location = new Point(32, 44);
+            flpHeader.Controls.Add(lblApproval);
+            flpHeader.Controls.Add(lblStatus);
+            flpHeader.Location = new Point(34, 31);
             flpHeader.Name = "flpHeader";
-            flpHeader.Size = new Size(1183, 60);
+            flpHeader.Size = new Size(1643, 60);
             flpHeader.TabIndex = 13;
             flpHeader.WrapContents = false;
             // 
@@ -72,7 +68,7 @@ namespace UI_Tier
             lblRole.Dock = DockStyle.Fill;
             lblRole.Font = new Font("Segoe UI", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblRole.Location = new Point(0, 0);
-            lblRole.Margin = new Padding(5, 0, 5, 0);
+            lblRole.Margin = new Padding(5, 0, 20, 0);
             lblRole.Name = "lblRole";
             lblRole.Size = new Size(220, 45);
             lblRole.TabIndex = 0;
@@ -84,55 +80,38 @@ namespace UI_Tier
             lblFullName.AutoSize = true;
             lblFullName.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblFullName.ForeColor = Color.FromArgb(31, 41, 55);
-            lblFullName.Location = new Point(210, 5);
-            lblFullName.Margin = new Padding(0, 5, 10, 0);
+            lblFullName.Location = new Point(250, 5);
+            lblFullName.Margin = new Padding(20, 5, 50, 0);
             lblFullName.Name = "lblFullName";
             lblFullName.Size = new Size(313, 50);
             lblFullName.TabIndex = 1;
             lblFullName.Text = "Lê Hoàng Cường";
             // 
-            // pnlApprovalBadge
-            // 
-            pnlApprovalBadge.Controls.Add(lblApproval);
-            pnlApprovalBadge.Location = new Point(543, 0);
-            pnlApprovalBadge.Margin = new Padding(10, 0, 10, 0);
-            pnlApprovalBadge.Name = "pnlApprovalBadge";
-            pnlApprovalBadge.Size = new Size(320, 60);
-            pnlApprovalBadge.TabIndex = 2;
-            // 
             // lblApproval
             // 
-            lblApproval.Dock = DockStyle.Fill;
-            lblApproval.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblApproval.Location = new Point(0, 0);
+            lblApproval.Font = new Font("Segoe UI Semibold", 13.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblApproval.Location = new Point(663, 0);
+            lblApproval.Margin = new Padding(50, 0, 50, 0);
             lblApproval.Name = "lblApproval";
-            lblApproval.Size = new Size(320, 60);
+            lblApproval.Size = new Size(264, 55);
             lblApproval.TabIndex = 0;
             lblApproval.Text = "Chờ duyệt";
             lblApproval.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // pnlStatusBadge
-            // 
-            pnlStatusBadge.Controls.Add(lblStatus);
-            pnlStatusBadge.Location = new Point(783, 0);
-            pnlStatusBadge.Margin = new Padding(10, 0, 10, 0);
-            pnlStatusBadge.Name = "pnlStatusBadge";
-            pnlStatusBadge.Size = new Size(320, 60);
-            pnlStatusBadge.TabIndex = 3;
-            // 
             // lblStatus
             // 
-            lblStatus.Dock = DockStyle.Fill;
-            lblStatus.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblStatus.Location = new Point(0, 0);
+            lblStatus.Font = new Font("Segoe UI Semibold", 13.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblStatus.Location = new Point(987, 0);
+            lblStatus.Margin = new Padding(10, 0, 50, 0);
             lblStatus.Name = "lblStatus";
-            lblStatus.Size = new Size(320, 60);
+            lblStatus.Size = new Size(260, 55);
             lblStatus.TabIndex = 0;
             lblStatus.Text = "Hoạt động";
             lblStatus.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // pnlCard
             // 
+            pnlCard.BackColor = Color.White;
             pnlCard.Controls.Add(flpActions);
             pnlCard.Controls.Add(flpHeader);
             pnlCard.Controls.Add(lblExp);
@@ -143,42 +122,111 @@ namespace UI_Tier
             pnlCard.Controls.Add(lblDob);
             pnlCard.Dock = DockStyle.Fill;
             pnlCard.Location = new Point(16, 20);
-            pnlCard.Margin = new Padding(5, 6, 5, 6);
             pnlCard.Name = "pnlCard";
-            pnlCard.Padding = new Padding(32, 40, 10, 40);
-            pnlCard.Size = new Size(1757, 238);
+            pnlCard.Padding = new Padding(3);
+            pnlCard.Size = new Size(1757, 246);
             pnlCard.TabIndex = 0;
             // 
             // flpActions
             // 
-            flpActions.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             flpActions.AutoSize = true;
             flpActions.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            flpActions.BackColor = Color.Transparent;
+            flpActions.Controls.Add(btnApprove);
+            flpActions.Controls.Add(btnReject);
+            flpActions.Controls.Add(btnToggleStatus);
+            flpActions.Controls.Add(btnDetail);
             flpActions.Controls.Add(btnRemove);
             flpActions.Controls.Add(btnEdit);
-            flpActions.Controls.Add(btnToggleStatus);
-            flpActions.Controls.Add(btnReject);
-            flpActions.Controls.Add(btnApprove);
-            flpActions.Controls.Add(btnDetail);
-            flpActions.FlowDirection = FlowDirection.RightToLeft;
-            flpActions.Location = new Point(782, 53);
+            flpActions.Dock = DockStyle.Right;
+            flpActions.Location = new Point(726, 3);
             flpActions.Margin = new Padding(0);
             flpActions.Name = "flpActions";
-            flpActions.Size = new Size(955, 95);
+            flpActions.Padding = new Padding(0, 100, 16, 0);
+            flpActions.Size = new Size(1028, 240);
             flpActions.TabIndex = 21;
             flpActions.WrapContents = false;
+            // 
+            // btnApprove
+            // 
+            btnApprove.Anchor = AnchorStyles.Right;
+            btnApprove.BackColor = Color.LimeGreen;
+            btnApprove.FlatAppearance.BorderSize = 0;
+            btnApprove.FlatStyle = FlatStyle.Flat;
+            btnApprove.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnApprove.ForeColor = Color.White;
+            btnApprove.Location = new Point(15, 110);
+            btnApprove.Margin = new Padding(15, 5, 0, 5);
+            btnApprove.Name = "btnApprove";
+            btnApprove.Size = new Size(239, 75);
+            btnApprove.TabIndex = 5;
+            btnApprove.Text = "✔ Phê duyệt";
+            btnApprove.UseVisualStyleBackColor = false;
+            btnApprove.Click += btnApprove_Click;
+            // 
+            // btnReject
+            // 
+            btnReject.Anchor = AnchorStyles.Right;
+            btnReject.BackColor = Color.Red;
+            btnReject.FlatAppearance.BorderSize = 0;
+            btnReject.FlatStyle = FlatStyle.Flat;
+            btnReject.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnReject.ForeColor = Color.White;
+            btnReject.Location = new Point(269, 110);
+            btnReject.Margin = new Padding(15, 5, 0, 5);
+            btnReject.Name = "btnReject";
+            btnReject.Size = new Size(195, 75);
+            btnReject.TabIndex = 6;
+            btnReject.Text = "✖ Từ chối";
+            btnReject.UseVisualStyleBackColor = false;
+            btnReject.Click += btnReject_Click;
+            // 
+            // btnToggleStatus
+            // 
+            btnToggleStatus.Anchor = AnchorStyles.Right;
+            btnToggleStatus.BackColor = Color.FromArgb(255, 128, 0);
+            btnToggleStatus.FlatAppearance.BorderSize = 0;
+            btnToggleStatus.FlatStyle = FlatStyle.Flat;
+            btnToggleStatus.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnToggleStatus.ForeColor = Color.White;
+            btnToggleStatus.Location = new Point(479, 110);
+            btnToggleStatus.Margin = new Padding(15, 5, 0, 5);
+            btnToggleStatus.Name = "btnToggleStatus";
+            btnToggleStatus.Size = new Size(195, 75);
+            btnToggleStatus.TabIndex = 7;
+            btnToggleStatus.Text = "🔒 Chặn";
+            btnToggleStatus.UseVisualStyleBackColor = false;
+            btnToggleStatus.Click += btnToggleStatus_Click;
+            // 
+            // btnDetail
+            // 
+            btnDetail.Anchor = AnchorStyles.Right;
+            btnDetail.BackColor = Color.Azure;
+            btnDetail.FlatAppearance.BorderSize = 0;
+            btnDetail.FlatStyle = FlatStyle.Flat;
+            btnDetail.Font = new Font("Segoe MDL2 Assets", 18F);
+            btnDetail.ForeColor = Color.DodgerBlue;
+            btnDetail.Location = new Point(724, 110);
+            btnDetail.Margin = new Padding(50, 10, 0, 5);
+            btnDetail.Name = "btnDetail";
+            btnDetail.Size = new Size(80, 80);
+            btnDetail.TabIndex = 20;
+            btnDetail.Text = "";
+            btnDetail.TextAlign = ContentAlignment.MiddleRight;
+            btnDetail.UseVisualStyleBackColor = false;
+            btnDetail.Click += btnDetail_Click;
             // 
             // btnRemove
             // 
             btnRemove.AccessibleDescription = "C";
-            btnRemove.Anchor = AnchorStyles.None;
+            btnRemove.Anchor = AnchorStyles.Right;
             btnRemove.BackColor = Color.FromArgb(255, 252, 235);
             btnRemove.FlatAppearance.BorderSize = 0;
             btnRemove.FlatStyle = FlatStyle.Flat;
             btnRemove.Font = new Font("Segoe MDL2 Assets", 20F);
             btnRemove.ForeColor = Color.FromArgb(217, 119, 6);
-            btnRemove.Location = new Point(870, 5);
-            btnRemove.Margin = new Padding(15, 5, 0, 5);
+            btnRemove.Location = new Point(819, 105);
+            btnRemove.Margin = new Padding(15, 5, 15, 5);
             btnRemove.Name = "btnRemove";
             btnRemove.Size = new Size(85, 85);
             btnRemove.TabIndex = 23;
@@ -189,13 +237,13 @@ namespace UI_Tier
             // btnEdit
             // 
             btnEdit.AccessibleDescription = "C";
-            btnEdit.Anchor = AnchorStyles.None;
+            btnEdit.Anchor = AnchorStyles.Right;
             btnEdit.BackColor = Color.FromArgb(239, 250, 255);
             btnEdit.FlatAppearance.BorderSize = 0;
             btnEdit.FlatStyle = FlatStyle.Flat;
             btnEdit.Font = new Font("Segoe MDL2 Assets", 20F);
             btnEdit.ForeColor = Color.FromArgb(37, 99, 235);
-            btnEdit.Location = new Point(770, 7);
+            btnEdit.Location = new Point(927, 107);
             btnEdit.Margin = new Padding(8, 5, 0, 0);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(85, 85);
@@ -204,80 +252,12 @@ namespace UI_Tier
             btnEdit.UseVisualStyleBackColor = false;
             btnEdit.Click += btnEdit_Click;
             // 
-            // btnToggleStatus
-            // 
-            btnToggleStatus.BackColor = Color.FromArgb(255, 87, 34);
-            btnToggleStatus.FlatAppearance.BorderSize = 0;
-            btnToggleStatus.FlatStyle = FlatStyle.Flat;
-            btnToggleStatus.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnToggleStatus.ForeColor = Color.White;
-            btnToggleStatus.Location = new Point(567, 5);
-            btnToggleStatus.Margin = new Padding(15, 5, 0, 5);
-            btnToggleStatus.Name = "btnToggleStatus";
-            btnToggleStatus.Size = new Size(195, 80);
-            btnToggleStatus.TabIndex = 7;
-            btnToggleStatus.Text = "🔒 Chặn";
-            btnToggleStatus.UseVisualStyleBackColor = false;
-            btnToggleStatus.Click += btnToggleStatus_Click;
-            // 
-            // btnReject
-            // 
-            btnReject.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnReject.BackColor = Color.FromArgb(220, 38, 38);
-            btnReject.FlatAppearance.BorderSize = 0;
-            btnReject.FlatStyle = FlatStyle.Flat;
-            btnReject.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnReject.ForeColor = Color.White;
-            btnReject.Location = new Point(357, 5);
-            btnReject.Margin = new Padding(15, 5, 0, 5);
-            btnReject.Name = "btnReject";
-            btnReject.Size = new Size(195, 80);
-            btnReject.TabIndex = 6;
-            btnReject.Text = "✖ Từ chối";
-            btnReject.UseVisualStyleBackColor = false;
-            btnReject.Click += btnReject_Click;
-            // 
-            // btnApprove
-            // 
-            btnApprove.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnApprove.BackColor = Color.FromArgb(16, 185, 129);
-            btnApprove.FlatAppearance.BorderSize = 0;
-            btnApprove.FlatStyle = FlatStyle.Flat;
-            btnApprove.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnApprove.ForeColor = Color.White;
-            btnApprove.Location = new Point(103, 5);
-            btnApprove.Margin = new Padding(15, 5, 0, 5);
-            btnApprove.Name = "btnApprove";
-            btnApprove.Size = new Size(239, 80);
-            btnApprove.TabIndex = 5;
-            btnApprove.Text = "✔ Phê duyệt";
-            btnApprove.UseVisualStyleBackColor = false;
-            btnApprove.Click += btnApprove_Click;
-            // 
-            // btnDetail
-            // 
-            btnDetail.Anchor = AnchorStyles.None;
-            btnDetail.BackColor = Color.Azure;
-            btnDetail.FlatAppearance.BorderSize = 0;
-            btnDetail.FlatStyle = FlatStyle.Flat;
-            btnDetail.Font = new Font("Segoe MDL2 Assets", 18F);
-            btnDetail.ForeColor = Color.DodgerBlue;
-            btnDetail.Location = new Point(8, 10);
-            btnDetail.Margin = new Padding(8, 10, 0, 5);
-            btnDetail.Name = "btnDetail";
-            btnDetail.Size = new Size(80, 80);
-            btnDetail.TabIndex = 20;
-            btnDetail.Text = "";
-            btnDetail.TextAlign = ContentAlignment.MiddleRight;
-            btnDetail.UseVisualStyleBackColor = false;
-            btnDetail.Click += btnDetail_Click;
-            // 
             // lblExp
             // 
             lblExp.AutoSize = true;
             lblExp.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblExp.ForeColor = Color.FromArgb(64, 64, 64);
-            lblExp.Location = new Point(450, 175);
+            lblExp.Location = new Point(566, 184);
             lblExp.Margin = new Padding(5, 0, 5, 0);
             lblExp.Name = "lblExp";
             lblExp.Size = new Size(304, 45);
@@ -289,7 +269,7 @@ namespace UI_Tier
             lblDepartment.AutoSize = true;
             lblDepartment.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblDepartment.ForeColor = Color.FromArgb(64, 64, 64);
-            lblDepartment.Location = new Point(63, 130);
+            lblDepartment.Location = new Point(29, 114);
             lblDepartment.Margin = new Padding(5, 0, 5, 0);
             lblDepartment.Name = "lblDepartment";
             lblDepartment.Size = new Size(349, 45);
@@ -302,7 +282,7 @@ namespace UI_Tier
             lblPhone.AutoSize = true;
             lblPhone.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblPhone.ForeColor = Color.FromArgb(64, 64, 64);
-            lblPhone.Location = new Point(450, 115);
+            lblPhone.Location = new Point(566, 114);
             lblPhone.Margin = new Padding(5, 0, 5, 0);
             lblPhone.Name = "lblPhone";
             lblPhone.Size = new Size(360, 45);
@@ -314,7 +294,7 @@ namespace UI_Tier
             lblLicenseOrBHYT.AutoSize = true;
             lblLicenseOrBHYT.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblLicenseOrBHYT.ForeColor = Color.FromArgb(64, 64, 64);
-            lblLicenseOrBHYT.Location = new Point(32, 175);
+            lblLicenseOrBHYT.Location = new Point(29, 184);
             lblLicenseOrBHYT.Margin = new Padding(5, 0, 5, 0);
             lblLicenseOrBHYT.Name = "lblLicenseOrBHYT";
             lblLicenseOrBHYT.Size = new Size(287, 45);
@@ -326,7 +306,7 @@ namespace UI_Tier
             lblDeptOrCode.AutoSize = true;
             lblDeptOrCode.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblDeptOrCode.ForeColor = Color.FromArgb(64, 64, 64);
-            lblDeptOrCode.Location = new Point(32, 115);
+            lblDeptOrCode.Location = new Point(29, 119);
             lblDeptOrCode.Name = "lblDeptOrCode";
             lblDeptOrCode.Size = new Size(241, 45);
             lblDeptOrCode.TabIndex = 22;
@@ -335,12 +315,12 @@ namespace UI_Tier
             // lblDob
             // 
             lblDob.AutoSize = true;
-            lblDob.Font = new Font("Segoe UI", 10.125F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblDob.Font = new Font("Segoe UI", 12F);
             lblDob.ForeColor = Color.FromArgb(64, 64, 64);
-            lblDob.Location = new Point(450, 169);
+            lblDob.Location = new Point(566, 184);
             lblDob.Margin = new Padding(5, 0, 5, 0);
             lblDob.Name = "lblDob";
-            lblDob.Size = new Size(275, 37);
+            lblDob.Size = new Size(320, 45);
             lblDob.TabIndex = 11;
             lblDob.Text = "Ngày sinh: 15/3/1990";
             lblDob.Visible = false;
@@ -349,17 +329,15 @@ namespace UI_Tier
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(250, 251, 253);
+            BackColor = Color.White;
             Controls.Add(pnlCard);
             Margin = new Padding(5, 6, 5, 6);
             Name = "ucAdmin_UserItem";
             Padding = new Padding(16, 20, 16, 20);
-            Size = new Size(1789, 278);
+            Size = new Size(1789, 286);
             flpHeader.ResumeLayout(false);
             flpHeader.PerformLayout();
             pnlRoleBadge.ResumeLayout(false);
-            pnlApprovalBadge.ResumeLayout(false);
-            pnlStatusBadge.ResumeLayout(false);
             pnlCard.ResumeLayout(false);
             pnlCard.PerformLayout();
             flpActions.ResumeLayout(false);
@@ -371,9 +349,7 @@ namespace UI_Tier
         private System.Windows.Forms.Panel pnlRoleBadge;
         private System.Windows.Forms.Label lblRole;
         private System.Windows.Forms.Label lblFullName;
-        private System.Windows.Forms.Panel pnlApprovalBadge;
         private System.Windows.Forms.Label lblApproval;
-        private System.Windows.Forms.Panel pnlStatusBadge;
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.Button btnApprove;
         private System.Windows.Forms.Button btnReject;
