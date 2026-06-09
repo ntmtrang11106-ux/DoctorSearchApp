@@ -20,12 +20,6 @@ namespace UI_Tier
             cbCapacity = new ComboBox();
             pnlHeader = new Panel();
             flpFilter = new FlowLayoutPanel();
-            //btnAll = new Button();
-            //btnEmpty = new Button();
-            //btnWaitting = new Button();
-            //btnAccepted = new Button();
-            //btnCanceled = new Button();
-            //btnDone = new Button();
             lblTitle = new Label();
             pnlSearchArea = new Panel();
             label2 = new Label();
@@ -40,12 +34,23 @@ namespace UI_Tier
             pnlBottomBuffer = new Panel();
             pnlResultContainer = new Panel();
             pnlHeader.SuspendLayout();
-            flpFilter.SuspendLayout();
             pnlSearchArea.SuspendLayout();
             flpAppItem.SuspendLayout();
             pnlReviewPagination.SuspendLayout();
             pnlResultContainer.SuspendLayout();
             SuspendLayout();
+            // 
+            // cbCapacity
+            // 
+            cbCapacity.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            cbCapacity.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbCapacity.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cbCapacity.FormattingEnabled = true;
+            cbCapacity.Location = new Point(1475, 116);
+            cbCapacity.Name = "cbCapacity";
+            cbCapacity.Size = new Size(353, 58);
+            cbCapacity.TabIndex = 6;
+            cbCapacity.SelectedIndexChanged += cbCapacity_SelectedIndexChanged;
             // 
             // pnlHeader
             // 
@@ -63,12 +68,12 @@ namespace UI_Tier
             // 
             // flpFilter
             // 
-            flpFilter.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            flpFilter.FlowDirection = FlowDirection.LeftToRight;
+            flpFilter.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             flpFilter.Location = new Point(27, 200);
             flpFilter.Name = "flpFilter";
-            flpFilter.Size = new Size(1500, 70);
+            flpFilter.Size = new Size(1783, 70);
             flpFilter.TabIndex = 5;
+            // 
             // lblTitle
             // 
             lblTitle.AutoSize = true;
@@ -79,18 +84,6 @@ namespace UI_Tier
             lblTitle.Size = new Size(391, 65);
             lblTitle.TabIndex = 4;
             lblTitle.Text = "Quản lý lịch hẹn";
-            // 
-        // cbCapacity
-        // 
-        cbCapacity.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        cbCapacity.DropDownStyle = ComboBoxStyle.DropDownList;
-        cbCapacity.Font = new Font("Segoe UI", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
-        cbCapacity.FormattingEnabled = true;
-        cbCapacity.Location = new Point(1475, 116);
-        cbCapacity.Name = "cbCapacity";
-        cbCapacity.Size = new Size(353, 58);
-        cbCapacity.TabIndex = 6;
-        cbCapacity.SelectedIndexChanged += cbCapacity_SelectedIndexChanged;
             // 
             // pnlSearchArea
             // 
@@ -253,7 +246,6 @@ namespace UI_Tier
             Load += ucAdmin_AppointmentManagement_Load;
             pnlHeader.ResumeLayout(false);
             pnlHeader.PerformLayout();
-            flpFilter.ResumeLayout(false);
             pnlSearchArea.ResumeLayout(false);
             pnlSearchArea.PerformLayout();
             flpAppItem.ResumeLayout(false);

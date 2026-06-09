@@ -37,9 +37,9 @@ namespace UI_Tier
                 lblStatus.ForeColor = Color.FromArgb(255, 159, 67);
                 lblStatus.BackColor = Color.FromArgb(255, 248, 235);
             }
-            else
+            else if(app.Status == "Completed")
             {
-                lblStatus.Text = app.Status;
+                lblStatus.Text = "Thành công";
                 lblStatus.ForeColor = Color.Gray;
                 lblStatus.BackColor = Color.FromArgb(245, 245, 245);
             }
