@@ -393,12 +393,12 @@ namespace UI_Tier
             // pnlMedicalProfile
             // 
             pnlMedicalProfile.BackColor = Color.White;
+            pnlMedicalProfile.Controls.Add(pnlBloodTypeBorder);
             pnlMedicalProfile.Controls.Add(pnlMedicalActions);
             pnlMedicalProfile.Controls.Add(lblMedicalHistoryRuleHint);
             pnlMedicalProfile.Controls.Add(pnlMedicalHistoryBorder);
             pnlMedicalProfile.Controls.Add(lblMedicalHistory);
             pnlMedicalProfile.Controls.Add(lblBloodTypeRuleHint);
-            pnlMedicalProfile.Controls.Add(pnlBloodTypeBorder);
             pnlMedicalProfile.Controls.Add(lblBloodType);
             pnlMedicalProfile.Controls.Add(btnEditMedical);
             pnlMedicalProfile.Controls.Add(lblBHYT);
@@ -563,10 +563,10 @@ namespace UI_Tier
             btnEditMedical.FlatStyle = FlatStyle.Flat;
             btnEditMedical.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
             btnEditMedical.ForeColor = Color.FromArgb(37, 99, 235);
-            btnEditMedical.Location = new Point(1732, 22);
+            btnEditMedical.Location = new Point(1756, 22);
             btnEditMedical.Margin = new Padding(4);
             btnEditMedical.Name = "btnEditMedical";
-            btnEditMedical.Size = new Size(296, 63);
+            btnEditMedical.Size = new Size(265, 63);
             btnEditMedical.TabIndex = 1;
             btnEditMedical.Text = "Chỉnh sửa";
             btnEditMedical.UseVisualStyleBackColor = true;
@@ -1157,10 +1157,10 @@ namespace UI_Tier
             btnEditBasicInfo.FlatStyle = FlatStyle.Flat;
             btnEditBasicInfo.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
             btnEditBasicInfo.ForeColor = Color.FromArgb(37, 99, 235);
-            btnEditBasicInfo.Location = new Point(1732, 29);
+            btnEditBasicInfo.Location = new Point(1756, 29);
             btnEditBasicInfo.Margin = new Padding(4);
             btnEditBasicInfo.Name = "btnEditBasicInfo";
-            btnEditBasicInfo.Size = new Size(282, 56);
+            btnEditBasicInfo.Size = new Size(258, 56);
             btnEditBasicInfo.TabIndex = 1;
             btnEditBasicInfo.Text = "Chỉnh sửa";
             btnEditBasicInfo.UseVisualStyleBackColor = true;

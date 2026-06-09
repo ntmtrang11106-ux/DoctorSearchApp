@@ -27,7 +27,7 @@ namespace UI_Tier
             lblTime.AutoSize = true;
             lblTime.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTime.ForeColor = Color.FromArgb(17, 34, 71);
-            lblTime.Location = new Point(30, 70);
+            lblTime.Location = new Point(30, 81);
             lblTime.Name = "lblTime";
             lblTime.Size = new Size(116, 50);
             lblTime.TabIndex = 0;
@@ -38,7 +38,7 @@ namespace UI_Tier
             lblTimeTitle.AutoSize = true;
             lblTimeTitle.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblTimeTitle.ForeColor = Color.Gray;
-            lblTimeTitle.Location = new Point(30, 20);
+            lblTimeTitle.Location = new Point(30, 41);
             lblTimeTitle.Name = "lblTimeTitle";
             lblTimeTitle.Size = new Size(69, 45);
             lblTimeTitle.TabIndex = 1;
@@ -49,7 +49,7 @@ namespace UI_Tier
             lblPatientName.AutoSize = true;
             lblPatientName.Font = new Font("Segoe UI", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblPatientName.ForeColor = Color.FromArgb(17, 34, 71);
-            lblPatientName.Location = new Point(334, 20);
+            lblPatientName.Location = new Point(334, 42);
             lblPatientName.Name = "lblPatientName";
             lblPatientName.Size = new Size(269, 50);
             lblPatientName.TabIndex = 2;
@@ -60,7 +60,7 @@ namespace UI_Tier
             lblReason.AutoSize = true;
             lblReason.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblReason.ForeColor = Color.Gray;
-            lblReason.Location = new Point(334, 75);
+            lblReason.Location = new Point(334, 92);
             lblReason.Name = "lblReason";
             lblReason.Size = new Size(250, 45);
             lblReason.TabIndex = 3;
@@ -72,7 +72,7 @@ namespace UI_Tier
             lblStatus.BackColor = Color.FromArgb(235, 252, 245);
             lblStatus.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblStatus.ForeColor = Color.FromArgb(40, 199, 111);
-            lblStatus.Location = new Point(1073, 15);
+            lblStatus.Location = new Point(1076, 64);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(220, 50);
             lblStatus.TabIndex = 4;
@@ -90,7 +90,7 @@ namespace UI_Tier
             Controls.Add(lblTimeTitle);
             Controls.Add(lblTime);
             Name = "ucAppointmentRow";
-            Size = new Size(1309, 150);
+            Size = new Size(1361, 176);
             Load += ucAppointmentRow_Load;
             ResumeLayout(false);
             PerformLayout();
