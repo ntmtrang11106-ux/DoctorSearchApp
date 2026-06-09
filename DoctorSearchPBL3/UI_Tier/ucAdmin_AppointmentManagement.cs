@@ -154,20 +154,66 @@ namespace UI_Tier
 
             foreach (var slot in pageItems)
             {
-                ucAppItem card = new ucAppItem();
-                card.SetupCard(slot, ucAppItem.AppCardMode.AdminView);
+                ucAdminScheduleCard card = new ucAdminScheduleCard();
+                card.SetData(slot);
                 card.Width = flpAppItem.ClientSize.Width - 20;
                 card.Height = 252;
                 card.Margin = new Padding(-10, 10, 10, 10);
                 
-                card.RefreshData = () => InitData(true);
-                card.AdminTimeSlotEdited += (s, slotId) => {
+                card.TimeSlotEditClicked += (s, slotData) => {
                     var editDialog = new ucTimeSlotDialog();
-                    var slotData = _allApps.FirstOrDefault(ts => ts.Id == slotId);
-                    if (slotData != null)
+                    editDialog.SetupEditMode(slotData);
+                    ShowOverlay(editDialog);
+                };
+
+                card.TimeSlotRemoveClicked += (s, slotData) => {
+                    if (slotData.Appointments != null && slotData.Appointments.Any(a => a.Status == "Confirmed"))
                     {
-                        editDialog.SetupEditMode(slotData);
-                        ShowOverlay(editDialog);
+                        MessageBox.Show("Không thể xóa lịch đã có bệnh nhân được duyệt khám!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    bool hasPending = slotData.Appointments != null && slotData.Appointments.Any(a => a.Status == "Pending");
+                    string confirmMsg = hasPending
+                        ? "Lịch này đang có bệnh nhân CHỜ DUYỆT. Nếu xóa, lịch của họ sẽ bị hủy tự động. Bạn có chắc chắn muốn xóa không?"
+                        : "Bạn có chắc chắn muốn xóa lịch làm việc này không?";
+
+                    if (MessageBox.Show(confirmMsg, "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    {
+                        if (new TimeSlotBUS().DeleteTimeSlot(slotData.Id))
+                        {
+                            MessageBox.Show("Đã xóa khung giờ làm việc thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            InitData(true);
+                        }
+                    }
+                };
+
+                card.TimeSlotHideClicked += (s, slotData) => {
+                    var bus = new TimeSlotBUS();
+                    string result = bus.HideTimeSlot(slotData.Id);
+
+                    if (result == "Success")
+                    {
+                        InitData(true);
+                    }
+                    else if (result == "ConfirmedExists")
+                    {
+                        MessageBox.Show("Không thể ẩn lịch đã có bệnh nhân được duyệt khám!", "Lưu ý", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    else if (result == "PendingExists")
+                    {
+                        if (MessageBox.Show("Lịch này đang có bệnh nhân CHỜ DUYỆT. Nếu ẩn, lịch của họ sẽ bị hủy. Bạn có chắc chắn muốn ẩn không?",
+                            "Xác nhận ẩn lịch", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            if (bus.ForceHideTimeSlot(slotData.Id))
+                            {
+                                InitData(true);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show(result, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 };
                 

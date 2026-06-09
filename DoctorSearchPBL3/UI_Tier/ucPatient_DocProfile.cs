@@ -190,9 +190,9 @@ namespace UI_Tier
 
                 foreach (Control ctrl in flpAppItem.Controls)
                 {
-                    if (ctrl is ucAppItem card)
+                    if (ctrl is ucUserAppointmentCard card)
                     {
-                        card.Width = flpAppItem.ClientSize.Width - (flpAppItem.Padding.Left + flpAppItem.Padding.Right);
+                        card.Width = 700;
                     }
                 }
 
@@ -334,12 +334,21 @@ namespace UI_Tier
                 // 2. Đổ card lịch hẹn
                 foreach (var app in pageItems)
                 {
-                    ucAppItem card = new ucAppItem();
+                    ucUserAppointmentCard card = new ucUserAppointmentCard();
                     card.ShowDoctorInfo = false;
-                    card.SetupCard(app, ucAppItem.AppCardMode.PatientView);
+                    card.SetData(app, ucUserAppointmentCard.UserAppCardMode.PatientView);
                     
-                    card.AppointmentDeleted += (s, ev) => InitData();
-                    card.AppointmentEdited += (s, appData) => {
+                    card.RemoveClicked += (s, appData) => {
+                        if (MessageBox.Show("Bạn có chắc chắn muốn hủy lịch hẹn này không?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            if (new AppointmentBUS().DeleteAppointment(appData.Id))
+                            {
+                                MessageBox.Show("Đã hủy lịch hẹn thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                InitData();
+                            }
+                        }
+                    };
+                    card.EditClicked += (s, appData) => {
                         if (_currentDoctor == null) return;
                         ucBookingDialog editUc = new ucBookingDialog(_currentDoctor);
                         editUc.SetEditData(appData);
@@ -350,7 +359,7 @@ namespace UI_Tier
                         editUc.BringToFront();
                     };
 
-                    card.Width = flpAppItem.ClientSize.Width - (flpAppItem.Padding.Left + flpAppItem.Padding.Right);
+                    card.Width = 700;
                     flpAppItem.Controls.Add(card);
                 }
 

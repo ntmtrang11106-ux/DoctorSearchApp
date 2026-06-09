@@ -124,14 +124,23 @@ namespace UI_Tier
 
                 foreach (var ap in pageItems)
                 {
-                    ucAppItem card = new ucAppItem();
-                    card.SetupCard(ap, ucAppItem.AppCardMode.PatientView);
+                    ucUserAppointmentCard card = new ucUserAppointmentCard();
+                    card.SetData(ap, ucUserAppointmentCard.UserAppCardMode.PatientView);
                     card.Margin = new Padding(20, 10, 20, 10);
                     card.Width = flpAppItem.ClientSize.Width - 40;
                     card.Height = 252;
                     
-                    card.AppointmentDeleted += (s, ev) => InitData();
-                    card.AppointmentEdited += (s, appData) => {
+                    card.RemoveClicked += (s, appData) => {
+                        if (MessageBox.Show("Bạn có chắc chắn muốn hủy lịch hẹn này không?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            if (new AppointmentBUS().DeleteAppointment(appData.Id))
+                            {
+                                MessageBox.Show("Đã hủy lịch hẹn thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                InitData();
+                            }
+                        }
+                    };
+                    card.EditClicked += (s, appData) => {
                         if (appData.Doctor == null) return;
                         ucBookingDialog editUc = new ucBookingDialog(appData.Doctor);
                         editUc.SetEditData(appData);
@@ -185,7 +194,7 @@ namespace UI_Tier
             {
                 foreach (Control ctrl in flpAppItem.Controls)
                 {
-                    if (ctrl is ucAppItem card)
+                    if (ctrl is ucUserAppointmentCard card)
                     {
                         card.Width = flpAppItem.ClientSize.Width - 40;
                     }
