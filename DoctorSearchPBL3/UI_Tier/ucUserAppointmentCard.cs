@@ -113,6 +113,10 @@ namespace UI_Tier
                         btnEdit.Visible = true;
                         btnRemove.Visible = true; // Hủy lịch hẹn
                     }
+                    else if (status == "Completed")
+                    {
+                        btnRate.Visible = true;
+                    }
                     else if (status == "Cancelled")
                     {
                         // Ẩn nút Undo khi đã hủy

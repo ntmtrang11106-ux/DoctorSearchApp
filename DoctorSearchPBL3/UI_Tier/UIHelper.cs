@@ -648,29 +648,26 @@ namespace UI_Tier
                 dashboard.Owner.Update(); // Ép vẽ Guest xong mới đóng Dashboard
             }
 
-            // 2. Đăng xuất tài khoản
+            // 2. Ẩn form hiện tại đi ngay lập tức để người dùng không thấy lag
+            dashboard.Hide();
+
+            // 3. Đăng xuất tài khoản
             DTO_Tier.GlobalAccount.Logout();
 
-            // 3. Giải phóng RAM: Hủy toàn bộ UserControls đã cache
+            // 4. Giải phóng RAM nhẹ nhàng
             if (tabMapping != null)
             {
-                foreach (var uc in tabMapping.Values)
-                {
-                    if (uc != null && !uc.IsDisposed)
-                    {
-                        uc.Dispose();
-                    }
-                }
-                tabMapping.Clear();
+                tabMapping.Clear(); // Không gọi Dispose thủ công từng cái gây đứng máy
             }
 
-            // 4. Đóng Dashboard
+            // 5. Đóng Dashboard (WinForms sẽ tự động Dispose các Controls bên trong)
             dashboard.Close();
 
-            // 5. Ép dọn RAM ngay lập tức
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            // 6. Đẩy việc ép dọn RAM sang một luồng ngầm (Background Thread) để không làm đơ giao diện
+            System.Threading.Tasks.Task.Run(() => {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            });
         }
 
         /// <summary>

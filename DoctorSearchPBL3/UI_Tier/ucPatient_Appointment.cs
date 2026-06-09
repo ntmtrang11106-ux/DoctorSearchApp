@@ -150,6 +150,15 @@ namespace UI_Tier
                         this.Controls.Add(editUc);
                         editUc.BringToFront();
                     };
+                    card.RateClicked += (s, appData) => {
+                        if (appData.Doctor == null) return;
+                        ucWriteReview reviewUc = new ucWriteReview(appData.Doctor);
+                        reviewUc.Location = new Point((this.Width - reviewUc.Width) / 2, (this.Height - reviewUc.Height) / 2);
+                        reviewUc.CloseRequested += (s2, ev2) => { this.Controls.Remove(reviewUc); reviewUc.Dispose(); };
+                        reviewUc.ReviewSubmitted += (s2, ev2) => { this.Controls.Remove(reviewUc); reviewUc.Dispose(); };
+                        this.Controls.Add(reviewUc);
+                        reviewUc.BringToFront();
+                    };
 
                     flpAppItem.Controls.Add(card);
                 }

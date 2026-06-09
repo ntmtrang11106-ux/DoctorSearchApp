@@ -147,6 +147,21 @@ namespace DAL_Tier
             }
         }
 
+        public bool HasCompletedAppointment(int patientId, int doctorId)
+        {
+            try
+            {
+                return _context.Appointments
+                    .AsNoTracking()
+                    .Any(a => a.PatientId == patientId && a.DoctorId == doctorId && a.Status == "Completed");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi HasCompletedAppointment: " + ex.Message);
+                return false;
+            }
+        }
+
         // 2. Tạo lịch hẹn mới (Khớp với các cột Snapshot trong SQL)
         //public bool CreateAppointment(AppointmentsDTO app)
         //{
