@@ -193,7 +193,13 @@ namespace UI_Tier
             string picPath = _currentUser.Picture;
             if (!string.IsNullOrEmpty(picPath))
             {
-                string fullPath = Path.IsPathRooted(picPath) ? picPath : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, picPath);
+                string fullPath = Path.IsPathRooted(picPath) ? picPath : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources_Images", picPath);
+
+                if (!File.Exists(fullPath))
+                {
+                    fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, picPath);
+                }
+
                 if (File.Exists(fullPath))
                 {
                     picAvatar.ImageLocation = fullPath;
