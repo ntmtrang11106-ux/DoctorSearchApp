@@ -537,6 +537,7 @@ namespace UI_Tier
             // 
             flpAppItem.AutoScroll = true;
             flpAppItem.Dock = DockStyle.Top;
+            flpAppItem.FlowDirection = FlowDirection.TopDown;
             flpAppItem.Location = new Point(0, 338);
             flpAppItem.Margin = new Padding(20, 10, 20, 0);
             flpAppItem.Name = "flpAppItem";
